@@ -1,0 +1,2196 @@
+model,domain,y_true,y_pred,n_articles,correct,signed_error,leaning
+BERT,5pillarsuk.com,3,3,17,True,0,Slightly Left
+BERT,aapsonline.org,0,1,9,False,1,Far Right
+BERT,aclu.org,3,1,89,False,-2,Far Left
+BERT,aei.org,3,3,145,True,0,Slightly Right
+BERT,africanvoiceonline.co.uk,2,3,22,False,1,Non labelled
+BERT,alabamanow.com,2,2,51,True,0,Non labelled
+BERT,albertleatribune.com,2,2,54,True,0,Non labelled
+BERT,aldianews.com,3,3,5,True,0,Slightly Left
+BERT,algemeiner.com,3,3,35,True,0,Non labelled
+BERT,alternet.org,1,3,198,False,2,Far Left
+BERT,americanlookout.com,1,1,52,True,0,Far Right
+BERT,americanpress.com,2,2,51,True,0,Non labelled
+BERT,americanprogress.org,4,3,59,False,-1,Far Left
+BERT,americanwirenews.com,2,1,77,False,-1,Slightly Right
+BERT,americustimesrecorder.com,2,2,58,True,0,Non labelled
+BERT,amgreatness.com,1,1,49,True,0,Slightly Right
+BERT,ammoland.com,3,4,106,False,1,Slightly Right
+BERT,amnews.com,2,2,53,True,0,Non labelled
+BERT,analyzingamerica.org,3,1,29,False,-2,Slightly Right
+BERT,andalusiastarnews.com,2,2,49,True,0,Non labelled
+BERT,angolabusinessdaily.com,0,0,19,True,0,Slightly Right
+BERT,ansamed.info,3,3,40,True,0,Non labelled
+BERT,anthonyblogan.com,1,3,36,False,2,Far Right
+BERT,arabnews.com,1,3,186,False,2,Non labelled
+BERT,arizonadailyindependent.com,2,3,17,False,1,Slightly Right
+BERT,armaghi.com,3,4,30,False,1,Non labelled
+BERT,aroostooknews.com,0,0,30,True,0,Slightly Right
+BERT,asianimage.co.uk,3,3,177,True,0,Non labelled
+BERT,asiansunday.co.uk,3,3,31,True,0,Non labelled
+BERT,atmoreadvance.com,2,2,53,True,0,Non labelled
+BERT,bizpacreview.com,2,3,51,False,1,Far Right
+BERT,bluestatebluesnews.com,1,1,12,True,0,Far Right
+BERT,bogalusadailynews.com,2,2,55,True,0,Non labelled
+BERT,boisecitywire.com,0,0,26,True,0,Slightly Right
+BERT,brewtonstandard.com,2,2,55,True,0,Non labelled
+BERT,brexitnews.tv,0,3,70,False,3,Far Right
+BERT,bylinetimes.com,3,3,104,True,0,Slightly Left
+BERT,cantonreporter.com,0,0,29,True,0,Slightly Right
+BERT,capitalbnews.org,3,3,11,True,0,Non labelled
+BERT,cardinalpine.com,1,1,35,True,0,Slightly Left
+BERT,cbn.com,2,1,39,False,-1,Slightly Right
+BERT,centennialstatenews.com,0,0,31,True,0,Slightly Right
+BERT,centralcoloradonews.com,0,0,41,True,0,Slightly Right
+BERT,centralfloridapost.com,1,1,22,True,0,Far Right
+BERT,centrallouisiananews.com,0,0,39,True,0,Slightly Right
+BERT,centralmissourinews.com,0,0,41,True,0,Slightly Right
+BERT,cfr.org,4,3,8,False,-1,Non labelled
+BERT,checksandbalancesproject.org,1,1,33,True,0,Non labelled
+BERT,cheddar.com,3,3,24,True,0,Non labelled
+BERT,christianheadlines.com,1,2,66,False,1,Slightly Right
+BERT,christianpost.com,2,2,166,True,0,Slightly Right
+BERT,cistranfinance.com,0,0,14,True,0,Slightly Right
+BERT,cityam.com,3,3,63,True,0,Non labelled
+BERT,claiborneprogress.net,2,2,50,True,0,Non labelled
+BERT,clantonadvertiser.com,2,2,49,True,0,Non labelled
+BERT,clarkcountytoday.com,1,0,8,False,-1,Slightly Right
+BERT,clemmonscourier.net,2,2,52,True,0,Non labelled
+BERT,cnnespanol.cnn.com,3,1,106,False,-2,Slightly Left
+BERT,cobbreporter.com,0,0,32,True,0,Slightly Right
+BERT,conservativetribune.com,3,3,1,True,0,Far Right
+BERT,conservativeundergroundnews.com,1,4,10,False,3,Far Right
+BERT,conservativewoman.co.uk,1,3,22,False,2,Far Right
+BERT,conservtribune.com,3,4,10,False,1,Far Right
+BERT,coppercourier.com,1,1,34,True,0,Slightly Left
+BERT,cordeledispatch.com,2,2,51,True,0,Non labelled
+BERT,cornishstuff.com,4,3,47,False,-1,Non labelled
+BERT,counterpunch.org,4,3,48,False,-1,Far Left
+BERT,creativedestructionmedia.com,0,1,69,False,1,Far Right
+BERT,currentaffairs.org,3,3,52,True,0,Far Left
+BERT,dailyboulder.com,1,1,33,True,0,Slightly Left
+BERT,dailyleader.com,2,2,51,True,0,Non labelled
+BERT,dailypatriotreport.com,0,3,14,False,3,Slightly Right
+BERT,dailysignal.com,4,3,193,False,-1,Slightly Right
+BERT,dailysoundandfury.com,1,3,19,False,2,Far Left
+BERT,dailywire.com,2,1,49,False,-1,Slightly Right
+BERT,dallasobserver.com,3,3,75,True,0,Slightly Left
+BERT,dallasvoice.com,3,3,16,True,0,Slightly Left
+BERT,data.huffingtonpost.com,3,3,9,True,0,Slightly Left
+BERT,dcenquirer.com,3,4,55,False,1,Slightly Right
+BERT,deadstate.org,4,3,25,False,-1,Slightly Left
+BERT,decisiondeskhq.com,2,4,34,False,2,Non labelled
+BERT,deeside.com,2,3,20,False,1,Non labelled
+BERT,defenseone.com,4,4,104,True,0,Non labelled
+BERT,democratica.com,3,1,6,False,-2,Slightly Left
+BERT,demopolistimes.com,2,2,48,True,0,Non labelled
+BERT,deneenborelli.com,1,3,79,False,2,Slightly Right
+BERT,desantisdaily.com,1,1,10,True,0,Far Right
+BERT,disrn.com,1,1,1,True,0,Slightly Right
+BERT,drudgereport.com,2,3,21,False,1,Slightly Right
+BERT,eaglevalleytimes.com,0,0,33,True,0,Slightly Right
+BERT,easterneye.biz,2,3,50,False,1,Non labelled
+BERT,easthudvalleynews.com,0,0,27,True,0,Slightly Right
+BERT,eastindynews.com,0,0,33,True,0,Slightly Right
+BERT,eastmichigannews.com,0,0,41,True,0,Slightly Right
+BERT,eciowanews.com,0,0,40,True,0,Slightly Right
+BERT,ecmissnews.com,0,0,37,True,0,Slightly Right
+BERT,ecnorthcarolinanews.com,0,0,28,True,0,Slightly Right
+BERT,ecoklahomanews.com,0,0,38,True,0,Slightly Right
+BERT,editorial.huffingtonpost.com,3,3,134,True,0,Slightly Left
+BERT,educationdailywire.com,0,0,25,True,0,Slightly Right
+BERT,elections.huffingtonpost.com,3,3,5,True,0,Slightly Left
+BERT,elizabethton.com,2,2,53,True,0,Non labelled
+BERT,emeraldcoasttimes.com,0,0,34,True,0,Slightly Right
+BERT,endtimeheadlines.org,3,2,12,False,-1,Slightly Right
+BERT,english.alaraby.co.uk,3,3,199,True,0,Non labelled
+BERT,entertainme.whatfinger.com,0,1,197,False,1,Far Right
+BERT,euromaidanpress.com,3,3,117,True,0,Slightly Left
+BERT,euronews.com,1,3,172,False,2,Non labelled
+BERT,evergreenreporter.com,0,0,36,True,0,Slightly Right
+BERT,faithwire.com,2,1,17,False,-1,Slightly Right
+BERT,farmvilleherald.com,2,2,53,True,0,Non labelled
+BERT,fayettevilletoday.com,0,0,34,True,0,Slightly Right
+BERT,fee.org,3,1,16,False,-2,Slightly Right
+BERT,flagandcross.com,1,3,62,False,2,Far Right
+BERT,floridaparishnews.com,0,0,35,True,0,Slightly Right
+BERT,floridapolitics.com,3,4,115,False,1,Non labelled
+BERT,foothillsreview.com,0,0,34,True,0,Slightly Right
+BERT,foramerica.org,2,3,6,False,1,Far Right
+BERT,foreignpolicy.com,4,4,200,True,0,Slightly Left
+BERT,franklincountytimes.com,2,2,40,True,0,Non labelled
+BERT,freebeacon.com,3,3,23,True,0,Slightly Right
+BERT,freespeech.org,2,3,6,False,1,Far Left
+BERT,frontpagemag.com,0,2,26,False,2,Far Right
+BERT,gandernewsroom.com,1,1,43,True,0,Slightly Left
+BERT,gatewayreporter.com,0,0,36,True,0,Slightly Right
+BERT,gbnews.uk,3,3,200,True,0,Slightly Right
+BERT,georgiastarnews.com,1,1,41,True,0,Far Right
+BERT,gopdailybrief.com,1,1,2,True,0,Far Right
+BERT,grabien.com,1,1,13,True,0,Slightly Right
+BERT,grandrapidsreporter.com,0,0,32,True,0,Slightly Right
+BERT,greenvilleadvocate.com,2,2,52,True,0,Non labelled
+BERT,greenvillereporter.com,0,0,39,True,0,Slightly Right
+BERT,gtrtimes.com,0,0,30,True,0,Slightly Right
+BERT,harlanenterprise.net,2,2,49,True,0,Non labelled
+BERT,hartselleenquirer.com,2,2,34,True,0,Non labelled
+BERT,heartlandsignal.com,2,1,13,False,-1,Slightly Left
+BERT,henricotimes.com,0,0,27,True,0,Slightly Right
+BERT,highline.huffingtonpost.com,3,3,9,True,0,Slightly Left
+BERT,hindstoday.com,0,0,25,True,0,Slightly Right
+BERT,hongkongfp.com,4,3,31,False,-1,Non labelled
+BERT,hotair.com,3,2,111,False,-1,Far Right
+BERT,hudsontoday.com,0,0,24,True,0,Slightly Right
+BERT,huffingtonpost.com,3,3,6,True,0,Slightly Left
+BERT,huffpost.com,3,3,3,True,0,Slightly Left
+BERT,ijr.com,4,3,10,False,-1,Slightly Right
+BERT,ijr.org,4,3,103,False,-1,Slightly Right
+BERT,illinoispolicy.org,3,4,13,False,1,Slightly Right
+BERT,imperialcanews.com,0,0,30,True,0,Slightly Right
+BERT,independentchronicle.com,0,3,15,False,3,Slightly Right
+BERT,indo-caribbean.com,1,2,44,False,1,Non labelled
+BERT,indystandard.com,0,0,27,True,0,Slightly Right
+BERT,infacts.org,4,3,54,False,-1,Slightly Left
+BERT,intellectualtakeout.org,2,3,19,False,1,Slightly Right
+BERT,intpolicydigest.org,3,4,32,False,1,Non labelled
+BERT,irishcentral.com,4,3,65,False,-1,Non labelled
+BERT,irontontribune.com,2,2,32,True,0,Non labelled
+BERT,jacksonpurchasenews.com,0,0,40,True,0,Slightly Right
+BERT,jeffcitynews.com,0,0,36,True,0,Slightly Right
+BERT,jessaminejournal.com,2,2,53,True,0,Non labelled
+BERT,jewishpress.com,3,3,47,True,0,Slightly Right
+BERT,jta.org,4,3,41,False,-1,Non labelled
+BERT,judicialwatch.org,1,2,14,False,1,Far Right
+BERT,justsecurity.org,3,1,69,False,-2,Slightly Left
+BERT,justthenews.com,2,3,108,False,1,Slightly Right
+BERT,kenbridgevictoriadispatch.com,2,2,55,True,0,Non labelled
+BERT,kentcotimes.com,0,0,25,True,0,Slightly Right
+BERT,keystonenewsroom.com,1,4,34,False,3,Far Left
+BERT,knoxtimes.com,0,0,27,True,0,Slightly Right
+BERT,koinesune.com,0,2,10,False,2,Slightly Right
+BERT,kokomostandard.com,0,0,36,True,0,Slightly Right
+BERT,kyivindependent.com,3,3,59,True,0,Non labelled
+BERT,labourlist.org,3,3,109,True,0,Slightly Left
+BERT,lagrangenews.com,2,2,48,True,0,Non labelled
+BERT,larimernews.com,0,0,29,True,0,Slightly Right
+BERT,lbc.co.uk,3,3,200,True,0,Non labelled
+BERT,leaderpub.com,2,2,54,True,0,Non labelled
+BERT,legalinsurrection.com,2,1,40,False,-1,Slightly Right
+BERT,lehightimes.com,0,0,28,True,0,Slightly Right
+BERT,lewistontimes.com,0,0,27,True,0,Slightly Right
+BERT,libertarianinstitute.org,2,3,32,False,1,Slightly Right
+BERT,lifezette.com,0,1,55,False,1,Slightly Right
+BERT,linkiesta.it,2,3,3,False,1,Non labelled
+BERT,litchfieldhillstoday.com,0,0,17,True,0,Slightly Right
+BERT,live.huffingtonpost.com,3,2,13,False,-1,Slightly Left
+BERT,lobservateur.com,2,2,54,True,0,Non labelled
+BERT,lowndessignal.com,2,2,51,True,0,Non labelled
+BERT,lubbocktimes.com,0,0,28,True,0,Slightly Right
+BERT,luzernetimes.com,0,0,27,True,0,Slightly Right
+BERT,magnoliastatelive.com,2,2,53,True,0,Non labelled
+BERT,manilabusinessdaily.com,0,0,20,True,0,Slightly Right
+BERT,mediarightnews.com,2,2,20,True,0,Slightly Right
+BERT,meduza.io,3,3,45,True,0,Non labelled
+BERT,mercertimes.com,0,0,26,True,0,Slightly Right
+BERT,merrimackvalleynews.com,0,0,28,True,0,Slightly Right
+BERT,metrolexnews.com,0,0,27,True,0,Slightly Right
+BERT,mic.com,3,3,41,True,0,Far Left
+BERT,middleeasteye.net,3,3,200,True,0,Slightly Left
+BERT,middlesborodailynews.com,2,2,31,True,0,Non labelled
+BERT,mikehuckabee.com,1,3,21,False,2,Far Right
+BERT,morrisleader.com,0,0,27,True,0,Slightly Right
+BERT,motherjones.com,3,1,87,False,-2,Slightly Left
+BERT,mrctv.org,2,3,40,False,1,Slightly Right
+BERT,msmagazine.com,3,1,37,False,-2,Far Left
+BERT,msnbc.com,1,3,51,False,2,Slightly Left
+BERT,muskegonsun.com,0,0,31,True,0,Slightly Right
+BERT,muslimnews.co.uk,2,3,63,False,1,Non labelled
+BERT,mustreadalaska.com,1,1,29,True,0,Far Right
+BERT,nachdenkseiten.de,3,3,1,True,0,Slightly Left
+BERT,natchezdemocrat.com,2,2,53,True,0,Non labelled
+BERT,nationalinterest.org,3,4,21,False,1,Non labelled
+BERT,nationalmemo.com,2,4,29,False,2,Slightly Left
+BERT,ncindiananews.com,0,0,39,True,0,Slightly Right
+BERT,ncncnews.com,0,0,32,True,0,Slightly Right
+BERT,ndnorthnews.com,0,0,30,True,0,Slightly Right
+BERT,neatlantanews.com,0,0,38,True,0,Slightly Right
+BERT,nemontananews.com,0,0,39,True,0,Slightly Right
+BERT,neohiotimes.com,0,0,33,True,0,Slightly Right
+BERT,neonnettle.com,1,2,47,False,1,Far Right
+BERT,netarrantnews.com,0,0,14,True,0,Slightly Right
+BERT,nevalleytimes.com,0,0,31,True,0,Slightly Right
+BERT,newjerseyglobe.com,4,1,36,False,-3,Non labelled
+BERT,news-front.info,0,3,41,False,3,Non labelled
+BERT,news.sky.com,3,3,200,True,0,Non labelled
+BERT,newsbusters.org,3,1,112,False,-2,Far Right
+BERT,newser.com,3,4,46,False,1,Non labelled
+BERT,nickadamsusa.com,1,1,5,True,0,Slightly Right
+BERT,nigerianwatch.com,1,2,200,False,1,Non labelled
+BERT,norcalrecord.com,2,0,75,False,-2,Non labelled
+BERT,northbirminghamtimes.com,0,0,34,True,0,Slightly Right
+BERT,northcharlottetoday.com,0,0,31,True,0,Slightly Right
+BERT,northcoastalnews.com,0,0,37,True,0,Slightly Right
+BERT,northcolumbusnews.com,0,0,33,True,0,Slightly Right
+BERT,northessexnews.com,0,0,14,True,0,Slightly Right
+BERT,northfairfaxnews.com,0,0,15,True,0,Slightly Right
+BERT,northguilfordnews.com,0,0,26,True,0,Slightly Right
+BERT,northhamptonnews.com,0,0,24,True,0,Slightly Right
+BERT,northhoustonnews.com,0,0,20,True,0,Slightly Right
+BERT,northinlandnews.com,0,0,17,True,0,Slightly Right
+BERT,northkentuckynews.com,0,0,24,True,0,Slightly Right
+BERT,northpinellasnews.com,0,0,12,True,0,Slightly Right
+BERT,northrichmondtoday.com,0,0,31,True,0,Slightly Right
+BERT,northshorelanews.com,0,0,32,True,0,Slightly Right
+BERT,notthebee.com,2,1,12,False,-1,Slightly Right
+BERT,ntd.com,1,1,190,True,0,Slightly Right
+BERT,ntd.tv,1,1,39,True,0,Slightly Right
+BERT,nwkansasnews.com,0,0,36,True,0,Slightly Right
+BERT,nwmontananews.com,0,0,35,True,0,Slightly Right
+BERT,nysun.com,4,3,36,False,-1,Slightly Right
+BERT,objectivist.co,1,0,55,False,-1,Far Right
+BERT,observer.com,3,3,99,True,0,Non labelled
+BERT,offthepress.com,3,3,84,True,0,Slightly Right
+BERT,olddominionnews.com,0,0,40,True,0,Slightly Right
+BERT,orangeleader.com,2,2,51,True,0,Non labelled
+BERT,orlandostandard.com,0,0,16,True,0,Slightly Right
+BERT,ourdavie.com,2,2,52,True,0,Non labelled
+BERT,ourpatriot.com,0,1,19,False,1,Slightly Right
+BERT,outkick.com,1,3,24,False,2,Slightly Right
+BERT,oxfordeagle.com,2,2,55,True,0,Non labelled
+BERT,ozy.com,3,3,1,True,0,Slightly Left
+BERT,panews.com,2,2,53,True,0,Non labelled
+BERT,pantsonfirenews.com,1,1,13,True,0,Far Right
+BERT,patientdaily.com,0,2,23,False,2,Slightly Right
+BERT,patriotfetch.com,1,3,25,False,2,Far Right
+BERT,patriotjournal.org,1,1,2,True,0,Slightly Right
+BERT,patriotpost.com,1,1,36,True,0,Slightly Right
+BERT,patriotpost.us,1,1,34,True,0,Slightly Right
+BERT,patriotpulse.net,1,1,10,True,0,Far Right
+BERT,patriotsgazette.com,1,2,17,False,1,Far Right
+BERT,pensacolatimes.com,0,0,25,True,0,Slightly Right
+BERT,petroplexnews.com,0,0,31,True,0,Slightly Right
+BERT,picayuneitem.com,2,2,50,True,0,Non labelled
+BERT,policetribune.com,4,2,20,False,-2,Slightly Right
+BERT,polinews.org,1,1,13,True,0,Far Left
+BERT,politicalanimalnews.com,1,1,6,True,0,Far Right
+BERT,politicalflare.com,2,1,16,False,-1,Slightly Left
+BERT,politicaljournalreview.com,2,1,2,False,-1,Far Right
+BERT,politico.eu,4,3,56,False,-1,Non labelled
+BERT,politics.co.uk,2,3,130,False,1,Non labelled
+BERT,politicshome.com,3,3,294,True,0,Non labelled
+BERT,prageru.com,1,3,6,False,2,Slightly Right
+BERT,pravda.com.ua,3,3,33,True,0,Non labelled
+BERT,prentissheadlight.com,2,2,52,True,0,Non labelled
+BERT,pressprogress.ca,4,3,20,False,-1,Slightly Left
+BERT,projects.huffingtonpost.com,3,3,22,True,0,Slightly Left
+BERT,projectveritas.com,1,1,96,True,0,Far Right
+BERT,projectveritasaction.com,1,1,96,True,0,Far Right
+BERT,providencereporter.com,0,0,27,True,0,Slightly Right
+BERT,queenseagle.com,3,1,21,False,-2,Non labelled
+BERT,rabble.ca,4,1,43,False,-3,Slightly Left
+BERT,readfrontier.org,3,3,22,True,0,Slightly Left
+BERT,realclearinvestigations.com,3,3,62,True,0,Slightly Right
+BERT,realrawnews.com,0,1,77,False,1,Far Right
+BERT,reason.com,4,3,156,False,-1,Slightly Right
+BERT,redrightdaily.com,1,3,10,False,2,Far Right
+BERT,redstate.com,1,2,140,False,1,Far Right
+BERT,redstatewatcher.com,2,3,50,False,1,Slightly Right
+BERT,reitschuster.de,1,3,1,False,2,Slightly Right
+BERT,renewedright.com,1,4,13,False,3,Far Right
+BERT,respectnh.com,1,1,2,True,0,Slightly Right
+BERT,rewirenewsgroup.com,3,3,13,True,0,Slightly Left
+BERT,rightnewswire.com,1,1,27,True,0,Far Right
+BERT,rightwingwatch.org,3,3,40,True,0,Far Left
+BERT,riverfronttimes.com,3,1,19,False,-2,Slightly Left
+BERT,roanoke-chowannewsherald.com,2,2,55,True,0,Non labelled
+BERT,rochesterreporter.com,0,0,22,True,0,Slightly Right
+BERT,rocklandreporter.com,0,0,29,True,0,Slightly Right
+BERT,rollcall.com,4,3,32,False,-1,Non labelled
+BERT,rowannews.com,0,0,26,True,0,Slightly Right
+BERT,sacorridornews.com,0,0,33,True,0,Slightly Right
+BERT,salisburypost.com,2,2,58,True,0,Non labelled
+BERT,sandhillstoday.com,0,0,34,True,0,Slightly Right
+BERT,sandovalnews.com,0,0,26,True,0,Slightly Right
+BERT,sarahpalin.com,2,0,5,False,-2,Far Right
+BERT,savannahstandard.com,0,0,32,True,0,Slightly Right
+BERT,searizonanews.com,0,0,33,True,0,Slightly Right
+BERT,segeorgianews.com,0,0,44,True,0,Slightly Right
+BERT,seindiananews.com,0,0,38,True,0,Slightly Right
+BERT,selmatimesjournal.com,2,2,49,True,0,Non labelled
+BERT,senebraskanews.com,0,0,44,True,0,Slightly Right
+BERT,setennnews.com,0,0,40,True,0,Slightly Right
+BERT,sfbayview.com,3,3,38,True,0,Non labelled
+BERT,shelbycountyreporter.com,2,2,68,True,0,Non labelled
+BERT,shondaland.com,2,1,116,False,-1,Slightly Left
+BERT,smithfieldtimes.com,2,2,55,True,0,Non labelled
+BERT,southatlantanews.com,0,0,37,True,0,Slightly Right
+BERT,southbrowardnews.com,0,0,23,True,0,Slightly Right
+BERT,southcolumbusnews.com,0,0,26,True,0,Slightly Right
+BERT,southcotimes.com,0,0,29,True,0,Slightly Right
+BERT,southdsmnews.com,0,0,32,True,0,Slightly Right
+BERT,southkingnews.com,0,0,26,True,0,Slightly Right
+BERT,southknoxnews.com,0,0,33,True,0,Slightly Right
+BERT,southlouisiananews.com,0,0,35,True,0,Slightly Right
+BERT,southomahatimes.com,0,0,33,True,0,Slightly Right
+BERT,southsfbaynews.com,0,0,30,True,0,Slightly Right
+BERT,southsidevanews.com,0,0,33,True,0,Slightly Right
+BERT,southsoundtimes.com,0,0,34,True,0,Slightly Right
+BERT,southtidewaternews.com,0,0,42,True,0,Slightly Right
+BERT,southtrianglenews.com,0,0,31,True,0,Slightly Right
+BERT,southtulsatoday.com,0,0,30,True,0,Slightly Right
+BERT,southwichitanews.com,0,0,30,True,0,Slightly Right
+BERT,southwinstonsalemnews.com,0,0,31,True,0,Slightly Right
+BERT,sowisconsintimes.com,0,0,32,True,0,Slightly Right
+BERT,spiked-online.com,4,3,24,False,-1,Slightly Right
+BERT,spotlightpa.org,4,1,80,False,-3,Non labelled
+BERT,state-journal.com,2,2,21,True,0,Non labelled
+BERT,steadfastdaily.com,1,4,14,False,3,Far Right
+BERT,stjoebentonharbor.com,0,0,34,True,0,Slightly Right
+BERT,stlouisreporter.com,0,0,33,True,0,Slightly Right
+BERT,sturgiscoldwaternews.com,0,0,36,True,0,Slightly Right
+BERT,suffolknewsherald.com,2,2,52,True,0,Non labelled
+BERT,swalleghenynews.com,0,0,16,True,0,Slightly Right
+BERT,swissinfo.ch,4,0,2,False,-4,Non labelled
+BERT,swmontanatimes.com,0,0,41,True,0,Slightly Right
+BERT,swr3.de,4,1,1,False,-3,Non labelled
+BERT,swriversidenews.com,0,0,29,True,0,Slightly Right
+BERT,swtennnews.com,0,0,36,True,0,Slightly Right
+BERT,swwyomingnews.com,0,0,39,True,0,Slightly Right
+BERT,talkingpointsmemo.com,3,4,25,False,1,Slightly Left
+BERT,taz.de,4,0,2,False,-4,Slightly Left
+BERT,tennesseestar.com,1,1,68,True,0,Slightly Right
+BERT,texastribune.org,4,2,4,False,-2,Non labelled
+BERT,theamericanconservative.com,2,3,16,False,1,Far Right
+BERT,theamericanonews.com,1,1,32,True,0,Far Left
+BERT,thebipartisanpress.com,3,3,5,True,0,Non labelled
+BERT,theblaze.com,2,1,68,False,-1,Slightly Right
+BERT,thecanary.co,3,3,37,True,0,Far Left
+BERT,thecharlottegazette.com,2,2,55,True,0,Non labelled
+BERT,thecoastlandtimes.com,2,2,55,True,0,Non labelled
+BERT,thecountersignal.com,0,1,30,False,1,Non labelled
+BERT,thedcpatriot.com,0,3,21,False,3,Far Right
+BERT,thefirsttv.com,2,2,1,True,0,Slightly Right
+BERT,thefulcrum.us,3,4,7,False,1,Slightly Left
+BERT,thegrayzone.com,0,3,86,False,3,Far Left
+BERT,theguardian.com,4,3,200,False,-1,Slightly Left
+BERT,theguardiansofdemocracy.com,1,3,59,False,2,Far Left
+BERT,theinteriorjournal.com,2,2,46,True,0,Non labelled
+BERT,thejc.com,3,3,146,True,0,Non labelled
+BERT,thelibertarianrepublic.com,3,3,33,True,0,Slightly Right
+BERT,thelily.com,4,3,25,False,-1,Non labelled
+BERT,thelondoneconomic.com,4,3,76,False,-1,Slightly Left
+BERT,themadisonrecord.com,2,2,44,True,0,Non labelled
+BERT,themichiganstar.com,1,1,3,True,0,Slightly Right
+BERT,theminnesotasun.com,1,1,11,True,0,Slightly Right
+BERT,thenationaltelegraph.com,1,1,5,True,0,Slightly Right
+BERT,thenevadaglobe.com,3,3,45,True,0,Slightly Right
+BERT,thenewcivilrightsmovement.com,3,1,28,False,-2,Slightly Left
+BERT,theohiostar.com,1,1,38,True,0,Slightly Right
+BERT,thepatriotjournal.com,1,1,102,True,0,Slightly Right
+BERT,thepoliticalinsider.com,3,2,25,False,-1,Far Right
+BERT,thepostmillennial.com,3,3,46,True,0,Slightly Right
+BERT,thepostsearchlight.com,2,4,1,False,2,Non labelled
+BERT,theroot.com,3,1,33,False,-2,Far Left
+BERT,thesnaponline.com,2,2,50,True,0,Non labelled
+BERT,thesun.co.uk,2,3,170,False,1,Slightly Right
+BERT,thewashingtondailynews.com,2,2,61,True,0,Non labelled
+BERT,theweek.com,4,3,15,False,-1,Slightly Left
+BERT,thewildcard.com,3,3,12,True,0,Far Right
+BERT,tnc.news,3,4,1,False,1,Slightly Right
+BERT,toddstarnes.com,2,1,14,False,-1,Slightly Right
+BERT,topekasun.com,0,0,33,True,0,Slightly Right
+BERT,townhall.com,2,3,169,False,1,Far Right
+BERT,treasurecoastsun.com,0,0,35,True,0,Slightly Right
+BERT,treasurevalleytimes.com,0,0,41,True,0,Slightly Right
+BERT,tribunemag.co.uk,3,3,40,True,0,Far Left
+BERT,troymessenger.com,2,2,57,True,0,Non labelled
+BERT,truthdig.com,3,3,97,True,0,Slightly Left
+BERT,truthout.org,3,3,39,True,0,Far Left
+BERT,tryondailybulletin.com,2,2,51,True,0,Non labelled
+BERT,tuscarawasnews.com,0,0,23,True,0,Slightly Right
+BERT,twitchy.com,1,3,87,False,2,Far Right
+BERT,txrealtynews.com,0,3,50,False,3,Slightly Right
+BERT,ukdefencejournal.org.uk,4,3,31,False,-1,Non labelled
+BERT,unioncountyreview.com,0,0,28,True,0,Slightly Right
+BERT,unmuzzlednews.com,1,1,10,True,0,Far Right
+BERT,upnorthnewswi.com,1,1,31,True,0,Slightly Left
+BERT,utahvalleytimes.com,0,0,27,True,0,Slightly Right
+BERT,utopia.de,4,3,53,False,-1,Far Left
+BERT,vadogwood.com,1,1,18,True,0,Slightly Left
+BERT,valiantnews.com,2,3,42,False,1,Far Right
+BERT,valleytimes-news.com,2,2,51,True,0,Non labelled
+BERT,vicksburgpost.com,2,2,50,True,0,Non labelled
+BERT,w-j.co,3,3,43,True,0,Far Right
+BERT,washingtonmonthly.com,4,3,28,False,-1,Slightly Left
+BERT,waterfordtoday.com,0,0,23,True,0,Slightly Right
+BERT,waterlootimes.com,0,0,34,True,0,Slightly Right
+BERT,wcminnesotanews.com,0,0,37,True,0,Slightly Right
+BERT,westatlantanews.com,0,0,34,True,0,Slightly Right
+BERT,westernjournal.com,3,3,5,True,0,Far Right
+BERT,westernjournalism.com,3,3,64,True,0,Far Right
+BERT,westhamiltonnews.com,0,0,21,True,0,Slightly Right
+BERT,westindynews.com,0,0,25,True,0,Slightly Right
+BERT,westlatimes.com,0,0,27,True,0,Slightly Right
+BERT,westlucasnews.com,0,0,29,True,0,Slightly Right
+BERT,westsgvnews.com,0,0,17,True,0,Slightly Right
+BERT,weststarknews.com,0,0,14,True,0,Slightly Right
+BERT,westvolusianews.com,0,0,12,True,0,Slightly Right
+BERT,williamsonnews.com,0,0,25,True,0,Slightly Right
+BERT,winchestersun.com,2,2,55,True,0,Non labelled
+BERT,yellowhammernews.com,3,2,44,False,-1,Slightly Right
+RoBERTa,5pillarsuk.com,3,3,17,True,0,Slightly Left
+RoBERTa,aapsonline.org,0,1,9,False,1,Far Right
+RoBERTa,aclu.org,3,3,89,True,0,Far Left
+RoBERTa,aei.org,3,2,145,False,-1,Slightly Right
+RoBERTa,africanvoiceonline.co.uk,2,1,22,False,-1,Non labelled
+RoBERTa,alabamanow.com,2,2,51,True,0,Non labelled
+RoBERTa,albertleatribune.com,2,2,54,True,0,Non labelled
+RoBERTa,aldianews.com,3,3,5,True,0,Slightly Left
+RoBERTa,algemeiner.com,3,3,35,True,0,Non labelled
+RoBERTa,alternet.org,1,3,198,False,2,Far Left
+RoBERTa,americanlookout.com,1,1,52,True,0,Far Right
+RoBERTa,americanpress.com,2,2,51,True,0,Non labelled
+RoBERTa,americanprogress.org,4,3,59,False,-1,Far Left
+RoBERTa,americanwirenews.com,2,2,77,True,0,Slightly Right
+RoBERTa,americustimesrecorder.com,2,2,58,True,0,Non labelled
+RoBERTa,amgreatness.com,1,3,49,False,2,Slightly Right
+RoBERTa,ammoland.com,3,2,106,False,-1,Slightly Right
+RoBERTa,amnews.com,2,2,53,True,0,Non labelled
+RoBERTa,analyzingamerica.org,3,3,29,True,0,Slightly Right
+RoBERTa,andalusiastarnews.com,2,2,49,True,0,Non labelled
+RoBERTa,angolabusinessdaily.com,0,0,19,True,0,Slightly Right
+RoBERTa,ansamed.info,3,3,40,True,0,Non labelled
+RoBERTa,anthonyblogan.com,1,1,36,True,0,Far Right
+RoBERTa,arabnews.com,1,3,186,False,2,Non labelled
+RoBERTa,arizonadailyindependent.com,2,1,17,False,-1,Slightly Right
+RoBERTa,armaghi.com,3,2,30,False,-1,Non labelled
+RoBERTa,aroostooknews.com,0,0,30,True,0,Slightly Right
+RoBERTa,asianimage.co.uk,3,3,177,True,0,Non labelled
+RoBERTa,asiansunday.co.uk,3,2,31,False,-1,Non labelled
+RoBERTa,atmoreadvance.com,2,2,53,True,0,Non labelled
+RoBERTa,bizpacreview.com,2,0,51,False,-2,Far Right
+RoBERTa,bluestatebluesnews.com,1,1,12,True,0,Far Right
+RoBERTa,bogalusadailynews.com,2,2,55,True,0,Non labelled
+RoBERTa,boisecitywire.com,0,0,26,True,0,Slightly Right
+RoBERTa,brewtonstandard.com,2,2,55,True,0,Non labelled
+RoBERTa,brexitnews.tv,0,3,70,False,3,Far Right
+RoBERTa,bylinetimes.com,3,3,104,True,0,Slightly Left
+RoBERTa,cantonreporter.com,0,0,29,True,0,Slightly Right
+RoBERTa,capitalbnews.org,3,3,11,True,0,Non labelled
+RoBERTa,cardinalpine.com,1,1,35,True,0,Slightly Left
+RoBERTa,cbn.com,2,2,39,True,0,Slightly Right
+RoBERTa,centennialstatenews.com,0,0,31,True,0,Slightly Right
+RoBERTa,centralcoloradonews.com,0,0,41,True,0,Slightly Right
+RoBERTa,centralfloridapost.com,1,3,22,False,2,Far Right
+RoBERTa,centrallouisiananews.com,0,0,39,True,0,Slightly Right
+RoBERTa,centralmissourinews.com,0,0,41,True,0,Slightly Right
+RoBERTa,cfr.org,4,4,8,True,0,Non labelled
+RoBERTa,checksandbalancesproject.org,1,1,33,True,0,Non labelled
+RoBERTa,cheddar.com,3,3,24,True,0,Non labelled
+RoBERTa,christianheadlines.com,1,2,66,False,1,Slightly Right
+RoBERTa,christianpost.com,2,2,166,True,0,Slightly Right
+RoBERTa,cistranfinance.com,0,0,14,True,0,Slightly Right
+RoBERTa,cityam.com,3,4,63,False,1,Non labelled
+RoBERTa,claiborneprogress.net,2,2,50,True,0,Non labelled
+RoBERTa,clantonadvertiser.com,2,2,49,True,0,Non labelled
+RoBERTa,clarkcountytoday.com,1,2,8,False,1,Slightly Right
+RoBERTa,clemmonscourier.net,2,2,52,True,0,Non labelled
+RoBERTa,cnnespanol.cnn.com,3,1,106,False,-2,Slightly Left
+RoBERTa,cobbreporter.com,0,0,32,True,0,Slightly Right
+RoBERTa,conservativetribune.com,3,3,1,True,0,Far Right
+RoBERTa,conservativeundergroundnews.com,1,1,10,True,0,Far Right
+RoBERTa,conservativewoman.co.uk,1,2,22,False,1,Far Right
+RoBERTa,conservtribune.com,3,4,10,False,1,Far Right
+RoBERTa,coppercourier.com,1,1,34,True,0,Slightly Left
+RoBERTa,cordeledispatch.com,2,2,51,True,0,Non labelled
+RoBERTa,cornishstuff.com,4,3,47,False,-1,Non labelled
+RoBERTa,counterpunch.org,4,3,48,False,-1,Far Left
+RoBERTa,creativedestructionmedia.com,0,0,69,True,0,Far Right
+RoBERTa,currentaffairs.org,3,3,52,True,0,Far Left
+RoBERTa,dailyboulder.com,1,3,33,False,2,Slightly Left
+RoBERTa,dailyleader.com,2,2,51,True,0,Non labelled
+RoBERTa,dailypatriotreport.com,0,2,14,False,2,Slightly Right
+RoBERTa,dailysignal.com,4,3,193,False,-1,Slightly Right
+RoBERTa,dailysoundandfury.com,1,3,19,False,2,Far Left
+RoBERTa,dailywire.com,2,3,49,False,1,Slightly Right
+RoBERTa,dallasobserver.com,3,3,75,True,0,Slightly Left
+RoBERTa,dallasvoice.com,3,3,16,True,0,Slightly Left
+RoBERTa,data.huffingtonpost.com,3,3,9,True,0,Slightly Left
+RoBERTa,dcenquirer.com,3,4,55,False,1,Slightly Right
+RoBERTa,deadstate.org,4,2,25,False,-2,Slightly Left
+RoBERTa,decisiondeskhq.com,2,0,34,False,-2,Non labelled
+RoBERTa,deeside.com,2,3,20,False,1,Non labelled
+RoBERTa,defenseone.com,4,3,104,False,-1,Non labelled
+RoBERTa,democratica.com,3,1,6,False,-2,Slightly Left
+RoBERTa,demopolistimes.com,2,2,48,True,0,Non labelled
+RoBERTa,deneenborelli.com,1,3,79,False,2,Slightly Right
+RoBERTa,desantisdaily.com,1,1,10,True,0,Far Right
+RoBERTa,disrn.com,1,3,1,False,2,Slightly Right
+RoBERTa,drudgereport.com,2,3,21,False,1,Slightly Right
+RoBERTa,eaglevalleytimes.com,0,0,33,True,0,Slightly Right
+RoBERTa,easterneye.biz,2,3,50,False,1,Non labelled
+RoBERTa,easthudvalleynews.com,0,0,27,True,0,Slightly Right
+RoBERTa,eastindynews.com,0,0,33,True,0,Slightly Right
+RoBERTa,eastmichigannews.com,0,0,41,True,0,Slightly Right
+RoBERTa,eciowanews.com,0,0,40,True,0,Slightly Right
+RoBERTa,ecmissnews.com,0,0,37,True,0,Slightly Right
+RoBERTa,ecnorthcarolinanews.com,0,0,28,True,0,Slightly Right
+RoBERTa,ecoklahomanews.com,0,0,38,True,0,Slightly Right
+RoBERTa,editorial.huffingtonpost.com,3,3,134,True,0,Slightly Left
+RoBERTa,educationdailywire.com,0,0,25,True,0,Slightly Right
+RoBERTa,elections.huffingtonpost.com,3,3,5,True,0,Slightly Left
+RoBERTa,elizabethton.com,2,2,53,True,0,Non labelled
+RoBERTa,emeraldcoasttimes.com,0,0,34,True,0,Slightly Right
+RoBERTa,endtimeheadlines.org,3,2,12,False,-1,Slightly Right
+RoBERTa,english.alaraby.co.uk,3,3,199,True,0,Non labelled
+RoBERTa,entertainme.whatfinger.com,0,2,197,False,2,Far Right
+RoBERTa,euromaidanpress.com,3,3,117,True,0,Slightly Left
+RoBERTa,euronews.com,1,3,172,False,2,Non labelled
+RoBERTa,evergreenreporter.com,0,0,36,True,0,Slightly Right
+RoBERTa,faithwire.com,2,2,17,True,0,Slightly Right
+RoBERTa,farmvilleherald.com,2,2,53,True,0,Non labelled
+RoBERTa,fayettevilletoday.com,0,0,34,True,0,Slightly Right
+RoBERTa,fee.org,3,1,16,False,-2,Slightly Right
+RoBERTa,flagandcross.com,1,3,62,False,2,Far Right
+RoBERTa,floridaparishnews.com,0,0,35,True,0,Slightly Right
+RoBERTa,floridapolitics.com,3,1,115,False,-2,Non labelled
+RoBERTa,foothillsreview.com,0,0,34,True,0,Slightly Right
+RoBERTa,foramerica.org,2,1,6,False,-1,Far Right
+RoBERTa,foreignpolicy.com,4,4,200,True,0,Slightly Left
+RoBERTa,franklincountytimes.com,2,2,40,True,0,Non labelled
+RoBERTa,freebeacon.com,3,3,23,True,0,Slightly Right
+RoBERTa,freespeech.org,2,3,6,False,1,Far Left
+RoBERTa,frontpagemag.com,0,2,26,False,2,Far Right
+RoBERTa,gandernewsroom.com,1,1,43,True,0,Slightly Left
+RoBERTa,gatewayreporter.com,0,0,36,True,0,Slightly Right
+RoBERTa,gbnews.uk,3,2,200,False,-1,Slightly Right
+RoBERTa,georgiastarnews.com,1,1,41,True,0,Far Right
+RoBERTa,gopdailybrief.com,1,1,2,True,0,Far Right
+RoBERTa,grabien.com,1,0,13,False,-1,Slightly Right
+RoBERTa,grandrapidsreporter.com,0,0,32,True,0,Slightly Right
+RoBERTa,greenvilleadvocate.com,2,2,52,True,0,Non labelled
+RoBERTa,greenvillereporter.com,0,0,39,True,0,Slightly Right
+RoBERTa,gtrtimes.com,0,0,30,True,0,Slightly Right
+RoBERTa,harlanenterprise.net,2,2,49,True,0,Non labelled
+RoBERTa,hartselleenquirer.com,2,2,34,True,0,Non labelled
+RoBERTa,heartlandsignal.com,2,1,13,False,-1,Slightly Left
+RoBERTa,henricotimes.com,0,0,27,True,0,Slightly Right
+RoBERTa,highline.huffingtonpost.com,3,3,9,True,0,Slightly Left
+RoBERTa,hindstoday.com,0,0,25,True,0,Slightly Right
+RoBERTa,hongkongfp.com,4,4,31,True,0,Non labelled
+RoBERTa,hotair.com,3,2,111,False,-1,Far Right
+RoBERTa,hudsontoday.com,0,0,24,True,0,Slightly Right
+RoBERTa,huffingtonpost.com,3,3,6,True,0,Slightly Left
+RoBERTa,huffpost.com,3,3,3,True,0,Slightly Left
+RoBERTa,ijr.com,4,3,10,False,-1,Slightly Right
+RoBERTa,ijr.org,4,3,103,False,-1,Slightly Right
+RoBERTa,illinoispolicy.org,3,1,13,False,-2,Slightly Right
+RoBERTa,imperialcanews.com,0,0,30,True,0,Slightly Right
+RoBERTa,independentchronicle.com,0,2,15,False,2,Slightly Right
+RoBERTa,indo-caribbean.com,1,1,44,True,0,Non labelled
+RoBERTa,indystandard.com,0,0,27,True,0,Slightly Right
+RoBERTa,infacts.org,4,3,54,False,-1,Slightly Left
+RoBERTa,intellectualtakeout.org,2,1,19,False,-1,Slightly Right
+RoBERTa,intpolicydigest.org,3,4,32,False,1,Non labelled
+RoBERTa,irishcentral.com,4,2,65,False,-2,Non labelled
+RoBERTa,irontontribune.com,2,2,32,True,0,Non labelled
+RoBERTa,jacksonpurchasenews.com,0,0,40,True,0,Slightly Right
+RoBERTa,jeffcitynews.com,0,0,36,True,0,Slightly Right
+RoBERTa,jessaminejournal.com,2,2,53,True,0,Non labelled
+RoBERTa,jewishpress.com,3,3,47,True,0,Slightly Right
+RoBERTa,jta.org,4,3,41,False,-1,Non labelled
+RoBERTa,judicialwatch.org,1,1,14,True,0,Far Right
+RoBERTa,justsecurity.org,3,1,69,False,-2,Slightly Left
+RoBERTa,justthenews.com,2,3,108,False,1,Slightly Right
+RoBERTa,kenbridgevictoriadispatch.com,2,2,55,True,0,Non labelled
+RoBERTa,kentcotimes.com,0,0,25,True,0,Slightly Right
+RoBERTa,keystonenewsroom.com,1,1,34,True,0,Far Left
+RoBERTa,knoxtimes.com,0,0,27,True,0,Slightly Right
+RoBERTa,koinesune.com,0,3,10,False,3,Slightly Right
+RoBERTa,kokomostandard.com,0,0,36,True,0,Slightly Right
+RoBERTa,kyivindependent.com,3,3,59,True,0,Non labelled
+RoBERTa,labourlist.org,3,3,109,True,0,Slightly Left
+RoBERTa,lagrangenews.com,2,2,48,True,0,Non labelled
+RoBERTa,larimernews.com,0,0,29,True,0,Slightly Right
+RoBERTa,lbc.co.uk,3,3,200,True,0,Non labelled
+RoBERTa,leaderpub.com,2,2,54,True,0,Non labelled
+RoBERTa,legalinsurrection.com,2,1,40,False,-1,Slightly Right
+RoBERTa,lehightimes.com,0,0,28,True,0,Slightly Right
+RoBERTa,lewistontimes.com,0,0,27,True,0,Slightly Right
+RoBERTa,libertarianinstitute.org,2,3,32,False,1,Slightly Right
+RoBERTa,lifezette.com,0,1,55,False,1,Slightly Right
+RoBERTa,linkiesta.it,2,3,3,False,1,Non labelled
+RoBERTa,litchfieldhillstoday.com,0,0,17,True,0,Slightly Right
+RoBERTa,live.huffingtonpost.com,3,3,13,True,0,Slightly Left
+RoBERTa,lobservateur.com,2,2,54,True,0,Non labelled
+RoBERTa,lowndessignal.com,2,2,51,True,0,Non labelled
+RoBERTa,lubbocktimes.com,0,0,28,True,0,Slightly Right
+RoBERTa,luzernetimes.com,0,0,27,True,0,Slightly Right
+RoBERTa,magnoliastatelive.com,2,2,53,True,0,Non labelled
+RoBERTa,manilabusinessdaily.com,0,0,20,True,0,Slightly Right
+RoBERTa,mediarightnews.com,2,1,20,False,-1,Slightly Right
+RoBERTa,meduza.io,3,3,45,True,0,Non labelled
+RoBERTa,mercertimes.com,0,0,26,True,0,Slightly Right
+RoBERTa,merrimackvalleynews.com,0,0,28,True,0,Slightly Right
+RoBERTa,metrolexnews.com,0,0,27,True,0,Slightly Right
+RoBERTa,mic.com,3,3,41,True,0,Far Left
+RoBERTa,middleeasteye.net,3,3,200,True,0,Slightly Left
+RoBERTa,middlesborodailynews.com,2,2,31,True,0,Non labelled
+RoBERTa,mikehuckabee.com,1,2,21,False,1,Far Right
+RoBERTa,morrisleader.com,0,0,27,True,0,Slightly Right
+RoBERTa,motherjones.com,3,4,87,False,1,Slightly Left
+RoBERTa,mrctv.org,2,2,40,True,0,Slightly Right
+RoBERTa,msmagazine.com,3,3,37,True,0,Far Left
+RoBERTa,msnbc.com,1,3,51,False,2,Slightly Left
+RoBERTa,muskegonsun.com,0,0,31,True,0,Slightly Right
+RoBERTa,muslimnews.co.uk,2,3,63,False,1,Non labelled
+RoBERTa,mustreadalaska.com,1,1,29,True,0,Far Right
+RoBERTa,nachdenkseiten.de,3,3,1,True,0,Slightly Left
+RoBERTa,natchezdemocrat.com,2,2,53,True,0,Non labelled
+RoBERTa,nationalinterest.org,3,4,21,False,1,Non labelled
+RoBERTa,nationalmemo.com,2,4,29,False,2,Slightly Left
+RoBERTa,ncindiananews.com,0,0,39,True,0,Slightly Right
+RoBERTa,ncncnews.com,0,0,32,True,0,Slightly Right
+RoBERTa,ndnorthnews.com,0,0,30,True,0,Slightly Right
+RoBERTa,neatlantanews.com,0,0,38,True,0,Slightly Right
+RoBERTa,nemontananews.com,0,0,39,True,0,Slightly Right
+RoBERTa,neohiotimes.com,0,0,33,True,0,Slightly Right
+RoBERTa,neonnettle.com,1,3,47,False,2,Far Right
+RoBERTa,netarrantnews.com,0,0,14,True,0,Slightly Right
+RoBERTa,nevalleytimes.com,0,0,31,True,0,Slightly Right
+RoBERTa,newjerseyglobe.com,4,4,36,True,0,Non labelled
+RoBERTa,news-front.info,0,0,41,True,0,Non labelled
+RoBERTa,news.sky.com,3,3,200,True,0,Non labelled
+RoBERTa,newsbusters.org,3,1,112,False,-2,Far Right
+RoBERTa,newser.com,3,3,46,True,0,Non labelled
+RoBERTa,nickadamsusa.com,1,1,5,True,0,Slightly Right
+RoBERTa,nigerianwatch.com,1,2,200,False,1,Non labelled
+RoBERTa,norcalrecord.com,2,0,75,False,-2,Non labelled
+RoBERTa,northbirminghamtimes.com,0,0,34,True,0,Slightly Right
+RoBERTa,northcharlottetoday.com,0,0,31,True,0,Slightly Right
+RoBERTa,northcoastalnews.com,0,0,37,True,0,Slightly Right
+RoBERTa,northcolumbusnews.com,0,0,33,True,0,Slightly Right
+RoBERTa,northessexnews.com,0,0,14,True,0,Slightly Right
+RoBERTa,northfairfaxnews.com,0,0,15,True,0,Slightly Right
+RoBERTa,northguilfordnews.com,0,0,26,True,0,Slightly Right
+RoBERTa,northhamptonnews.com,0,0,24,True,0,Slightly Right
+RoBERTa,northhoustonnews.com,0,0,20,True,0,Slightly Right
+RoBERTa,northinlandnews.com,0,0,17,True,0,Slightly Right
+RoBERTa,northkentuckynews.com,0,0,24,True,0,Slightly Right
+RoBERTa,northpinellasnews.com,0,0,12,True,0,Slightly Right
+RoBERTa,northrichmondtoday.com,0,0,31,True,0,Slightly Right
+RoBERTa,northshorelanews.com,0,0,32,True,0,Slightly Right
+RoBERTa,notthebee.com,2,1,12,False,-1,Slightly Right
+RoBERTa,ntd.com,1,1,190,True,0,Slightly Right
+RoBERTa,ntd.tv,1,1,39,True,0,Slightly Right
+RoBERTa,nwkansasnews.com,0,0,36,True,0,Slightly Right
+RoBERTa,nwmontananews.com,0,0,35,True,0,Slightly Right
+RoBERTa,nysun.com,4,2,36,False,-2,Slightly Right
+RoBERTa,objectivist.co,1,0,55,False,-1,Far Right
+RoBERTa,observer.com,3,3,99,True,0,Non labelled
+RoBERTa,offthepress.com,3,4,84,False,1,Slightly Right
+RoBERTa,olddominionnews.com,0,0,40,True,0,Slightly Right
+RoBERTa,orangeleader.com,2,2,51,True,0,Non labelled
+RoBERTa,orlandostandard.com,0,0,16,True,0,Slightly Right
+RoBERTa,ourdavie.com,2,2,52,True,0,Non labelled
+RoBERTa,ourpatriot.com,0,1,19,False,1,Slightly Right
+RoBERTa,outkick.com,1,2,24,False,1,Slightly Right
+RoBERTa,oxfordeagle.com,2,2,55,True,0,Non labelled
+RoBERTa,ozy.com,3,1,1,False,-2,Slightly Left
+RoBERTa,panews.com,2,2,53,True,0,Non labelled
+RoBERTa,pantsonfirenews.com,1,1,13,True,0,Far Right
+RoBERTa,patientdaily.com,0,1,23,False,1,Slightly Right
+RoBERTa,patriotfetch.com,1,2,25,False,1,Far Right
+RoBERTa,patriotjournal.org,1,1,2,True,0,Slightly Right
+RoBERTa,patriotpost.com,1,1,36,True,0,Slightly Right
+RoBERTa,patriotpost.us,1,1,34,True,0,Slightly Right
+RoBERTa,patriotpulse.net,1,1,10,True,0,Far Right
+RoBERTa,patriotsgazette.com,1,2,17,False,1,Far Right
+RoBERTa,pensacolatimes.com,0,0,25,True,0,Slightly Right
+RoBERTa,petroplexnews.com,0,0,31,True,0,Slightly Right
+RoBERTa,picayuneitem.com,2,2,50,True,0,Non labelled
+RoBERTa,policetribune.com,4,0,20,False,-4,Slightly Right
+RoBERTa,polinews.org,1,1,13,True,0,Far Left
+RoBERTa,politicalanimalnews.com,1,1,6,True,0,Far Right
+RoBERTa,politicalflare.com,2,2,16,True,0,Slightly Left
+RoBERTa,politicaljournalreview.com,2,1,2,False,-1,Far Right
+RoBERTa,politico.eu,4,4,56,True,0,Non labelled
+RoBERTa,politics.co.uk,2,3,130,False,1,Non labelled
+RoBERTa,politicshome.com,3,3,294,True,0,Non labelled
+RoBERTa,prageru.com,1,1,6,True,0,Slightly Right
+RoBERTa,pravda.com.ua,3,3,33,True,0,Non labelled
+RoBERTa,prentissheadlight.com,2,2,52,True,0,Non labelled
+RoBERTa,pressprogress.ca,4,4,20,True,0,Slightly Left
+RoBERTa,projects.huffingtonpost.com,3,3,22,True,0,Slightly Left
+RoBERTa,projectveritas.com,1,1,96,True,0,Far Right
+RoBERTa,projectveritasaction.com,1,1,96,True,0,Far Right
+RoBERTa,providencereporter.com,0,0,27,True,0,Slightly Right
+RoBERTa,queenseagle.com,3,3,21,True,0,Non labelled
+RoBERTa,rabble.ca,4,4,43,True,0,Slightly Left
+RoBERTa,readfrontier.org,3,1,22,False,-2,Slightly Left
+RoBERTa,realclearinvestigations.com,3,1,62,False,-2,Slightly Right
+RoBERTa,realrawnews.com,0,0,77,True,0,Far Right
+RoBERTa,reason.com,4,3,156,False,-1,Slightly Right
+RoBERTa,redrightdaily.com,1,0,10,False,-1,Far Right
+RoBERTa,redstate.com,1,2,140,False,1,Far Right
+RoBERTa,redstatewatcher.com,2,1,50,False,-1,Slightly Right
+RoBERTa,reitschuster.de,1,3,1,False,2,Slightly Right
+RoBERTa,renewedright.com,1,1,13,True,0,Far Right
+RoBERTa,respectnh.com,1,1,2,True,0,Slightly Right
+RoBERTa,rewirenewsgroup.com,3,1,13,False,-2,Slightly Left
+RoBERTa,rightnewswire.com,1,1,27,True,0,Far Right
+RoBERTa,rightwingwatch.org,3,1,40,False,-2,Far Left
+RoBERTa,riverfronttimes.com,3,3,19,True,0,Slightly Left
+RoBERTa,roanoke-chowannewsherald.com,2,2,55,True,0,Non labelled
+RoBERTa,rochesterreporter.com,0,0,22,True,0,Slightly Right
+RoBERTa,rocklandreporter.com,0,0,29,True,0,Slightly Right
+RoBERTa,rollcall.com,4,4,32,True,0,Non labelled
+RoBERTa,rowannews.com,0,0,26,True,0,Slightly Right
+RoBERTa,sacorridornews.com,0,0,33,True,0,Slightly Right
+RoBERTa,salisburypost.com,2,2,58,True,0,Non labelled
+RoBERTa,sandhillstoday.com,0,0,34,True,0,Slightly Right
+RoBERTa,sandovalnews.com,0,0,26,True,0,Slightly Right
+RoBERTa,sarahpalin.com,2,2,5,True,0,Far Right
+RoBERTa,savannahstandard.com,0,0,32,True,0,Slightly Right
+RoBERTa,searizonanews.com,0,0,33,True,0,Slightly Right
+RoBERTa,segeorgianews.com,0,0,44,True,0,Slightly Right
+RoBERTa,seindiananews.com,0,0,38,True,0,Slightly Right
+RoBERTa,selmatimesjournal.com,2,2,49,True,0,Non labelled
+RoBERTa,senebraskanews.com,0,0,44,True,0,Slightly Right
+RoBERTa,setennnews.com,0,0,40,True,0,Slightly Right
+RoBERTa,sfbayview.com,3,3,38,True,0,Non labelled
+RoBERTa,shelbycountyreporter.com,2,2,68,True,0,Non labelled
+RoBERTa,shondaland.com,2,3,116,False,1,Slightly Left
+RoBERTa,smithfieldtimes.com,2,2,55,True,0,Non labelled
+RoBERTa,southatlantanews.com,0,0,37,True,0,Slightly Right
+RoBERTa,southbrowardnews.com,0,0,23,True,0,Slightly Right
+RoBERTa,southcolumbusnews.com,0,0,26,True,0,Slightly Right
+RoBERTa,southcotimes.com,0,0,29,True,0,Slightly Right
+RoBERTa,southdsmnews.com,0,0,32,True,0,Slightly Right
+RoBERTa,southkingnews.com,0,0,26,True,0,Slightly Right
+RoBERTa,southknoxnews.com,0,0,33,True,0,Slightly Right
+RoBERTa,southlouisiananews.com,0,0,35,True,0,Slightly Right
+RoBERTa,southomahatimes.com,0,0,33,True,0,Slightly Right
+RoBERTa,southsfbaynews.com,0,0,30,True,0,Slightly Right
+RoBERTa,southsidevanews.com,0,0,33,True,0,Slightly Right
+RoBERTa,southsoundtimes.com,0,0,34,True,0,Slightly Right
+RoBERTa,southtidewaternews.com,0,0,42,True,0,Slightly Right
+RoBERTa,southtrianglenews.com,0,0,31,True,0,Slightly Right
+RoBERTa,southtulsatoday.com,0,0,30,True,0,Slightly Right
+RoBERTa,southwichitanews.com,0,0,30,True,0,Slightly Right
+RoBERTa,southwinstonsalemnews.com,0,0,31,True,0,Slightly Right
+RoBERTa,sowisconsintimes.com,0,0,32,True,0,Slightly Right
+RoBERTa,spiked-online.com,4,3,24,False,-1,Slightly Right
+RoBERTa,spotlightpa.org,4,1,80,False,-3,Non labelled
+RoBERTa,state-journal.com,2,2,21,True,0,Non labelled
+RoBERTa,steadfastdaily.com,1,3,14,False,2,Far Right
+RoBERTa,stjoebentonharbor.com,0,0,34,True,0,Slightly Right
+RoBERTa,stlouisreporter.com,0,0,33,True,0,Slightly Right
+RoBERTa,sturgiscoldwaternews.com,0,0,36,True,0,Slightly Right
+RoBERTa,suffolknewsherald.com,2,2,52,True,0,Non labelled
+RoBERTa,swalleghenynews.com,0,0,16,True,0,Slightly Right
+RoBERTa,swissinfo.ch,4,0,2,False,-4,Non labelled
+RoBERTa,swmontanatimes.com,0,0,41,True,0,Slightly Right
+RoBERTa,swr3.de,4,4,1,True,0,Non labelled
+RoBERTa,swriversidenews.com,0,0,29,True,0,Slightly Right
+RoBERTa,swtennnews.com,0,0,36,True,0,Slightly Right
+RoBERTa,swwyomingnews.com,0,0,39,True,0,Slightly Right
+RoBERTa,talkingpointsmemo.com,3,3,25,True,0,Slightly Left
+RoBERTa,taz.de,4,1,2,False,-3,Slightly Left
+RoBERTa,tennesseestar.com,1,1,68,True,0,Slightly Right
+RoBERTa,texastribune.org,4,2,4,False,-2,Non labelled
+RoBERTa,theamericanconservative.com,2,2,16,True,0,Far Right
+RoBERTa,theamericanonews.com,1,1,32,True,0,Far Left
+RoBERTa,thebipartisanpress.com,3,3,5,True,0,Non labelled
+RoBERTa,theblaze.com,2,1,68,False,-1,Slightly Right
+RoBERTa,thecanary.co,3,3,37,True,0,Far Left
+RoBERTa,thecharlottegazette.com,2,2,55,True,0,Non labelled
+RoBERTa,thecoastlandtimes.com,2,2,55,True,0,Non labelled
+RoBERTa,thecountersignal.com,0,4,30,False,4,Non labelled
+RoBERTa,thedcpatriot.com,0,1,21,False,1,Far Right
+RoBERTa,thefirsttv.com,2,1,1,False,-1,Slightly Right
+RoBERTa,thefulcrum.us,3,1,7,False,-2,Slightly Left
+RoBERTa,thegrayzone.com,0,3,86,False,3,Far Left
+RoBERTa,theguardian.com,4,3,200,False,-1,Slightly Left
+RoBERTa,theguardiansofdemocracy.com,1,2,59,False,1,Far Left
+RoBERTa,theinteriorjournal.com,2,2,46,True,0,Non labelled
+RoBERTa,thejc.com,3,4,146,False,1,Non labelled
+RoBERTa,thelibertarianrepublic.com,3,1,33,False,-2,Slightly Right
+RoBERTa,thelily.com,4,3,25,False,-1,Non labelled
+RoBERTa,thelondoneconomic.com,4,3,76,False,-1,Slightly Left
+RoBERTa,themadisonrecord.com,2,2,44,True,0,Non labelled
+RoBERTa,themichiganstar.com,1,1,3,True,0,Slightly Right
+RoBERTa,theminnesotasun.com,1,1,11,True,0,Slightly Right
+RoBERTa,thenationaltelegraph.com,1,0,5,False,-1,Slightly Right
+RoBERTa,thenevadaglobe.com,3,1,45,False,-2,Slightly Right
+RoBERTa,thenewcivilrightsmovement.com,3,1,28,False,-2,Slightly Left
+RoBERTa,theohiostar.com,1,1,38,True,0,Slightly Right
+RoBERTa,thepatriotjournal.com,1,1,102,True,0,Slightly Right
+RoBERTa,thepoliticalinsider.com,3,2,25,False,-1,Far Right
+RoBERTa,thepostmillennial.com,3,1,46,False,-2,Slightly Right
+RoBERTa,thepostsearchlight.com,2,3,1,False,1,Non labelled
+RoBERTa,theroot.com,3,0,33,False,-3,Far Left
+RoBERTa,thesnaponline.com,2,2,50,True,0,Non labelled
+RoBERTa,thesun.co.uk,2,3,170,False,1,Slightly Right
+RoBERTa,thewashingtondailynews.com,2,2,61,True,0,Non labelled
+RoBERTa,theweek.com,4,2,15,False,-2,Slightly Left
+RoBERTa,thewildcard.com,3,3,12,True,0,Far Right
+RoBERTa,tnc.news,3,4,1,False,1,Slightly Right
+RoBERTa,toddstarnes.com,2,1,14,False,-1,Slightly Right
+RoBERTa,topekasun.com,0,0,33,True,0,Slightly Right
+RoBERTa,townhall.com,2,1,169,False,-1,Far Right
+RoBERTa,treasurecoastsun.com,0,0,35,True,0,Slightly Right
+RoBERTa,treasurevalleytimes.com,0,0,41,True,0,Slightly Right
+RoBERTa,tribunemag.co.uk,3,4,40,False,1,Far Left
+RoBERTa,troymessenger.com,2,2,57,True,0,Non labelled
+RoBERTa,truthdig.com,3,3,97,True,0,Slightly Left
+RoBERTa,truthout.org,3,3,39,True,0,Far Left
+RoBERTa,tryondailybulletin.com,2,2,51,True,0,Non labelled
+RoBERTa,tuscarawasnews.com,0,0,23,True,0,Slightly Right
+RoBERTa,twitchy.com,1,1,87,True,0,Far Right
+RoBERTa,txrealtynews.com,0,2,50,False,2,Slightly Right
+RoBERTa,ukdefencejournal.org.uk,4,3,31,False,-1,Non labelled
+RoBERTa,unioncountyreview.com,0,0,28,True,0,Slightly Right
+RoBERTa,unmuzzlednews.com,1,1,10,True,0,Far Right
+RoBERTa,upnorthnewswi.com,1,1,31,True,0,Slightly Left
+RoBERTa,utahvalleytimes.com,0,0,27,True,0,Slightly Right
+RoBERTa,utopia.de,4,1,53,False,-3,Far Left
+RoBERTa,vadogwood.com,1,1,18,True,0,Slightly Left
+RoBERTa,valiantnews.com,2,2,42,True,0,Far Right
+RoBERTa,valleytimes-news.com,2,2,51,True,0,Non labelled
+RoBERTa,vicksburgpost.com,2,2,50,True,0,Non labelled
+RoBERTa,w-j.co,3,3,43,True,0,Far Right
+RoBERTa,washingtonmonthly.com,4,3,28,False,-1,Slightly Left
+RoBERTa,waterfordtoday.com,0,0,23,True,0,Slightly Right
+RoBERTa,waterlootimes.com,0,0,34,True,0,Slightly Right
+RoBERTa,wcminnesotanews.com,0,0,37,True,0,Slightly Right
+RoBERTa,westatlantanews.com,0,0,34,True,0,Slightly Right
+RoBERTa,westernjournal.com,3,3,5,True,0,Far Right
+RoBERTa,westernjournalism.com,3,3,64,True,0,Far Right
+RoBERTa,westhamiltonnews.com,0,0,21,True,0,Slightly Right
+RoBERTa,westindynews.com,0,0,25,True,0,Slightly Right
+RoBERTa,westlatimes.com,0,0,27,True,0,Slightly Right
+RoBERTa,westlucasnews.com,0,0,29,True,0,Slightly Right
+RoBERTa,westsgvnews.com,0,0,17,True,0,Slightly Right
+RoBERTa,weststarknews.com,0,0,14,True,0,Slightly Right
+RoBERTa,westvolusianews.com,0,0,12,True,0,Slightly Right
+RoBERTa,williamsonnews.com,0,0,25,True,0,Slightly Right
+RoBERTa,winchestersun.com,2,2,55,True,0,Non labelled
+RoBERTa,yellowhammernews.com,3,2,44,False,-1,Slightly Right
+Llama,5pillarsuk.com,3,3,17,True,0,Slightly Left
+Llama,aapsonline.org,0,1,9,False,1,Far Right
+Llama,aclu.org,3,3,89,True,0,Far Left
+Llama,aei.org,3,4,145,False,1,Slightly Right
+Llama,africanvoiceonline.co.uk,2,1,22,False,-1,Non labelled
+Llama,alabamanow.com,2,2,51,True,0,Non labelled
+Llama,albertleatribune.com,2,2,54,True,0,Non labelled
+Llama,aldianews.com,3,1,5,False,-2,Slightly Left
+Llama,algemeiner.com,3,3,35,True,0,Non labelled
+Llama,alternet.org,1,3,198,False,2,Far Left
+Llama,americanlookout.com,1,1,52,True,0,Far Right
+Llama,americanpress.com,2,2,51,True,0,Non labelled
+Llama,americanprogress.org,4,3,59,False,-1,Far Left
+Llama,americanwirenews.com,2,1,77,False,-1,Slightly Right
+Llama,americustimesrecorder.com,2,2,58,True,0,Non labelled
+Llama,amgreatness.com,1,4,49,False,3,Slightly Right
+Llama,ammoland.com,3,1,106,False,-2,Slightly Right
+Llama,amnews.com,2,2,53,True,0,Non labelled
+Llama,analyzingamerica.org,3,2,29,False,-1,Slightly Right
+Llama,andalusiastarnews.com,2,2,49,True,0,Non labelled
+Llama,angolabusinessdaily.com,0,0,19,True,0,Slightly Right
+Llama,ansamed.info,3,3,40,True,0,Non labelled
+Llama,anthonyblogan.com,1,1,36,True,0,Far Right
+Llama,arabnews.com,1,3,186,False,2,Non labelled
+Llama,arizonadailyindependent.com,2,1,17,False,-1,Slightly Right
+Llama,armaghi.com,3,4,30,False,1,Non labelled
+Llama,aroostooknews.com,0,0,30,True,0,Slightly Right
+Llama,asianimage.co.uk,3,3,177,True,0,Non labelled
+Llama,asiansunday.co.uk,3,3,31,True,0,Non labelled
+Llama,atmoreadvance.com,2,2,53,True,0,Non labelled
+Llama,bizpacreview.com,2,0,51,False,-2,Far Right
+Llama,bluestatebluesnews.com,1,1,12,True,0,Far Right
+Llama,bogalusadailynews.com,2,2,55,True,0,Non labelled
+Llama,boisecitywire.com,0,0,26,True,0,Slightly Right
+Llama,brewtonstandard.com,2,2,55,True,0,Non labelled
+Llama,brexitnews.tv,0,3,70,False,3,Far Right
+Llama,bylinetimes.com,3,3,104,True,0,Slightly Left
+Llama,cantonreporter.com,0,0,29,True,0,Slightly Right
+Llama,capitalbnews.org,3,1,11,False,-2,Non labelled
+Llama,cardinalpine.com,1,1,35,True,0,Slightly Left
+Llama,cbn.com,2,1,39,False,-1,Slightly Right
+Llama,centennialstatenews.com,0,0,31,True,0,Slightly Right
+Llama,centralcoloradonews.com,0,0,41,True,0,Slightly Right
+Llama,centralfloridapost.com,1,1,22,True,0,Far Right
+Llama,centrallouisiananews.com,0,0,39,True,0,Slightly Right
+Llama,centralmissourinews.com,0,0,41,True,0,Slightly Right
+Llama,cfr.org,4,3,8,False,-1,Non labelled
+Llama,checksandbalancesproject.org,1,3,33,False,2,Non labelled
+Llama,cheddar.com,3,3,24,True,0,Non labelled
+Llama,christianheadlines.com,1,2,66,False,1,Slightly Right
+Llama,christianpost.com,2,1,166,False,-1,Slightly Right
+Llama,cistranfinance.com,0,0,14,True,0,Slightly Right
+Llama,cityam.com,3,2,63,False,-1,Non labelled
+Llama,claiborneprogress.net,2,2,50,True,0,Non labelled
+Llama,clantonadvertiser.com,2,2,49,True,0,Non labelled
+Llama,clarkcountytoday.com,1,2,8,False,1,Slightly Right
+Llama,clemmonscourier.net,2,2,52,True,0,Non labelled
+Llama,cnnespanol.cnn.com,3,1,106,False,-2,Slightly Left
+Llama,cobbreporter.com,0,0,32,True,0,Slightly Right
+Llama,conservativetribune.com,3,3,1,True,0,Far Right
+Llama,conservativeundergroundnews.com,1,1,10,True,0,Far Right
+Llama,conservativewoman.co.uk,1,2,22,False,1,Far Right
+Llama,conservtribune.com,3,4,10,False,1,Far Right
+Llama,coppercourier.com,1,1,34,True,0,Slightly Left
+Llama,cordeledispatch.com,2,2,51,True,0,Non labelled
+Llama,cornishstuff.com,4,3,47,False,-1,Non labelled
+Llama,counterpunch.org,4,3,48,False,-1,Far Left
+Llama,creativedestructionmedia.com,0,1,69,False,1,Far Right
+Llama,currentaffairs.org,3,4,52,False,1,Far Left
+Llama,dailyboulder.com,1,1,33,True,0,Slightly Left
+Llama,dailyleader.com,2,2,51,True,0,Non labelled
+Llama,dailypatriotreport.com,0,1,14,False,1,Slightly Right
+Llama,dailysignal.com,4,3,193,False,-1,Slightly Right
+Llama,dailysoundandfury.com,1,3,19,False,2,Far Left
+Llama,dailywire.com,2,4,49,False,2,Slightly Right
+Llama,dallasobserver.com,3,3,75,True,0,Slightly Left
+Llama,dallasvoice.com,3,3,16,True,0,Slightly Left
+Llama,data.huffingtonpost.com,3,3,9,True,0,Slightly Left
+Llama,dcenquirer.com,3,4,55,False,1,Slightly Right
+Llama,deadstate.org,4,1,25,False,-3,Slightly Left
+Llama,decisiondeskhq.com,2,1,34,False,-1,Non labelled
+Llama,deeside.com,2,3,20,False,1,Non labelled
+Llama,defenseone.com,4,4,104,True,0,Non labelled
+Llama,democratica.com,3,1,6,False,-2,Slightly Left
+Llama,demopolistimes.com,2,2,48,True,0,Non labelled
+Llama,deneenborelli.com,1,3,79,False,2,Slightly Right
+Llama,desantisdaily.com,1,1,10,True,0,Far Right
+Llama,disrn.com,1,1,1,True,0,Slightly Right
+Llama,drudgereport.com,2,1,21,False,-1,Slightly Right
+Llama,eaglevalleytimes.com,0,0,33,True,0,Slightly Right
+Llama,easterneye.biz,2,3,50,False,1,Non labelled
+Llama,easthudvalleynews.com,0,0,27,True,0,Slightly Right
+Llama,eastindynews.com,0,0,33,True,0,Slightly Right
+Llama,eastmichigannews.com,0,0,41,True,0,Slightly Right
+Llama,eciowanews.com,0,0,40,True,0,Slightly Right
+Llama,ecmissnews.com,0,0,37,True,0,Slightly Right
+Llama,ecnorthcarolinanews.com,0,0,28,True,0,Slightly Right
+Llama,ecoklahomanews.com,0,0,38,True,0,Slightly Right
+Llama,editorial.huffingtonpost.com,3,3,134,True,0,Slightly Left
+Llama,educationdailywire.com,0,3,25,False,3,Slightly Right
+Llama,elections.huffingtonpost.com,3,3,5,True,0,Slightly Left
+Llama,elizabethton.com,2,2,53,True,0,Non labelled
+Llama,emeraldcoasttimes.com,0,0,34,True,0,Slightly Right
+Llama,endtimeheadlines.org,3,2,12,False,-1,Slightly Right
+Llama,english.alaraby.co.uk,3,3,199,True,0,Non labelled
+Llama,entertainme.whatfinger.com,0,1,197,False,1,Far Right
+Llama,euromaidanpress.com,3,3,117,True,0,Slightly Left
+Llama,euronews.com,1,3,172,False,2,Non labelled
+Llama,evergreenreporter.com,0,0,36,True,0,Slightly Right
+Llama,faithwire.com,2,2,17,True,0,Slightly Right
+Llama,farmvilleherald.com,2,2,53,True,0,Non labelled
+Llama,fayettevilletoday.com,0,0,34,True,0,Slightly Right
+Llama,fee.org,3,1,16,False,-2,Slightly Right
+Llama,flagandcross.com,1,1,62,True,0,Far Right
+Llama,floridaparishnews.com,0,0,35,True,0,Slightly Right
+Llama,floridapolitics.com,3,4,115,False,1,Non labelled
+Llama,foothillsreview.com,0,0,34,True,0,Slightly Right
+Llama,foramerica.org,2,1,6,False,-1,Far Right
+Llama,foreignpolicy.com,4,4,200,True,0,Slightly Left
+Llama,franklincountytimes.com,2,2,40,True,0,Non labelled
+Llama,freebeacon.com,3,4,23,False,1,Slightly Right
+Llama,freespeech.org,2,1,6,False,-1,Far Left
+Llama,frontpagemag.com,0,1,26,False,1,Far Right
+Llama,gandernewsroom.com,1,1,43,True,0,Slightly Left
+Llama,gatewayreporter.com,0,0,36,True,0,Slightly Right
+Llama,gbnews.uk,3,3,200,True,0,Slightly Right
+Llama,georgiastarnews.com,1,1,41,True,0,Far Right
+Llama,gopdailybrief.com,1,1,2,True,0,Far Right
+Llama,grabien.com,1,1,13,True,0,Slightly Right
+Llama,grandrapidsreporter.com,0,0,32,True,0,Slightly Right
+Llama,greenvilleadvocate.com,2,2,52,True,0,Non labelled
+Llama,greenvillereporter.com,0,0,39,True,0,Slightly Right
+Llama,gtrtimes.com,0,0,30,True,0,Slightly Right
+Llama,harlanenterprise.net,2,2,49,True,0,Non labelled
+Llama,hartselleenquirer.com,2,2,34,True,0,Non labelled
+Llama,heartlandsignal.com,2,1,13,False,-1,Slightly Left
+Llama,henricotimes.com,0,0,27,True,0,Slightly Right
+Llama,highline.huffingtonpost.com,3,3,9,True,0,Slightly Left
+Llama,hindstoday.com,0,0,25,True,0,Slightly Right
+Llama,hongkongfp.com,4,3,31,False,-1,Non labelled
+Llama,hotair.com,3,2,111,False,-1,Far Right
+Llama,hudsontoday.com,0,0,24,True,0,Slightly Right
+Llama,huffingtonpost.com,3,3,6,True,0,Slightly Left
+Llama,huffpost.com,3,3,3,True,0,Slightly Left
+Llama,ijr.com,4,3,10,False,-1,Slightly Right
+Llama,ijr.org,4,3,103,False,-1,Slightly Right
+Llama,illinoispolicy.org,3,1,13,False,-2,Slightly Right
+Llama,imperialcanews.com,0,0,30,True,0,Slightly Right
+Llama,independentchronicle.com,0,2,15,False,2,Slightly Right
+Llama,indo-caribbean.com,1,2,44,False,1,Non labelled
+Llama,indystandard.com,0,0,27,True,0,Slightly Right
+Llama,infacts.org,4,3,54,False,-1,Slightly Left
+Llama,intellectualtakeout.org,2,1,19,False,-1,Slightly Right
+Llama,intpolicydigest.org,3,3,32,True,0,Non labelled
+Llama,irishcentral.com,4,3,65,False,-1,Non labelled
+Llama,irontontribune.com,2,2,32,True,0,Non labelled
+Llama,jacksonpurchasenews.com,0,0,40,True,0,Slightly Right
+Llama,jeffcitynews.com,0,0,36,True,0,Slightly Right
+Llama,jessaminejournal.com,2,2,53,True,0,Non labelled
+Llama,jewishpress.com,3,3,47,True,0,Slightly Right
+Llama,jta.org,4,3,41,False,-1,Non labelled
+Llama,judicialwatch.org,1,1,14,True,0,Far Right
+Llama,justsecurity.org,3,4,69,False,1,Slightly Left
+Llama,justthenews.com,2,3,108,False,1,Slightly Right
+Llama,kenbridgevictoriadispatch.com,2,2,55,True,0,Non labelled
+Llama,kentcotimes.com,0,0,25,True,0,Slightly Right
+Llama,keystonenewsroom.com,1,4,34,False,3,Far Left
+Llama,knoxtimes.com,0,0,27,True,0,Slightly Right
+Llama,koinesune.com,0,2,10,False,2,Slightly Right
+Llama,kokomostandard.com,0,0,36,True,0,Slightly Right
+Llama,kyivindependent.com,3,3,59,True,0,Non labelled
+Llama,labourlist.org,3,3,109,True,0,Slightly Left
+Llama,lagrangenews.com,2,2,48,True,0,Non labelled
+Llama,larimernews.com,0,0,29,True,0,Slightly Right
+Llama,lbc.co.uk,3,3,200,True,0,Non labelled
+Llama,leaderpub.com,2,2,54,True,0,Non labelled
+Llama,legalinsurrection.com,2,1,40,False,-1,Slightly Right
+Llama,lehightimes.com,0,0,28,True,0,Slightly Right
+Llama,lewistontimes.com,0,0,27,True,0,Slightly Right
+Llama,libertarianinstitute.org,2,4,32,False,2,Slightly Right
+Llama,lifezette.com,0,1,55,False,1,Slightly Right
+Llama,linkiesta.it,2,4,3,False,2,Non labelled
+Llama,litchfieldhillstoday.com,0,0,17,True,0,Slightly Right
+Llama,live.huffingtonpost.com,3,3,13,True,0,Slightly Left
+Llama,lobservateur.com,2,2,54,True,0,Non labelled
+Llama,lowndessignal.com,2,2,51,True,0,Non labelled
+Llama,lubbocktimes.com,0,0,28,True,0,Slightly Right
+Llama,luzernetimes.com,0,0,27,True,0,Slightly Right
+Llama,magnoliastatelive.com,2,2,53,True,0,Non labelled
+Llama,manilabusinessdaily.com,0,0,20,True,0,Slightly Right
+Llama,mediarightnews.com,2,1,20,False,-1,Slightly Right
+Llama,meduza.io,3,3,45,True,0,Non labelled
+Llama,mercertimes.com,0,0,26,True,0,Slightly Right
+Llama,merrimackvalleynews.com,0,0,28,True,0,Slightly Right
+Llama,metrolexnews.com,0,0,27,True,0,Slightly Right
+Llama,mic.com,3,3,41,True,0,Far Left
+Llama,middleeasteye.net,3,3,200,True,0,Slightly Left
+Llama,middlesborodailynews.com,2,2,31,True,0,Non labelled
+Llama,mikehuckabee.com,1,2,21,False,1,Far Right
+Llama,morrisleader.com,0,0,27,True,0,Slightly Right
+Llama,motherjones.com,3,3,87,True,0,Slightly Left
+Llama,mrctv.org,2,1,40,False,-1,Slightly Right
+Llama,msmagazine.com,3,1,37,False,-2,Far Left
+Llama,msnbc.com,1,3,51,False,2,Slightly Left
+Llama,muskegonsun.com,0,0,31,True,0,Slightly Right
+Llama,muslimnews.co.uk,2,3,63,False,1,Non labelled
+Llama,mustreadalaska.com,1,1,29,True,0,Far Right
+Llama,nachdenkseiten.de,3,3,1,True,0,Slightly Left
+Llama,natchezdemocrat.com,2,2,53,True,0,Non labelled
+Llama,nationalinterest.org,3,4,21,False,1,Non labelled
+Llama,nationalmemo.com,2,1,29,False,-1,Slightly Left
+Llama,ncindiananews.com,0,0,39,True,0,Slightly Right
+Llama,ncncnews.com,0,0,32,True,0,Slightly Right
+Llama,ndnorthnews.com,0,0,30,True,0,Slightly Right
+Llama,neatlantanews.com,0,0,38,True,0,Slightly Right
+Llama,nemontananews.com,0,0,39,True,0,Slightly Right
+Llama,neohiotimes.com,0,0,33,True,0,Slightly Right
+Llama,neonnettle.com,1,3,47,False,2,Far Right
+Llama,netarrantnews.com,0,0,14,True,0,Slightly Right
+Llama,nevalleytimes.com,0,0,31,True,0,Slightly Right
+Llama,newjerseyglobe.com,4,4,36,True,0,Non labelled
+Llama,news-front.info,0,3,41,False,3,Non labelled
+Llama,news.sky.com,3,3,200,True,0,Non labelled
+Llama,newsbusters.org,3,1,112,False,-2,Far Right
+Llama,newser.com,3,4,46,False,1,Non labelled
+Llama,nickadamsusa.com,1,1,5,True,0,Slightly Right
+Llama,nigerianwatch.com,1,2,200,False,1,Non labelled
+Llama,norcalrecord.com,2,0,75,False,-2,Non labelled
+Llama,northbirminghamtimes.com,0,0,34,True,0,Slightly Right
+Llama,northcharlottetoday.com,0,0,31,True,0,Slightly Right
+Llama,northcoastalnews.com,0,0,37,True,0,Slightly Right
+Llama,northcolumbusnews.com,0,0,33,True,0,Slightly Right
+Llama,northessexnews.com,0,0,14,True,0,Slightly Right
+Llama,northfairfaxnews.com,0,0,15,True,0,Slightly Right
+Llama,northguilfordnews.com,0,0,26,True,0,Slightly Right
+Llama,northhamptonnews.com,0,0,24,True,0,Slightly Right
+Llama,northhoustonnews.com,0,0,20,True,0,Slightly Right
+Llama,northinlandnews.com,0,0,17,True,0,Slightly Right
+Llama,northkentuckynews.com,0,0,24,True,0,Slightly Right
+Llama,northpinellasnews.com,0,0,12,True,0,Slightly Right
+Llama,northrichmondtoday.com,0,0,31,True,0,Slightly Right
+Llama,northshorelanews.com,0,0,32,True,0,Slightly Right
+Llama,notthebee.com,2,1,12,False,-1,Slightly Right
+Llama,ntd.com,1,1,190,True,0,Slightly Right
+Llama,ntd.tv,1,1,39,True,0,Slightly Right
+Llama,nwkansasnews.com,0,0,36,True,0,Slightly Right
+Llama,nwmontananews.com,0,0,35,True,0,Slightly Right
+Llama,nysun.com,4,1,36,False,-3,Slightly Right
+Llama,objectivist.co,1,0,55,False,-1,Far Right
+Llama,observer.com,3,3,99,True,0,Non labelled
+Llama,offthepress.com,3,4,84,False,1,Slightly Right
+Llama,olddominionnews.com,0,0,40,True,0,Slightly Right
+Llama,orangeleader.com,2,2,51,True,0,Non labelled
+Llama,orlandostandard.com,0,0,16,True,0,Slightly Right
+Llama,ourdavie.com,2,2,52,True,0,Non labelled
+Llama,ourpatriot.com,0,1,19,False,1,Slightly Right
+Llama,outkick.com,1,2,24,False,1,Slightly Right
+Llama,oxfordeagle.com,2,2,55,True,0,Non labelled
+Llama,ozy.com,3,1,1,False,-2,Slightly Left
+Llama,panews.com,2,2,53,True,0,Non labelled
+Llama,pantsonfirenews.com,1,1,13,True,0,Far Right
+Llama,patientdaily.com,0,1,23,False,1,Slightly Right
+Llama,patriotfetch.com,1,1,25,True,0,Far Right
+Llama,patriotjournal.org,1,1,2,True,0,Slightly Right
+Llama,patriotpost.com,1,1,36,True,0,Slightly Right
+Llama,patriotpost.us,1,1,34,True,0,Slightly Right
+Llama,patriotpulse.net,1,1,10,True,0,Far Right
+Llama,patriotsgazette.com,1,1,17,True,0,Far Right
+Llama,pensacolatimes.com,0,0,25,True,0,Slightly Right
+Llama,petroplexnews.com,0,0,31,True,0,Slightly Right
+Llama,picayuneitem.com,2,2,50,True,0,Non labelled
+Llama,policetribune.com,4,2,20,False,-2,Slightly Right
+Llama,polinews.org,1,1,13,True,0,Far Left
+Llama,politicalanimalnews.com,1,1,6,True,0,Far Right
+Llama,politicalflare.com,2,3,16,False,1,Slightly Left
+Llama,politicaljournalreview.com,2,1,2,False,-1,Far Right
+Llama,politico.eu,4,3,56,False,-1,Non labelled
+Llama,politics.co.uk,2,3,130,False,1,Non labelled
+Llama,politicshome.com,3,3,294,True,0,Non labelled
+Llama,prageru.com,1,1,6,True,0,Slightly Right
+Llama,pravda.com.ua,3,3,33,True,0,Non labelled
+Llama,prentissheadlight.com,2,2,52,True,0,Non labelled
+Llama,pressprogress.ca,4,4,20,True,0,Slightly Left
+Llama,projects.huffingtonpost.com,3,3,22,True,0,Slightly Left
+Llama,projectveritas.com,1,1,96,True,0,Far Right
+Llama,projectveritasaction.com,1,1,96,True,0,Far Right
+Llama,providencereporter.com,0,0,27,True,0,Slightly Right
+Llama,queenseagle.com,3,4,21,False,1,Non labelled
+Llama,rabble.ca,4,4,43,True,0,Slightly Left
+Llama,readfrontier.org,3,1,22,False,-2,Slightly Left
+Llama,realclearinvestigations.com,3,4,62,False,1,Slightly Right
+Llama,realrawnews.com,0,1,77,False,1,Far Right
+Llama,reason.com,4,3,156,False,-1,Slightly Right
+Llama,redrightdaily.com,1,1,10,True,0,Far Right
+Llama,redstate.com,1,2,140,False,1,Far Right
+Llama,redstatewatcher.com,2,1,50,False,-1,Slightly Right
+Llama,reitschuster.de,1,1,1,True,0,Slightly Right
+Llama,renewedright.com,1,1,13,True,0,Far Right
+Llama,respectnh.com,1,1,2,True,0,Slightly Right
+Llama,rewirenewsgroup.com,3,3,13,True,0,Slightly Left
+Llama,rightnewswire.com,1,1,27,True,0,Far Right
+Llama,rightwingwatch.org,3,1,40,False,-2,Far Left
+Llama,riverfronttimes.com,3,3,19,True,0,Slightly Left
+Llama,roanoke-chowannewsherald.com,2,2,55,True,0,Non labelled
+Llama,rochesterreporter.com,0,0,22,True,0,Slightly Right
+Llama,rocklandreporter.com,0,0,29,True,0,Slightly Right
+Llama,rollcall.com,4,4,32,True,0,Non labelled
+Llama,rowannews.com,0,0,26,True,0,Slightly Right
+Llama,sacorridornews.com,0,0,33,True,0,Slightly Right
+Llama,salisburypost.com,2,2,58,True,0,Non labelled
+Llama,sandhillstoday.com,0,0,34,True,0,Slightly Right
+Llama,sandovalnews.com,0,0,26,True,0,Slightly Right
+Llama,sarahpalin.com,2,0,5,False,-2,Far Right
+Llama,savannahstandard.com,0,0,32,True,0,Slightly Right
+Llama,searizonanews.com,0,0,33,True,0,Slightly Right
+Llama,segeorgianews.com,0,0,44,True,0,Slightly Right
+Llama,seindiananews.com,0,0,38,True,0,Slightly Right
+Llama,selmatimesjournal.com,2,2,49,True,0,Non labelled
+Llama,senebraskanews.com,0,0,44,True,0,Slightly Right
+Llama,setennnews.com,0,0,40,True,0,Slightly Right
+Llama,sfbayview.com,3,1,38,False,-2,Non labelled
+Llama,shelbycountyreporter.com,2,2,68,True,0,Non labelled
+Llama,shondaland.com,2,3,116,False,1,Slightly Left
+Llama,smithfieldtimes.com,2,2,55,True,0,Non labelled
+Llama,southatlantanews.com,0,0,37,True,0,Slightly Right
+Llama,southbrowardnews.com,0,0,23,True,0,Slightly Right
+Llama,southcolumbusnews.com,0,0,26,True,0,Slightly Right
+Llama,southcotimes.com,0,0,29,True,0,Slightly Right
+Llama,southdsmnews.com,0,0,32,True,0,Slightly Right
+Llama,southkingnews.com,0,0,26,True,0,Slightly Right
+Llama,southknoxnews.com,0,0,33,True,0,Slightly Right
+Llama,southlouisiananews.com,0,0,35,True,0,Slightly Right
+Llama,southomahatimes.com,0,0,33,True,0,Slightly Right
+Llama,southsfbaynews.com,0,0,30,True,0,Slightly Right
+Llama,southsidevanews.com,0,0,33,True,0,Slightly Right
+Llama,southsoundtimes.com,0,0,34,True,0,Slightly Right
+Llama,southtidewaternews.com,0,0,42,True,0,Slightly Right
+Llama,southtrianglenews.com,0,0,31,True,0,Slightly Right
+Llama,southtulsatoday.com,0,0,30,True,0,Slightly Right
+Llama,southwichitanews.com,0,0,30,True,0,Slightly Right
+Llama,southwinstonsalemnews.com,0,0,31,True,0,Slightly Right
+Llama,sowisconsintimes.com,0,0,32,True,0,Slightly Right
+Llama,spiked-online.com,4,3,24,False,-1,Slightly Right
+Llama,spotlightpa.org,4,1,80,False,-3,Non labelled
+Llama,state-journal.com,2,2,21,True,0,Non labelled
+Llama,steadfastdaily.com,1,1,14,True,0,Far Right
+Llama,stjoebentonharbor.com,0,0,34,True,0,Slightly Right
+Llama,stlouisreporter.com,0,0,33,True,0,Slightly Right
+Llama,sturgiscoldwaternews.com,0,0,36,True,0,Slightly Right
+Llama,suffolknewsherald.com,2,2,52,True,0,Non labelled
+Llama,swalleghenynews.com,0,0,16,True,0,Slightly Right
+Llama,swissinfo.ch,4,3,2,False,-1,Non labelled
+Llama,swmontanatimes.com,0,0,41,True,0,Slightly Right
+Llama,swr3.de,4,0,1,False,-4,Non labelled
+Llama,swriversidenews.com,0,0,29,True,0,Slightly Right
+Llama,swtennnews.com,0,0,36,True,0,Slightly Right
+Llama,swwyomingnews.com,0,0,39,True,0,Slightly Right
+Llama,talkingpointsmemo.com,3,1,25,False,-2,Slightly Left
+Llama,taz.de,4,2,2,False,-2,Slightly Left
+Llama,tennesseestar.com,1,1,68,True,0,Slightly Right
+Llama,texastribune.org,4,4,4,True,0,Non labelled
+Llama,theamericanconservative.com,2,4,16,False,2,Far Right
+Llama,theamericanonews.com,1,1,32,True,0,Far Left
+Llama,thebipartisanpress.com,3,0,5,False,-3,Non labelled
+Llama,theblaze.com,2,3,68,False,1,Slightly Right
+Llama,thecanary.co,3,4,37,False,1,Far Left
+Llama,thecharlottegazette.com,2,2,55,True,0,Non labelled
+Llama,thecoastlandtimes.com,2,2,55,True,0,Non labelled
+Llama,thecountersignal.com,0,4,30,False,4,Non labelled
+Llama,thedcpatriot.com,0,1,21,False,1,Far Right
+Llama,thefirsttv.com,2,3,1,False,1,Slightly Right
+Llama,thefulcrum.us,3,4,7,False,1,Slightly Left
+Llama,thegrayzone.com,0,3,86,False,3,Far Left
+Llama,theguardian.com,4,3,200,False,-1,Slightly Left
+Llama,theguardiansofdemocracy.com,1,4,59,False,3,Far Left
+Llama,theinteriorjournal.com,2,2,46,True,0,Non labelled
+Llama,thejc.com,3,4,146,False,1,Non labelled
+Llama,thelibertarianrepublic.com,3,1,33,False,-2,Slightly Right
+Llama,thelily.com,4,3,25,False,-1,Non labelled
+Llama,thelondoneconomic.com,4,3,76,False,-1,Slightly Left
+Llama,themadisonrecord.com,2,2,44,True,0,Non labelled
+Llama,themichiganstar.com,1,1,3,True,0,Slightly Right
+Llama,theminnesotasun.com,1,1,11,True,0,Slightly Right
+Llama,thenationaltelegraph.com,1,0,5,False,-1,Slightly Right
+Llama,thenevadaglobe.com,3,3,45,True,0,Slightly Right
+Llama,thenewcivilrightsmovement.com,3,1,28,False,-2,Slightly Left
+Llama,theohiostar.com,1,1,38,True,0,Slightly Right
+Llama,thepatriotjournal.com,1,1,102,True,0,Slightly Right
+Llama,thepoliticalinsider.com,3,1,25,False,-2,Far Right
+Llama,thepostmillennial.com,3,2,46,False,-1,Slightly Right
+Llama,thepostsearchlight.com,2,4,1,False,2,Non labelled
+Llama,theroot.com,3,3,33,True,0,Far Left
+Llama,thesnaponline.com,2,2,50,True,0,Non labelled
+Llama,thesun.co.uk,2,3,170,False,1,Slightly Right
+Llama,thewashingtondailynews.com,2,2,61,True,0,Non labelled
+Llama,theweek.com,4,3,15,False,-1,Slightly Left
+Llama,thewildcard.com,3,3,12,True,0,Far Right
+Llama,tnc.news,3,2,1,False,-1,Slightly Right
+Llama,toddstarnes.com,2,1,14,False,-1,Slightly Right
+Llama,topekasun.com,0,0,33,True,0,Slightly Right
+Llama,townhall.com,2,1,169,False,-1,Far Right
+Llama,treasurecoastsun.com,0,0,35,True,0,Slightly Right
+Llama,treasurevalleytimes.com,0,0,41,True,0,Slightly Right
+Llama,tribunemag.co.uk,3,4,40,False,1,Far Left
+Llama,troymessenger.com,2,2,57,True,0,Non labelled
+Llama,truthdig.com,3,3,97,True,0,Slightly Left
+Llama,truthout.org,3,3,39,True,0,Far Left
+Llama,tryondailybulletin.com,2,2,51,True,0,Non labelled
+Llama,tuscarawasnews.com,0,0,23,True,0,Slightly Right
+Llama,twitchy.com,1,1,87,True,0,Far Right
+Llama,txrealtynews.com,0,0,50,True,0,Slightly Right
+Llama,ukdefencejournal.org.uk,4,4,31,True,0,Non labelled
+Llama,unioncountyreview.com,0,0,28,True,0,Slightly Right
+Llama,unmuzzlednews.com,1,1,10,True,0,Far Right
+Llama,upnorthnewswi.com,1,1,31,True,0,Slightly Left
+Llama,utahvalleytimes.com,0,0,27,True,0,Slightly Right
+Llama,utopia.de,4,1,53,False,-3,Far Left
+Llama,vadogwood.com,1,1,18,True,0,Slightly Left
+Llama,valiantnews.com,2,0,42,False,-2,Far Right
+Llama,valleytimes-news.com,2,2,51,True,0,Non labelled
+Llama,vicksburgpost.com,2,2,50,True,0,Non labelled
+Llama,w-j.co,3,1,43,False,-2,Far Right
+Llama,washingtonmonthly.com,4,3,28,False,-1,Slightly Left
+Llama,waterfordtoday.com,0,0,23,True,0,Slightly Right
+Llama,waterlootimes.com,0,0,34,True,0,Slightly Right
+Llama,wcminnesotanews.com,0,0,37,True,0,Slightly Right
+Llama,westatlantanews.com,0,0,34,True,0,Slightly Right
+Llama,westernjournal.com,3,3,5,True,0,Far Right
+Llama,westernjournalism.com,3,3,64,True,0,Far Right
+Llama,westhamiltonnews.com,0,0,21,True,0,Slightly Right
+Llama,westindynews.com,0,0,25,True,0,Slightly Right
+Llama,westlatimes.com,0,0,27,True,0,Slightly Right
+Llama,westlucasnews.com,0,0,29,True,0,Slightly Right
+Llama,westsgvnews.com,0,0,17,True,0,Slightly Right
+Llama,weststarknews.com,0,0,14,True,0,Slightly Right
+Llama,westvolusianews.com,0,0,12,True,0,Slightly Right
+Llama,williamsonnews.com,0,0,25,True,0,Slightly Right
+Llama,winchestersun.com,2,2,55,True,0,Non labelled
+Llama,yellowhammernews.com,3,2,44,False,-1,Slightly Right
+Mistral,5pillarsuk.com,3,3,17,True,0,Slightly Left
+Mistral,aapsonline.org,0,2,9,False,2,Far Right
+Mistral,aclu.org,3,3,89,True,0,Far Left
+Mistral,aei.org,3,4,145,False,1,Slightly Right
+Mistral,africanvoiceonline.co.uk,2,2,22,True,0,Non labelled
+Mistral,alabamanow.com,2,2,51,True,0,Non labelled
+Mistral,albertleatribune.com,2,2,54,True,0,Non labelled
+Mistral,aldianews.com,3,1,5,False,-2,Slightly Left
+Mistral,algemeiner.com,3,3,35,True,0,Non labelled
+Mistral,alternet.org,1,4,198,False,3,Far Left
+Mistral,americanlookout.com,1,1,52,True,0,Far Right
+Mistral,americanpress.com,2,2,51,True,0,Non labelled
+Mistral,americanprogress.org,4,3,59,False,-1,Far Left
+Mistral,americanwirenews.com,2,4,77,False,2,Slightly Right
+Mistral,americustimesrecorder.com,2,2,58,True,0,Non labelled
+Mistral,amgreatness.com,1,0,49,False,-1,Slightly Right
+Mistral,ammoland.com,3,2,106,False,-1,Slightly Right
+Mistral,amnews.com,2,2,53,True,0,Non labelled
+Mistral,analyzingamerica.org,3,4,29,False,1,Slightly Right
+Mistral,andalusiastarnews.com,2,2,49,True,0,Non labelled
+Mistral,angolabusinessdaily.com,0,0,19,True,0,Slightly Right
+Mistral,ansamed.info,3,1,40,False,-2,Non labelled
+Mistral,anthonyblogan.com,1,2,36,False,1,Far Right
+Mistral,arabnews.com,1,3,186,False,2,Non labelled
+Mistral,arizonadailyindependent.com,2,0,17,False,-2,Slightly Right
+Mistral,armaghi.com,3,2,30,False,-1,Non labelled
+Mistral,aroostooknews.com,0,0,30,True,0,Slightly Right
+Mistral,asianimage.co.uk,3,3,177,True,0,Non labelled
+Mistral,asiansunday.co.uk,3,4,31,False,1,Non labelled
+Mistral,atmoreadvance.com,2,2,53,True,0,Non labelled
+Mistral,bizpacreview.com,2,0,51,False,-2,Far Right
+Mistral,bluestatebluesnews.com,1,1,12,True,0,Far Right
+Mistral,bogalusadailynews.com,2,2,55,True,0,Non labelled
+Mistral,boisecitywire.com,0,0,26,True,0,Slightly Right
+Mistral,brewtonstandard.com,2,2,55,True,0,Non labelled
+Mistral,brexitnews.tv,0,2,70,False,2,Far Right
+Mistral,bylinetimes.com,3,2,104,False,-1,Slightly Left
+Mistral,cantonreporter.com,0,0,29,True,0,Slightly Right
+Mistral,capitalbnews.org,3,1,11,False,-2,Non labelled
+Mistral,cardinalpine.com,1,1,35,True,0,Slightly Left
+Mistral,cbn.com,2,0,39,False,-2,Slightly Right
+Mistral,centennialstatenews.com,0,0,31,True,0,Slightly Right
+Mistral,centralcoloradonews.com,0,0,41,True,0,Slightly Right
+Mistral,centralfloridapost.com,1,1,22,True,0,Far Right
+Mistral,centrallouisiananews.com,0,0,39,True,0,Slightly Right
+Mistral,centralmissourinews.com,0,0,41,True,0,Slightly Right
+Mistral,cfr.org,4,4,8,True,0,Non labelled
+Mistral,checksandbalancesproject.org,1,1,33,True,0,Non labelled
+Mistral,cheddar.com,3,1,24,False,-2,Non labelled
+Mistral,christianheadlines.com,1,2,66,False,1,Slightly Right
+Mistral,christianpost.com,2,2,166,True,0,Slightly Right
+Mistral,cistranfinance.com,0,0,14,True,0,Slightly Right
+Mistral,cityam.com,3,2,63,False,-1,Non labelled
+Mistral,claiborneprogress.net,2,2,50,True,0,Non labelled
+Mistral,clantonadvertiser.com,2,2,49,True,0,Non labelled
+Mistral,clarkcountytoday.com,1,2,8,False,1,Slightly Right
+Mistral,clemmonscourier.net,2,2,52,True,0,Non labelled
+Mistral,cnnespanol.cnn.com,3,1,106,False,-2,Slightly Left
+Mistral,cobbreporter.com,0,0,32,True,0,Slightly Right
+Mistral,conservativetribune.com,3,3,1,True,0,Far Right
+Mistral,conservativeundergroundnews.com,1,1,10,True,0,Far Right
+Mistral,conservativewoman.co.uk,1,2,22,False,1,Far Right
+Mistral,conservtribune.com,3,2,10,False,-1,Far Right
+Mistral,coppercourier.com,1,3,34,False,2,Slightly Left
+Mistral,cordeledispatch.com,2,2,51,True,0,Non labelled
+Mistral,cornishstuff.com,4,2,47,False,-2,Non labelled
+Mistral,counterpunch.org,4,3,48,False,-1,Far Left
+Mistral,creativedestructionmedia.com,0,0,69,True,0,Far Right
+Mistral,currentaffairs.org,3,3,52,True,0,Far Left
+Mistral,dailyboulder.com,1,4,33,False,3,Slightly Left
+Mistral,dailyleader.com,2,2,51,True,0,Non labelled
+Mistral,dailypatriotreport.com,0,1,14,False,1,Slightly Right
+Mistral,dailysignal.com,4,0,193,False,-4,Slightly Right
+Mistral,dailysoundandfury.com,1,1,19,True,0,Far Left
+Mistral,dailywire.com,2,4,49,False,2,Slightly Right
+Mistral,dallasobserver.com,3,2,75,False,-1,Slightly Left
+Mistral,dallasvoice.com,3,4,16,False,1,Slightly Left
+Mistral,data.huffingtonpost.com,3,3,9,True,0,Slightly Left
+Mistral,dcenquirer.com,3,2,55,False,-1,Slightly Right
+Mistral,deadstate.org,4,1,25,False,-3,Slightly Left
+Mistral,decisiondeskhq.com,2,3,34,False,1,Non labelled
+Mistral,deeside.com,2,3,20,False,1,Non labelled
+Mistral,defenseone.com,4,4,104,True,0,Non labelled
+Mistral,democratica.com,3,3,6,True,0,Slightly Left
+Mistral,demopolistimes.com,2,2,48,True,0,Non labelled
+Mistral,deneenborelli.com,1,1,79,True,0,Slightly Right
+Mistral,desantisdaily.com,1,1,10,True,0,Far Right
+Mistral,disrn.com,1,2,1,False,1,Slightly Right
+Mistral,drudgereport.com,2,3,21,False,1,Slightly Right
+Mistral,eaglevalleytimes.com,0,0,33,True,0,Slightly Right
+Mistral,easterneye.biz,2,3,50,False,1,Non labelled
+Mistral,easthudvalleynews.com,0,0,27,True,0,Slightly Right
+Mistral,eastindynews.com,0,0,33,True,0,Slightly Right
+Mistral,eastmichigannews.com,0,0,41,True,0,Slightly Right
+Mistral,eciowanews.com,0,0,40,True,0,Slightly Right
+Mistral,ecmissnews.com,0,0,37,True,0,Slightly Right
+Mistral,ecnorthcarolinanews.com,0,0,28,True,0,Slightly Right
+Mistral,ecoklahomanews.com,0,0,38,True,0,Slightly Right
+Mistral,editorial.huffingtonpost.com,3,3,134,True,0,Slightly Left
+Mistral,educationdailywire.com,0,3,25,False,3,Slightly Right
+Mistral,elections.huffingtonpost.com,3,3,5,True,0,Slightly Left
+Mistral,elizabethton.com,2,2,53,True,0,Non labelled
+Mistral,emeraldcoasttimes.com,0,0,34,True,0,Slightly Right
+Mistral,endtimeheadlines.org,3,2,12,False,-1,Slightly Right
+Mistral,english.alaraby.co.uk,3,3,199,True,0,Non labelled
+Mistral,entertainme.whatfinger.com,0,1,197,False,1,Far Right
+Mistral,euromaidanpress.com,3,3,117,True,0,Slightly Left
+Mistral,euronews.com,1,3,172,False,2,Non labelled
+Mistral,evergreenreporter.com,0,0,36,True,0,Slightly Right
+Mistral,faithwire.com,2,2,17,True,0,Slightly Right
+Mistral,farmvilleherald.com,2,2,53,True,0,Non labelled
+Mistral,fayettevilletoday.com,0,0,34,True,0,Slightly Right
+Mistral,fee.org,3,3,16,True,0,Slightly Right
+Mistral,flagandcross.com,1,3,62,False,2,Far Right
+Mistral,floridaparishnews.com,0,0,35,True,0,Slightly Right
+Mistral,floridapolitics.com,3,1,115,False,-2,Non labelled
+Mistral,foothillsreview.com,0,0,34,True,0,Slightly Right
+Mistral,foramerica.org,2,4,6,False,2,Far Right
+Mistral,foreignpolicy.com,4,4,200,True,0,Slightly Left
+Mistral,franklincountytimes.com,2,2,40,True,0,Non labelled
+Mistral,freebeacon.com,3,3,23,True,0,Slightly Right
+Mistral,freespeech.org,2,2,6,True,0,Far Left
+Mistral,frontpagemag.com,0,1,26,False,1,Far Right
+Mistral,gandernewsroom.com,1,1,43,True,0,Slightly Left
+Mistral,gatewayreporter.com,0,0,36,True,0,Slightly Right
+Mistral,gbnews.uk,3,3,200,True,0,Slightly Right
+Mistral,georgiastarnews.com,1,1,41,True,0,Far Right
+Mistral,gopdailybrief.com,1,1,2,True,0,Far Right
+Mistral,grabien.com,1,0,13,False,-1,Slightly Right
+Mistral,grandrapidsreporter.com,0,0,32,True,0,Slightly Right
+Mistral,greenvilleadvocate.com,2,2,52,True,0,Non labelled
+Mistral,greenvillereporter.com,0,0,39,True,0,Slightly Right
+Mistral,gtrtimes.com,0,0,30,True,0,Slightly Right
+Mistral,harlanenterprise.net,2,2,49,True,0,Non labelled
+Mistral,hartselleenquirer.com,2,2,34,True,0,Non labelled
+Mistral,heartlandsignal.com,2,1,13,False,-1,Slightly Left
+Mistral,henricotimes.com,0,0,27,True,0,Slightly Right
+Mistral,highline.huffingtonpost.com,3,3,9,True,0,Slightly Left
+Mistral,hindstoday.com,0,0,25,True,0,Slightly Right
+Mistral,hongkongfp.com,4,2,31,False,-2,Non labelled
+Mistral,hotair.com,3,1,111,False,-2,Far Right
+Mistral,hudsontoday.com,0,0,24,True,0,Slightly Right
+Mistral,huffingtonpost.com,3,3,6,True,0,Slightly Left
+Mistral,huffpost.com,3,3,3,True,0,Slightly Left
+Mistral,ijr.com,4,3,10,False,-1,Slightly Right
+Mistral,ijr.org,4,3,103,False,-1,Slightly Right
+Mistral,illinoispolicy.org,3,0,13,False,-3,Slightly Right
+Mistral,imperialcanews.com,0,0,30,True,0,Slightly Right
+Mistral,independentchronicle.com,0,0,15,True,0,Slightly Right
+Mistral,indo-caribbean.com,1,1,44,True,0,Non labelled
+Mistral,indystandard.com,0,0,27,True,0,Slightly Right
+Mistral,infacts.org,4,1,54,False,-3,Slightly Left
+Mistral,intellectualtakeout.org,2,2,19,True,0,Slightly Right
+Mistral,intpolicydigest.org,3,4,32,False,1,Non labelled
+Mistral,irishcentral.com,4,3,65,False,-1,Non labelled
+Mistral,irontontribune.com,2,2,32,True,0,Non labelled
+Mistral,jacksonpurchasenews.com,0,0,40,True,0,Slightly Right
+Mistral,jeffcitynews.com,0,0,36,True,0,Slightly Right
+Mistral,jessaminejournal.com,2,2,53,True,0,Non labelled
+Mistral,jewishpress.com,3,2,47,False,-1,Slightly Right
+Mistral,jta.org,4,3,41,False,-1,Non labelled
+Mistral,judicialwatch.org,1,3,14,False,2,Far Right
+Mistral,justsecurity.org,3,4,69,False,1,Slightly Left
+Mistral,justthenews.com,2,0,108,False,-2,Slightly Right
+Mistral,kenbridgevictoriadispatch.com,2,2,55,True,0,Non labelled
+Mistral,kentcotimes.com,0,0,25,True,0,Slightly Right
+Mistral,keystonenewsroom.com,1,4,34,False,3,Far Left
+Mistral,knoxtimes.com,0,0,27,True,0,Slightly Right
+Mistral,koinesune.com,0,2,10,False,2,Slightly Right
+Mistral,kokomostandard.com,0,0,36,True,0,Slightly Right
+Mistral,kyivindependent.com,3,3,59,True,0,Non labelled
+Mistral,labourlist.org,3,3,109,True,0,Slightly Left
+Mistral,lagrangenews.com,2,2,48,True,0,Non labelled
+Mistral,larimernews.com,0,0,29,True,0,Slightly Right
+Mistral,lbc.co.uk,3,3,200,True,0,Non labelled
+Mistral,leaderpub.com,2,2,54,True,0,Non labelled
+Mistral,legalinsurrection.com,2,3,40,False,1,Slightly Right
+Mistral,lehightimes.com,0,0,28,True,0,Slightly Right
+Mistral,lewistontimes.com,0,0,27,True,0,Slightly Right
+Mistral,libertarianinstitute.org,2,3,32,False,1,Slightly Right
+Mistral,lifezette.com,0,0,55,True,0,Slightly Right
+Mistral,linkiesta.it,2,4,3,False,2,Non labelled
+Mistral,litchfieldhillstoday.com,0,0,17,True,0,Slightly Right
+Mistral,live.huffingtonpost.com,3,3,13,True,0,Slightly Left
+Mistral,lobservateur.com,2,2,54,True,0,Non labelled
+Mistral,lowndessignal.com,2,2,51,True,0,Non labelled
+Mistral,lubbocktimes.com,0,0,28,True,0,Slightly Right
+Mistral,luzernetimes.com,0,0,27,True,0,Slightly Right
+Mistral,magnoliastatelive.com,2,2,53,True,0,Non labelled
+Mistral,manilabusinessdaily.com,0,0,20,True,0,Slightly Right
+Mistral,mediarightnews.com,2,1,20,False,-1,Slightly Right
+Mistral,meduza.io,3,3,45,True,0,Non labelled
+Mistral,mercertimes.com,0,0,26,True,0,Slightly Right
+Mistral,merrimackvalleynews.com,0,0,28,True,0,Slightly Right
+Mistral,metrolexnews.com,0,0,27,True,0,Slightly Right
+Mistral,mic.com,3,3,41,True,0,Far Left
+Mistral,middleeasteye.net,3,3,200,True,0,Slightly Left
+Mistral,middlesborodailynews.com,2,2,31,True,0,Non labelled
+Mistral,mikehuckabee.com,1,1,21,True,0,Far Right
+Mistral,morrisleader.com,0,0,27,True,0,Slightly Right
+Mistral,motherjones.com,3,4,87,False,1,Slightly Left
+Mistral,mrctv.org,2,0,40,False,-2,Slightly Right
+Mistral,msmagazine.com,3,3,37,True,0,Far Left
+Mistral,msnbc.com,1,4,51,False,3,Slightly Left
+Mistral,muskegonsun.com,0,0,31,True,0,Slightly Right
+Mistral,muslimnews.co.uk,2,3,63,False,1,Non labelled
+Mistral,mustreadalaska.com,1,1,29,True,0,Far Right
+Mistral,nachdenkseiten.de,3,3,1,True,0,Slightly Left
+Mistral,natchezdemocrat.com,2,2,53,True,0,Non labelled
+Mistral,nationalinterest.org,3,3,21,True,0,Non labelled
+Mistral,nationalmemo.com,2,4,29,False,2,Slightly Left
+Mistral,ncindiananews.com,0,0,39,True,0,Slightly Right
+Mistral,ncncnews.com,0,0,32,True,0,Slightly Right
+Mistral,ndnorthnews.com,0,0,30,True,0,Slightly Right
+Mistral,neatlantanews.com,0,0,38,True,0,Slightly Right
+Mistral,nemontananews.com,0,0,39,True,0,Slightly Right
+Mistral,neohiotimes.com,0,0,33,True,0,Slightly Right
+Mistral,neonnettle.com,1,3,47,False,2,Far Right
+Mistral,netarrantnews.com,0,0,14,True,0,Slightly Right
+Mistral,nevalleytimes.com,0,0,31,True,0,Slightly Right
+Mistral,newjerseyglobe.com,4,3,36,False,-1,Non labelled
+Mistral,news-front.info,0,3,41,False,3,Non labelled
+Mistral,news.sky.com,3,3,200,True,0,Non labelled
+Mistral,newsbusters.org,3,1,112,False,-2,Far Right
+Mistral,newser.com,3,3,46,True,0,Non labelled
+Mistral,nickadamsusa.com,1,1,5,True,0,Slightly Right
+Mistral,nigerianwatch.com,1,2,200,False,1,Non labelled
+Mistral,norcalrecord.com,2,0,75,False,-2,Non labelled
+Mistral,northbirminghamtimes.com,0,0,34,True,0,Slightly Right
+Mistral,northcharlottetoday.com,0,0,31,True,0,Slightly Right
+Mistral,northcoastalnews.com,0,0,37,True,0,Slightly Right
+Mistral,northcolumbusnews.com,0,0,33,True,0,Slightly Right
+Mistral,northessexnews.com,0,0,14,True,0,Slightly Right
+Mistral,northfairfaxnews.com,0,0,15,True,0,Slightly Right
+Mistral,northguilfordnews.com,0,0,26,True,0,Slightly Right
+Mistral,northhamptonnews.com,0,0,24,True,0,Slightly Right
+Mistral,northhoustonnews.com,0,0,20,True,0,Slightly Right
+Mistral,northinlandnews.com,0,0,17,True,0,Slightly Right
+Mistral,northkentuckynews.com,0,0,24,True,0,Slightly Right
+Mistral,northpinellasnews.com,0,0,12,True,0,Slightly Right
+Mistral,northrichmondtoday.com,0,0,31,True,0,Slightly Right
+Mistral,northshorelanews.com,0,0,32,True,0,Slightly Right
+Mistral,notthebee.com,2,2,12,True,0,Slightly Right
+Mistral,ntd.com,1,1,190,True,0,Slightly Right
+Mistral,ntd.tv,1,1,39,True,0,Slightly Right
+Mistral,nwkansasnews.com,0,0,36,True,0,Slightly Right
+Mistral,nwmontananews.com,0,0,35,True,0,Slightly Right
+Mistral,nysun.com,4,0,36,False,-4,Slightly Right
+Mistral,objectivist.co,1,0,55,False,-1,Far Right
+Mistral,observer.com,3,3,99,True,0,Non labelled
+Mistral,offthepress.com,3,1,84,False,-2,Slightly Right
+Mistral,olddominionnews.com,0,0,40,True,0,Slightly Right
+Mistral,orangeleader.com,2,2,51,True,0,Non labelled
+Mistral,orlandostandard.com,0,0,16,True,0,Slightly Right
+Mistral,ourdavie.com,2,2,52,True,0,Non labelled
+Mistral,ourpatriot.com,0,1,19,False,1,Slightly Right
+Mistral,outkick.com,1,1,24,True,0,Slightly Right
+Mistral,oxfordeagle.com,2,2,55,True,0,Non labelled
+Mistral,ozy.com,3,2,1,False,-1,Slightly Left
+Mistral,panews.com,2,2,53,True,0,Non labelled
+Mistral,pantsonfirenews.com,1,1,13,True,0,Far Right
+Mistral,patientdaily.com,0,2,23,False,2,Slightly Right
+Mistral,patriotfetch.com,1,1,25,True,0,Far Right
+Mistral,patriotjournal.org,1,1,2,True,0,Slightly Right
+Mistral,patriotpost.com,1,1,36,True,0,Slightly Right
+Mistral,patriotpost.us,1,1,34,True,0,Slightly Right
+Mistral,patriotpulse.net,1,1,10,True,0,Far Right
+Mistral,patriotsgazette.com,1,1,17,True,0,Far Right
+Mistral,pensacolatimes.com,0,0,25,True,0,Slightly Right
+Mistral,petroplexnews.com,0,0,31,True,0,Slightly Right
+Mistral,picayuneitem.com,2,2,50,True,0,Non labelled
+Mistral,policetribune.com,4,2,20,False,-2,Slightly Right
+Mistral,polinews.org,1,1,13,True,0,Far Left
+Mistral,politicalanimalnews.com,1,1,6,True,0,Far Right
+Mistral,politicalflare.com,2,1,16,False,-1,Slightly Left
+Mistral,politicaljournalreview.com,2,1,2,False,-1,Far Right
+Mistral,politico.eu,4,4,56,True,0,Non labelled
+Mistral,politics.co.uk,2,3,130,False,1,Non labelled
+Mistral,politicshome.com,3,3,294,True,0,Non labelled
+Mistral,prageru.com,1,1,6,True,0,Slightly Right
+Mistral,pravda.com.ua,3,3,33,True,0,Non labelled
+Mistral,prentissheadlight.com,2,2,52,True,0,Non labelled
+Mistral,pressprogress.ca,4,4,20,True,0,Slightly Left
+Mistral,projects.huffingtonpost.com,3,3,22,True,0,Slightly Left
+Mistral,projectveritas.com,1,1,96,True,0,Far Right
+Mistral,projectveritasaction.com,1,1,96,True,0,Far Right
+Mistral,providencereporter.com,0,0,27,True,0,Slightly Right
+Mistral,queenseagle.com,3,3,21,True,0,Non labelled
+Mistral,rabble.ca,4,3,43,False,-1,Slightly Left
+Mistral,readfrontier.org,3,1,22,False,-2,Slightly Left
+Mistral,realclearinvestigations.com,3,3,62,True,0,Slightly Right
+Mistral,realrawnews.com,0,0,77,True,0,Far Right
+Mistral,reason.com,4,3,156,False,-1,Slightly Right
+Mistral,redrightdaily.com,1,1,10,True,0,Far Right
+Mistral,redstate.com,1,2,140,False,1,Far Right
+Mistral,redstatewatcher.com,2,0,50,False,-2,Slightly Right
+Mistral,reitschuster.de,1,0,1,False,-1,Slightly Right
+Mistral,renewedright.com,1,1,13,True,0,Far Right
+Mistral,respectnh.com,1,3,2,False,2,Slightly Right
+Mistral,rewirenewsgroup.com,3,3,13,True,0,Slightly Left
+Mistral,rightnewswire.com,1,1,27,True,0,Far Right
+Mistral,rightwingwatch.org,3,1,40,False,-2,Far Left
+Mistral,riverfronttimes.com,3,4,19,False,1,Slightly Left
+Mistral,roanoke-chowannewsherald.com,2,2,55,True,0,Non labelled
+Mistral,rochesterreporter.com,0,0,22,True,0,Slightly Right
+Mistral,rocklandreporter.com,0,0,29,True,0,Slightly Right
+Mistral,rollcall.com,4,1,32,False,-3,Non labelled
+Mistral,rowannews.com,0,0,26,True,0,Slightly Right
+Mistral,sacorridornews.com,0,0,33,True,0,Slightly Right
+Mistral,salisburypost.com,2,2,58,True,0,Non labelled
+Mistral,sandhillstoday.com,0,0,34,True,0,Slightly Right
+Mistral,sandovalnews.com,0,0,26,True,0,Slightly Right
+Mistral,sarahpalin.com,2,1,5,False,-1,Far Right
+Mistral,savannahstandard.com,0,0,32,True,0,Slightly Right
+Mistral,searizonanews.com,0,0,33,True,0,Slightly Right
+Mistral,segeorgianews.com,0,0,44,True,0,Slightly Right
+Mistral,seindiananews.com,0,0,38,True,0,Slightly Right
+Mistral,selmatimesjournal.com,2,2,49,True,0,Non labelled
+Mistral,senebraskanews.com,0,0,44,True,0,Slightly Right
+Mistral,setennnews.com,0,0,40,True,0,Slightly Right
+Mistral,sfbayview.com,3,2,38,False,-1,Non labelled
+Mistral,shelbycountyreporter.com,2,2,68,True,0,Non labelled
+Mistral,shondaland.com,2,3,116,False,1,Slightly Left
+Mistral,smithfieldtimes.com,2,2,55,True,0,Non labelled
+Mistral,southatlantanews.com,0,0,37,True,0,Slightly Right
+Mistral,southbrowardnews.com,0,0,23,True,0,Slightly Right
+Mistral,southcolumbusnews.com,0,0,26,True,0,Slightly Right
+Mistral,southcotimes.com,0,0,29,True,0,Slightly Right
+Mistral,southdsmnews.com,0,0,32,True,0,Slightly Right
+Mistral,southkingnews.com,0,0,26,True,0,Slightly Right
+Mistral,southknoxnews.com,0,0,33,True,0,Slightly Right
+Mistral,southlouisiananews.com,0,0,35,True,0,Slightly Right
+Mistral,southomahatimes.com,0,0,33,True,0,Slightly Right
+Mistral,southsfbaynews.com,0,0,30,True,0,Slightly Right
+Mistral,southsidevanews.com,0,0,33,True,0,Slightly Right
+Mistral,southsoundtimes.com,0,0,34,True,0,Slightly Right
+Mistral,southtidewaternews.com,0,0,42,True,0,Slightly Right
+Mistral,southtrianglenews.com,0,0,31,True,0,Slightly Right
+Mistral,southtulsatoday.com,0,0,30,True,0,Slightly Right
+Mistral,southwichitanews.com,0,0,30,True,0,Slightly Right
+Mistral,southwinstonsalemnews.com,0,0,31,True,0,Slightly Right
+Mistral,sowisconsintimes.com,0,0,32,True,0,Slightly Right
+Mistral,spiked-online.com,4,3,24,False,-1,Slightly Right
+Mistral,spotlightpa.org,4,1,80,False,-3,Non labelled
+Mistral,state-journal.com,2,2,21,True,0,Non labelled
+Mistral,steadfastdaily.com,1,3,14,False,2,Far Right
+Mistral,stjoebentonharbor.com,0,0,34,True,0,Slightly Right
+Mistral,stlouisreporter.com,0,0,33,True,0,Slightly Right
+Mistral,sturgiscoldwaternews.com,0,0,36,True,0,Slightly Right
+Mistral,suffolknewsherald.com,2,2,52,True,0,Non labelled
+Mistral,swalleghenynews.com,0,0,16,True,0,Slightly Right
+Mistral,swissinfo.ch,4,3,2,False,-1,Non labelled
+Mistral,swmontanatimes.com,0,0,41,True,0,Slightly Right
+Mistral,swr3.de,4,4,1,True,0,Non labelled
+Mistral,swriversidenews.com,0,0,29,True,0,Slightly Right
+Mistral,swtennnews.com,0,0,36,True,0,Slightly Right
+Mistral,swwyomingnews.com,0,0,39,True,0,Slightly Right
+Mistral,talkingpointsmemo.com,3,3,25,True,0,Slightly Left
+Mistral,taz.de,4,0,2,False,-4,Slightly Left
+Mistral,tennesseestar.com,1,1,68,True,0,Slightly Right
+Mistral,texastribune.org,4,3,4,False,-1,Non labelled
+Mistral,theamericanconservative.com,2,2,16,True,0,Far Right
+Mistral,theamericanonews.com,1,1,32,True,0,Far Left
+Mistral,thebipartisanpress.com,3,1,5,False,-2,Non labelled
+Mistral,theblaze.com,2,4,68,False,2,Slightly Right
+Mistral,thecanary.co,3,3,37,True,0,Far Left
+Mistral,thecharlottegazette.com,2,2,55,True,0,Non labelled
+Mistral,thecoastlandtimes.com,2,2,55,True,0,Non labelled
+Mistral,thecountersignal.com,0,2,30,False,2,Non labelled
+Mistral,thedcpatriot.com,0,1,21,False,1,Far Right
+Mistral,thefirsttv.com,2,1,1,False,-1,Slightly Right
+Mistral,thefulcrum.us,3,3,7,True,0,Slightly Left
+Mistral,thegrayzone.com,0,3,86,False,3,Far Left
+Mistral,theguardian.com,4,3,200,False,-1,Slightly Left
+Mistral,theguardiansofdemocracy.com,1,1,59,True,0,Far Left
+Mistral,theinteriorjournal.com,2,2,46,True,0,Non labelled
+Mistral,thejc.com,3,3,146,True,0,Non labelled
+Mistral,thelibertarianrepublic.com,3,3,33,True,0,Slightly Right
+Mistral,thelily.com,4,1,25,False,-3,Non labelled
+Mistral,thelondoneconomic.com,4,3,76,False,-1,Slightly Left
+Mistral,themadisonrecord.com,2,2,44,True,0,Non labelled
+Mistral,themichiganstar.com,1,1,3,True,0,Slightly Right
+Mistral,theminnesotasun.com,1,1,11,True,0,Slightly Right
+Mistral,thenationaltelegraph.com,1,0,5,False,-1,Slightly Right
+Mistral,thenevadaglobe.com,3,1,45,False,-2,Slightly Right
+Mistral,thenewcivilrightsmovement.com,3,4,28,False,1,Slightly Left
+Mistral,theohiostar.com,1,1,38,True,0,Slightly Right
+Mistral,thepatriotjournal.com,1,1,102,True,0,Slightly Right
+Mistral,thepoliticalinsider.com,3,1,25,False,-2,Far Right
+Mistral,thepostmillennial.com,3,1,46,False,-2,Slightly Right
+Mistral,thepostsearchlight.com,2,3,1,False,1,Non labelled
+Mistral,theroot.com,3,2,33,False,-1,Far Left
+Mistral,thesnaponline.com,2,2,50,True,0,Non labelled
+Mistral,thesun.co.uk,2,3,170,False,1,Slightly Right
+Mistral,thewashingtondailynews.com,2,2,61,True,0,Non labelled
+Mistral,theweek.com,4,3,15,False,-1,Slightly Left
+Mistral,thewildcard.com,3,3,12,True,0,Far Right
+Mistral,tnc.news,3,0,1,False,-3,Slightly Right
+Mistral,toddstarnes.com,2,1,14,False,-1,Slightly Right
+Mistral,topekasun.com,0,0,33,True,0,Slightly Right
+Mistral,townhall.com,2,1,169,False,-1,Far Right
+Mistral,treasurecoastsun.com,0,0,35,True,0,Slightly Right
+Mistral,treasurevalleytimes.com,0,0,41,True,0,Slightly Right
+Mistral,tribunemag.co.uk,3,4,40,False,1,Far Left
+Mistral,troymessenger.com,2,2,57,True,0,Non labelled
+Mistral,truthdig.com,3,3,97,True,0,Slightly Left
+Mistral,truthout.org,3,3,39,True,0,Far Left
+Mistral,tryondailybulletin.com,2,2,51,True,0,Non labelled
+Mistral,tuscarawasnews.com,0,0,23,True,0,Slightly Right
+Mistral,twitchy.com,1,3,87,False,2,Far Right
+Mistral,txrealtynews.com,0,0,50,True,0,Slightly Right
+Mistral,ukdefencejournal.org.uk,4,4,31,True,0,Non labelled
+Mistral,unioncountyreview.com,0,0,28,True,0,Slightly Right
+Mistral,unmuzzlednews.com,1,1,10,True,0,Far Right
+Mistral,upnorthnewswi.com,1,1,31,True,0,Slightly Left
+Mistral,utahvalleytimes.com,0,0,27,True,0,Slightly Right
+Mistral,utopia.de,4,3,53,False,-1,Far Left
+Mistral,vadogwood.com,1,1,18,True,0,Slightly Left
+Mistral,valiantnews.com,2,0,42,False,-2,Far Right
+Mistral,valleytimes-news.com,2,2,51,True,0,Non labelled
+Mistral,vicksburgpost.com,2,2,50,True,0,Non labelled
+Mistral,w-j.co,3,3,43,True,0,Far Right
+Mistral,washingtonmonthly.com,4,3,28,False,-1,Slightly Left
+Mistral,waterfordtoday.com,0,0,23,True,0,Slightly Right
+Mistral,waterlootimes.com,0,0,34,True,0,Slightly Right
+Mistral,wcminnesotanews.com,0,0,37,True,0,Slightly Right
+Mistral,westatlantanews.com,0,0,34,True,0,Slightly Right
+Mistral,westernjournal.com,3,3,5,True,0,Far Right
+Mistral,westernjournalism.com,3,3,64,True,0,Far Right
+Mistral,westhamiltonnews.com,0,0,21,True,0,Slightly Right
+Mistral,westindynews.com,0,0,25,True,0,Slightly Right
+Mistral,westlatimes.com,0,0,27,True,0,Slightly Right
+Mistral,westlucasnews.com,0,0,29,True,0,Slightly Right
+Mistral,westsgvnews.com,0,0,17,True,0,Slightly Right
+Mistral,weststarknews.com,0,0,14,True,0,Slightly Right
+Mistral,westvolusianews.com,0,0,12,True,0,Slightly Right
+Mistral,williamsonnews.com,0,0,25,True,0,Slightly Right
+Mistral,winchestersun.com,2,2,55,True,0,Non labelled
+Mistral,yellowhammernews.com,3,2,44,False,-1,Slightly Right
+GPT-5-mini (zero-shot),5pillarsuk.com,3,1,17,False,-2,Slightly Left
+GPT-5-mini (zero-shot),aapsonline.org,0,0,9,True,0,Far Right
+GPT-5-mini (zero-shot),aclu.org,3,1,89,False,-2,Far Left
+GPT-5-mini (zero-shot),aei.org,3,3,145,True,0,Slightly Right
+GPT-5-mini (zero-shot),africanvoiceonline.co.uk,2,2,22,True,0,Non labelled
+GPT-5-mini (zero-shot),alabamanow.com,2,2,51,True,0,Non labelled
+GPT-5-mini (zero-shot),albertleatribune.com,2,2,54,True,0,Non labelled
+GPT-5-mini (zero-shot),aldianews.com,3,2,5,False,-1,Slightly Left
+GPT-5-mini (zero-shot),algemeiner.com,3,2,35,False,-1,Non labelled
+GPT-5-mini (zero-shot),alternet.org,1,2,198,False,1,Far Left
+GPT-5-mini (zero-shot),americanlookout.com,1,2,52,False,1,Far Right
+GPT-5-mini (zero-shot),americanpress.com,2,2,51,True,0,Non labelled
+GPT-5-mini (zero-shot),americanprogress.org,4,2,59,False,-2,Far Left
+GPT-5-mini (zero-shot),americanwirenews.com,2,1,77,False,-1,Slightly Right
+GPT-5-mini (zero-shot),americustimesrecorder.com,2,3,58,False,1,Non labelled
+GPT-5-mini (zero-shot),amgreatness.com,1,0,49,False,-1,Slightly Right
+GPT-5-mini (zero-shot),ammoland.com,3,1,106,False,-2,Slightly Right
+GPT-5-mini (zero-shot),amnews.com,2,2,53,True,0,Non labelled
+GPT-5-mini (zero-shot),analyzingamerica.org,3,2,29,False,-1,Slightly Right
+GPT-5-mini (zero-shot),andalusiastarnews.com,2,2,49,True,0,Non labelled
+GPT-5-mini (zero-shot),angolabusinessdaily.com,0,2,19,False,2,Slightly Right
+GPT-5-mini (zero-shot),ansamed.info,3,3,40,True,0,Non labelled
+GPT-5-mini (zero-shot),anthonyblogan.com,1,1,36,True,0,Far Right
+GPT-5-mini (zero-shot),arabnews.com,1,2,186,False,1,Non labelled
+GPT-5-mini (zero-shot),arizonadailyindependent.com,2,2,17,True,0,Slightly Right
+GPT-5-mini (zero-shot),armaghi.com,3,2,30,False,-1,Non labelled
+GPT-5-mini (zero-shot),aroostooknews.com,0,2,30,False,2,Slightly Right
+GPT-5-mini (zero-shot),asianimage.co.uk,3,2,177,False,-1,Non labelled
+GPT-5-mini (zero-shot),asiansunday.co.uk,3,2,31,False,-1,Non labelled
+GPT-5-mini (zero-shot),atmoreadvance.com,2,2,53,True,0,Non labelled
+GPT-5-mini (zero-shot),bizpacreview.com,2,1,51,False,-1,Far Right
+GPT-5-mini (zero-shot),bluestatebluesnews.com,1,1,12,True,0,Far Right
+GPT-5-mini (zero-shot),bogalusadailynews.com,2,2,55,True,0,Non labelled
+GPT-5-mini (zero-shot),boisecitywire.com,0,2,26,False,2,Slightly Right
+GPT-5-mini (zero-shot),brewtonstandard.com,2,2,55,True,0,Non labelled
+GPT-5-mini (zero-shot),brexitnews.tv,0,1,70,False,1,Far Right
+GPT-5-mini (zero-shot),bylinetimes.com,3,2,104,False,-1,Slightly Left
+GPT-5-mini (zero-shot),cantonreporter.com,0,2,29,False,2,Slightly Right
+GPT-5-mini (zero-shot),capitalbnews.org,3,2,11,False,-1,Non labelled
+GPT-5-mini (zero-shot),cardinalpine.com,1,2,35,False,1,Slightly Left
+GPT-5-mini (zero-shot),cbn.com,2,1,39,False,-1,Slightly Right
+GPT-5-mini (zero-shot),centennialstatenews.com,0,2,31,False,2,Slightly Right
+GPT-5-mini (zero-shot),centralcoloradonews.com,0,2,41,False,2,Slightly Right
+GPT-5-mini (zero-shot),centralfloridapost.com,1,0,22,False,-1,Far Right
+GPT-5-mini (zero-shot),centrallouisiananews.com,0,2,39,False,2,Slightly Right
+GPT-5-mini (zero-shot),centralmissourinews.com,0,2,41,False,2,Slightly Right
+GPT-5-mini (zero-shot),cfr.org,4,2,8,False,-2,Non labelled
+GPT-5-mini (zero-shot),checksandbalancesproject.org,1,3,33,False,2,Non labelled
+GPT-5-mini (zero-shot),cheddar.com,3,4,24,False,1,Non labelled
+GPT-5-mini (zero-shot),christianheadlines.com,1,2,66,False,1,Slightly Right
+GPT-5-mini (zero-shot),christianpost.com,2,2,166,True,0,Slightly Right
+GPT-5-mini (zero-shot),cistranfinance.com,0,3,14,False,3,Slightly Right
+GPT-5-mini (zero-shot),cityam.com,3,2,63,False,-1,Non labelled
+GPT-5-mini (zero-shot),claiborneprogress.net,2,2,50,True,0,Non labelled
+GPT-5-mini (zero-shot),clantonadvertiser.com,2,3,49,False,1,Non labelled
+GPT-5-mini (zero-shot),clarkcountytoday.com,1,2,8,False,1,Slightly Right
+GPT-5-mini (zero-shot),clemmonscourier.net,2,2,52,True,0,Non labelled
+GPT-5-mini (zero-shot),cnnespanol.cnn.com,3,3,106,True,0,Slightly Left
+GPT-5-mini (zero-shot),cobbreporter.com,0,2,32,False,2,Slightly Right
+GPT-5-mini (zero-shot),conservativetribune.com,3,1,1,False,-2,Far Right
+GPT-5-mini (zero-shot),conservativeundergroundnews.com,1,0,10,False,-1,Far Right
+GPT-5-mini (zero-shot),conservativewoman.co.uk,1,0,22,False,-1,Far Right
+GPT-5-mini (zero-shot),conservtribune.com,3,1,10,False,-2,Far Right
+GPT-5-mini (zero-shot),coppercourier.com,1,2,34,False,1,Slightly Left
+GPT-5-mini (zero-shot),cordeledispatch.com,2,2,51,True,0,Non labelled
+GPT-5-mini (zero-shot),cornishstuff.com,4,2,47,False,-2,Non labelled
+GPT-5-mini (zero-shot),counterpunch.org,4,1,48,False,-3,Far Left
+GPT-5-mini (zero-shot),creativedestructionmedia.com,0,0,69,True,0,Far Right
+GPT-5-mini (zero-shot),currentaffairs.org,3,2,52,False,-1,Far Left
+GPT-5-mini (zero-shot),dailyboulder.com,1,2,33,False,1,Slightly Left
+GPT-5-mini (zero-shot),dailyleader.com,2,2,51,True,0,Non labelled
+GPT-5-mini (zero-shot),dailypatriotreport.com,0,0,14,True,0,Slightly Right
+GPT-5-mini (zero-shot),dailysignal.com,4,1,193,False,-3,Slightly Right
+GPT-5-mini (zero-shot),dailysoundandfury.com,1,1,19,True,0,Far Left
+GPT-5-mini (zero-shot),dailywire.com,2,2,49,True,0,Slightly Right
+GPT-5-mini (zero-shot),dallasobserver.com,3,1,75,False,-2,Slightly Left
+GPT-5-mini (zero-shot),dallasvoice.com,3,2,16,False,-1,Slightly Left
+GPT-5-mini (zero-shot),data.huffingtonpost.com,3,3,9,True,0,Slightly Left
+GPT-5-mini (zero-shot),dcenquirer.com,3,2,55,False,-1,Slightly Right
+GPT-5-mini (zero-shot),deadstate.org,4,2,25,False,-2,Slightly Left
+GPT-5-mini (zero-shot),decisiondeskhq.com,2,2,34,True,0,Non labelled
+GPT-5-mini (zero-shot),deeside.com,2,2,20,True,0,Non labelled
+GPT-5-mini (zero-shot),defenseone.com,4,3,104,False,-1,Non labelled
+GPT-5-mini (zero-shot),democratica.com,3,1,6,False,-2,Slightly Left
+GPT-5-mini (zero-shot),demopolistimes.com,2,3,48,False,1,Non labelled
+GPT-5-mini (zero-shot),deneenborelli.com,1,2,79,False,1,Slightly Right
+GPT-5-mini (zero-shot),desantisdaily.com,1,0,10,False,-1,Far Right
+GPT-5-mini (zero-shot),disrn.com,1,3,1,False,2,Slightly Right
+GPT-5-mini (zero-shot),drudgereport.com,2,3,21,False,1,Slightly Right
+GPT-5-mini (zero-shot),eaglevalleytimes.com,0,2,33,False,2,Slightly Right
+GPT-5-mini (zero-shot),easterneye.biz,2,2,50,True,0,Non labelled
+GPT-5-mini (zero-shot),easthudvalleynews.com,0,2,27,False,2,Slightly Right
+GPT-5-mini (zero-shot),eastindynews.com,0,2,33,False,2,Slightly Right
+GPT-5-mini (zero-shot),eastmichigannews.com,0,2,41,False,2,Slightly Right
+GPT-5-mini (zero-shot),eciowanews.com,0,2,40,False,2,Slightly Right
+GPT-5-mini (zero-shot),ecmissnews.com,0,2,37,False,2,Slightly Right
+GPT-5-mini (zero-shot),ecnorthcarolinanews.com,0,2,28,False,2,Slightly Right
+GPT-5-mini (zero-shot),ecoklahomanews.com,0,2,38,False,2,Slightly Right
+GPT-5-mini (zero-shot),editorial.huffingtonpost.com,3,3,134,True,0,Slightly Left
+GPT-5-mini (zero-shot),educationdailywire.com,0,2,25,False,2,Slightly Right
+GPT-5-mini (zero-shot),elections.huffingtonpost.com,3,3,5,True,0,Slightly Left
+GPT-5-mini (zero-shot),elizabethton.com,2,2,53,True,0,Non labelled
+GPT-5-mini (zero-shot),emeraldcoasttimes.com,0,2,34,False,2,Slightly Right
+GPT-5-mini (zero-shot),endtimeheadlines.org,3,2,12,False,-1,Slightly Right
+GPT-5-mini (zero-shot),english.alaraby.co.uk,3,2,199,False,-1,Non labelled
+GPT-5-mini (zero-shot),entertainme.whatfinger.com,0,0,197,True,0,Far Right
+GPT-5-mini (zero-shot),euromaidanpress.com,3,2,117,False,-1,Slightly Left
+GPT-5-mini (zero-shot),euronews.com,1,2,172,False,1,Non labelled
+GPT-5-mini (zero-shot),evergreenreporter.com,0,3,36,False,3,Slightly Right
+GPT-5-mini (zero-shot),faithwire.com,2,2,17,True,0,Slightly Right
+GPT-5-mini (zero-shot),farmvilleherald.com,2,2,53,True,0,Non labelled
+GPT-5-mini (zero-shot),fayettevilletoday.com,0,2,34,False,2,Slightly Right
+GPT-5-mini (zero-shot),fee.org,3,2,16,False,-1,Slightly Right
+GPT-5-mini (zero-shot),flagandcross.com,1,0,62,False,-1,Far Right
+GPT-5-mini (zero-shot),floridaparishnews.com,0,2,35,False,2,Slightly Right
+GPT-5-mini (zero-shot),floridapolitics.com,3,2,115,False,-1,Non labelled
+GPT-5-mini (zero-shot),foothillsreview.com,0,2,34,False,2,Slightly Right
+GPT-5-mini (zero-shot),foramerica.org,2,1,6,False,-1,Far Right
+GPT-5-mini (zero-shot),foreignpolicy.com,4,3,200,False,-1,Slightly Left
+GPT-5-mini (zero-shot),franklincountytimes.com,2,2,40,True,0,Non labelled
+GPT-5-mini (zero-shot),freebeacon.com,3,1,23,False,-2,Slightly Right
+GPT-5-mini (zero-shot),freespeech.org,2,2,6,True,0,Far Left
+GPT-5-mini (zero-shot),frontpagemag.com,0,0,26,True,0,Far Right
+GPT-5-mini (zero-shot),gandernewsroom.com,1,2,43,False,1,Slightly Left
+GPT-5-mini (zero-shot),gatewayreporter.com,0,2,36,False,2,Slightly Right
+GPT-5-mini (zero-shot),gbnews.uk,3,2,200,False,-1,Slightly Right
+GPT-5-mini (zero-shot),georgiastarnews.com,1,2,41,False,1,Far Right
+GPT-5-mini (zero-shot),gopdailybrief.com,1,0,2,False,-1,Far Right
+GPT-5-mini (zero-shot),grabien.com,1,1,13,True,0,Slightly Right
+GPT-5-mini (zero-shot),grandrapidsreporter.com,0,2,32,False,2,Slightly Right
+GPT-5-mini (zero-shot),greenvilleadvocate.com,2,2,52,True,0,Non labelled
+GPT-5-mini (zero-shot),greenvillereporter.com,0,2,39,False,2,Slightly Right
+GPT-5-mini (zero-shot),gtrtimes.com,0,2,30,False,2,Slightly Right
+GPT-5-mini (zero-shot),harlanenterprise.net,2,2,49,True,0,Non labelled
+GPT-5-mini (zero-shot),hartselleenquirer.com,2,2,34,True,0,Non labelled
+GPT-5-mini (zero-shot),heartlandsignal.com,2,2,13,True,0,Slightly Left
+GPT-5-mini (zero-shot),henricotimes.com,0,2,27,False,2,Slightly Right
+GPT-5-mini (zero-shot),highline.huffingtonpost.com,3,1,9,False,-2,Slightly Left
+GPT-5-mini (zero-shot),hindstoday.com,0,2,25,False,2,Slightly Right
+GPT-5-mini (zero-shot),hongkongfp.com,4,3,31,False,-1,Non labelled
+GPT-5-mini (zero-shot),hotair.com,3,1,111,False,-2,Far Right
+GPT-5-mini (zero-shot),hudsontoday.com,0,2,24,False,2,Slightly Right
+GPT-5-mini (zero-shot),huffingtonpost.com,3,2,6,False,-1,Slightly Left
+GPT-5-mini (zero-shot),huffpost.com,3,3,3,True,0,Slightly Left
+GPT-5-mini (zero-shot),ijr.com,4,2,10,False,-2,Slightly Right
+GPT-5-mini (zero-shot),ijr.org,4,2,102,False,-2,Slightly Right
+GPT-5-mini (zero-shot),illinoispolicy.org,3,2,13,False,-1,Slightly Right
+GPT-5-mini (zero-shot),imperialcanews.com,0,2,30,False,2,Slightly Right
+GPT-5-mini (zero-shot),independentchronicle.com,0,1,15,False,1,Slightly Right
+GPT-5-mini (zero-shot),indo-caribbean.com,1,1,44,True,0,Non labelled
+GPT-5-mini (zero-shot),indystandard.com,0,2,27,False,2,Slightly Right
+GPT-5-mini (zero-shot),infacts.org,4,2,54,False,-2,Slightly Left
+GPT-5-mini (zero-shot),intellectualtakeout.org,2,1,19,False,-1,Slightly Right
+GPT-5-mini (zero-shot),intpolicydigest.org,3,1,32,False,-2,Non labelled
+GPT-5-mini (zero-shot),irishcentral.com,4,2,65,False,-2,Non labelled
+GPT-5-mini (zero-shot),irontontribune.com,2,2,32,True,0,Non labelled
+GPT-5-mini (zero-shot),jacksonpurchasenews.com,0,2,40,False,2,Slightly Right
+GPT-5-mini (zero-shot),jeffcitynews.com,0,2,36,False,2,Slightly Right
+GPT-5-mini (zero-shot),jessaminejournal.com,2,2,53,True,0,Non labelled
+GPT-5-mini (zero-shot),jewishpress.com,3,2,47,False,-1,Slightly Right
+GPT-5-mini (zero-shot),jta.org,4,3,41,False,-1,Non labelled
+GPT-5-mini (zero-shot),judicialwatch.org,1,0,14,False,-1,Far Right
+GPT-5-mini (zero-shot),justsecurity.org,3,3,69,True,0,Slightly Left
+GPT-5-mini (zero-shot),justthenews.com,2,2,108,True,0,Slightly Right
+GPT-5-mini (zero-shot),kenbridgevictoriadispatch.com,2,2,55,True,0,Non labelled
+GPT-5-mini (zero-shot),kentcotimes.com,0,2,25,False,2,Slightly Right
+GPT-5-mini (zero-shot),keystonenewsroom.com,1,2,34,False,1,Far Left
+GPT-5-mini (zero-shot),knoxtimes.com,0,2,27,False,2,Slightly Right
+GPT-5-mini (zero-shot),koinesune.com,0,2,10,False,2,Slightly Right
+GPT-5-mini (zero-shot),kokomostandard.com,0,2,36,False,2,Slightly Right
+GPT-5-mini (zero-shot),kyivindependent.com,3,2,59,False,-1,Non labelled
+GPT-5-mini (zero-shot),labourlist.org,3,2,109,False,-1,Slightly Left
+GPT-5-mini (zero-shot),lagrangenews.com,2,2,48,True,0,Non labelled
+GPT-5-mini (zero-shot),larimernews.com,0,2,29,False,2,Slightly Right
+GPT-5-mini (zero-shot),lbc.co.uk,3,3,200,True,0,Non labelled
+GPT-5-mini (zero-shot),leaderpub.com,2,2,54,True,0,Non labelled
+GPT-5-mini (zero-shot),legalinsurrection.com,2,1,40,False,-1,Slightly Right
+GPT-5-mini (zero-shot),lehightimes.com,0,2,28,False,2,Slightly Right
+GPT-5-mini (zero-shot),lewistontimes.com,0,2,27,False,2,Slightly Right
+GPT-5-mini (zero-shot),libertarianinstitute.org,2,1,32,False,-1,Slightly Right
+GPT-5-mini (zero-shot),lifezette.com,0,1,55,False,1,Slightly Right
+GPT-5-mini (zero-shot),linkiesta.it,2,2,3,True,0,Non labelled
+GPT-5-mini (zero-shot),litchfieldhillstoday.com,0,2,17,False,2,Slightly Right
+GPT-5-mini (zero-shot),live.huffingtonpost.com,3,3,13,True,0,Slightly Left
+GPT-5-mini (zero-shot),lobservateur.com,2,2,54,True,0,Non labelled
+GPT-5-mini (zero-shot),lowndessignal.com,2,2,51,True,0,Non labelled
+GPT-5-mini (zero-shot),lubbocktimes.com,0,2,28,False,2,Slightly Right
+GPT-5-mini (zero-shot),luzernetimes.com,0,2,27,False,2,Slightly Right
+GPT-5-mini (zero-shot),magnoliastatelive.com,2,2,53,True,0,Non labelled
+GPT-5-mini (zero-shot),manilabusinessdaily.com,0,3,20,False,3,Slightly Right
+GPT-5-mini (zero-shot),mediarightnews.com,2,1,20,False,-1,Slightly Right
+GPT-5-mini (zero-shot),meduza.io,3,3,45,True,0,Non labelled
+GPT-5-mini (zero-shot),mercertimes.com,0,3,26,False,3,Slightly Right
+GPT-5-mini (zero-shot),merrimackvalleynews.com,0,2,28,False,2,Slightly Right
+GPT-5-mini (zero-shot),metrolexnews.com,0,2,27,False,2,Slightly Right
+GPT-5-mini (zero-shot),mic.com,3,2,41,False,-1,Far Left
+GPT-5-mini (zero-shot),middleeasteye.net,3,2,200,False,-1,Slightly Left
+GPT-5-mini (zero-shot),middlesborodailynews.com,2,2,31,True,0,Non labelled
+GPT-5-mini (zero-shot),mikehuckabee.com,1,1,21,True,0,Far Right
+GPT-5-mini (zero-shot),morrisleader.com,0,2,27,False,2,Slightly Right
+GPT-5-mini (zero-shot),motherjones.com,3,3,87,True,0,Slightly Left
+GPT-5-mini (zero-shot),mrctv.org,2,1,40,False,-1,Slightly Right
+GPT-5-mini (zero-shot),msmagazine.com,3,2,37,False,-1,Far Left
+GPT-5-mini (zero-shot),msnbc.com,1,1,51,True,0,Slightly Left
+GPT-5-mini (zero-shot),muskegonsun.com,0,2,31,False,2,Slightly Right
+GPT-5-mini (zero-shot),muslimnews.co.uk,2,2,63,True,0,Non labelled
+GPT-5-mini (zero-shot),mustreadalaska.com,1,2,29,False,1,Far Right
+GPT-5-mini (zero-shot),nachdenkseiten.de,3,2,1,False,-1,Slightly Left
+GPT-5-mini (zero-shot),natchezdemocrat.com,2,2,53,True,0,Non labelled
+GPT-5-mini (zero-shot),nationalinterest.org,3,2,21,False,-1,Non labelled
+GPT-5-mini (zero-shot),nationalmemo.com,2,3,29,False,1,Slightly Left
+GPT-5-mini (zero-shot),ncindiananews.com,0,2,39,False,2,Slightly Right
+GPT-5-mini (zero-shot),ncncnews.com,0,2,32,False,2,Slightly Right
+GPT-5-mini (zero-shot),ndnorthnews.com,0,2,30,False,2,Slightly Right
+GPT-5-mini (zero-shot),neatlantanews.com,0,2,38,False,2,Slightly Right
+GPT-5-mini (zero-shot),nemontananews.com,0,2,39,False,2,Slightly Right
+GPT-5-mini (zero-shot),neohiotimes.com,0,2,33,False,2,Slightly Right
+GPT-5-mini (zero-shot),neonnettle.com,1,0,47,False,-1,Far Right
+GPT-5-mini (zero-shot),netarrantnews.com,0,2,14,False,2,Slightly Right
+GPT-5-mini (zero-shot),nevalleytimes.com,0,2,31,False,2,Slightly Right
+GPT-5-mini (zero-shot),newjerseyglobe.com,4,2,36,False,-2,Non labelled
+GPT-5-mini (zero-shot),news-front.info,0,0,41,True,0,Non labelled
+GPT-5-mini (zero-shot),news.sky.com,3,3,200,True,0,Non labelled
+GPT-5-mini (zero-shot),newsbusters.org,3,0,112,False,-3,Far Right
+GPT-5-mini (zero-shot),newser.com,3,3,46,True,0,Non labelled
+GPT-5-mini (zero-shot),nickadamsusa.com,1,0,5,False,-1,Slightly Right
+GPT-5-mini (zero-shot),nigerianwatch.com,1,2,200,False,1,Non labelled
+GPT-5-mini (zero-shot),norcalrecord.com,2,2,75,True,0,Non labelled
+GPT-5-mini (zero-shot),northbirminghamtimes.com,0,2,34,False,2,Slightly Right
+GPT-5-mini (zero-shot),northcharlottetoday.com,0,2,31,False,2,Slightly Right
+GPT-5-mini (zero-shot),northcoastalnews.com,0,2,37,False,2,Slightly Right
+GPT-5-mini (zero-shot),northcolumbusnews.com,0,2,33,False,2,Slightly Right
+GPT-5-mini (zero-shot),northessexnews.com,0,2,14,False,2,Slightly Right
+GPT-5-mini (zero-shot),northfairfaxnews.com,0,2,15,False,2,Slightly Right
+GPT-5-mini (zero-shot),northguilfordnews.com,0,2,26,False,2,Slightly Right
+GPT-5-mini (zero-shot),northhamptonnews.com,0,2,24,False,2,Slightly Right
+GPT-5-mini (zero-shot),northhoustonnews.com,0,2,20,False,2,Slightly Right
+GPT-5-mini (zero-shot),northinlandnews.com,0,2,17,False,2,Slightly Right
+GPT-5-mini (zero-shot),northkentuckynews.com,0,2,24,False,2,Slightly Right
+GPT-5-mini (zero-shot),northpinellasnews.com,0,2,12,False,2,Slightly Right
+GPT-5-mini (zero-shot),northrichmondtoday.com,0,2,31,False,2,Slightly Right
+GPT-5-mini (zero-shot),northshorelanews.com,0,2,32,False,2,Slightly Right
+GPT-5-mini (zero-shot),notthebee.com,2,1,12,False,-1,Slightly Right
+GPT-5-mini (zero-shot),ntd.com,1,2,190,False,1,Slightly Right
+GPT-5-mini (zero-shot),ntd.tv,1,2,39,False,1,Slightly Right
+GPT-5-mini (zero-shot),nwkansasnews.com,0,2,36,False,2,Slightly Right
+GPT-5-mini (zero-shot),nwmontananews.com,0,2,35,False,2,Slightly Right
+GPT-5-mini (zero-shot),nysun.com,4,2,36,False,-2,Slightly Right
+GPT-5-mini (zero-shot),objectivist.co,1,1,55,True,0,Far Right
+GPT-5-mini (zero-shot),observer.com,3,2,99,False,-1,Non labelled
+GPT-5-mini (zero-shot),offthepress.com,3,2,84,False,-1,Slightly Right
+GPT-5-mini (zero-shot),olddominionnews.com,0,3,40,False,3,Slightly Right
+GPT-5-mini (zero-shot),orangeleader.com,2,2,51,True,0,Non labelled
+GPT-5-mini (zero-shot),orlandostandard.com,0,2,16,False,2,Slightly Right
+GPT-5-mini (zero-shot),ourdavie.com,2,2,52,True,0,Non labelled
+GPT-5-mini (zero-shot),ourpatriot.com,0,0,19,True,0,Slightly Right
+GPT-5-mini (zero-shot),outkick.com,1,1,24,True,0,Slightly Right
+GPT-5-mini (zero-shot),oxfordeagle.com,2,3,55,False,1,Non labelled
+GPT-5-mini (zero-shot),ozy.com,3,1,1,False,-2,Slightly Left
+GPT-5-mini (zero-shot),panews.com,2,2,53,True,0,Non labelled
+GPT-5-mini (zero-shot),pantsonfirenews.com,1,0,13,False,-1,Far Right
+GPT-5-mini (zero-shot),patientdaily.com,0,2,23,False,2,Slightly Right
+GPT-5-mini (zero-shot),patriotfetch.com,1,0,25,False,-1,Far Right
+GPT-5-mini (zero-shot),patriotjournal.org,1,0,2,False,-1,Slightly Right
+GPT-5-mini (zero-shot),patriotpost.com,1,0,36,False,-1,Slightly Right
+GPT-5-mini (zero-shot),patriotpost.us,1,1,34,True,0,Slightly Right
+GPT-5-mini (zero-shot),patriotpulse.net,1,0,10,False,-1,Far Right
+GPT-5-mini (zero-shot),patriotsgazette.com,1,1,17,True,0,Far Right
+GPT-5-mini (zero-shot),pensacolatimes.com,0,2,25,False,2,Slightly Right
+GPT-5-mini (zero-shot),petroplexnews.com,0,2,31,False,2,Slightly Right
+GPT-5-mini (zero-shot),picayuneitem.com,2,2,50,True,0,Non labelled
+GPT-5-mini (zero-shot),policetribune.com,4,2,20,False,-2,Slightly Right
+GPT-5-mini (zero-shot),polinews.org,1,1,13,True,0,Far Left
+GPT-5-mini (zero-shot),politicalanimalnews.com,1,0,6,False,-1,Far Right
+GPT-5-mini (zero-shot),politicalflare.com,2,0,16,False,-2,Slightly Left
+GPT-5-mini (zero-shot),politicaljournalreview.com,2,0,2,False,-2,Far Right
+GPT-5-mini (zero-shot),politico.eu,4,3,56,False,-1,Non labelled
+GPT-5-mini (zero-shot),politics.co.uk,2,2,130,True,0,Non labelled
+GPT-5-mini (zero-shot),politicshome.com,3,2,294,False,-1,Non labelled
+GPT-5-mini (zero-shot),prageru.com,1,2,6,False,1,Slightly Right
+GPT-5-mini (zero-shot),pravda.com.ua,3,2,33,False,-1,Non labelled
+GPT-5-mini (zero-shot),prentissheadlight.com,2,2,52,True,0,Non labelled
+GPT-5-mini (zero-shot),pressprogress.ca,4,2,20,False,-2,Slightly Left
+GPT-5-mini (zero-shot),projects.huffingtonpost.com,3,2,22,False,-1,Slightly Left
+GPT-5-mini (zero-shot),projectveritas.com,1,0,95,False,-1,Far Right
+GPT-5-mini (zero-shot),projectveritasaction.com,1,0,95,False,-1,Far Right
+GPT-5-mini (zero-shot),providencereporter.com,0,2,27,False,2,Slightly Right
+GPT-5-mini (zero-shot),queenseagle.com,3,2,21,False,-1,Non labelled
+GPT-5-mini (zero-shot),rabble.ca,4,1,43,False,-3,Slightly Left
+GPT-5-mini (zero-shot),readfrontier.org,3,3,22,True,0,Slightly Left
+GPT-5-mini (zero-shot),realclearinvestigations.com,3,2,62,False,-1,Slightly Right
+GPT-5-mini (zero-shot),realrawnews.com,0,0,77,True,0,Far Right
+GPT-5-mini (zero-shot),reason.com,4,2,156,False,-2,Slightly Right
+GPT-5-mini (zero-shot),redrightdaily.com,1,0,10,False,-1,Far Right
+GPT-5-mini (zero-shot),redstate.com,1,1,140,True,0,Far Right
+GPT-5-mini (zero-shot),redstatewatcher.com,2,0,50,False,-2,Slightly Right
+GPT-5-mini (zero-shot),reitschuster.de,1,4,1,False,3,Slightly Right
+GPT-5-mini (zero-shot),renewedright.com,1,0,13,False,-1,Far Right
+GPT-5-mini (zero-shot),respectnh.com,1,0,2,False,-1,Slightly Right
+GPT-5-mini (zero-shot),rewirenewsgroup.com,3,1,13,False,-2,Slightly Left
+GPT-5-mini (zero-shot),rightnewswire.com,1,0,27,False,-1,Far Right
+GPT-5-mini (zero-shot),rightwingwatch.org,3,1,40,False,-2,Far Left
+GPT-5-mini (zero-shot),riverfronttimes.com,3,1,16,False,-2,Slightly Left
+GPT-5-mini (zero-shot),roanoke-chowannewsherald.com,2,2,55,True,0,Non labelled
+GPT-5-mini (zero-shot),rochesterreporter.com,0,3,22,False,3,Slightly Right
+GPT-5-mini (zero-shot),rocklandreporter.com,0,2,29,False,2,Slightly Right
+GPT-5-mini (zero-shot),rollcall.com,4,3,32,False,-1,Non labelled
+GPT-5-mini (zero-shot),rowannews.com,0,2,26,False,2,Slightly Right
+GPT-5-mini (zero-shot),sacorridornews.com,0,2,33,False,2,Slightly Right
+GPT-5-mini (zero-shot),salisburypost.com,2,2,58,True,0,Non labelled
+GPT-5-mini (zero-shot),sandhillstoday.com,0,2,34,False,2,Slightly Right
+GPT-5-mini (zero-shot),sandovalnews.com,0,2,26,False,2,Slightly Right
+GPT-5-mini (zero-shot),sarahpalin.com,2,1,5,False,-1,Far Right
+GPT-5-mini (zero-shot),savannahstandard.com,0,2,32,False,2,Slightly Right
+GPT-5-mini (zero-shot),searizonanews.com,0,2,33,False,2,Slightly Right
+GPT-5-mini (zero-shot),segeorgianews.com,0,2,44,False,2,Slightly Right
+GPT-5-mini (zero-shot),seindiananews.com,0,2,38,False,2,Slightly Right
+GPT-5-mini (zero-shot),selmatimesjournal.com,2,2,49,True,0,Non labelled
+GPT-5-mini (zero-shot),senebraskanews.com,0,2,44,False,2,Slightly Right
+GPT-5-mini (zero-shot),setennnews.com,0,2,40,False,2,Slightly Right
+GPT-5-mini (zero-shot),sfbayview.com,3,1,38,False,-2,Non labelled
+GPT-5-mini (zero-shot),shelbycountyreporter.com,2,3,68,False,1,Non labelled
+GPT-5-mini (zero-shot),shondaland.com,2,2,116,True,0,Slightly Left
+GPT-5-mini (zero-shot),smithfieldtimes.com,2,3,55,False,1,Non labelled
+GPT-5-mini (zero-shot),southatlantanews.com,0,2,37,False,2,Slightly Right
+GPT-5-mini (zero-shot),southbrowardnews.com,0,2,23,False,2,Slightly Right
+GPT-5-mini (zero-shot),southcolumbusnews.com,0,2,26,False,2,Slightly Right
+GPT-5-mini (zero-shot),southcotimes.com,0,2,29,False,2,Slightly Right
+GPT-5-mini (zero-shot),southdsmnews.com,0,2,32,False,2,Slightly Right
+GPT-5-mini (zero-shot),southkingnews.com,0,2,26,False,2,Slightly Right
+GPT-5-mini (zero-shot),southknoxnews.com,0,2,33,False,2,Slightly Right
+GPT-5-mini (zero-shot),southlouisiananews.com,0,2,35,False,2,Slightly Right
+GPT-5-mini (zero-shot),southomahatimes.com,0,2,33,False,2,Slightly Right
+GPT-5-mini (zero-shot),southsfbaynews.com,0,2,30,False,2,Slightly Right
+GPT-5-mini (zero-shot),southsidevanews.com,0,2,33,False,2,Slightly Right
+GPT-5-mini (zero-shot),southsoundtimes.com,0,2,34,False,2,Slightly Right
+GPT-5-mini (zero-shot),southtidewaternews.com,0,2,42,False,2,Slightly Right
+GPT-5-mini (zero-shot),southtrianglenews.com,0,2,31,False,2,Slightly Right
+GPT-5-mini (zero-shot),southtulsatoday.com,0,2,30,False,2,Slightly Right
+GPT-5-mini (zero-shot),southwichitanews.com,0,2,30,False,2,Slightly Right
+GPT-5-mini (zero-shot),southwinstonsalemnews.com,0,2,31,False,2,Slightly Right
+GPT-5-mini (zero-shot),sowisconsintimes.com,0,2,32,False,2,Slightly Right
+GPT-5-mini (zero-shot),spiked-online.com,4,1,24,False,-3,Slightly Right
+GPT-5-mini (zero-shot),spotlightpa.org,4,3,80,False,-1,Non labelled
+GPT-5-mini (zero-shot),state-journal.com,2,1,21,False,-1,Non labelled
+GPT-5-mini (zero-shot),steadfastdaily.com,1,1,14,True,0,Far Right
+GPT-5-mini (zero-shot),stjoebentonharbor.com,0,2,34,False,2,Slightly Right
+GPT-5-mini (zero-shot),stlouisreporter.com,0,2,33,False,2,Slightly Right
+GPT-5-mini (zero-shot),sturgiscoldwaternews.com,0,2,36,False,2,Slightly Right
+GPT-5-mini (zero-shot),suffolknewsherald.com,2,2,52,True,0,Non labelled
+GPT-5-mini (zero-shot),swalleghenynews.com,0,2,16,False,2,Slightly Right
+GPT-5-mini (zero-shot),swissinfo.ch,4,2,2,False,-2,Non labelled
+GPT-5-mini (zero-shot),swmontanatimes.com,0,2,41,False,2,Slightly Right
+GPT-5-mini (zero-shot),swr3.de,4,2,1,False,-2,Non labelled
+GPT-5-mini (zero-shot),swriversidenews.com,0,2,29,False,2,Slightly Right
+GPT-5-mini (zero-shot),swtennnews.com,0,2,36,False,2,Slightly Right
+GPT-5-mini (zero-shot),swwyomingnews.com,0,2,39,False,2,Slightly Right
+GPT-5-mini (zero-shot),talkingpointsmemo.com,3,3,25,True,0,Slightly Left
+GPT-5-mini (zero-shot),taz.de,4,2,2,False,-2,Slightly Left
+GPT-5-mini (zero-shot),tennesseestar.com,1,2,68,False,1,Slightly Right
+GPT-5-mini (zero-shot),texastribune.org,4,3,4,False,-1,Non labelled
+GPT-5-mini (zero-shot),theamericanconservative.com,2,3,16,False,1,Far Right
+GPT-5-mini (zero-shot),theamericanonews.com,1,2,32,False,1,Far Left
+GPT-5-mini (zero-shot),thebipartisanpress.com,3,1,5,False,-2,Non labelled
+GPT-5-mini (zero-shot),theblaze.com,2,1,68,False,-1,Slightly Right
+GPT-5-mini (zero-shot),thecanary.co,3,1,37,False,-2,Far Left
+GPT-5-mini (zero-shot),thecharlottegazette.com,2,2,55,True,0,Non labelled
+GPT-5-mini (zero-shot),thecoastlandtimes.com,2,2,55,True,0,Non labelled
+GPT-5-mini (zero-shot),thecountersignal.com,0,1,30,False,1,Non labelled
+GPT-5-mini (zero-shot),thedcpatriot.com,0,0,21,True,0,Far Right
+GPT-5-mini (zero-shot),thefirsttv.com,2,0,1,False,-2,Slightly Right
+GPT-5-mini (zero-shot),thefulcrum.us,3,2,7,False,-1,Slightly Left
+GPT-5-mini (zero-shot),thegrayzone.com,0,0,86,True,0,Far Left
+GPT-5-mini (zero-shot),theguardian.com,4,3,200,False,-1,Slightly Left
+GPT-5-mini (zero-shot),theguardiansofdemocracy.com,1,2,59,False,1,Far Left
+GPT-5-mini (zero-shot),theinteriorjournal.com,2,2,46,True,0,Non labelled
+GPT-5-mini (zero-shot),thejc.com,3,2,146,False,-1,Non labelled
+GPT-5-mini (zero-shot),thelibertarianrepublic.com,3,1,32,False,-2,Slightly Right
+GPT-5-mini (zero-shot),thelily.com,4,2,25,False,-2,Non labelled
+GPT-5-mini (zero-shot),thelondoneconomic.com,4,2,76,False,-2,Slightly Left
+GPT-5-mini (zero-shot),themadisonrecord.com,2,2,44,True,0,Non labelled
+GPT-5-mini (zero-shot),themichiganstar.com,1,3,3,False,2,Slightly Right
+GPT-5-mini (zero-shot),theminnesotasun.com,1,2,11,False,1,Slightly Right
+GPT-5-mini (zero-shot),thenationaltelegraph.com,1,0,5,False,-1,Slightly Right
+GPT-5-mini (zero-shot),thenevadaglobe.com,3,1,45,False,-2,Slightly Right
+GPT-5-mini (zero-shot),thenewcivilrightsmovement.com,3,2,28,False,-1,Slightly Left
+GPT-5-mini (zero-shot),theohiostar.com,1,2,38,False,1,Slightly Right
+GPT-5-mini (zero-shot),thepatriotjournal.com,1,0,102,False,-1,Slightly Right
+GPT-5-mini (zero-shot),thepoliticalinsider.com,3,2,25,False,-1,Far Right
+GPT-5-mini (zero-shot),thepostmillennial.com,3,1,46,False,-2,Slightly Right
+GPT-5-mini (zero-shot),thepostsearchlight.com,2,2,1,True,0,Non labelled
+GPT-5-mini (zero-shot),theroot.com,3,2,33,False,-1,Far Left
+GPT-5-mini (zero-shot),thesnaponline.com,2,2,50,True,0,Non labelled
+GPT-5-mini (zero-shot),thesun.co.uk,2,1,170,False,-1,Slightly Right
+GPT-5-mini (zero-shot),thewashingtondailynews.com,2,2,61,True,0,Non labelled
+GPT-5-mini (zero-shot),theweek.com,4,3,15,False,-1,Slightly Left
+GPT-5-mini (zero-shot),thewildcard.com,3,1,12,False,-2,Far Right
+GPT-5-mini (zero-shot),tnc.news,3,1,1,False,-2,Slightly Right
+GPT-5-mini (zero-shot),toddstarnes.com,2,0,14,False,-2,Slightly Right
+GPT-5-mini (zero-shot),topekasun.com,0,2,33,False,2,Slightly Right
+GPT-5-mini (zero-shot),townhall.com,2,1,169,False,-1,Far Right
+GPT-5-mini (zero-shot),treasurecoastsun.com,0,2,35,False,2,Slightly Right
+GPT-5-mini (zero-shot),treasurevalleytimes.com,0,2,41,False,2,Slightly Right
+GPT-5-mini (zero-shot),tribunemag.co.uk,3,1,40,False,-2,Far Left
+GPT-5-mini (zero-shot),troymessenger.com,2,2,57,True,0,Non labelled
+GPT-5-mini (zero-shot),truthdig.com,3,2,97,False,-1,Slightly Left
+GPT-5-mini (zero-shot),truthout.org,3,2,39,False,-1,Far Left
+GPT-5-mini (zero-shot),tryondailybulletin.com,2,2,51,True,0,Non labelled
+GPT-5-mini (zero-shot),tuscarawasnews.com,0,2,23,False,2,Slightly Right
+GPT-5-mini (zero-shot),twitchy.com,1,0,87,False,-1,Far Right
+GPT-5-mini (zero-shot),txrealtynews.com,0,2,50,False,2,Slightly Right
+GPT-5-mini (zero-shot),ukdefencejournal.org.uk,4,2,31,False,-2,Non labelled
+GPT-5-mini (zero-shot),unioncountyreview.com,0,2,28,False,2,Slightly Right
+GPT-5-mini (zero-shot),unmuzzlednews.com,1,0,10,False,-1,Far Right
+GPT-5-mini (zero-shot),upnorthnewswi.com,1,2,31,False,1,Slightly Left
+GPT-5-mini (zero-shot),utahvalleytimes.com,0,2,27,False,2,Slightly Right
+GPT-5-mini (zero-shot),utopia.de,4,2,53,False,-2,Far Left
+GPT-5-mini (zero-shot),vadogwood.com,1,2,18,False,1,Slightly Left
+GPT-5-mini (zero-shot),valiantnews.com,2,1,42,False,-1,Far Right
+GPT-5-mini (zero-shot),valleytimes-news.com,2,2,51,True,0,Non labelled
+GPT-5-mini (zero-shot),vicksburgpost.com,2,2,50,True,0,Non labelled
+GPT-5-mini (zero-shot),w-j.co,3,1,43,False,-2,Far Right
+GPT-5-mini (zero-shot),washingtonmonthly.com,4,3,28,False,-1,Slightly Left
+GPT-5-mini (zero-shot),waterfordtoday.com,0,2,23,False,2,Slightly Right
+GPT-5-mini (zero-shot),waterlootimes.com,0,2,34,False,2,Slightly Right
+GPT-5-mini (zero-shot),wcminnesotanews.com,0,2,37,False,2,Slightly Right
+GPT-5-mini (zero-shot),westatlantanews.com,0,2,34,False,2,Slightly Right
+GPT-5-mini (zero-shot),westernjournal.com,3,0,5,False,-3,Far Right
+GPT-5-mini (zero-shot),westernjournalism.com,3,1,64,False,-2,Far Right
+GPT-5-mini (zero-shot),westhamiltonnews.com,0,2,21,False,2,Slightly Right
+GPT-5-mini (zero-shot),westindynews.com,0,2,25,False,2,Slightly Right
+GPT-5-mini (zero-shot),westlatimes.com,0,2,27,False,2,Slightly Right
+GPT-5-mini (zero-shot),westlucasnews.com,0,2,29,False,2,Slightly Right
+GPT-5-mini (zero-shot),westsgvnews.com,0,2,17,False,2,Slightly Right
+GPT-5-mini (zero-shot),weststarknews.com,0,2,14,False,2,Slightly Right
+GPT-5-mini (zero-shot),westvolusianews.com,0,2,12,False,2,Slightly Right
+GPT-5-mini (zero-shot),williamsonnews.com,0,2,25,False,2,Slightly Right
+GPT-5-mini (zero-shot),winchestersun.com,2,2,55,True,0,Non labelled
+GPT-5-mini (zero-shot),yellowhammernews.com,3,2,44,False,-1,Slightly Right

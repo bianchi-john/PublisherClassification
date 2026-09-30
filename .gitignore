@@ -11,11 +11,14 @@ key.txt
 .env
 
 # =====================================================================
-# Large derived result files (regenerable from the notebooks; 70-92 MB each)
+# Large derived files (regenerable; 70-92 MB each, over GitHub's 100 MB limit)
 # =====================================================================
-Results/Errors/
-Results/FullAnalysis/
-Classification/mistral/24B_results_enriched_checkpoint.csv
+Results/_archive/errors/
+Results/_archive/fullanalysis/
+Results/predictions/finetuned/mistral/24B_results_enriched_checkpoint.csv
+
+# Derived predictions: regenerable by analysis/paper_results.ipynb (14 MB)
+Results/derived/predictions_long.csv
 
 # =====================================================================
 # Jupyter

@@ -134,8 +134,8 @@ conviene aggiungere una nota di scelta (costo/riproducibilità) o far girare il 
 un campione (~500 articoli) per blindare l'obiezione "avete provato solo mini".
 
 **File dei risultati:**
-- `preds_gpt5mini_capNone.csv` — colonne: `idx, domain, label, pred_1_5`
-- `preds_gpt5mini_enriched.csv` — url + tutti i metadati (no `text`) + `pred_1_5` + `pred_0_4`
+- `Results/predictions/zeroshot/preds_gpt5mini_capNone.csv` — colonne: `idx, domain, label, pred_1_5`
+- `Results/predictions/zeroshot/preds_gpt5mini_enriched.csv` — url + tutti i metadati (no `text`) + `pred_1_5` + `pred_0_4`
   (`pred_0_4` = `pred_1_5 - 1`, allineato a `label`)
 - Chiave di join: `idx` = posizione di riga del dataset caricato con `reset_index(drop=True)`.
   L'identificatore leggibile dell'articolo è la **`url`**.
@@ -148,19 +148,23 @@ un campione (~500 articoli) per blindare l'obiezione "avete provato solo mini".
 - `Dataset/CleannedDataset/newDataframeWithOldCleanedPoliticsVersion.csv` — dataset finale
   (19.476 articoli). Colonne: url, title, text, authors, domain, score, country, language,
   topics, paywall, opinion_advocacy, label (0-4 = l1-l5).
-- Notebook:
-  - `0 - NgScraperPol.ipynb` — scraping
-  - `1 - Data preparation.ipynb` — preparazione dati
-  - `2 - Reliability - 5Fold - Separate.ipynb` — training BERT/RoBERTa/Llama (5-fold,
-    publisher-disjoint, `text` only, max_length 256)
-  - `3 - Reliability - 5Fold - Separate - mistral22B.ipynb` — training Mistral (context 1024)
-  - `4 - Plotter.ipynb` — generazione grafici del paper
-  - `5 - Political Error Analysis.ipynb` — analisi bias politico
-  - `6 - Domain inpact analisys.ipynb` — analisi a livello publisher
-  - `7 - Get prediction scores.ipynb` — estrazione predizioni
-  - `8 - ChatGPT Run.ipynb` — run del baseline zero-shot (§5)
-- Risultati fine-tuned: `Results/Classification/{bert,roberta,llama,mistral}.csv`
-  (+ cartelle `Results/CM`, `Errors`, `FullAnalysis`, `Plots`, `Tables`).
+- **Struttura riorganizzata il 30/09/2026** in stadi sequenziali (vedi `README.md`):
+  - `0-scraping/` — `0 - NgScraperPol.ipynb` (scraping), `1 - Data preparation.ipynb`
+  - `1-classification/` — `2 - …Separate.ipynb` (BERT/RoBERTa/Llama, 5-fold
+    publisher-disjoint, `text` only, max_length 256), `3 - …mistral22B.ipynb`
+    (Mistral, context 1024), `7 - Get prediction scores.ipynb` (probabilità per
+    classe, GPU), `8 - ChatGPT Run.ipynb` (baseline zero-shot, §5)
+  - `2-analysis/` — `paper_results.ipynb`: **un unico notebook** che rigenera tutte
+    le figure e tabelle del paper, sopra il pacchetto `irgood/`. Generato da
+    `build_notebook.py`. Vedi `2-analysis/FINDINGS.md`.
+  - I notebook 4, 5 e 6 (Plotter, Political Error Analysis, Domain impact) sono
+    stati **eliminati**: sostituiti da `2-analysis/`. Recuperabili dalla storia
+    git (commit `cfa9682`).
+- Risultati: `Results/predictions/finetuned/{bert,roberta,llama}.csv` +
+  `mistral/24B_results.csv` (e i corrispondenti `*_enriched.csv` con
+  `Article_IDs`/`URLs`/`Domains`); `Results/predictions/zeroshot/` per GPT;
+  `Results/{figures,tables,derived}` output rigenerato; `Results/_archive/` il
+  vecchio materiale.
 - Paper vecchio: `Paper/OldPaperRejected/` (main.tex IEEEtran, bibliography.bib, img/,
   IEEEtran.cls/.bst, supplementary.tex).
 - Paper nuovo (da creare): `Paper/NewIRForGood/`.
