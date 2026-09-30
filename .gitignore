@@ -1,0 +1,45 @@
+# =====================================================================
+# Proprietary NewsGuard data -- licensed to the authors, NOT redistributable.
+# Also far too large for GitHub (single files up to 127 MB; limit is 100 MB).
+# =====================================================================
+Dataset/
+
+# Secrets
+key.txt
+**/key.txt
+*.env
+.env
+
+# =====================================================================
+# Large derived result files (regenerable from the notebooks; 70-92 MB each)
+# =====================================================================
+Results/Errors/
+Results/FullAnalysis/
+Classification/mistral/24B_results_enriched_checkpoint.csv
+
+# =====================================================================
+# Jupyter
+# =====================================================================
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# =====================================================================
+# LaTeX build artifacts (the compiled main.pdf IS tracked on purpose)
+# =====================================================================
+*.aux
+*.bbl
+*.blg
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+Paper/**/*.log
+
+# =====================================================================
+# Python / OS
+# =====================================================================
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db

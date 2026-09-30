@@ -1,0 +1,111 @@
+2026-07-01 14:28:22,379 | INFO | === START RUN ===
+2026-07-01 14:28:23,959 | INFO | Dataset shape: (19476, 31)
+2026-07-01 14:28:23,959 | INFO | Labels: [0, 1, 2, 3, 4]
+2026-07-01 14:28:25,167 | INFO | === FOLD 1 ===
+2026-07-01 14:31:26,737 | INFO | === START RUN ===
+2026-07-01 14:31:27,823 | INFO | Dataset shape: (19476, 31)
+2026-07-01 14:31:27,824 | INFO | Labels: [0, 1, 2, 3, 4]
+2026-07-01 14:31:28,936 | INFO | ================ FOLD 1 ================
+2026-07-01 14:31:28,975 | INFO | Fold 1 samples: 3895
+2026-07-01 14:31:30,116 | INFO | Loading model...
+2026-07-01 14:31:31,113 | INFO | We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+2026-07-01 14:31:47,908 | WARNING | Some parameters are on the meta device because they were offloaded to the cpu.
+2026-07-01 14:31:48,737 | INFO | We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+2026-07-01 14:31:48,932 | WARNING | Some parameters are on the meta device because they were offloaded to the cpu.
+2026-07-01 14:31:48,957 | INFO | Model loaded ✔
+2026-07-01 14:32:01,908 | INFO | Batch 0 error: Cannot handle batch sizes > 1 if no padding token is defined.
+2026-07-01 14:32:16,349 | INFO | Batch 1 error: Cannot handle batch sizes > 1 if no padding token is defined.
+2026-07-01 14:32:28,424 | INFO | Batch 2 error: Cannot handle batch sizes > 1 if no padding token is defined.
+2026-07-01 14:32:39,370 | INFO | Batch 3 error: Cannot handle batch sizes > 1 if no padding token is defined.
+2026-07-01 14:32:50,733 | INFO | Batch 4 error: Cannot handle batch sizes > 1 if no padding token is defined.
+2026-07-01 14:33:02,707 | INFO | Batch 5 error: Cannot handle batch sizes > 1 if no padding token is defined.
+2026-07-01 14:33:15,355 | INFO | Batch 6 error: Cannot handle batch sizes > 1 if no padding token is defined.
+2026-07-01 14:33:25,883 | INFO | Batch 7 error: Cannot handle batch sizes > 1 if no padding token is defined.
+2026-07-01 14:33:36,851 | INFO | Batch 8 error: Cannot handle batch sizes > 1 if no padding token is defined.
+2026-07-01 14:33:49,190 | INFO | Batch 9 error: Cannot handle batch sizes > 1 if no padding token is defined.
+2026-07-01 14:34:01,053 | INFO | Batch 10 error: Cannot handle batch sizes > 1 if no padding token is defined.
+2026-07-01 14:36:11,549 | INFO | === START RUN ===
+2026-07-01 14:36:12,720 | INFO | Dataset shape: (19476, 31)
+2026-07-01 14:36:12,721 | INFO | Labels: [0, 1, 2, 3, 4]
+2026-07-01 14:36:14,150 | INFO | ================ FOLD 1 ================
+2026-07-01 14:36:14,182 | INFO | Fold 1 samples: 3895
+2026-07-01 14:36:14,182 | INFO | Loading model...
+2026-07-01 14:36:15,158 | INFO | We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+2026-07-01 14:36:31,501 | WARNING | Some parameters are on the meta device because they were offloaded to the cpu.
+2026-07-01 14:36:32,376 | INFO | We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+2026-07-01 14:36:32,534 | WARNING | Some parameters are on the meta device because they were offloaded to the cpu.
+2026-07-01 14:36:32,550 | INFO | Model loaded ✔
+2026-07-01 14:36:42,985 | INFO | Checkpoint fold 1 batch 0
+2026-07-01 14:46:38,860 | INFO | Checkpoint fold 1 batch 50
+2026-07-01 14:56:12,533 | INFO | Checkpoint fold 1 batch 100
+2026-07-01 15:05:23,468 | INFO | Checkpoint fold 1 batch 150
+2026-07-01 15:13:02,910 | INFO | Checkpoint fold 1 batch 200
+2026-07-01 15:20:08,390 | INFO | Checkpoint fold 1 batch 250
+2026-07-01 15:27:06,152 | INFO | Checkpoint fold 1 batch 300
+2026-07-01 15:34:44,194 | INFO | Checkpoint fold 1 batch 350
+2026-07-01 15:42:22,952 | INFO | Checkpoint fold 1 batch 400
+2026-07-01 15:49:47,240 | INFO | Checkpoint fold 1 batch 450
+2026-07-01 15:56:15,361 | INFO | Checkpoint fold 1 batch 500
+2026-07-01 16:02:54,141 | INFO | Checkpoint fold 1 batch 550
+2026-07-01 16:09:36,575 | INFO | Checkpoint fold 1 batch 600
+2026-07-01 16:16:08,348 | INFO | Checkpoint fold 1 batch 650
+2026-07-01 16:23:42,104 | INFO | Checkpoint fold 1 batch 700
+2026-07-01 16:30:46,810 | INFO | Checkpoint fold 1 batch 750
+2026-07-01 16:37:21,228 | INFO | Checkpoint fold 1 batch 800
+2026-07-01 16:43:56,078 | INFO | Checkpoint fold 1 batch 850
+2026-07-01 16:53:01,653 | INFO | Checkpoint fold 1 batch 900
+2026-07-01 17:03:03,603 | INFO | Checkpoint fold 1 batch 950
+2026-07-01 17:07:45,711 | INFO | Fold 1 completed: 3895 samples
+2026-07-01 17:07:49,169 | INFO | Saved checkpoint after fold 1
+2026-07-01 17:07:51,160 | INFO | ================ FOLD 2 ================
+2026-07-01 17:07:51,185 | INFO | Fold 2 samples: 4047
+2026-07-01 17:07:51,186 | INFO | Loading model...
+2026-07-01 17:07:51,443 | INFO | We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+2026-07-01 17:08:06,353 | WARNING | Some parameters are on the meta device because they were offloaded to the cpu.
+2026-07-01 17:08:07,186 | INFO | We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+2026-07-01 17:08:07,340 | WARNING | Some parameters are on the meta device because they were offloaded to the cpu.
+2026-07-01 17:08:07,354 | INFO | Model loaded ✔
+2026-07-01 17:08:18,499 | INFO | Checkpoint fold 2 batch 0
+2026-07-01 17:18:07,813 | INFO | Checkpoint fold 2 batch 50
+2026-07-01 17:28:17,986 | INFO | Checkpoint fold 2 batch 100
+2026-07-01 17:38:07,071 | INFO | Checkpoint fold 2 batch 150
+2026-07-01 17:48:16,479 | INFO | Checkpoint fold 2 batch 200
+2026-07-01 17:58:06,709 | INFO | Checkpoint fold 2 batch 250
+2026-07-01 18:08:03,445 | INFO | Checkpoint fold 2 batch 300
+2026-07-01 18:17:40,648 | INFO | Checkpoint fold 2 batch 350
+2026-07-01 18:26:19,471 | INFO | Checkpoint fold 2 batch 400
+2026-07-01 18:35:41,752 | INFO | Checkpoint fold 2 batch 450
+2026-07-01 18:44:57,970 | INFO | Checkpoint fold 2 batch 500
+2026-07-01 18:54:20,691 | INFO | Checkpoint fold 2 batch 550
+2026-07-01 19:03:07,386 | INFO | Checkpoint fold 2 batch 600
+2026-07-01 19:12:16,999 | INFO | Checkpoint fold 2 batch 650
+2026-07-01 19:21:41,329 | INFO | Checkpoint fold 2 batch 700
+2026-07-01 19:30:51,673 | INFO | Checkpoint fold 2 batch 750
+2026-07-01 19:39:38,338 | INFO | Checkpoint fold 2 batch 800
+2026-07-01 19:48:55,943 | INFO | Checkpoint fold 2 batch 850
+2026-07-01 19:57:33,855 | INFO | Checkpoint fold 2 batch 900
+2026-07-01 20:06:26,894 | INFO | Checkpoint fold 2 batch 950
+2026-07-01 20:15:26,233 | INFO | Checkpoint fold 2 batch 1000
+2026-07-01 20:17:15,684 | INFO | Fold 2 completed: 4047 samples
+2026-07-01 20:17:18,390 | INFO | Saved checkpoint after fold 2
+2026-07-01 20:17:20,322 | INFO | ================ FOLD 3 ================
+2026-07-01 20:17:20,367 | INFO | Fold 3 samples: 3665
+2026-07-01 20:17:20,368 | INFO | Loading model...
+2026-07-01 20:17:20,632 | INFO | We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+2026-07-01 20:17:34,451 | WARNING | Some parameters are on the meta device because they were offloaded to the cpu.
+2026-07-01 20:17:35,032 | INFO | We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+2026-07-01 20:17:35,087 | INFO | Based on the current allocation process, no modules could be assigned to the following devices due to insufficient memory:
+  - 0: 2455654400 bytes required
+These minimum requirements are specific to this allocation attempt and may vary. Consider increasing the available memory for these devices to at least the specified minimum, or adjusting the model config.
+2026-07-01 20:17:57,856 | INFO | Model loaded ✔
+2026-07-02 08:26:45,358 | INFO | === START RUN ===
+2026-07-02 08:26:46,499 | INFO | Dataset shape: (19476, 31)
+2026-07-02 08:26:46,499 | INFO | Labels: [0, 1, 2, 3, 4]
+2026-07-02 08:26:48,721 | INFO | ================ FOLD 1 ================
+2026-07-02 08:26:48,756 | INFO | Fold 1 samples: 3895
+2026-07-02 08:26:48,757 | INFO | Loading model...
+2026-07-02 08:26:49,927 | INFO | We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+2026-07-02 08:27:07,498 | WARNING | Some parameters are on the meta device because they were offloaded to the cpu.
+2026-07-02 08:27:08,375 | INFO | We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+2026-07-02 08:27:08,529 | WARNING | Some parameters are on the meta device because they were offloaded to the cpu.
+2026-07-02 08:27:08,543 | INFO | Model loaded ✔

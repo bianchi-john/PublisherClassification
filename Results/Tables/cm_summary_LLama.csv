@@ -1,0 +1,6 @@
+Orientation,Correct_Count,Error_Count,Correct_Domains,Error_Domains,Accuracy_%
+Far Left,730,285,51,19,71.92118226600985
+Far Right,1333,809,123,43,62.23155929038282
+Non labelled,2082,4340,164,104,32.41980691373404
+Slightly Left,1138,1269,111,46,47.2787702534275
+Slightly Right,2514,4976,245,196,33.56475300400534

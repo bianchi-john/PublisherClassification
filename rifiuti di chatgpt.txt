@@ -1,0 +1,43 @@
+2026-09-30 10:32:25,095 | INFO | Totale=19476 | già validi=19469 | da fare=7
+2026-09-30 10:32:32,807 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:32,838 | WARNING | idx=15169 tent.1/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 2s
+2026-09-30 10:32:32,840 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:32,842 | WARNING | idx=466 tent.1/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 2s
+2026-09-30 10:32:32,988 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:32,992 | WARNING | idx=5331 tent.1/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 2s
+2026-09-30 10:32:33,042 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:33,046 | WARNING | idx=13925 tent.1/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 2s
+2026-09-30 10:32:33,351 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:33,355 | WARNING | idx=476 tent.1/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 2s
+2026-09-30 10:32:33,374 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:33,379 | WARNING | idx=2246 tent.1/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 2s
+2026-09-30 10:32:33,881 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:33,885 | WARNING | idx=467 tent.1/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 2s
+2026-09-30 10:32:40,310 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:40,314 | WARNING | idx=13925 tent.2/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 4s
+2026-09-30 10:32:40,948 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:40,952 | WARNING | idx=5331 tent.2/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 4s
+2026-09-30 10:32:41,317 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:41,322 | WARNING | idx=476 tent.2/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 4s
+2026-09-30 10:32:41,764 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:41,769 | WARNING | idx=15169 tent.2/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 4s
+2026-09-30 10:32:42,007 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:42,011 | WARNING | idx=2246 tent.2/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 4s
+2026-09-30 10:32:42,564 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:42,568 | WARNING | idx=467 tent.2/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 4s
+2026-09-30 10:32:43,293 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:43,297 | WARNING | idx=466 tent.2/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 4s
+2026-09-30 10:32:50,515 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:50,519 | WARNING | idx=476 tent.3/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 8s
+2026-09-30 10:32:50,918 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:50,923 | WARNING | idx=13925 tent.3/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 8s
+2026-09-30 10:32:51,250 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:51,254 | WARNING | idx=5331 tent.3/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 8s
+2026-09-30 10:32:51,475 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:51,479 | WARNING | idx=15169 tent.3/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 8s
+2026-09-30 10:32:52,442 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:52,446 | WARNING | idx=2246 tent.3/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 8s
+2026-09-30 10:32:53,084 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:53,088 | WARNING | idx=467 tent.3/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 8s
+2026-09-30 10:32:53,893 | INFO | HTTP Request: POST https://daily-digest-mini-resource.services.ai.azure.com/openai/v1/responses "HTTP/1.1 200 OK"
+2026-09-30 10:32:53,897 | WARNING | idx=466 tent.3/5 KO: ValueError: output non parsabile: "I'm sorry, but I cannot assist with that request." -> attendo 8s
