@@ -1,7 +1,7 @@
 # Cosa ho trovato riorganizzando i risultati
 
 Indagine sui notebook `4 - Plotter`, `5 - Political Error Analysis`,
-`6 - Domain inpact analisys`, `7 - Get prediction scores` e sull'intera cartella
+`6 - Domain inpact analisys`, `7 - Get prediction scores` (ora `4 - …`) e sull'intera cartella
 `Results/`. Ogni affermazione qui sotto è stata **verificata ricalcolando i numeri
 dai CSV**, non dedotta leggendo il codice.
 

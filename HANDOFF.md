@@ -152,8 +152,8 @@ un campione (~500 articoli) per blindare l'obiezione "avete provato solo mini".
   - `0-scraping/` — `0 - NgScraperPol.ipynb` (scraping), `1 - Data preparation.ipynb`
   - `1-classification/` — `2 - …Separate.ipynb` (BERT/RoBERTa/Llama, 5-fold
     publisher-disjoint, `text` only, max_length 256), `3 - …mistral22B.ipynb`
-    (Mistral, context 1024), `7 - Get prediction scores.ipynb` (probabilità per
-    classe, GPU), `8 - ChatGPT Run.ipynb` (baseline zero-shot, §5)
+    (Mistral, context 1024), `4 - Get prediction scores.ipynb` (probabilità per
+    classe, GPU), `5 - ChatGPT Run.ipynb` (baseline zero-shot, §5)
   - `2-analysis/` — `paper_results.ipynb`: **un unico notebook** che rigenera tutte
     le figure e tabelle del paper, sopra il pacchetto `irgood/`. Generato da
     `build_notebook.py`. Vedi `2-analysis/FINDINGS.md`.
