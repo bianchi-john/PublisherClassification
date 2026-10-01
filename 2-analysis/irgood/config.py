@@ -19,6 +19,9 @@ RESULTS_DIR = REPO_ROOT / "Results"
 PREDICTIONS_DIR = RESULTS_DIR / "predictions"
 CLASSIFICATION_DIR = PREDICTIONS_DIR / "finetuned"
 ZEROSHOT_DIR = PREDICTIONS_DIR / "zeroshot"
+FINETUNING_LOG = CLASSIFICATION_DIR / "finetuning_run.log"
+MISTRAL_LOSS_LOG = CLASSIFICATION_DIR / "mistral" / "mistralTrainingLoss.log"
+
 GPT_PRED_CSV = ZEROSHOT_DIR / "preds_gpt5mini_capNone.csv"
 
 # The only proprietary input: NewsGuard ratings and political orientation.

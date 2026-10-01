@@ -24,7 +24,12 @@ md("""
 # Paper results — one notebook, end to end
 
 Regenerates **every figure and table** in *"From Articles to Publishers"* from the
-model outputs in `Classification/`, plus the GPT-5-mini zero-shot baseline.
+model outputs in `Results/predictions/finetuned/`.
+
+The GPT-5-mini zero-shot baseline is deliberately **not** part of this notebook.
+Its predictions remain in `Results/predictions/zeroshot/` and `irgood` can still
+load them (`data.load_all_predictions(include_gpt=True)`), but nothing here reads
+or plots them.
 
 Run it top to bottom. There is no hidden state: every cell depends only on cells
 above it, and nothing is written outside `Results/figures`, `Results/tables` and
@@ -66,9 +71,9 @@ import pandas as pd
 from irgood import config as C
 from irgood import data, metrics, aggregate, bias, plots
 
-# use_latex=True reproduces the paper's PGF/serif rendering but needs a working
-# TeX installation. Off by default so this notebook runs anywhere.
-plots.set_style(use_latex=False)
+# Reproduces the paper's PGF/LaTeX rendering. Needs pdflatex on PATH; without
+# it the call falls back to mathtext and warns (layout right, fonts not).
+plots.set_style(use_latex=True)
 C.ensure_output_dirs()
 
 pd.set_option("display.width", 160)
@@ -91,14 +96,12 @@ ground truth for the same article — the check that would have caught the
 RoBERTa/Llama swap immediately.
 """)
 code('''
-preds = data.load_all_predictions(include_gpt=True, with_leaning=True)
+# Fine-tuned models only. The zero-shot baseline is excluded on purpose.
+preds = data.load_all_predictions(include_gpt=False, with_leaning=True)
 
 report = data.validate(preds)
 display(report.round(4))
 print("Same ground truth across all models:", report.attrs["ground_truth_consistent"])
-
-# Fine-tuned models only: used wherever the paper compares the four architectures.
-ft = preds[preds["model"].isin(C.MODEL_ORDER)].copy()
 
 preds.to_csv(C.DERIVED_DIR / "predictions_long.csv", index=False)
 print("\\nSaved:", C.DERIVED_DIR / "predictions_long.csv", preds.shape)
@@ -115,35 +118,20 @@ article_tbl = aggregate.article_metrics(preds)
 display(article_tbl.round(4))
 
 per_fold = data.load_per_fold_metrics()
-y_true_articles = ft[ft["model"] == C.MODEL_ORDER[0]]["y_true"]
+y_true_articles = preds[preds["model"] == C.MODEL_ORDER[0]]["y_true"]
 
 plots.fig_article_metrics_boxplot(per_fold, y_true_articles)
 article_tbl.to_csv(C.TABLES_DIR / "article_level_metrics.csv", index=False)
 ''')
 
 md("""
-### The same figure with the zero-shot baseline in it
+### Per-fold metrics, recomputed
 
-Two versions are produced: `article_metrics_boxplot.pdf` with the four
-fine-tuned models, and `article_metrics_boxplot_with_gpt.pdf` with GPT-5-mini
-added as a fifth series.
-
-GPT can be boxed like the others because all four fine-tuned models share one
-`article -> fold` map, so its predictions can be scored on the same five
-publisher-disjoint partitions. The recomputed per-fold metrics agree with the
-ones the training runs wrote out to floating-point precision, so the two
-versions of the figure are built from the same numbers.
-
-Read the boxes with one caveat in mind: for the fine-tuned models the spread
-reflects a different training set *and* a different test set, whereas GPT is
-never trained, so its spread is test-partition variability alone. Note that it
-is nonetheless the **widest** of the five (accuracy range 0.082 across folds
-against 0.038-0.069), i.e. the zero-shot scorer is the least stable across
-publisher subsets, not the most.
+The training runs each wrote their own per-fold metrics. Recomputing them from
+the stored predictions is a cheap integrity check: if the two disagree, either
+the predictions or the saved metrics have drifted.
 """)
 code('''
-# Recomputed per fold from the predictions, so the zero-shot baseline -- which
-# has no training run and therefore no stored per-fold CSV -- can be included.
 per_fold_all = data.per_fold_metrics(preds)
 
 # Consistency check: recomputation must agree with what the training runs saved.
@@ -152,12 +140,7 @@ max_drift = max(
     (check[f"{m}_stored"] - check[f"{m}_recomputed"]).abs().max()
     for m in ["Accuracy", "F1_Macro", "Tolerant_1.0"]
 )
-print(f"max |stored - recomputed| across fine-tuned folds: {max_drift:.2e}")
-
-plots.fig_article_metrics_boxplot(
-    per_fold_all, y_true_articles,
-    name="article_metrics_boxplot_with_gpt", include_gpt=True,
-)
+print(f"max |stored - recomputed| across folds: {max_drift:.2e}")
 
 spread = (
     per_fold_all.groupby("model", observed=True)["Accuracy"]
@@ -179,7 +162,7 @@ an article-level bootstrap would understate the interval.
 """)
 code('''
 rows = []
-for model, g in ft.groupby("model", observed=True):
+for model, g in preds.groupby("model", observed=True):
     point, lo, hi = metrics.bootstrap_ci(
         g["y_true"].to_numpy(), g["y_pred"].to_numpy(),
         metric="Accuracy", n_boot=2000, cluster=g["domain"].to_numpy(),
@@ -202,20 +185,19 @@ the same direction (toward lower reliability), and by a different amount per
 model.
 """)
 code('''
-pub_ft  = aggregate.aggregate_to_publisher(ft)
-pub_all = aggregate.aggregate_to_publisher(preds)
+pub = aggregate.aggregate_to_publisher(preds)
 
-publisher_tbl = aggregate.publisher_metrics(pub_all)
+publisher_tbl = aggregate.publisher_metrics(pub)
 display(publisher_tbl.round(4))
 
 print("\\nPublishers decided by the tie-break rule:")
-display(aggregate.tie_report(ft).round(2))
+display(aggregate.tie_report(preds).round(2))
 
-y_true_publishers = pub_ft[pub_ft["model"] == C.MODEL_ORDER[0]]["y_true"]
-plots.fig_publisher_metrics(aggregate.publisher_metrics(pub_ft), y_true_publishers)
+y_true_publishers = pub[pub["model"] == C.MODEL_ORDER[0]]["y_true"]
+plots.fig_publisher_metrics(publisher_tbl, y_true_publishers)
 
 publisher_tbl.to_csv(C.TABLES_DIR / "publisher_level_metrics.csv", index=False)
-pub_all.to_csv(C.DERIVED_DIR / "publisher_predictions.csv", index=False)
+pub.to_csv(C.DERIVED_DIR / "publisher_predictions.csv", index=False)
 ''')
 
 md("""
@@ -232,7 +214,7 @@ aggregation contributes and nothing else.
 """)
 code('''
 curve = aggregate.aggregation_curve(
-    ft, k_values=(1, 3, 5, 10, 20, 30), n_repeats=20, fixed_population=True
+    preds, k_values=(1, 3, 5, 10, 20, 30), n_repeats=20, fixed_population=True
 )
 display(curve.round(4))
 
@@ -256,13 +238,13 @@ choices give materially different numbers and the old code used both.
 paper's equation actually defines. Pick one and say which in the text.
 """)
 code('''
-err_by_class = metrics.error_rate_by_class(ft)
+err_by_class = metrics.error_rate_by_class(preds)
 display(err_by_class.pivot_table(index="class_label", columns="model",
                                  values="error_rate", observed=True).round(3))
 plots.fig_error_rate_by_class(err_by_class)
 
-med_all    = metrics.mean_error_direction(ft, ["model", "y_true"], over="all")
-med_errors = metrics.mean_error_direction(ft, ["model", "y_true"], over="errors")
+med_all    = metrics.mean_error_direction(preds, ["model", "y_true"], over="all")
+med_errors = metrics.mean_error_direction(preds, ["model", "y_true"], over="errors")
 
 print("Denominator = all articles (reproduces the published figure):")
 display(med_all.pivot_table(index="y_true", columns="model", values="med", observed=True).round(2))
@@ -284,7 +266,7 @@ That association is the confound: an apparent political bias in the errors may
 be a reliability effect in disguise. Read this table before the tests.
 """)
 code('''
-crosstab = bias.leaning_by_reliability_crosstab(ft)
+crosstab = bias.leaning_by_reliability_crosstab(preds)
 display(crosstab)
 plots.fig_leaning_distribution(crosstab)
 crosstab.to_csv(C.TABLES_DIR / "leaning_by_reliability.csv")
@@ -292,12 +274,12 @@ crosstab.to_csv(C.TABLES_DIR / "leaning_by_reliability.csv")
 
 md("### 6.2 Error rates and error direction by leaning")
 code('''
-er_leaning = bias.error_rate_by_leaning(ft)
+er_leaning = bias.error_rate_by_leaning(preds)
 display(er_leaning.pivot_table(index="leaning", columns="model",
                                values="error_rate", observed=True).round(3))
 plots.fig_error_rate_by_leaning(er_leaning)
 
-med_leaning = bias.med_by_leaning(ft, over="errors")
+med_leaning = bias.med_by_leaning(preds, over="errors")
 display(med_leaning.pivot_table(index="leaning", columns="model",
                                 values="med", observed=True).round(3))
 plots.fig_med_by_leaning(med_leaning)
@@ -323,8 +305,8 @@ Three versions are computed so the effect of the correction is visible:
    the clustering at the same time.
 """)
 code('''
-chi_article   = bias.chi_square_article_level(ft)
-chi_publisher = bias.chi_square_publisher_level(pub_ft)
+chi_article   = bias.chi_square_article_level(preds)
+chi_publisher = bias.chi_square_publisher_level(pub)
 
 comparison = pd.concat([chi_article, chi_publisher], ignore_index=True)
 display(comparison.round(4))
@@ -332,8 +314,8 @@ comparison.to_csv(C.TABLES_DIR / "chi_square_comparison.csv", index=False)
 ''')
 code('''
 # Leaning effects with clustered SEs, with and without controlling for reliability.
-mixed_raw        = bias.mixed_effects_by_leaning(ft, control_for_reliability=False)
-mixed_controlled = bias.mixed_effects_by_leaning(ft, control_for_reliability=True)
+mixed_raw        = bias.mixed_effects_by_leaning(preds, control_for_reliability=False)
+mixed_controlled = bias.mixed_effects_by_leaning(preds, control_for_reliability=True)
 
 leaning_terms = mixed_controlled[mixed_controlled["term"].str.contains("leaning", na=False)]
 print("Odds of an error vs the 'Non labelled' reference, controlling for reliability:")
@@ -345,34 +327,36 @@ pd.concat([mixed_raw, mixed_controlled]).to_csv(
 ''')
 
 md("""
-## 7. Zero-shot GPT-5-mini baseline
+## 7. Supplementary figures
 
-The comparison the second TCSS reviewer asked for. Same articles, same
-aggregation, same metrics — the only difference is that GPT was never trained on
-NewsGuard labels.
+These do not go in the paper. ECIR 2027 makes **no provision for supplementary
+material**: the call mentions only appendices, and those "count toward the page
+limit" and must be placed "before the references". So this set is meant for the
+external companion document (`Paper/NewIRForGood/supplementary.tex`), hosted on
+OSF and cited from the paper -- which is what the rejected TCSS version did.
 
-The prediction-distribution figure carries the interpretation: GPT collapses
-onto the middle of the scale, which is what a model that was given the rubric
-but no calibration data does.
+Five families, 14 figures:
+
+| file | what |
+|---|---|
+| `cm_{model}.pdf` | article-level confusion matrices, five folds + average |
+| `domain_confusion_matrix_{model}.pdf` | publisher-level confusion matrices |
+| `cmOnPoliticalLeaning{Model}.pdf` | article-level matrices split by leaning |
+| `loss_plot.pdf` | Llama 3 convergence over 20 epochs |
+| `training_loss_mistral.pdf` | Mistral training loss across the five folds |
+
+Three of these families were drawn *without* LaTeX in the old code, so they are
+rendered outside the PGF backend here too, to match. The last one is heavy --
+about 3,900 loss points per fold -- and rendering it through PGF exhausts TeX's
+main memory, which is the other reason it must stay on the plain PDF backend.
 """)
 code('''
-comparison_article   = aggregate.article_metrics(preds)
-comparison_publisher = aggregate.publisher_metrics(pub_all)
+from irgood import supplementary as supp
 
-plots.fig_metrics_with_gpt(comparison_article, "article")
-plots.fig_metrics_with_gpt(comparison_publisher, "publisher")
-plots.fig_prediction_distribution(preds)
-
-combined = pd.concat([
-    comparison_article.assign(level="article"),
-    comparison_publisher.assign(level="publisher"),
-])
-display(combined.round(4))
-combined.to_csv(C.TABLES_DIR / "finetuned_vs_zeroshot.csv", index=False)
-
-gpt = preds[preds["model"] == C.GPT_MODEL_NAME]
-print("\\nShare of GPT predictions per class (%):")
-display((gpt["y_pred"].value_counts(normalize=True).sort_index() * 100).round(1))
+supp_files = supp.generate_all(preds, pub)
+print(f"{len(supp_files)} supplementary figures in {C.FIGURES_DIR / 'supplementary'}:")
+for f in supp_files:
+    print("  ", f)
 ''')
 
 md("""
@@ -389,7 +373,11 @@ PUBLISH = False   # flip to True to overwrite the paper's figures
 
 if PUBLISH:
     C.PAPER_IMG_DIR.mkdir(parents=True, exist_ok=True)
-    for pdf in sorted(C.FIGURES_DIR.glob("*.pdf")):
+    # Paper figures and supplementary figures both land in the paper's img/,
+    # which is what main.tex and supplementary.tex expect.
+    sources = sorted(C.FIGURES_DIR.glob("*.pdf")) + \
+              sorted((C.FIGURES_DIR / "supplementary").glob("*.pdf"))
+    for pdf in sources:
         shutil.copy2(pdf, C.PAPER_IMG_DIR / pdf.name)
         print("->", C.PAPER_IMG_DIR / pdf.name)
 else:

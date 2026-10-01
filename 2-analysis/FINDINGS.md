@@ -150,6 +150,14 @@ di "0.60 → 0.69", ma è difendibile e risponde esattamente all'obiezione.
 
 ## 3bis. Il baseline zero-shot nel boxplot article-level
 
+> **Nota (30 set 2026).** Questa analisi è conservata come risultato, ma il
+> confronto con GPT **non fa più parte** di `paper_results.ipynb`: il notebook
+> carica solo i quattro modelli fine-tuned. I dati grezzi restano in
+> `Results/predictions/zeroshot/`; le figure e la tabella derivate sono in
+> `Results/_archive/gpt_comparison/`. Per riattivare il confronto basta
+> `data.load_all_predictions(include_gpt=True)` — il pacchetto `irgood` continua
+> a supportarlo, sono le celle del notebook a non usarlo.
+
 I quattro modelli fine-tuned condividono **esattamente lo stesso** `article -> fold`
 (verificato), quindi le predizioni di GPT si possono valutare sulle stesse cinque
 partizioni publisher-disjoint e finire nel boxplot come quinta serie:
@@ -198,6 +206,83 @@ livello di reliability (odds ratio di errore rispetto a "Non labelled"):
 
 **L'effetto non si dissolve controllando per il confounder: si rafforza.** È un
 risultato solido da mettere nel paper e nella Theory of Change.
+
+---
+
+## 4bis. Le figure del paper non hanno tutte lo stesso stile
+
+Ricostruendo il rendering originale ho scoperto che **il set pubblicato non è
+internamente coerente**. Sei figure su sette sono composte da LaTeX (backend PGF,
+`text.usetex=True`, font Computer Modern). La settima,
+`domain_metrics_comparison.pdf`, viene dal notebook 6, che imposta
+`"text.usetex": False` e non passa mai al backend PGF: il suo testo è in
+**DejaVu Serif**, non in Computer Modern.
+
+Verificato leggendo i font incorporati nei PDF del paper:
+
+| figura | font incorporati |
+|---|---|
+| le altre sei | `CMR10/CMR12/CMMI12/CMTI12` (Computer Modern) |
+| `domain_metrics_comparison` | `DejaVuSerif` |
+
+La pipeline nuova **riproduce anche questo**, per fedeltà: `fig_publisher_metrics`
+ha `match_paper=True` di default e rende quella figura fuori dal backend PGF.
+Passando `match_paper=False` viene composta come le altre sei, se e quando si
+decide di uniformare il set.
+
+Un secondo dettaglio nascosto: i rcParams delle figure venivano impostati in
+celle lontane da quelle di plotting, quindi ogni figura ereditava dimensioni di
+font diverse a seconda dell'ordine di esecuzione. Nel codice nuovo ogni figura
+dichiara i propri, trascritti da quelli effettivamente in vigore al momento.
+
+**Verifica di equivalenza.** Confrontando i PDF rigenerati con quelli del paper su
+tre criteri (dimensioni fisiche della pagina, testo estratto, font incorporati):
+**6 su 7 identiche su tutti e tre**. La settima differisce solo di 0,72 pt nel
+bounding box (ritaglio `bbox_inches='tight'`), con testo e font identici.
+
+## 4quater. Lo scambio RoBERTa/Llama colpisce ANCHE il supplementary
+
+Rigenerando le matrici di confusione article-level ho trovato una **quinta
+occorrenza** dello scambio, in figure che non avevo esaminato prima: nel
+supplementary pubblicato, `cm_roberta.pdf` contiene i dati di **Llama** e
+`cm_llama.pdf` quelli di **RoBERTa**.
+
+Prova diretta dai CSV sorgente (fold 1, prima riga della matrice):
+
+| | riga 1 fold 1 |
+|---|---|
+| `roberta_enriched.csv` | `[770, 33, 7, 86, 21]` |
+| `llama_enriched.csv` | `[776, 22, 11, 90, 18]` |
+| `cm_roberta.pdf` del paper | inizia con **776 22 11 90** -> e' Llama |
+| `cm_llama.pdf` del paper | inizia con **770 33 7 86** -> e' RoBERTa |
+
+**Queste due figure sono le uniche in cui NON riproduco la versione pubblicata**,
+perche' riprodurla significherebbe riprodurre un errore di dati. Le versioni
+rigenerate sono corrette: ogni file contiene il proprio modello. Di conseguenza
+differiscono dal PDF vecchio di un carattere nel testo estratto, ed e' voluto.
+
+---
+
+## 4ter. Il supplementary: `text.usetex=False` era inerte
+
+Ricostruendo anche le 14 figure del supplementary è emerso un equivoco che
+spiega diverse incongruenze del vecchio codice.
+
+`5 - Political Error Analysis.ipynb` imposta `matplotlib.use("pgf")` in cima e
+poi, dentro la funzione delle matrici per political leaning, scrive
+`"text.usetex": False`. **Quella riga non ha alcun effetto**: il backend PGF
+compone il testo con LaTeX *comunque*, `text.usetex` è irrilevante sotto PGF. Lo
+conferma il PDF pubblicato, che incorpora font Computer Modern
+(`CMBX10/CMBX12/CMR10/CMR12/CMTI12`) — cioè LaTeX — nonostante quella riga.
+
+Nel codice nuovo le matrici politiche restano quindi sotto PGF, mentre le
+matrici publisher (notebook 6, che non passa mai a PGF) usano davvero mathtext,
+con `mathtext.fontset='cm'` per riprodurre i `Cmmi10/Cmr10` del PDF pubblicato.
+
+Un secondo scarto trovato solo confrontando i PDF: le `cm_*.pdf` pubblicate sono
+**15×12 pollici**, mentre il codice sopravvissuto dice `figsize=(15, 10)`. Come
+per `error_rate_analysis`, la versione pubblicata viene da codice più recente di
+quello rimasto nei notebook.
 
 ---
 

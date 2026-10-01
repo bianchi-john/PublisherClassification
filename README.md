@@ -54,3 +54,17 @@ versa, so the article-level F1 and tolerant-accuracy figures in the rejected
 paper **attribute each of those two models' scores to the other**. Publisher-level
 results are unaffected. The first cells of `paper_results.ipynb` explain this and
 the two other defects found, all verified by recomputation.
+
+## Rendering delle figure
+
+Le figure sono composte da LaTeX (backend PGF di matplotlib, `text.usetex=True`),
+come nel paper originale. Serve quindi un `pdflatex` nel PATH. Senza sudo:
+
+```bash
+curl -sL "https://yihui.org/tinytex/install-bin-unix.sh" | sh
+export PATH="$HOME/.TinyTeX/bin/x86_64-linux:$PATH"
+tlmgr install pgf type1cm cm-super underscore ucs preview
+```
+
+Senza `pdflatex`, `plots.set_style()` avvisa e ripiega su mathtext: il layout
+resta corretto ma i font non coincidono con quelli del paper.
