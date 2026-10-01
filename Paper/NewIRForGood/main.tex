@@ -113,8 +113,8 @@ We then ask how the errors distribute across the political spectrum, and find
 systematic associations between the leaning of an outlet and the mistakes made
 on its articles. We report that disparity as a bound on responsible use.
 Taken together, the results indicate that text alone carries enough signal to
-place an unseen outlet on a reliability scale, and we set out the conditions
-under which such estimates may direct expert attention rather than replace it.
+place an unseen outlet on a reliability scale, and we set out what that evidence does
+and does not license.
 
 \revnote{Abstract}{(1) R1.2: il salto 0.60 -> 0.69 confondeva l'aggregazione con il cambio di unita'. Misurato sugli stessi 439 publisher, il voto vale da +1.6 a +4.3 punti, il resto e' il passaggio da articoli a testate. Riformulato il claim. (2) L'abstract e' parafrasato rispetto alla versione su arXiv: serviva a non far risalire a quel PDF da un motore di ricerca, cosa che avrebbe compromesso il doppio cieco. (3) Aggiunti anche i risultati tolerant, solo accennati.}
 \keywords{News source reliability \and Publisher reliability inference \and
@@ -129,7 +129,7 @@ A large body of computational work instead formulates the problem as article-lev
 
 A second limitation concerns evaluation. Existing studies derive article labels from publisher-level annotations without enforcing publisher-disjoint splits~\cite{burdisso-etal-2024-reliability,DBLP:journals/dbsk/AdjiLS26,batDataset}, so models can partially memorize publisher-specific patterns rather than learning transferable indicators of reliability~\cite{azizov-etal-2024-safari,verhoeven2025yesterday}.
 
-We address these limitations by reformulating the task as publisher-level inference. We propose a two-stage framework in which transformer-based language models first estimate the reliability of individual articles and then aggregate those predictions to infer the reliability of previously unseen publishers, under a strict publisher-disjoint evaluation protocol. Our contributions are as follows: we reformulate news reliability assessment as a source-level inference problem; we introduce a publisher-disjoint protocol that prevents source leakage and measures generalization to unseen publishers; we construct a dataset of 19,476 political news articles from 439 English-language publishers labeled with NewsGuard scores; and we show that aggregating article-level predictions improves reliability estimation, reaching 0.69 publisher-level accuracy on unseen sources. \john{An estimate of this kind carries consequences for the outlets it ranks, so we also audit how the errors distribute across the political spectrum. Section~\ref{sec:theoryofchange} states the societal need we address, the preconditions any benefit depends on, and the harms the approach may introduce.}
+We address these limitations by reformulating the task as publisher-level inference. We propose a two-stage framework in which transformer-based language models first estimate the reliability of individual articles and then aggregate those predictions to infer the reliability of previously unseen publishers, under a strict publisher-disjoint evaluation protocol. Our contributions are as follows: we reformulate news reliability assessment as a source-level inference problem; we introduce a publisher-disjoint protocol that prevents source leakage and measures generalization to unseen publishers; we construct a dataset of 19,476 political news articles from 439 English-language publishers labeled with NewsGuard scores; and we show that aggregating article-level predictions improves reliability estimation, reaching 0.69 publisher-level accuracy on unseen sources. \john{An estimate of this kind carries consequences for the outlets it ranks, so we also audit how the errors distribute across the political spectrum. Section~\ref{sec:theoryofchange} states the need that motivates the work, the preconditions any benefit depends on, and the harms the approach may introduce.}
 
 \section{Related Work}
 Early work on online news quality focused on article-level classification, detecting misleading content through linguistic features or neural architectures~\cite{pandolfi2020automatic}, often without considering the publisher.
@@ -413,42 +413,46 @@ Work on misinformation is not socially beneficial by default. We therefore state
 what we expect this work to change, what must hold for it to do so, and how it
 may cause harm.
 
-\paragraph{Societal Need and Intended Contribution}
-The binding constraint on expert rating is the cost of \textit{triage} rather
-than the quality of the judgement. We show that article text alone places an unseen outlet on a
-five-level scale with 0.69 accuracy (Section~\ref{sec:results}). Errors are
-predominantly local: a mistake usually lands on an adjacent level, not on a
-confusion between a disinformation site and an established newspaper. We claim no
-improvement in information quality itself, and we aim only to allocate expert
-effort.
+\paragraph{The Need, and What We Claim About It}
+Expert ratings are manual, and the outlets they never reach stay unrated. That
+gap motivates automation, but it is not the gap this paper closes. What we claim
+to change is how the task is posed and evaluated. Reliability is a property of
+the publisher, yet most computational work predicts it one article at a time, and
+trains and tests on articles from the same outlets. A model can then recognise
+the outlet rather than the signal, and what it reports need not hold on a source
+it has never seen. We pose the task at the publisher level, enforce
+publisher-disjoint splits, and report what the text alone supports: 0.69 accuracy
+on unseen outlets (Section~\ref{subsec:stage2}), with errors predominantly local
+and no gain from model scale.
 
 \paragraph{Preconditions and Their Plausibility}
 Four conditions must hold, and they are unevenly likely to. \textbf{The ground
 truth must be valid}: we inherit the NewsGuard scale together with its editorial
 judgements, and nothing internal to our data can test this. \textbf{The unit must
 be the publisher}, never the article: article-level accuracy is 0.60 and supports
-no claim about an individual piece. \textbf{Enough text must be available}. Small and
-recent outlets lack a rating most often, and they are the least likely to
-qualify. \textbf{Use must remain advisory}, ordering a review queue rather than
-rating anything autonomously. Our evidence covers English-language political news
-alone.
+no claim about an individual piece. \textbf{Enough text must be available}. Small
+and recent outlets lack a rating most often, and they are the least likely to
+qualify. \textbf{The signal must survive beyond our corpus}: our evidence covers
+English-language political news alone.
 
-\paragraph{Negative Externalities and Responsible Deployment}
+\paragraph{Negative Externalities}
 The principal risk is measured rather than hypothesised. Misclassification rates
 vary systematically with political leaning (Section~\ref{subsec:politicalBias}):
 they reach 59--72\% for far-left and far-right outlets, against 30--34\% for
 slightly right and non-labelled ones. The models also overestimate reliability at
-either extreme and underestimate it for slightly left-leaning outlets. Such error
-is systematic and reproducible, which distinguishes it in kind from that of an
-individual rater. Two further risks follow from presentation and use. A single
+either extreme and underestimate it for slightly left-leaning outlets. Two further risks follow from presentation and use. A single
 level out of five reads as a measurement, although the $l_4$/$l_5$ boundary is
 close to unresolvable (Section~\ref{subsec:error_analysis}). An inexpensive score
-is also a target, and surface features are easy to optimise. We therefore regard the
-following as necessary rather than advisable: publishing per-leaning error rates;
-abstaining when few articles are available; reporting an interval rather than a
-single level; and confining the output to ordering human review. The bias audit
-of Section~\ref{subsec:politicalBias} is constitutive of the contribution, not
-supplementary to it.
+is also a target, and surface features are easy to optimise.
+
+\paragraph{What the Evidence Does Not License}
+We measure classification accuracy on held-out publishers, and nothing else. We
+do not evaluate the approach inside any workflow, we do not measure how it would
+order outlets for human review, and we do not test abstention on outlets with
+little text. Any such use needs evidence this paper does not provide. What it does
+establish is that the error disparity survives clustering at the publisher level
+and controlling for the true reliability level. Reporting it is part of the
+result, not an appendix to it.\revnote{Theory of Change}{Riscritta per non promettere cose che il paper non misura. La versione precedente diceva che il sistema serve a ordinare una coda di revisione e poneva come condizioni l'astensione e la predizione a intervalli: nessuna delle tre e' valutata negli esperimenti. Ora il cambiamento rivendicato e' sulla formulazione del task e sul protocollo di valutazione, che il paper fa davvero, e l'ultimo paragrafo dichiara esplicitamente cosa l'evidenza non autorizza.}
 
 \end{johnblock}
 
@@ -458,7 +462,7 @@ In this study, we investigated whether the reliability of news publishers could 
 
 Our findings demonstrate that language models can capture meaningful and generalizable signals of publisher reliability. Interestingly, the substantially larger Mistral 24B does not outperform smaller architectures, suggesting that performance is limited by dataset characteristics rather than model size. Despite operating with a 1,024-token context window, four times larger than the limit used for the other models, Mistral shows no measurable gain, which may indicate that the cues discriminating reliable publishers are concentrated in the beginning of articles and further supports the hypothesis that increasing model size or input length alone cannot overcome limitations imposed by weak supervision. A key finding is that publisher reliability should not be modelled as a property of isolated articles: it emerges as a collective signal that becomes more stable when evidence is aggregated across a source, which supports a shift from article-centric formulations toward source-level inference.
 
-Future research should extend this framework to multilingual settings, explore confidence-aware aggregation strategies, and develop training objectives tailored to ordinal classification. \john{The value of such systems, however, lies less in accuracy than in reach. What matters is whether they bring scarce editorial scrutiny to the outlets that currently go unrated, and whether they do so without penalising one part of the spectrum more than another.}
+Future research should extend this framework to multilingual settings, explore confidence-aware aggregation strategies, and develop training objectives tailored to ordinal classification. \john{The value of such systems, however, will not be settled by accuracy alone. Whoever builds one has to show where its errors fall across the political spectrum, which is why we report that disparity alongside the scores.}
 
 \begin{credits}
 \ifanonymous
