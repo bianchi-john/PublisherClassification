@@ -367,13 +367,8 @@ number  = {15},
 
 
 
-@article{DBLP:journals/corr/abs-2410-21360,
-  title={A Survey on Automatic Credibility Assessment Using Textual Credibility Signals in the Era of Large Language Models},
-  author={Srba, Ivan and Razuvayevskaya, Olesya and Leite, Jo{\~a}o A and Moro, Robert and Schlicht, Ipek Baris and Tonelli, Sara and Garc{\'\i}a, Francisco Moreno and Lottmann, Santiago Barrio and Teyssou, Denis and Porcellini, Valentin and others},
-  journal={ACM Transactions on Intelligent Systems and Technology},
-  year={2025},
-  publisher={ACM New York, NY}
-}
+% NOTA: voce 'DBLP:journals/corr/abs-2410-21360' rimossa --- duplicato esatto di 10.1145/3770077 (survey Srba et al., ACM TIST 2025)
+
 
 
 
@@ -744,16 +739,8 @@ doi = {10.1080/07421222.2019.1628921}
 
 
 
-@article{przybyla2021classification,
-  title={When classification accuracy is not enough: Explaining news credibility assessment},
-  author={Przyby{\l}a, Piotr and Soto, Axel J},
-  journal={Information Processing and Management},
-  volume={58},
-  number={5},
-  pages={102653},
-  year={2021},
-  publisher={Elsevier}
-}
+% NOTA: voce 'przybyla2021classification' rimossa --- duplicato esatto di Przybyla2021plugin (Przybyla & Soto, IPM 2021)
+
 
 
 @inproceedings{yang2023large,
@@ -4505,12 +4492,8 @@ keywords = {Fake news detection, Fake news, Feature fusion, Multi-modal detectio
   bibsource    = {dblp computer science bibliography, https://dblp.org}
 }
 
-@article{jiang2024mixtral,
-  title={Mixtral of experts},
-  author={Jiang, Albert Q and Sablayrolles, Alexandre and Roux, Antoine and Mensch, Arthur and Savary, Blanche and Bamford, Chris and Chaplot, Devendra Singh and Casas, Diego de las and Hanna, Emma Bou and Bressand, Florian and others},
-  journal={arXiv preprint arXiv:2401.04088},
-  year={2024}
-}
+% NOTA: voce 'jiang2024mixtral' rimossa --- citava Mixtral 8x7B (Mixture-of-Experts), non il Mistral Small 24B denso usato negli esperimenti; sostituita da mistralsmall3
+
 
 % ---------------------------------------------------------------------------
 % DOUBLE-BLIND: the self-authored supplementary is the one reference that would
@@ -4531,4 +4514,12 @@ keywords = {Fake news detection, Fake news, Feature fusion, Multi-modal detectio
   url          = {https://anonymous.4open.science/r/supplementary-material-DD54/README.md},
   note         = {Anonymised supplementary material accompanying this submission}
 }}
+}
+@misc{mistralsmall3,
+  author       = {{Mistral AI}},
+  title        = {Mistral Small 3},
+  year         = {2025},
+  howpublished = {Model card: \texttt{mistralai/Mistral-Small-24B-Base-2501}},
+  url          = {https://mistral.ai/news/mistral-small-3/},
+  note         = {24B-parameter dense model}
 }

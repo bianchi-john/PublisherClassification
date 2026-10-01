@@ -23,6 +23,7 @@
 \usepackage{booktabs}
 \usepackage{xcolor}
 \usepackage[normalem]{ulem}
+\usepackage[nospace]{cite}  % sorts multiple citations into ascending order
 \usepackage{hyperref}
 \usepackage{xurl}          % lets long URLs break across lines
 \renewcommand\UrlFont{\color{blue}\rmfamily}
@@ -116,11 +117,11 @@ Reliability aggregation \and Political bias analysis.}
 \section{Introduction}
 In contemporary digital media ecosystems, assessing the reliability of news publishers has become increasingly important for limiting the spread of misleading or low-quality information. Professional organizations such as NewsGuard, the Global Disinformation Index, and Media Bias Fact Check evaluate news outlets according to journalistic standards including transparency, editorial accountability, factual accuracy, and correction practices. Despite methodological differences, these systems exhibit substantial convergence, providing a stable foundation for reliability labeling~\cite{lin2023high,DBLP:conf/icwsm/PratelliP22}. Importantly, these assessments are performed at the level of the publisher rather than at the level of individual articles.
 
-A large body of computational approaches to misinformation and credibility assessment formulates the problem as an article-level classification task~\cite{pandolfi2020automatic,Przybyla2021plugin,DBLP:journals/corr/abs-2410-21360,DBLP:journals/dbsk/AdjiLS26}. While effective in controlled settings, this formulation only partially reflects the actual structure of professional reliability assessment, where reliability is considered a persistent property of the news source emerging across multiple publications rather than an intrinsic property of isolated articles.
+A large body of computational approaches to misinformation and credibility assessment formulates the problem as an article-level classification task~\cite{pandolfi2020automatic,Przybyla2021plugin,10.1145/3770077,DBLP:journals/dbsk/AdjiLS26}. While effective in controlled settings, this formulation only partially reflects the actual structure of professional reliability assessment, where reliability is considered a persistent property of the news source emerging across multiple publications rather than an intrinsic property of isolated articles.
 
 Individual articles provide only partial and noisy evidence about the publisher that produced them: highly reliable outlets occasionally publish lower-quality content, and unreliable publishers produce articles that appear plausible in isolation. A more realistic formulation infers source-level reliability by aggregating evidence across multiple articles of the same publisher.
 
-A second limitation of prior work concerns evaluation methodology. Existing studies evaluate article reliability using datasets in which labels are derived from publisher-level annotations and where evaluation does not explicitly enforce publisher-disjoint splits, see, e.g., ~\cite{burdisso-etal-2024-reliability, DBLP:journals/dbsk/AdjiLS26,batDataset}. 
+A second limitation of prior work concerns evaluation methodology. Existing studies evaluate article reliability using datasets in which labels are derived from publisher-level annotations and where evaluation does not explicitly enforce publisher-disjoint splits, see, e.g., ~\cite{burdisso-etal-2024-reliability,DBLP:journals/dbsk/AdjiLS26,batDataset}. 
 Under these conditions, models can partially memorize publisher-specific patterns rather than learning transferable indicators of reliability~\cite{azizov-etal-2024-safari,verhoeven2025yesterday}.
 
 In this work, we address these limitations by reformulating news reliability assessment as a publisher-level inference problem. We propose a two-stage framework in which transformer-based language models first estimate the reliability level of individual articles and subsequently aggregate article-level predictions to infer the reliability of previously unseen publishers. To approximate realistic deployment conditions, we enforce a strict publisher-disjoint evaluation protocol, ensuring that no publisher appears in both training and test sets.
@@ -147,7 +148,7 @@ The quality of online news has been widely studied in computational social scien
 
 \paragraph{Publisher Reliability as a Core Dimension} A parallel line of research shifts the focus to the reliability of news publishers. This concept, variously termed \emph{reliability}, \emph{trustworthiness} or \emph{credibility}~\cite{digitalmedia2007,infodisorder2017,10.1145/302979.303001}, captures whether a source adheres to journalistic standards, and source reputation is known to influence perceived information quality~\cite{doi:10.1080/07421222.2019.1628921}.
 
-\paragraph{Different signals to estimate publisher reliability} Computational approaches model publisher reliability using different types of signals. Some rely on textual features and stylistic patterns~\cite{przybyla2021classification}, while others incorporate external information such as user interactions, social networks, and other metadata~\cite{bazmi2023multi,DBLP:conf/ecir/PratelliSP25,DBLP:conf/icwsm/WilliamsCC25,DBLP:journals/jdiq/LongoZCZC25}. Journalistic rating systems are commonly used as ground truth~\cite{lin2023high,DBLP:conf/icwsm/PratelliP22}, and recent work explores textual and LLM-based approaches to reliability estimation~\cite{10.1145/3770077,nakov2024survey,yang2023large,Leite2025}.
+\paragraph{Different signals to estimate publisher reliability} Computational approaches model publisher reliability using different types of signals. Some rely on textual features and stylistic patterns~\cite{Przybyla2021plugin}, while others incorporate external information such as user interactions, social networks, and other metadata~\cite{bazmi2023multi,DBLP:conf/ecir/PratelliSP25,DBLP:conf/icwsm/WilliamsCC25,DBLP:journals/jdiq/LongoZCZC25}. Journalistic rating systems are commonly used as ground truth~\cite{lin2023high,DBLP:conf/icwsm/PratelliP22}, and recent work explores textual and LLM-based approaches to reliability estimation~\cite{10.1145/3770077,nakov2024survey,yang2023large,Leite2025}.
 
 \paragraph{Datasets and Cross-Domain Generalization} Datasets with explicit publisher reliability labels remain limited~\cite{bohavcek2022fine,DBLP:journals/dbsk/AdjiLS26,batDataset}. More recent work highlights the challenge of generalization across domains and publishers~\cite{azizov-etal-2024-safari,burdisso-etal-2024-reliability,verhoeven2025yesterday}, showing that model performance degrades under distribution shifts.
 
@@ -334,12 +335,12 @@ optimized training strategies alone improve reliability detection with the archi
 unchanged. \textbf{Llama 3} 8B \cite{grattafiori2024llama} represents the shift toward
 decoder-only generative models, assessing whether the parameter scale of a general-purpose
 LLM translates into superior classification accuracy. \textbf{Mistral} 24B
-\cite{jiang2024mixtral}, roughly three times larger than Llama, tests whether additional
+\cite{mistralsmall3}, roughly three times larger than Llama, tests whether additional
 capacity improves detection or whether performance saturates.
 
 \paragraph{Training Strategies and Hyperparameters}
 Encoders (BERT, RoBERTa) were \textit{fully fine-tuned} with AdamW, a learning rate of
-$2e^{-5}$ and weight decay \cite{devlin2019bert, liu2019roberta}. For the decoders (Llama,
+$2e^{-5}$ and weight decay \cite{devlin2019bert,liu2019roberta}. For the decoders (Llama,
 Mistral) full fine-tuning was computationally infeasible, so we adopted Low-Rank Adaptation
 (LoRA), freezing the pre-trained weights and updating only low-rank matrices injected into
 the attention layers, with a learning rate of $2e^{-4}$ in mixed precision.
