@@ -4,7 +4,7 @@
 > track, senza ritornare ogni volta sul sito.
 >
 > **Fonte primaria:** <https://www.ecir2027.co.uk/call-for-ir-for-good-papers>
-> **Verificato il:** 30 settembre 2026
+> **Verificato il:** 30 settembre 2026 — **aggiornato il:** 1 ottobre 2026
 > Le frasi tra virgolette in inglese sono **citazioni letterali** dal sito ufficiale.
 > Tutto ciò che è marcato *[interpretazione]* è una mia deduzione, non una citazione.
 
@@ -104,10 +104,31 @@ Indicazione esplicita del sito:
 
 > "make some effort to avoid any issues that may harm the double-blindness of your submission"
 
-E sui preprint:
+### Preprint su arXiv — permesso, con cautele
 
-> "Please do not publish your paper at arXiv and submit to ECIR at the same time, some days
-> before, or during the reviewing period."
+Questo punto vale la pena citarlo per esteso, perché è quello che decide il nostro caso:
+
+> "Submission is permitted for papers that have previously been made available as a technical
+> report (e.g., in institutional archives or preprint archives like arXiv)."
+
+> "However, we discourage this since it places anonymity at risk; in particular, please do not
+> publish your paper at arXiv and submit to ECIR at the same time, some days before, or during
+> the reviewing period of ECIR."
+
+> "You might not want to use the exact same title and abstract for your ECIR submission (in
+> case of acceptance at ECIR, the title of your submission still might be changed «back»)."
+
+> "Please do not cite your technical report and make some effort to avoid any issues that may
+> harm the double-blindness of your submission."
+
+> "Reviewers will receive guidance that ask them to refrain from trying to break blindness if
+> at all possible too, but be aware that the availability of a technical report for an ECIR
+> submission can cause issues."
+
+**Come ci riguarda.** La versione respinta da TCSS è su arXiv. Questo **non ci squalifica**:
+il preprint è permesso, e lo scoraggiamento riguarda il pubblicare *durante* la finestra di
+review, cosa che non stiamo facendo. Le tre precauzioni che il bando suggerisce sono state
+applicate: titolo cambiato, abstract riscritto, technical report non citato.
 
 **Checklist di anonimizzazione da applicare al PDF di submission** *[interpretazione operativa]*:
 
@@ -117,10 +138,14 @@ E sui preprint:
 - [ ] **ORCID rimossi** — identificano univocamente gli autori. Vanno rimessi nel camera-ready
 - [ ] **Ringraziamento SIMULARE rimosso** — il nome del progetto e l'ente finanziatore
       identificano il gruppo
-- [ ] Link al **supplementary OSF** verificato: il link `osf.io/r9atz/...` porta a un progetto
-      che può esporre i nomi degli autori. Va reso anonimo o sostituito con una nota
-      "anonymised repository, available upon acceptance"
-- [ ] Link ai **modelli fine-tuned** su OSF: stesso problema
+- [x] **Supplementary**: ospitato su Anonymous GitHub
+      (`anonymous.4open.science/r/supplementary-material-DD54/README.md`). Il repo GitHub
+      sorgente è **privato** e il commit è firmato con identità neutra. Il PDF è anonimo di suo
+      (verificato sui byte), perché Anonymous GitHub non anonimizza il contenuto dei PDF
+- [x] **Modelli fine-tuned**: nessun link durante la review, nota "available upon acceptance".
+      Il repo OSF è stato cancellato (compariva su Google insieme al preprint arXiv)
+- [x] **Chiave BibTeX** neutra: era `bianchi2026supplementary` e finiva nel PDF come ancora
+      hyperref `cite.bianchi2026supplementary`, invisibile nel testo ma presente nei byte
 - [ ] Autocitazioni: controllare che non ci siano frasi tipo "in our previous work [12]" che
       collegano il paper agli autori. Riformulare in terza persona
 - [ ] Metadati del PDF (autore/titolo) puliti
@@ -143,9 +168,27 @@ Deve rispondere a tre domande, citate letteralmente:
    > its desired effect"
 3. > "What are possible negative externalities of this approach"
 
-Ricorda inoltre che la track chiede che i contributi articolino **esplicitamente** come il
-lavoro produca esiti sociali positivi, senza dare per scontato che lavorare su questi temi sia
-di per sé un bene sociale.
+Attenzione al testo esatto della domanda 2: chiede anche *"and how likely are they to hold
+true in practice?"*. Non basta elencare le assunzioni, va dichiarata la loro **plausibilità**.
+La domanda 3 aggiunge *"is it plausible that this may lead to new or different harms?"*: il
+punto non è solo che i danni siano grandi, ma che siano di **tipo nuovo**.
+
+Dalla guidance dell'organizzatore della track:
+
+> "This section should not be an afterthought; instead it should be a critical part of the key
+> motivations for the work and as important as any other core sections."
+
+> "it is not mandatory to name the section «Theory of change» but it should be apparent from
+> the section title that it elaborates on how the work contributes towards desired societal
+> outcomes."
+
+> "Our goal is **not** to encourage authors to inflate their claims of societal impact but to
+> rigorously deliberate on their sociotechnical assumptions."
+
+**Collocazione.** Non è prescritta. Nel nostro paper la sezione sta **dopo gli Experiments e
+prima di Discussion**, perché le esternalità sono *misurate* e non si possono argomentare
+prima di aver mostrato i risultati; per non farla sembrare un'appendice, l'introduzione la
+richiama subito dopo la lista dei contributi.
 
 ---
 
@@ -186,28 +229,52 @@ interesse, plagio/falsificazione e molestie, più la AI policy di Springer.
 
 ---
 
-## 8. Checklist di conformità — stato al 30 settembre 2026
+## 7bis. Supplementary material — ECIR non lo prevede
+
+Verificato su entrambe le pagine (IR for Good e Full Papers): **nessuna delle due menziona
+supplementary material, repository esterni, OSF, Zenodo o upload aggiuntivi**. L'unica cosa
+prevista sono le appendici, e per quelle vale:
+
+> "The 'Theory of Change' section and Appendices count toward the page limit."
+> "Please put appendices before the references for paper submission."
+
+**Conseguenza pratica.** Un'appendice interna costa pagine che non abbiamo. Il supplementary
+è quindi un documento **autonomo ospitato fuori** (`supplementary.tex` → Anonymous GitHub) e
+citato dal paper, come faceva la versione TCSS. Non è un modo per aggirare il limite: dentro
+ci sono solo matrici di confusione complete e curve di convergenza, cioè materiale
+illustrativo, non argomenti del paper.
+
+**Attenzione per il camera-ready.** Zenodo non permette di sostituire i file di un record già
+pubblicato (*"Files in the record however can only be edited (added, modified or deleted)
+after publication by contacting support"*) e la cancellazione è possibile solo entro 30 giorni.
+Il record TCSS esistente va quindi lasciato com'è; alla camera-ready si crea una **nuova
+versione**.
+
+---
+
+## 8. Checklist di conformità — stato al 1 ottobre 2026
 
 | # | Requisito | Stato | Note |
 |---|-----------|:-----:|------|
 | 1 | Template LNCS (`llncs.cls` + `splncs04.bst`) | ✅ | Convertito da IEEEtran; compila pulito |
 | 2 | Lingua inglese | ✅ | |
 | 3 | Abstract + keyword nel formato LNCS | ✅ | `\keywords` dentro l'abstract |
-| 4 | **Lunghezza ≤ 12 pagine di contenuto** | ❌ | **Siamo a 20 pagine** (refs pp. 20–23). Da tagliare ~8 pp, ~11 contando il materiale nuovo da aggiungere |
+| 4 | **Lunghezza ≤ 12 pagine di contenuto** | ❌ | **22 pagine di contenuto** (25 col bibliography). Da tagliare ~10 pp. È l'unico bloccante rimasto |
 | 5 | Lunghezza ≥ 6 pagine | ✅ | |
-| 6 | **Sezione Theory of Change** | ❌ | **Non ancora scritta. Obbligatoria.** |
+| 6 | **Sezione Theory of Change** | ✅ | Scritta, pp. 19–21. Copre le tre domande, con giudizio di plausibilità per ogni precondizione e danni qualificati come di tipo nuovo. Richiamata dall'introduzione |
 | 7 | **Anonimizzazione doppio cieco** | ✅ | Interruttore `\anonymoustrue` in `main.tex` e `supplementary.tex`. Verificato sui byte del PDF: nessun nome, affiliazione, ORCID, SIMULARE, OSF o Zenodo. Titolo e abstract cambiati rispetto al preprint arXiv (0 n-grammi di 6+ parole in comune). Chiave BibTeX rinominata (era `bianchi2026supplementary`, leak via ancore hyperref). Modelli non linkati durante la review. |
 | 8 | Appendici prima delle referenze | ➖ | Al momento non ci sono appendici |
 | 9 | Nessuna doppia submission | ✅ | Respinto da TCSS, non sotto revisione altrove |
-| 10 | Nessun preprint arXiv in contemporanea | ✅ | Da non fare fino a dicembre 2026 |
-| 11 | ORCID (per il camera-ready) | ✅ | Presenti nel sorgente; da rimuovere per la submission e rimettere dopo |
-| 12 | Submission su EasyChair `ecir27` | ⏳ | Da fare entro il 5 ottobre 2026, 23:59 AoE |
+| 10 | Preprint arXiv preesistente | ✅ | Permesso dal bando. Applicate le tre cautele suggerite: titolo cambiato, abstract riscritto (0 n-grammi di 6+ parole in comune col preprint), technical report non citato. Non pubblicare nulla di nuovo su arXiv fino a dicembre 2026 |
+| 11 | ORCID (per il camera-ready) | ✅ | Nel ramo `\else` dell'interruttore; tornano commentando `\anonymoustrue` |
+| 12 | Titolo diverso dal preprint | ✅ | *Source-Level Reliability Estimation under Publisher-Disjoint Evaluation*. Da riportare al titolo originale in caso di accettazione, se si vuole |
+| 13 | Submission su EasyChair `ecir27` | ⏳ | Da fare entro il 5 ottobre 2026, 23:59 AoE |
 
 Legenda: ✅ conforme · ❌ non conforme · ⏳ da fare · ➖ non applicabile
 
 ---
 
-## 9. Procedura di verifica (i due step)
+## 9. Procedura di verifica
 
 **Step 1 — check automatico del formato.** Dalla cartella `Paper/NewIRForGood/`:
 
@@ -222,7 +289,42 @@ Per misurare le **pagine di contenuto** (escluse le referenze), inserire tempora
 grep ENDOFCONTENT main.aux     # il secondo numero è la pagina
 ```
 
-**Step 2 — check manuale contro la tabella della §8.** Da rifare a ogni revisione
+**Step 2 — check automatico dell'anonimato.** Non fidarsi del testo estratto: i leak più
+insidiosi stanno nei metadati del PDF e negli stream compressi (ancore hyperref, percorsi di
+sistema). Questo controlla entrambi:
+
+```python
+from pypdf import PdfReader
+import re, zlib
+raw = open("main.pdf", "rb").read()
+blobs = [raw]
+for st in re.findall(rb"stream\r?\n(.*?)endstream", raw, re.S):
+    try: blobs.append(zlib.decompress(st))
+    except Exception: pass
+hay = b"\n".join(blobs)
+for t in [b"Bianchi", b"Pratelli", b"Pinelli", b"Petrocchi", b"imtlucca", b"iit.cnr",
+          b"SIMULARE", b"IMT School", b"osf.io", b"zenodo", b"/home/john",
+          b"From Articles to Publishers"]:
+    n = len(re.findall(re.escape(t), hay, re.I))
+    if n: print(f"LEAK {t.decode()}: {n}")
+print((PdfReader("main.pdf").metadata or {}).get("/Author"), 
+      (PdfReader("main.pdf").metadata or {}).get("/Title"))   # devono essere vuoti
+```
+
+Atteso: nessun LEAK, metadati `/Author` e `/Title` vuoti. Fanno eccezione **Pratelli** e
+**Pinelli**, che compaiono legittimamente in bibliografia (due auto-citazioni in terza persona,
+che il doppio cieco permette e anzi si aspetta, più Pinelli come *editor* degli atti ECIR 2025
+nel riferimento a TROPIC).
+
+**Step 3 — distanza dal preprint.** L'abstract non deve condividere sequenze lunghe di parole
+con la versione su arXiv, perché è così che i motori di ricerca fanno match:
+
+```python
+def ng(w, n): return {" ".join(w[i:i+n]) for i in range(len(w)-n+1)}
+# atteso: 0 n-grammi condivisi per n >= 5
+```
+
+**Step 4 — check manuale contro la tabella della §8.** Da rifare a ogni revisione
 significativa e, obbligatoriamente, subito prima di caricare su EasyChair.
 
 ---
@@ -234,3 +336,6 @@ significativa e, obbligatoriamente, subito prima di caricare su EasyChair.
 - [Calls — ECIR 2027](https://www.ecir2027.co.uk/calls) (policy etiche trasversali)
 - [EasyChair ECIR 2027](https://easychair.org/conferences/?conf=ecir27)
 - [Springer LNCS — information for authors](https://link.springer.com/series/558/information-for-authors-and-editors) *(non accessibile senza autenticazione: i dettagli LNCS in §3 non sono citazioni letterali)*
+- [What is IR-for-Good? — Bhaskar Mitra](https://bhaskar-mitra.github.io/posts/2025/09/01/what-is-ir-for-good/) (guidance dell'organizzatore della track sulla Theory of Change, §5)
+- [Zenodo — Manage records](https://help.zenodo.org/docs/deposit/manage-records/) (immutabilità dei file dopo la pubblicazione, §7bis)
+- [Anonymous GitHub](https://github.com/tdurieux/anonymous_github) (hosting anonimo del supplementary, §4)
