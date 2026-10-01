@@ -121,7 +121,16 @@ Our contributions are fourfold:
 We reformulate news reliability assessment as a source-level inference problem, where publisher reliability is estimated by aggregating predictions from multiple articles.
 \item We introduce a strict publisher-disjoint evaluation protocol that prevents source leakage and measures generalization to previously unseen publishers.
 \item We construct a large-scale dataset of 19,476 political news articles from 439 English-language publishers labeled with NewsGuard reliability scores.
-\item We show that aggregating article-level predictions substantially improves reliability estimation, achieving up to 0.69 publisher-level accuracy on unseen sources.\end{enumerate}
+\item We show that aggregating article-level predictions substantially improves reliability estimation, achieving up to 0.69 publisher-level accuracy on unseen sources.
+\end{enumerate}
+
+Because the intended use of such a system is itself the object of the
+contribution, we treat the reasoning connecting it to a societal outcome as a
+core component of the work rather than as a closing remark.
+Section~\ref{sec:theoryofchange} states the need being addressed, the
+preconditions on which any benefit depends, and the harms the approach may
+introduce; the bias analysis in Section~\ref{subsec:politicalBias} supplies the
+evidence for the last of these.
 
 
 
@@ -721,94 +730,115 @@ Publisher-level errors are strictly local and concentrate between adjacent relia
 \section{Theory of Change}
 \label{sec:theoryofchange}
 
-Work on misinformation is not socially beneficial by default. A reliability
-classifier can reduce the cost of scrutinising unknown outlets, and it can just
-as easily supply a veneer of objectivity to decisions that deserve argument. We
-therefore state plainly what we think this work can change, what has to be true
-for that to happen, and how it could go wrong.
+Research on misinformation is not socially beneficial by default: a reliability
+classifier can lower the cost of scrutinising unknown outlets, but it can
+equally lend an appearance of objectivity to decisions that warrant deliberation.
+We therefore make the sociotechnical reasoning behind this work explicit along
+three axes: (i) the societal need addressed and how our contributions bear on
+it; (ii) the preconditions that must hold for those contributions to have the
+intended effect, and how plausible each is; and (iii) the negative externalities
+the approach may introduce.
 
-\paragraph{The need, and what this work contributes.}
-Source-level reliability ratings are produced by small teams of trained
-journalists. The method is sound and the coverage is not: outlets number in the
-tens of thousands, new ones appear continuously, and anything unrated is simply
-invisible to every downstream use---platform ranking, media-literacy tooling,
-and research that needs a source-quality variable. The bottleneck is not
-judgement but \emph{triage}: deciding which outlets a human should look at
+\paragraph{Societal Need and Intended Contribution}
+
+Source-level reliability assessments are produced by small teams of trained
+journalists. The procedure is methodologically sound, but its coverage is
+necessarily limited: outlets number in the tens of thousands, new ones appear
+continuously, and any outlet left unrated is effectively invisible to the
+downstream uses that depend on such ratings, from platform curation to
+media-literacy tooling and to research that requires a source-quality variable.
+The binding constraint is therefore not the quality of expert judgement but the
+cost of \textit{triage}, i.e., deciding which outlets merit human attention
 first.
 
-Our contribution is addressed to that bottleneck rather than to the judgement
-itself. We show that article text alone places a previously unseen outlet on a
-five-level scale with 0.69 accuracy, and that errors are overwhelmingly local,
-so a mistake usually means an adjacent level rather than confusing a
-disinformation site with a newspaper of record. We also give the quantity a
-deployment actually needs: aggregating five to ten
-articles per outlet already reaches the accuracy that aggregating thirty does,
-so a triage pass does not require exhaustive scraping.
+Our contributions address that constraint rather than the judgement itself.
+We show that article text alone locates a previously unseen outlet on a
+five-level scale with an accuracy of 0.69 (Section~\ref{sec:results}), and that
+errors are predominantly local, so that a misclassification typically involves
+an adjacent level rather than a confusion between a disinformation site and an
+established newspaper. We also quantify the evidence a triage pass requires:
+aggregating five to ten articles per outlet already attains the accuracy
+obtained with thirty, so exhaustive collection is unnecessary.
 % TODO: make this a cross-reference once the aggregation-curve subsection
 % is added to the Experiments section.
+We make no claim that the method improves information quality on its own; its
+intended effect is confined to allocating expert effort more efficiently.
 
-\paragraph{Preconditions and assumptions.}
-Several conditions must hold for that contribution to produce any benefit, and
-they are not all comfortable.
+\paragraph{Preconditions and Their Plausibility}
+
+The intended effect depends on conditions that are unevenly likely to hold:
 
 \begin{itemize}
-  \item \textbf{The ground truth is sound.} We inherit NewsGuard's scale and its
-  editorial judgements. Whatever biases that scale encodes, our models
-  reproduce; nothing internal to our data can detect this.
-  \item \textbf{The unit is the publisher, never the article.} Article-level
-  accuracy is approximately 0.60, far too low to support any claim about an
-  individual piece. Our own results show the evaluation unit matters more than
-  the architecture: moving from the article to the publisher is worth more than
-  aggregating many articles is.
-  \item \textbf{Enough text per outlet is obtainable.} Below roughly five
-  articles the estimate degrades. Small, new, or paywalled outlets---often
-  precisely those lacking a rating---are the hardest cases.
-  \item \textbf{The output is advisory.} It orders a human review queue. It does
-  not rate, demote, or label anything on its own.
-  \item \textbf{Deployment stays in distribution.} Our evidence covers
-  English-language political news. We have no basis to claim transfer to other
-  languages, other topics, or other media ecosystems.
+    \item \textbf{Validity of the ground truth.} Our models inherit the
+    NewsGuard scale together with the editorial judgements it encodes. Whatever
+    biases that scale carries are reproduced rather than corrected. Nothing
+    internal to our data can test this assumption, and we regard it as assumed
+    rather than established.
+
+    \item \textbf{The publisher as the unit of prediction.} Article-level
+    accuracy is approximately 0.60, which does not support any claim about an
+    individual article. This condition holds by construction in our evaluation
+    protocol, but in deployment it is a matter of discipline rather than a
+    property of the model, and it is therefore easily violated.
+
+    \item \textbf{Availability of sufficient text.} Estimates degrade when few
+    articles are available. Only 270 of the 439 publishers in our corpus supply
+    thirty or more articles, and the outlets most likely to lack a rating ---
+    small, recent, or paywalled ones --- are precisely those for which this
+    condition is least likely to hold.
+
+    \item \textbf{Advisory use.} The output is intended to order a queue for
+    human review, not to rate, demote, or label any outlet autonomously. This is
+    a governance assumption external to the artefact, and consequently the one
+    over which we have least control.
+
+    \item \textbf{Deployment within distribution.} Our evidence covers
+    English-language political news. We have no empirical basis on which to
+    claim transfer to other languages, topics, or media ecosystems.
 \end{itemize}
 
-\paragraph{Possible negative externalities.}
-The most serious risk is one we can measure rather than speculate about.
+\paragraph{Potential Negative Externalities}
 
-\emph{Political asymmetry.} After controlling for the outlet's true reliability
-and clustering standard errors by publisher, the odds of a misclassification are
-roughly four to six times higher for far-left outlets and five to seven times
-higher for far-right outlets than for politically unlabelled ones
-(Section~\ref{subsec:politicalBias}). The direction is not symmetric either:
-errors on extreme outlets tend to \emph{overestimate} reliability, while
-slightly-left outlets are systematically \emph{under}estimated. A system
-deployed on this basis would be wrong about political actors in a patterned way,
-and both directions cause harm---undue credibility in one case, unwarranted
-suspicion in the other.
+The principal risk is one that our own analysis measures rather than
+hypothesises. Controlling for the true reliability level and clustering standard
+errors by publisher (Section~\ref{subsec:politicalBias}), the odds of
+misclassification are approximately four to six times higher for far-left
+outlets and five to seven times higher for far-right outlets than for outlets
+without a political label. The direction of these errors is also asymmetric:
+reliability is overestimated for outlets at either extreme and underestimated
+for slightly left-leaning ones. A system deployed on this basis would be wrong
+about political actors in a patterned and reproducible way. This differs in kind
+from the errors of an individual human rater, which are neither systematic nor
+applied at scale, and both directions are harmful: unwarranted credibility in
+one case and unwarranted suspicion in the other.
 
-\emph{False precision.} A single level out of five reads as a measurement.
-Publisher-clustered bootstrap intervals on article-level accuracy span roughly
-$\pm 0.05$ and overlap completely across all four architectures, and the
-$l_4$/$l_5$ boundary is close to unresolvable, with error rates above 0.7 on
-$l_5$. Reporting a point estimate conceals this; any deployment should expose a
-range and an abstention option.
+Three further externalities follow from how the output is presented and used.
+First, a single level out of five reads as a measurement: publisher-clustered
+bootstrap intervals on article-level accuracy span approximately $\pm 0.05$ and
+overlap entirely across the four architectures, and the $l_4$/$l_5$ boundary is
+close to unresolvable, with error rates above 0.70 on $l_5$. Reporting a point
+estimate conceals this uncertainty. Second, aggregation resolves ties toward the
+lower reliability level, a default that determines between 2.5\% and 4.6\% of
+outlets depending on the model, invariably downward; the effect is small but
+systematic, and invisible unless stated. Third, an inexpensive automated score
+constitutes a target: outlets may optimise surface features --- our encoders
+observe only the first 256 tokens --- without any corresponding improvement in
+journalistic practice, and the same scores may be repurposed to justify
+demonetisation or exclusion, or inverted to establish what allows low-reliability
+content to be read as reliable. The burden of these errors is unevenly
+distributed, since the outlets with the least available text receive the least
+reliable estimates and are the least equipped to contest them.
 
-\emph{A silent, directional default.} Aggregation resolves ties toward the lower
-reliability level. This decides between 2.5\% and 4.6\% of outlets depending on
-the model, always downward. It is a small systematic penalty that is invisible
-unless documented, which is why we document it.
+\paragraph{Conditions for Responsible Deployment}
 
-\emph{Incentives and dual use.} A cheap automated score is a target. Outlets can
-optimise surface features---our encoders read only the first 256 tokens---without
-improving journalistic practice, and the same scores can be repurposed to justify
-demonetisation or blacklisting, or inverted by bad actors to find what makes
-low-reliability content read as reliable. Finally, the outlets with the least
-text get the least reliable estimates and are least equipped to contest them.
-
-\paragraph{What we would require of a deployment.}
-Consistent with the above: publish per-leaning error rates alongside any
-deployed model; abstain rather than guess when few articles are available or the
-vote is near-tied; report an interval rather than a level; and keep the output
-confined to ordering human review, never to automated enforcement. We regard the
-bias audit in this paper as part of the artefact, not as an appendix to it.
+Consistent with the above, we consider the following conditions necessary rather
+than advisable: per-leaning error rates should be published alongside any
+deployed model; the system should abstain rather than predict when few articles
+are available or the aggregated vote is near-tied; an interval should be
+reported in place of a single level; and the output should remain confined to
+ordering human review. We regard the bias audit presented in
+Section~\ref{subsec:politicalBias} as a constitutive part of the contribution
+rather than a supplement to it.
 
 
 \section{Discussion and Conclusion}
