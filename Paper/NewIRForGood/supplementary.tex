@@ -6,8 +6,7 @@
 % ECIR 2027 makes no provision for supplementary material: the call mentions
 % only appendices, and those "count toward the page limit" and must be placed
 % "before the references". With the paper already over 12 pages, this document
-% is meant to be hosted externally (OSF/Zenodo) and cited from the paper, which
-% is what the rejected TCSS version did.
+% is meant to be hosted externally and cited from the paper.
 %
 % Because the paper is under DOUBLE-BLIND review, anything linked from it must
 % not identify the authors. Keep \anonymoustrue until acceptance; flip it for
@@ -57,7 +56,8 @@
 
 \vspace{-1.5em}
 \begin{center}
-\textit{This supplementary material accompanies the main manuscript submitted to ECIR 2027, ``IR for Good'' track.}
+\textit{This supplementary material accompanies the main manuscript submitted to ECIR 2027, ``IR for Good'' track.}\\[0.3em]
+\textit{It reports in full the error and bias audit on which the main paper's conditions for responsible use rest, together with the experimental detail needed to reproduce them.}
 \end{center}
 
 
@@ -209,10 +209,12 @@ We observe a tendency to regress towards the center. We attribute this to two st
 \label{app:political_rates}
 
 The main paper reports the directional bias by political leaning and the
-associated significance tests. Figure~\ref{fig:orientationDistributionInverted}
+associated significance tests, and makes the disclosure of per-leaning error
+rates a condition for responsible deployment. Figure~\ref{fig:orientationDistributionInverted}
 gives the underlying composition of the corpus, and
 Figure~\ref{fig:politicalErrorRates} the per-leaning error rates from which those
-tests are computed.
+tests are computed, so that the disparity can be inspected rather than taken on
+trust.
 
 The distribution is markedly imbalanced: reliability levels are not uniformly
 represented within each political category, which is a structural property of the
@@ -290,7 +292,9 @@ Every figure in this document and in the main paper is regenerated from the
 stored model predictions by a single notebook, so no figure depends on manual
 steps or on the order in which cells were executed. The notebook also emits the
 tables it reports, and validates that all four models are scored against the
-same ground truth for the same article.
+same ground truth for the same article. The aim is that the error and bias
+figures on which the paper's claims about responsible use depend can be
+re-derived independently, rather than being taken from the figures as printed.
 
 
 \bibliographystyle{plainnat}
