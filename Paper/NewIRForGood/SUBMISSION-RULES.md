@@ -263,7 +263,7 @@ versione**.
 | 5 | Lunghezza ≥ 6 pagine | ✅ | |
 | 6 | **Sezione Theory of Change** | ✅ | Scritta, pp. 19–21. Copre le tre domande, con giudizio di plausibilità per ogni precondizione e danni qualificati come di tipo nuovo. Richiamata dall'introduzione |
 | 7 | **Anonimizzazione doppio cieco** | ✅ | Interruttore `\anonymoustrue` in `main.tex` e `supplementary.tex`. Verificato sui byte del PDF: nessun nome, affiliazione, ORCID, SIMULARE, OSF o Zenodo. Titolo e abstract cambiati rispetto al preprint arXiv (0 n-grammi di 6+ parole in comune). Chiave BibTeX rinominata (era `bianchi2026supplementary`, leak via ancore hyperref). Modelli non linkati durante la review. |
-| 8 | Appendici prima delle referenze | ➖ | Al momento non ci sono appendici |
+| 8 | Appendici prima delle referenze | ✅ | Non ci sono appendici e non ci saranno |
 | 9 | Nessuna doppia submission | ✅ | Respinto da TCSS, non sotto revisione altrove |
 | 10 | Preprint arXiv preesistente | ✅ | Permesso dal bando. Applicate le tre cautele suggerite: titolo cambiato, abstract riscritto (0 n-grammi di 6+ parole in comune col preprint), technical report non citato. Non pubblicare nulla di nuovo su arXiv fino a dicembre 2026 |
 | 11 | ORCID (per il camera-ready) | ✅ | Nel ramo `\else` dell'interruttore; tornano commentando `\anonymoustrue` |
