@@ -57,7 +57,7 @@
 \vspace{-1.5em}
 \begin{center}
 \textit{This supplementary material accompanies the main manuscript submitted to ECIR 2027, ``IR for Good'' track.}\\[0.3em]
-\textit{It reports in full the error and bias audit on which the main paper's conditions for responsible use rest, together with the experimental detail needed to reproduce them.}
+\textit{It reports in full the error and bias audit behind the main paper's conditions for responsible use, together with the experimental detail needed to reproduce them.}
 \end{center}
 
 
@@ -209,12 +209,11 @@ We observe a tendency to regress towards the center. We attribute this to two st
 \label{app:political_rates}
 
 The main paper reports the directional bias by political leaning and the
-associated significance tests, and makes the disclosure of per-leaning error
+associated significance tests, and it makes the disclosure of per-leaning error
 rates a condition for responsible deployment. Figure~\ref{fig:orientationDistributionInverted}
-gives the underlying composition of the corpus, and
-Figure~\ref{fig:politicalErrorRates} the per-leaning error rates from which those
-tests are computed, so that the disparity can be inspected rather than taken on
-trust.
+gives the composition of the corpus, and Figure~\ref{fig:politicalErrorRates} the
+per-leaning error rates behind those tests. Readers can therefore inspect the
+disparity rather than take it on trust.
 
 The distribution is markedly imbalanced: reliability levels are not uniformly
 represented within each political category, which is a structural property of the
@@ -240,6 +239,99 @@ comparably on Non labelled and Slightly Right.
 \label{fig:political_descriptive}
 \end{figure}
 
+
+\section{Robustness of the Bias and Performance Analyses}
+\label{app:robustness}
+
+The main paper reports tests that treat each article as an independent
+observation. Political leaning and reliability are publisher-level attributes,
+and every article of an outlet carries the same value. This section therefore
+repeats the analyses at the unit on which the labels actually live.
+
+\paragraph{Independence at the publisher unit.}
+Table~\ref{tab:chi2_pub} repeats the $\chi^2$ test of independence with one
+observation per publisher: was the aggregated prediction for that outlet correct?
+The 439 publishers replace the 77{,}904 articles, and no expected count falls
+below five. The association between political leaning and correctness survives
+for every model, and the effect size is larger than at the article level.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Model} & \textbf{$n$} & \textbf{$\chi^2$} & \textbf{$p$-value} & \textbf{Cramér's V} \\
+\midrule
+BERT    & 439 & 44.84 & $4.3\times10^{-9}$ & 0.320 \\
+RoBERTa & 439 & 18.83 & $8.5\times10^{-4}$ & 0.207 \\
+Llama 3 & 439 & 23.88 & $8.4\times10^{-5}$ & 0.233 \\
+Mistral & 439 & 24.06 & $7.8\times10^{-5}$ & 0.234 \\
+\bottomrule
+\end{tabular}
+\caption{Political leaning vs.\ classification correctness at the publisher
+unit, 4 degrees of freedom. Compare with the article-level table of the main
+paper.}
+\label{tab:chi2_pub}
+\end{table}
+
+\paragraph{Leaning or reliability?}
+Reliability levels are unevenly distributed across political leanings, and some
+levels are harder than others. An apparent political effect could therefore be a
+reliability effect in political guise. For each model we fit a logistic
+regression of the article-level error indicator on political leaning, we enter
+the true reliability level as a control, and we cluster the standard errors on
+the publisher. Table~\ref{tab:logit} reports the result against the non-labelled
+reference group. Far-left and far-right outlets keep four to six and a half times
+the odds of error of non-labelled ones, with the reliability level already
+accounted for.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Leaning} & \textbf{BERT} & \textbf{RoBERTa} & \textbf{Llama 3} & \textbf{Mistral} \\
+\midrule
+Far Left       & 4.81$^{**}$ & 5.55$^{**}$ & 6.29$^{**}$ & 4.00$^{*}$  \\
+Slightly Left  & 2.11$^{*}$  & 1.49        & 1.41        & 2.12        \\
+Slightly Right & 2.11$^{*}$  & 2.46$^{*}$  & 2.74$^{*}$  & 2.56$^{*}$  \\
+Far Right      & 6.52$^{***}$& 6.18$^{**}$ & 6.29$^{**}$ & 5.57$^{**}$ \\
+\bottomrule
+\end{tabular}
+\caption{Odds ratios of misclassification by political leaning, relative to the
+non-labelled group, from a logistic regression controlling for the true
+reliability level with publisher-clustered standard errors.
+$^{*}p<0.05$, $^{**}p<0.01$, $^{***}p<0.001$.}
+\label{tab:logit}
+\end{table}
+
+\paragraph{Uncertainty on the publisher-level scores.}
+Table~\ref{tab:bootstrap} reports 95\% percentile intervals from a
+\emph{cluster} bootstrap, which resamples whole publishers rather than individual
+articles. The intervals of the four models overlap on both metrics. At this
+sample size the differences between them, 0.69 against 0.68 on accuracy, are not
+distinguishable from sampling variation.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Model} & \textbf{Accuracy [95\% CI]} & \textbf{Tolerant acc.\ $\alpha{=}1.0$ [95\% CI]} \\
+\midrule
+BERT    & 0.665 [0.617, 0.708] & 0.870 [0.838, 0.900] \\
+RoBERTa & 0.690 [0.647, 0.731] & 0.875 [0.843, 0.904] \\
+Llama 3 & 0.665 [0.620, 0.708] & 0.879 [0.847, 0.907] \\
+Mistral & 0.683 [0.642, 0.727] & 0.856 [0.822, 0.888] \\
+\bottomrule
+\end{tabular}
+\caption{Publisher-level metrics with cluster-bootstrap confidence intervals
+(2{,}000 resamples of the 439 publishers).}
+\label{tab:bootstrap}
+\end{table}
+
+\paragraph{Why no source-identifier masking.}
+We use the article texts as collected, and we mask no outlet name, byline or
+boilerplate. Under the publisher-disjoint protocol this cannot inflate the
+results. The model never sees a test-fold publisher during training, so a cue
+tied to a particular outlet carries no usable information at test time.
 
 \section{Experimental Details}
 \label{app:experimental_details}
@@ -292,9 +384,9 @@ Every figure in this document and in the main paper is regenerated from the
 stored model predictions by a single notebook, so no figure depends on manual
 steps or on the order in which cells were executed. The notebook also emits the
 tables it reports, and validates that all four models are scored against the
-same ground truth for the same article. The aim is that the error and bias
-figures on which the paper's claims about responsible use depend can be
-re-derived independently, rather than being taken from the figures as printed.
+same ground truth for the same article. Anyone can therefore re-derive the error
+and bias figures behind the paper's claims about responsible use, instead of
+relying on the printed versions.
 
 
 \bibliographystyle{plainnat}

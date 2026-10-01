@@ -1,0 +1,5 @@
+model,article_micro,single_article_per_publisher,majority_vote,aggregation_gain,unit_change_gain
+BERT,0.5827,0.6301,0.6651,0.0351,0.0474
+RoBERTa,0.6034,0.647,0.6902,0.0432,0.0436
+Llama,0.5997,0.6496,0.6651,0.0156,0.0499
+Mistral,0.6116,0.6577,0.6834,0.0257,0.0461

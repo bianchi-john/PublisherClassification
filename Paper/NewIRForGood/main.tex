@@ -50,6 +50,11 @@
 \showeditstrue
 \definecolor{johnblue}{RGB}{0,0,190}
 \newcommand{\john}[1]{\ifshowedits\textcolor{johnblue}{#1}\else#1\fi}
+\newif\ifshowrevnotes
+\showrevnotestrue   % <-- commentare per la submission
+\usepackage[textsize=tiny,textwidth=2.3cm,linecolor=red!60,%
+            backgroundcolor=red!8,bordercolor=red!60]{todonotes}
+\newcommand{\revnote}[2]{\ifshowrevnotes\todo{\textbf{#1}\\#2}\fi}
 \newenvironment{johnblock}{\ifshowedits\color{johnblue}\fi}{\ignorespacesafterend}
 
 \begin{document}
@@ -90,39 +95,41 @@ Whether a news outlet can be trusted is conventionally judged by expert
 organisations, which weigh editorial practice, factual accuracy and
 transparency at the level of the outlet itself. Those judgements are careful but
 manual, and the outlets they never reach stay unrated. Computational formulations
-of the same task usually operate one article at a time: a classifier is fitted to
-pre-labelled items and then scored on held-out ones.
+of the same task usually operate one article at a time: they fit a classifier to
+pre-labelled items and score it on held-out ones.
 We instead cast the task as prediction about the source. Our framework has two
-stages: transformer-based language models rate individual articles, and those
-ratings are then pooled to characterise outlets that were never seen during
+stages: transformer-based language models rate individual articles, and we then
+pool those ratings to characterise outlets the models never saw during
 training.
 To keep the setting close to deployment, every split is publisher-disjoint, so
 no outlet contributes to both the training and the test side.
-Working with 19,476 English-language political news items drawn from 439 outlets
-and carrying NewsGuard ratings, exact accuracy rises from roughly 0.60 on single
-articles to 0.69 on outlets, and from 0.84 to 0.88 once a prediction one level
-away from the true rating is counted as correct, a tolerance the labels invite
-because the five levels are bins of a continuous 0--100 score.
+We work with 19,476 English-language political news items from 439 outlets
+carrying NewsGuard ratings. Exact accuracy rises from roughly 0.60 on single
+articles to 0.69 on outlets, and the vote itself accounts for one to four of
+those points. Counting a prediction one level away from the true rating as
+correct, accuracy rises from 0.84 to 0.88. The labels invite that tolerance,
+because the five levels bin a continuous 0--100 score.
 We then ask how the errors distribute across the political spectrum, and find
 systematic associations between the leaning of an outlet and the mistakes made
-on its articles, a disparity we report as a bound on responsible use.
+on its articles. We report that disparity as a bound on responsible use.
 Taken together, the results indicate that text alone carries enough signal to
 place an unseen outlet on a reliability scale, and we set out the conditions
 under which such estimates may direct expert attention rather than replace it.
 
+\revnote{Abstract}{(1) R1.2: il salto 0.60 -> 0.69 confondeva l'aggregazione con il cambio di unita'. Misurato sugli stessi 439 publisher, il voto vale da +1.6 a +4.3 punti, il resto e' il passaggio da articoli a testate. Riformulato il claim. (2) L'abstract e' parafrasato rispetto alla versione su arXiv: serviva a non far risalire a quel PDF da un motore di ricerca, cosa che avrebbe compromesso il doppio cieco. (3) Aggiunti anche i risultati tolerant, solo accennati.}
 \keywords{News source reliability \and Publisher reliability inference \and
 Transformer-based text classification \and Cross-publisher generalization \and
 Reliability aggregation \and Political bias analysis.}
 \end{abstract}
 
 \section{Introduction}
-Assessing the reliability of news publishers has become increasingly important for limiting the spread of misleading or low-quality information. Professional organizations such as NewsGuard, the Global Disinformation Index, and Media Bias Fact Check evaluate news outlets according to journalistic standards including transparency, editorial accountability, factual accuracy, and correction practices, and despite methodological differences they exhibit substantial convergence~\cite{lin2023high,DBLP:conf/icwsm/PratelliP22}. Importantly, these assessments are performed at the level of the publisher rather than of individual articles. \john{They are also produced by hand, so the outlets they do not reach remain unassessed.}
+Assessing the reliability of news publishers has become increasingly important for limiting the spread of misleading or low-quality information. Professional organizations such as NewsGuard, the Global Disinformation Index, and Media Bias Fact Check evaluate news outlets according to journalistic standards including transparency, editorial accountability, factual accuracy, and correction practices, and despite methodological differences they exhibit substantial convergence~\cite{lin2023high,DBLP:conf/icwsm/PratelliP22}. Importantly, these assessments are performed at the level of the publisher rather than of individual articles. \john{Trained analysts produce them by hand, so the outlets they never reach stay unrated.}
 
 A large body of computational work instead formulates the problem as article-level classification~\cite{pandolfi2020automatic,Przybyla2021plugin,10.1145/3770077,DBLP:journals/dbsk/AdjiLS26}. This only partially reflects the structure of professional assessment, where reliability is a persistent property of the source emerging across multiple publications: highly reliable outlets occasionally publish lower-quality content, and unreliable publishers produce articles that appear plausible in isolation.
 
 A second limitation concerns evaluation. Existing studies derive article labels from publisher-level annotations without enforcing publisher-disjoint splits~\cite{burdisso-etal-2024-reliability,DBLP:journals/dbsk/AdjiLS26,batDataset}, so models can partially memorize publisher-specific patterns rather than learning transferable indicators of reliability~\cite{azizov-etal-2024-safari,verhoeven2025yesterday}.
 
-We address these limitations by reformulating the task as publisher-level inference. We propose a two-stage framework in which transformer-based language models first estimate the reliability of individual articles and then aggregate those predictions to infer the reliability of previously unseen publishers, under a strict publisher-disjoint evaluation protocol. Our contributions are as follows: we reformulate news reliability assessment as a source-level inference problem; we introduce a publisher-disjoint protocol that prevents source leakage and measures generalization to unseen publishers; we construct a dataset of 19,476 political news articles from 439 English-language publishers labeled with NewsGuard scores; and we show that aggregating article-level predictions improves reliability estimation, reaching 0.69 publisher-level accuracy on unseen sources. \john{Because an estimate of this kind is consequential for the outlets it ranks, we also audit how the errors distribute across the political spectrum, and Section~\ref{sec:theoryofchange} states the societal need addressed, the preconditions on which any benefit depends, and the harms the approach may introduce.}
+We address these limitations by reformulating the task as publisher-level inference. We propose a two-stage framework in which transformer-based language models first estimate the reliability of individual articles and then aggregate those predictions to infer the reliability of previously unseen publishers, under a strict publisher-disjoint evaluation protocol. Our contributions are as follows: we reformulate news reliability assessment as a source-level inference problem; we introduce a publisher-disjoint protocol that prevents source leakage and measures generalization to unseen publishers; we construct a dataset of 19,476 political news articles from 439 English-language publishers labeled with NewsGuard scores; and we show that aggregating article-level predictions improves reliability estimation, reaching 0.69 publisher-level accuracy on unseen sources. \john{An estimate of this kind carries consequences for the outlets it ranks, so we also audit how the errors distribute across the political spectrum. Section~\ref{sec:theoryofchange} states the societal need we address, the preconditions any benefit depends on, and the harms the approach may introduce.}
 
 \section{Related Work}
 Early work on online news quality focused on article-level classification, detecting misleading content through linguistic features or neural architectures~\cite{pandolfi2020automatic}, often without considering the publisher.
@@ -147,13 +154,13 @@ Because each article inherits its publisher's label, articles from the same sour
 \begin{equation}\label{eq:publisher_disjoint}
 P_{\text{train}} \cap P_{\text{test}} = \emptyset .
 \end{equation}
-All test articles thus originate from previously unseen publishers, which aligns the evaluation with the source-level nature of the labels and prevents publisher-specific memorization.
+All test articles thus originate from previously unseen publishers, which aligns the evaluation with the source-level nature of the labels and prevents publisher-specific memorization. \john{For the same reason we mask no source identifier. A publisher-specific cue cannot help at test time, because the model never sees a test publisher during training.}\revnote{R1.5}{Chiedeva masking degli identificatori di publisher e ablation su testo sanificato. Risposto nel testo: con lo split publisher-disjoint un indizio specifico del publisher e' inutilizzabile in test. Aggiunta una frase, nessun esperimento nuovo.}
 
 \subsection{Evaluation Metrics and Baselines}\label{subsection:metrics}
 We use the same metrics for both article-level and source-level evaluations.
 
 \paragraph{Standard and Macro Metrics} 
-We report Accuracy as the ratio of correct predictions. Because class frequencies differ moderately ($l_4$ is about 2.6 times larger than $l_5$), we prefer Macro-averaged Precision, Recall and F1, which treat all five classes equally and prevent a model from appearing successful on the most frequent categories at the expense of minority ones.
+We report Accuracy as the ratio of correct predictions. Because class frequencies differ moderately ($l_4$ is about 2.6 times larger than $l_5$), we prefer Macro-averaged Precision, Recall and F1, which treat all five classes equally.
 
 \paragraph{Tolerant Metrics}
 Given the ordinal nature of our labels, standard accuracy may be overly punitive for minor deviations. We therefore adopt \textit{Tolerant Accuracy}~\cite{wconf}, which assigns partial credit to predictions falling into adjacent categories. Let $N$ be the total number of samples and $c_{ij}$ the count of instances with true label $i$ predicted as $j$:
@@ -201,7 +208,7 @@ where $N$ is the total number of samples, while $r$ and $c$ represent the number
 \label{sec:newsguard}
 
 The publisher-level reliability function \(r_P : P \rightarrow L\) is derived from NewsGuard,\footnote{\url{https://www.newsguardtech.com/}} a professional media rating system in which trained journalists evaluate online news outlets.
-Each publisher \(p \in P\) is assessed against nine widely adopted journalistic criteria, including the avoidance of deceptive headlines, the transparency of ownership and financing, and the adoption of effective correction practices.
+Each publisher \(p \in P\) is assessed against nine widely adopted journalistic criteria, including deceptive headlines, transparency of ownership and financing, and correction practices.
 
 The evaluation produces a continuous reliability score in \([0,100]\), measuring a publisher’s adherence to professional journalistic standards.\footnote{\url{https://www.newsguardtech.com/ratings/rating-process-criteria/}}  
 The proprietary ratings were licensed for use to the authors of this publication.
@@ -237,13 +244,13 @@ We restrict \(P\) to outlets tagged as \emph{Political News and Commentary}, pub
 
 Let \(A\) denote the set of collected news articles.
 For each publisher \(p \in P\), we scrape articles from its homepage using the \texttt{newspaper3k} library\footnote{\url{https://pypi.org/project/newspaper3k/}}, collecting at most 200 articles per outlet to ensure a balanced representation across publishers. The scraper is configured to retrieve English-language content only and to prevent duplicates. Scraping did not succeed for all outlets, owing to anti-scraping measures, timeouts or structural incompatibilities, so the final publisher count is lower than the original selection.
-To exclude non-news or low-information content, we retain only articles with a minimum length of 100 words, filtering out short announcements and advertisements. This procedure yields an initial corpus of 25,822 articles.
+We retain only articles of at least 100 words, excluding short announcements and advertisements. This procedure yields an initial corpus of 25,822 articles.
 
 \paragraph{Data Curation and Labeling}
 \label{sec:datacleaning}
 
 To preserve the original linguistic characteristics of the articles, we apply no text normalization or cleaning.
-Despite the scraper being configured for English, some domains returned localized content. We therefore filter out non-English articles using the \texttt{langdetect} library\footnote{\url{https://pypi.org/project/langdetect/}}. This process removes 6,346 articles and leaves 19,476 English-language articles in the dataset.
+Some domains nonetheless returned localized content, which we filter out with the \texttt{langdetect} library\footnote{\url{https://pypi.org/project/langdetect/}}. This process removes 6,346 articles and leaves 19,476 English-language articles in the dataset.
 
 The final composition is given in the last two columns of Table~\ref{tab:labels_domains}; $l_5$ remains the least represented class, reflecting its limited presence in the original NewsGuard data.
 
@@ -264,10 +271,10 @@ predictions.
 \subsection{Experimental Setup}
 \label{sec:experimental_setup}
 
-Following the validation protocol described in Section~\ref{sec:problemDef} (Equation~\ref{eq:publisher_disjoint}), we use a 5-fold cross-validation scheme with strict separation of publishers between training and test sets. This evaluation setting assesses the model's ability to generalize to articles from previously unseen publishers and approximates a realistic \textit{in-the-wild} deployment scenario. Folds are stratified on publisher reliability, so that each preserves the same reliability distribution and the same proportions of publishers across reliability classes.
+Following the validation protocol described in Section~\ref{sec:problemDef} (Equation~\ref{eq:publisher_disjoint}), we use a 5-fold cross-validation scheme with strict separation of publishers between training and test sets. This assesses generalization to articles from previously unseen publishers and approximates a realistic \textit{in-the-wild} deployment. Folds are stratified on publisher reliability, so that each preserves the same reliability distribution.
 
-We select four transformer-based models spanning standard encoder baselines, optimized
-encoders and decoder-based large language models. \textbf{BERT}-base-uncased
+We select four transformer-based models spanning encoder baselines and decoder-based
+large language models. \textbf{BERT}-base-uncased
 \cite{devlin2019bert} is our primary baseline, establishing a lower bound comparable with a
 vast body of prior work \cite{rogers2021primer}. \textbf{RoBERTa}-large
 \cite{liu2019roberta} tests whether optimized training strategies alone improve
@@ -280,15 +287,14 @@ additional capacity improves detection or whether performance saturates.
 Encoders (BERT, RoBERTa) were \textit{fully fine-tuned} with AdamW, a learning rate of
 $2e^{-5}$ and weight decay \cite{devlin2019bert,liu2019roberta}. For the decoders (Llama,
 Mistral) full fine-tuning was computationally infeasible, so we adopted Low-Rank Adaptation
-(LoRA), freezing the pre-trained weights and updating only low-rank matrices injected into
-the attention layers, with a learning rate of $2e^{-4}$ in mixed precision.
+(LoRA) with a learning rate of $2e^{-4}$ in mixed precision.
 
-Each model was trained for 5 epochs per fold, except Mistral, which was trained for 3. This follows a preliminary convergence study (see Supplementary Material~\cite{suppmaterial2026}, which also reports the remaining optimisation and batching details) showing that validation loss minimizes at Epoch 4 for Llama, while Mistral converges within three epochs. We used early stopping on validation loss and a fixed global random seed (42). The maximum sequence length for input processing was set to 256 tokens, except for Mistral, for which it was increased to 1,024 tokens. This tests whether a longer context improves classification.
+Each model was trained for 5 epochs per fold, except Mistral, which was trained for 3. This follows a preliminary convergence study (see Supplementary Material~\cite{suppmaterial2026}, which also reports the remaining optimisation and batching details) showing that validation loss minimizes at Epoch 4 for Llama, while Mistral converges within three epochs. We used early stopping on validation loss and a fixed global random seed (42). The maximum sequence length for input processing was set to 256 tokens, except for Mistral, for which it was increased to 1,024 tokens. This tests whether a longer context improves classification.\revnote{Spostato}{Nei supplementary: gli iperparametri completi (ottimizzatore, batching) e lo studio di convergenza con le curve di loss di Llama e Mistral.}
 
 \ifanonymous
 All fine-tuned models and code will be released to foster further research; they
 are withheld during review to preserve anonymity and will be made available upon
-acceptance.
+acceptance.\revnote{Modelli}{Non rilasciati durante la review: OSF non consente piu' di scaricare file di grandi dimensioni in modalita' anonima, quindi i pesi restano fuori e saranno pubblicati dopo l'accettazione, quando cade l'anonimato.}
 \else
 All fine-tuned models are publicly available to foster further
 research\footnote{\label{fn:model_availability}\url{TODO: camera-ready model/code DOI}}.
@@ -325,7 +331,7 @@ Here, we study whether the classifier systematically performs better on some rel
 Figure~\ref{fig:error_rate} highlights an asymmetry in prediction correctness. The lowest error rates are on $l_1$ ($< 0.20$), suggesting that highly unreliable content has recognizable structural features.
 The highest-reliability articles ($l_5$) are the most challenging to recognize for the model, with error rates exceeding 70\%\footnote{Class $l_5$ only includes articles with a reliability score of 100, and is easily confused with $l_4$, which contains similarly high scores.}. Class $l_2$ also proves difficult, with an error rate of over 50\%, while $l_3$ sits in the middle at approximately 35\%.
 
-These patterns remain consistent across all four models, including the substantially larger Mistral, suggesting that the biases are structural properties of the task rather than intrinsic to a specific architecture or model scale; the Supplementary Material~\cite{suppmaterial2026} reports the error-direction analysis and the full confusion matrices.
+These patterns remain consistent across all four models, suggesting that the biases are structural properties of the task rather than of a specific architecture; the Supplementary Material~\cite{suppmaterial2026} reports the error-direction analysis and the full confusion matrices.\revnote{Spostato}{Nei supplementary: la figura del MED per livello di affidabilita' e le matrici di confusione a livello di articolo, per fold e in media.}
 
 \subsection{Influence of Political Leaning on Classification Errors}\label{subsec:politicalBias}
 We investigate whether the models treat all sides of the political spectrum equally.
@@ -345,15 +351,15 @@ Mistral & 61.16\% & 1343.98 & $<10^{-300}$ & {0.263} \\
 \label{tab:chi_square_results}
 \end{table}
 
-Because political orientations are unevenly represented in the dataset, we compute error rates separately for each leaning, which makes them independent of class frequency.
+Error rates are computed separately for each leaning, which makes them independent of class frequency.
 
 All models exhibit systematic variation across political leanings: there are substantially higher error rates for far left and far right outlets (59–72\%) compared to lower rates for slightly right and non-labelled outlets (30–34\%), and intermediate error rates for slightly left articles (47–58\%). 
 
-A chi-square test of independence rejects, for every model, the hypothesis that correctness is independent of political leaning (Table~\ref{tab:chi_square_results}), with Cramér's~$V$ indicating a consistent small-to-moderate effect size.
+A chi-square test of independence rejects, for every model, the hypothesis that correctness is independent of political leaning (Table~\ref{tab:chi_square_results}), with Cramér's~$V$ indicating a consistent small-to-moderate effect size. \john{Leaning is a publisher-level attribute, and every article of an outlet carries the same value. We therefore repeat the test with one observation per publisher, and the association holds: $\chi^2$ ranges from 18.8 to 44.8, $p<10^{-3}$, and $V$ from 0.21 to 0.32. Nor does reliability explain it away. We fit a logistic regression of error on leaning, control for the true reliability level and cluster the standard errors on the publisher. Far-left and far-right outlets still carry 4.0 to 6.5 times the odds of error of non-labelled ones, with $p<0.05$ for every model (Supplementary Material~\cite{suppmaterial2026}).}\revnote{R1.4 + R1.3}{R1.4: il chi-quadro trattava 77.904 articoli come indipendenti. Rifatto a livello publisher (439 osservazioni): l'effetto resta, V sale a 0.21--0.32. R1.3: possibile confounding con il livello di affidabilita'. Logit con controllo per reliability e SE clusterizzati: OR 4.0--6.5 agli estremi. Aggiunte due frasi qui, tabelle complete nei supplementary.}
 
-We then focus on misclassified instances to assess whether models exhibit directional biases, namely systematic tendencies to overestimate or underestimate article reliability as a function of political leaning. Figure~\ref{fig:politicalErrorsDirection} reports the Mean Error Direction (MED) for each orientation (see Section~\ref{subsec:bias_methodology}); positive values indicate overestimation of reliability, negative values underestimation.
+We then focus on misclassified instances to assess whether models systematically overestimate or underestimate reliability as a function of political leaning. Figure~\ref{fig:politicalErrorsDirection} reports the Mean Error Direction (MED) for each orientation (see Section~\ref{subsec:bias_methodology}); positive values indicate overestimation of reliability, negative values underestimation.
 
-Clear directional patterns emerge across all four models. Far Left and Far Right articles exhibit consistent overestimation, with mean signed errors ranging from +0.33 to +1.00, approaching a full reliability level. Slightly Left articles show systematic underestimation, with average values between -0.54 and –0.82. Slightly Right and non-labelled outlets display smaller, less consistent deviations: Llama, RoBERTa, and Mistral slightly underestimate Slightly Right reliability (up to -0.39), whereas BERT slightly overestimates it; for non-labelled outlets, BERT, Llama, and Mistral exhibit mild positive biases, while RoBERTa's average bias is near zero; the Supplementary Material~\cite{suppmaterial2026} reports the corpus composition by leaning, the per-leaning error rates and the full confusion matrices stratified by political leaning.
+Clear directional patterns emerge across all four models. Far Left and Far Right articles exhibit consistent overestimation, with mean signed errors ranging from +0.33 to +1.00, approaching a full reliability level. Slightly Left articles show systematic underestimation, with average values between -0.54 and –0.82. Slightly Right and non-labelled outlets display smaller, less consistent deviations; the Supplementary Material~\cite{suppmaterial2026} reports the corpus composition by leaning, the per-leaning error rates and the full confusion matrices stratified by political leaning.\revnote{Spostato}{Nei supplementary: le figure della composizione del corpus per orientamento e dei tassi di errore per orientamento, piu' le matrici stratificate per leaning. Tolto anche il dettaglio numerico su Slightly Right e non etichettati.}
 
 \begin{figure}[t!]
     \centering
@@ -369,9 +375,8 @@ Publisher-level inference is the primary objective of this work; the article-lev
 estimators are intermediate components. We instantiate \(Agg\) as the mode of a publisher's article-level predictions,
 i.e.\ majority voting, assigning the most frequent class as \(\hat{r}_P(p)\), on the
 hypothesis that combining predictions offsets the noise of individual classifications.
-The analysis pools all article-level predictions across the five test folds, so that each
-publisher's reliability is inferred exclusively from articles the model never saw during
-training.
+Predictions are pooled across the five test folds, so each publisher's reliability
+is inferred only from articles the model never saw in training.
 
 \begin{figure}[t]
   \centering
@@ -384,9 +389,9 @@ Figure~\ref{fig:metrics} presents the results against the same two baselines use
 article level; the majority-class reference differs across the three accuracy variants,
 since a constant predictor also collects partial and then full credit under tolerance.
 
-With an Accuracy of 0.69 RoBERTa leads, followed closely by Mistral at 0.68, more than triple the Random Baseline. Considering $\mathrm{Accuracy}_{\mathrm{tolerant}}$ (1.0), Llama achieves the top score of 0.88, followed by RoBERTa (0.87) and Mistral (0.86), substantially outperforming the majority class baseline.
+With an Accuracy of 0.69 RoBERTa leads, followed closely by Mistral at 0.68, more than triple the Random Baseline. \john{A publisher-level cluster bootstrap nonetheless puts the four models within overlapping 95\% intervals: RoBERTa 0.690 [0.647, 0.731], Mistral 0.683 [0.642, 0.727], BERT and Llama 0.665 [0.62, 0.71]. The ordering among them is therefore not itself a result.}\revnote{R1.8}{Chiedeva intervalli di confidenza o test appaiati sulle differenze 0.69 vs 0.68. Aggiunto bootstrap cluster sui publisher: gli IC si sovrappongono, quindi il testo ora dice esplicitamente che la classifica fra modelli non e' un risultato. Tabella completa nei supplementary.} Considering $\mathrm{Accuracy}_{\mathrm{tolerant}}$ (1.0), Llama achieves the top score of 0.88, followed by RoBERTa (0.87) and Mistral (0.86), substantially outperforming the majority class baseline.
 
-Publisher-level errors are strictly local and concentrate between adjacent reliability levels, most notably between $l_4$ (Generally Credible) and $l_5$ (High Credibility); the Supplementary Material~\cite{suppmaterial2026} reports full publisher-level confusion matrices and a detailed error analysis.
+Publisher-level errors are strictly local, concentrating between $l_4$ (Generally Credible) and $l_5$ (High Credibility); the Supplementary Material~\cite{suppmaterial2026} reports full publisher-level confusion matrices and a detailed error analysis.\revnote{Supplementary}{Ospitati su Anonymous GitHub (anonymous.4open.science), che e' il link citato qui. Li carico anche nel progetto Overleaf, ma la copia che conta e' quella del repo: ogni modifica va fatta via GitHub, da dove si propaga al link anonimo.}
 
     
 
@@ -404,41 +409,41 @@ Publisher-level errors are strictly local and concentrate between adjacent relia
 \section{Theory of Change}
 \label{sec:theoryofchange}
 
-Work on misinformation is not socially beneficial by default, and we therefore
-state what this work is expected to change, what must hold for it to do so, and
-how it may cause harm.
+Work on misinformation is not socially beneficial by default. We therefore state
+what we expect this work to change, what must hold for it to do so, and how it
+may cause harm.
 
 \paragraph{Societal Need and Intended Contribution}
 The binding constraint on expert rating is the cost of \textit{triage} rather
 than the quality of the judgement. We show that article text alone places an unseen outlet on a
-five-level scale with 0.69 accuracy (Section~\ref{sec:results}), and that errors
-are predominantly local, typically involving an adjacent level rather than a
+five-level scale with 0.69 accuracy (Section~\ref{sec:results}). Errors are
+predominantly local: a mistake usually lands on an adjacent level, not on a
 confusion between a disinformation site and an established newspaper. We claim no
-improvement in information quality itself: the intended effect is confined to
-allocating expert effort.
+improvement in information quality itself, and we aim only to allocate expert
+effort.
 
 \paragraph{Preconditions and Their Plausibility}
 Four conditions must hold, and they are unevenly likely to. \textbf{The ground
 truth must be valid}: we inherit the NewsGuard scale together with its editorial
 judgements, and nothing internal to our data can test this. \textbf{The unit must
 be the publisher}, never the article: article-level accuracy is 0.60 and supports
-no claim about an individual piece. \textbf{Enough text must be available}, so
-that small or recent outlets --- those most likely to lack a rating --- are the
-least likely to qualify. \textbf{Use must remain advisory}, ordering a review
-queue rather than rating anything autonomously. Our evidence, finally, covers
-English-language political news alone.
+no claim about an individual piece. \textbf{Enough text must be available}. Small and
+recent outlets lack a rating most often, and they are the least likely to
+qualify. \textbf{Use must remain advisory}, ordering a review queue rather than
+rating anything autonomously. Our evidence covers English-language political news
+alone.
 
 \paragraph{Negative Externalities and Responsible Deployment}
 The principal risk is measured rather than hypothesised. Misclassification rates
-vary systematically with political leaning (Section~\ref{subsec:politicalBias}),
-reaching 59--72\% for far-left and far-right outlets against 30--34\% for
-slightly right and non-labelled ones, and reliability is overestimated at either
-extreme while underestimated for slightly left-leaning outlets. Such error is
-systematic and reproducible, which distinguishes it in kind from that of an
-individual rater. Two further risks follow from presentation and use: a single
-level out of five reads as a measurement although the $l_4$/$l_5$ boundary is
-close to unresolvable (Section~\ref{subsec:error_analysis}), and an inexpensive
-score is a target, optimisable on surface features. We therefore regard the
+vary systematically with political leaning (Section~\ref{subsec:politicalBias}):
+they reach 59--72\% for far-left and far-right outlets, against 30--34\% for
+slightly right and non-labelled ones. The models also overestimate reliability at
+either extreme and underestimate it for slightly left-leaning outlets. Such error
+is systematic and reproducible, which distinguishes it in kind from that of an
+individual rater. Two further risks follow from presentation and use. A single
+level out of five reads as a measurement, although the $l_4$/$l_5$ boundary is
+close to unresolvable (Section~\ref{subsec:error_analysis}). An inexpensive score
+is also a target, and surface features are easy to optimise. We therefore regard the
 following as necessary rather than advisable: publishing per-leaning error rates;
 abstaining when few articles are available; reporting an interval rather than a
 single level; and confining the output to ordering human review. The bias audit
@@ -453,7 +458,7 @@ In this study, we investigated whether the reliability of news publishers could 
 
 Our findings demonstrate that language models can capture meaningful and generalizable signals of publisher reliability. Interestingly, the substantially larger Mistral 24B does not outperform smaller architectures, suggesting that performance is limited by dataset characteristics rather than model size. Despite operating with a 1,024-token context window, four times larger than the limit used for the other models, Mistral shows no measurable gain, which may indicate that the cues discriminating reliable publishers are concentrated in the beginning of articles and further supports the hypothesis that increasing model size or input length alone cannot overcome limitations imposed by weak supervision. A key finding is that publisher reliability should not be modelled as a property of isolated articles: it emerges as a collective signal that becomes more stable when evidence is aggregated across a source, which supports a shift from article-centric formulations toward source-level inference.
 
-Future research should extend this framework to multilingual settings, explore confidence-aware aggregation strategies, and develop training objectives tailored to ordinal classification. \john{The value of such systems, however, lies less in accuracy than in whether they let scarce editorial scrutiny reach the outlets that currently go unrated, without penalising one part of the spectrum more than another.}
+Future research should extend this framework to multilingual settings, explore confidence-aware aggregation strategies, and develop training objectives tailored to ordinal classification. \john{The value of such systems, however, lies less in accuracy than in reach. What matters is whether they bring scarce editorial scrutiny to the outlets that currently go unrated, and whether they do so without penalising one part of the spectrum more than another.}
 
 \begin{credits}
 \ifanonymous
