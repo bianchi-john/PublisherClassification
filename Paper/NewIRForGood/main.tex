@@ -1,5 +1,5 @@
 % =========================================================================
-% From Articles to Publishers -- ECIR 2027, "IR for Good" track
+% Source-Level Reliability Estimation under Publisher-Disjoint Evaluation -- ECIR 2027
 % Springer LNCS, single column. Double-blind review.
 % Limit: 6-12 pages of content + unlimited references.
 % (Appendices and the mandatory "Theory of Change" section count toward the
@@ -43,9 +43,12 @@
 
 \begin{document}
 
-\title{From Articles to Publishers: Aggregating Language Model
-       Predictions for News Source Reliability Inference}
-\titlerunning{Aggregating LM Predictions for News Source Reliability}
+% Title deliberately differs from the earlier technical report, as the call
+% recommends: "You might not want to use the exact same title and abstract for
+% your ECIR submission (in case of acceptance at ECIR, the title of your
+% submission still might be changed 'back')."
+\title{Source-Level Reliability Estimation under Publisher-Disjoint Evaluation}
+\titlerunning{Source-Level Reliability under Publisher-Disjoint Evaluation}
 
 \ifanonymous
   \author{Anonymous Author(s)}
@@ -410,9 +413,16 @@ We employed distinct fine-tuning strategies tailored to the architectural differ
 
 \end{itemize}
 
-Each model was trained for 5 epochs per fold, with the exception of Mistral, which was trained for 3 epochs. This duration was established following a preliminary convergence study (see Supplementary Material~\cite{bianchi2026supplementary}), which demonstrated that validation loss minimizes at Epoch 4 for Llama, while Mistral exhibits comparable rapid convergence within three epochs. Consequently, extending training beyond this point yields no performance gains and increases the risk of overfitting. To allow optimality, we implemented an early stopping mechanism that saves the model state with the lowest validation loss. Batch sizes were dynamically adjusted according to memory requirements: 32 (training) / 16 (eval) for BERT, 16/8 for RoBERTa, 8/8 for Llama (with gradient accumulation), and 6/48 for Mistral (with gradient accumulation steps=5). We enforced a fixed global random seed (42) to ensure identical data splits and deterministic training behaviors across all architectures. The maximum sequence length for input processing was set to 256 tokens, except for Mistral, for which it was increased to 1,024 tokens. This was done to retain substantially more article text and to test whether a longer context improves classification.
+Each model was trained for 5 epochs per fold, with the exception of Mistral, which was trained for 3 epochs. This duration was established following a preliminary convergence study (see Supplementary Material~\cite{suppmaterial2026}), which demonstrated that validation loss minimizes at Epoch 4 for Llama, while Mistral exhibits comparable rapid convergence within three epochs. Consequently, extending training beyond this point yields no performance gains and increases the risk of overfitting. To allow optimality, we implemented an early stopping mechanism that saves the model state with the lowest validation loss. Batch sizes were dynamically adjusted according to memory requirements: 32 (training) / 16 (eval) for BERT, 16/8 for RoBERTa, 8/8 for Llama (with gradient accumulation), and 6/48 for Mistral (with gradient accumulation steps=5). We enforced a fixed global random seed (42) to ensure identical data splits and deterministic training behaviors across all architectures. The maximum sequence length for input processing was set to 256 tokens, except for Mistral, for which it was increased to 1,024 tokens. This was done to retain substantially more article text and to test whether a longer context improves classification.
 
-All fine-tuned models are publicly available to foster further research\footnote{\label{fn:model_availability}\url{https://osf.io/r9atz/overview?view_only=79271614574d46eebe8a5ad16eecc136}}.
+\ifanonymous
+All fine-tuned models and code will be released to foster further research; they
+are withheld during review to preserve anonymity and will be made available upon
+acceptance.
+\else
+All fine-tuned models are publicly available to foster further
+research\footnote{\label{fn:model_availability}\url{TODO: camera-ready model/code DOI}}.
+\fi
 
 
 \subsection{Stage 1: Article-level reliability estimation}
@@ -464,13 +474,13 @@ We observe a tendency to regress towards the center. We attribute this to two st
 
 \begin{itemize}
     \item \textbf{Boundary Constraints} ($l_1$ and $l_5$).
-    Errors at the extremes are naturally constrained: models can only overestimate $l_1$ and underestimate $l_5$. However, the significant negative MED in $l_5$, $\approx -1.30 $ (BERT -1.29, RoBERTa -1.37, Llama -1.20, Mistral -1.36). The confusion matrices reveal that the vast majority of misclassifications for $l_5$ are concentrated in adjacent $l_4$ \cite{bianchi2026supplementary}. This confirms that the high error rate is primarily due to the models struggling to distinguish between perfect (100) and generally credible (75–99) reliability, likely because there is little textual distinction between these high-standard categories. The fact that the MED is slightly below -1.0 indicates a minor tendency to misclassify some $l_5$ instances into lower tiers (levels 2 and 3), but the main misclassification consists of labeling $l_5$  as $l_4$ . 
+    Errors at the extremes are naturally constrained: models can only overestimate $l_1$ and underestimate $l_5$. However, the significant negative MED in $l_5$, $\approx -1.30 $ (BERT -1.29, RoBERTa -1.37, Llama -1.20, Mistral -1.36). The confusion matrices reveal that the vast majority of misclassifications for $l_5$ are concentrated in adjacent $l_4$ \cite{suppmaterial2026}. This confirms that the high error rate is primarily due to the models struggling to distinguish between perfect (100) and generally credible (75–99) reliability, likely because there is little textual distinction between these high-standard categories. The fact that the MED is slightly below -1.0 indicates a minor tendency to misclassify some $l_5$ instances into lower tiers (levels 2 and 3), but the main misclassification consists of labeling $l_5$  as $l_4$ . 
     
     \item \textbf{The `Safe Harbor' Effect ($l_3$).} 
     Class $l_3$ shows a Mean Error Direction close to zero (0.03 to 0.12 across models, with Mistral at 0.10). $l_3$ acts as a gravitational center for uncertainty: it absorbs a significant portion of misclassifications from the lower-reliability $l_2$ and from the higher-reliability $l_4$. Since the model overestimates $l_2$ (pushing it up to 3) and underestimates $l_4$ (pushing it down to 3), these opposing error vectors cancel each other out, resulting in a net directional bias of zero.    
 \end{itemize}
 
-These directional patterns generally remain consistent across all four models, including the substantially larger Mistral, suggesting that the biases are structural properties of the task rather than intrinsic to a specific architecture or model scale; the Supplementary Material~\cite{bianchi2026supplementary} reports full confusion matrices across all five cross-validation folds.
+These directional patterns generally remain consistent across all four models, including the substantially larger Mistral, suggesting that the biases are structural properties of the task rather than intrinsic to a specific architecture or model scale; the Supplementary Material~\cite{suppmaterial2026} reports full confusion matrices across all five cross-validation folds.
 
 \subsection{Influence of Political Leaning on Classification Errors}\label{subsec:politicalBias}
 \begin{figure}[h!]
@@ -526,7 +536,7 @@ To assess the statistical significance of the observed bias, we apply a chi-squa
 
 As a third analysis, we focus on misclassified instances to assess whether models exhibit directional biases, namely systematic tendencies to overestimate or underestimate article reliability as a function of political leaning. Figure~\ref{fig:politicalErrorsDirection} reports the Mean Error Direction (MED), defined as the average signed difference between predicted and true reliability labels over misclassified instances for each orientation (see Section~\ref{subsec:bias_methodology}). As anticipated in Section \ref{subsec:error_analysis}, positive MED values indicate overestimation of reliability, whereas negative values indicate underestimation.
 
-Clear directional patterns emerge across all four models. Far Left and Far Right articles exhibit consistent overestimation, with mean signed errors ranging from +0.33 to +1.00, approaching a full reliability level. Slightly Left articles show systematic underestimation, with average values between -0.54 and –0.82. Slightly Right and non-labeled outlets display smaller, less consistent deviations: Llama, RoBERTa, and Mistral slightly underestimate Slightly Right reliability (up to -0.39), whereas BERT slightly overestimates it; for non-labeled outlets, BERT, Llama, and Mistral exhibit mild positive biases, while RoBERTa's average bias is near zero; the Supplementary Material~\cite{bianchi2026supplementary} reports full confusion matrices stratified by political leaning.
+Clear directional patterns emerge across all four models. Far Left and Far Right articles exhibit consistent overestimation, with mean signed errors ranging from +0.33 to +1.00, approaching a full reliability level. Slightly Left articles show systematic underestimation, with average values between -0.54 and –0.82. Slightly Right and non-labeled outlets display smaller, less consistent deviations: Llama, RoBERTa, and Mistral slightly underestimate Slightly Right reliability (up to -0.39), whereas BERT slightly overestimates it; for non-labeled outlets, BERT, Llama, and Mistral exhibit mild positive biases, while RoBERTa's average bias is near zero; the Supplementary Material~\cite{suppmaterial2026} reports full confusion matrices stratified by political leaning.
 
 \begin{figure}[t!]
     \centering
@@ -564,7 +574,7 @@ Figure \ref{fig:metrics} presents the results. The bar chart benchmarks performa
 With an Accuracy of 0.69 RoBERTa leads, followed closely by Mistral at 0.68. These scores are more than triple those of the Random Baseline. 
 Considering $\mathrm{Accuracy}_{\mathrm{tolerant}}$  (1.0), Llama achieves the top score of 0.88, followed by RoBERTa (0.87) and Mistral (0.86). These scores substantially outperform the majority class baseline.
 
-Publisher-level errors are strictly local and concentrate between adjacent reliability levels, most notably between $l_4$ (Generally Credible) and $l_5$ (High Credibility); the Supplementary Material~\cite{bianchi2026supplementary} reports full publisher-level confusion matrices and a detailed error analysis.
+Publisher-level errors are strictly local and concentrate between adjacent reliability levels, most notably between $l_4$ (Generally Credible) and $l_5$ (High Credibility); the Supplementary Material~\cite{suppmaterial2026} reports full publisher-level confusion matrices and a detailed error analysis.
 
 
 
