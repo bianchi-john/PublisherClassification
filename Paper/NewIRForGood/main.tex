@@ -40,6 +40,17 @@
 \newif\ifanonymous
 \anonymoustrue   % <-- comment out for the camera-ready
 
+% ---- Draft mark-up: new material added for this submission --------------
+% \john{...}            for a span inside a paragraph
+% \begin{johnblock}...  for whole sections (\textcolor cannot span paragraphs)
+%
+% !! Comment out \showeditstrue before submitting: the PDF must be black. !!
+\newif\ifshowedits
+\showeditstrue
+\definecolor{johnblue}{RGB}{0,0,190}
+\newcommand{\john}[1]{\ifshowedits\textcolor{johnblue}{#1}\else#1\fi}
+\newenvironment{johnblock}{\ifshowedits\color{johnblue}\fi}{\ignorespacesafterend}
+
 \begin{document}
 
 % Title deliberately differs from the earlier technical report, as the call
@@ -73,6 +84,7 @@
 \maketitle
 
 \begin{abstract}
+\ifshowedits\color{johnblue}\fi
 Whether a news outlet can be trusted is conventionally judged by expert
 organisations, which weigh editorial practice, factual accuracy and
 transparency at the level of the outlet itself. Computational formulations of the
@@ -85,8 +97,10 @@ training.
 To keep the setting close to deployment, every split is publisher-disjoint, so
 no outlet contributes to both the training and the test side.
 Working with 19,476 English-language political news items drawn from 439 outlets
-and carrying NewsGuard ratings, we find that pooling lifts accuracy from roughly
-0.60 on single articles to 0.69 on outlets.
+and carrying NewsGuard ratings, exact accuracy rises from roughly 0.60 on single
+articles to 0.69 on outlets, and from 0.84 to 0.88 once a prediction one level
+away from the true rating is counted as correct, a tolerance the labels invite
+because the five levels are bins of a continuous 0--100 score.
 We then ask how the errors distribute across the political spectrum, and find
 systematic associations between the leaning of an outlet and the mistakes made
 on its articles.
@@ -726,6 +740,7 @@ Publisher-level errors are strictly local and concentrate between adjacent relia
     
     
 
+\begin{johnblock}
 \section{Theory of Change}
 \label{sec:theoryofchange}
 
@@ -839,6 +854,8 @@ ordering human review. We regard the bias audit presented in
 Section~\ref{subsec:politicalBias} as a constitutive part of the contribution
 rather than a supplement to it.
 
+
+\end{johnblock}
 
 \section{Discussion and Conclusion}
 \label{sec:conclusions}
