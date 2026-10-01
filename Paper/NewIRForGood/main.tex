@@ -74,30 +74,26 @@
 \maketitle
 
 \begin{abstract}
-Traditionally, the reliability of news publishers is assessed by expert
-organisations that evaluate editorial practices, transparency and factual
-standards at source. When this process is translated into a computational
-approach, the problem is often formulated at the level of individual articles,
-with models being trained on a set of pre-labelled articles and their
-performance being evaluated in a test phase.
-In this work, we investigate news source reliability inference as a
-source-level prediction problem. We propose a two-stage framework in which
-transformer-based language models first estimate the reliability of individual
-articles and subsequently aggregate article-level predictions to infer the
-reliability of previously unseen publishers.
-To approximate realistic deployment conditions, we enforce a strict
-publisher-disjoint evaluation protocol, ensuring that no publisher appears in
-both training and test sets.
-Experiments on 19,476 political news articles from 439 English-language
-publishers labeled with NewsGuard reliability ratings show that aggregation
-substantially improves robustness and performance, increasing accuracy from
-approximately 0.60 at the article level to 0.69 at the publisher level.
-Finally, we analyze how prediction errors vary across political orientations,
-revealing statistically significant associations between political leaning and
-misclassification patterns.
-Overall, our findings show that publisher reliability can be inferred from
-aggregated textual signals alone, supporting scalable and content-based
-approaches to automated news source assessment.
+Whether a news outlet can be trusted is conventionally judged by expert
+organisations, which weigh editorial practice, factual accuracy and
+transparency at the level of the outlet itself. Computational formulations of the
+same task, however, usually operate one article at a time: a classifier is
+fitted to pre-labelled items and then scored on held-out ones.
+We instead cast the task as prediction about the source. Our framework has two
+stages: transformer-based language models rate individual articles, and those
+ratings are then pooled to characterise outlets that were never seen during
+training.
+To keep the setting close to deployment, every split is publisher-disjoint, so
+no outlet contributes to both the training and the test side.
+Working with 19,476 English-language political news items drawn from 439 outlets
+and carrying NewsGuard ratings, we find that pooling lifts accuracy from roughly
+0.60 on single articles to 0.69 on outlets.
+We then ask how the errors distribute across the political spectrum, and find
+systematic associations between the leaning of an outlet and the mistakes made
+on its articles.
+Taken together, the results indicate that text alone carries enough signal to
+place an unseen outlet on a reliability scale, which supports content-based
+approaches to assessing sources at scale.
 
 \keywords{News source reliability \and Publisher reliability inference \and
 Transformer-based text classification \and Cross-publisher generalization \and

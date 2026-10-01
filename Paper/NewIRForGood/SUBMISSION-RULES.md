@@ -196,7 +196,7 @@ interesse, plagio/falsificazione e molestie, più la AI policy di Springer.
 | 4 | **Lunghezza ≤ 12 pagine di contenuto** | ❌ | **Siamo a 20 pagine** (refs pp. 20–23). Da tagliare ~8 pp, ~11 contando il materiale nuovo da aggiungere |
 | 5 | Lunghezza ≥ 6 pagine | ✅ | |
 | 6 | **Sezione Theory of Change** | ❌ | **Non ancora scritta. Obbligatoria.** |
-| 7 | **Anonimizzazione doppio cieco** | ❌ | Autori, affiliazioni, email, ORCID, ack SIMULARE e link OSF ancora presenti |
+| 7 | **Anonimizzazione doppio cieco** | ✅ | Interruttore `\anonymoustrue` in `main.tex` e `supplementary.tex`. Verificato sui byte del PDF: nessun nome, affiliazione, ORCID, SIMULARE, OSF o Zenodo. Titolo e abstract cambiati rispetto al preprint arXiv (0 n-grammi di 6+ parole in comune). Chiave BibTeX rinominata (era `bianchi2026supplementary`, leak via ancore hyperref). Modelli non linkati durante la review. |
 | 8 | Appendici prima delle referenze | ➖ | Al momento non ci sono appendici |
 | 9 | Nessuna doppia submission | ✅ | Respinto da TCSS, non sotto revisione altrove |
 | 10 | Nessun preprint arXiv in contemporanea | ✅ | Da non fare fino a dicembre 2026 |
