@@ -29,26 +29,44 @@
 \renewcommand\UrlFont{\color{blue}\rmfamily}
 \urlstyle{rm}
 
+% ---- Double-blind switch -------------------------------------------------
+% \anonymoustrue hides everything that identifies the authors: names, ORCIDs,
+% affiliations, e-mails, the funding acknowledgement and the self-authored
+% supplementary reference. Comment the line out for the camera-ready.
+%
+% Self-citations are NOT hidden: ECIR runs double-blind, not anonymous-authorship.
+% Prior work by (some of) the authors is cited in the third person like any other
+% reference, which is what the policy expects. Removing it would leave a hole in
+% the related work and is the more suspicious choice.
+\newif\ifanonymous
+\anonymoustrue   % <-- comment out for the camera-ready
+
 \begin{document}
 
 \title{From Articles to Publishers: Aggregating Language Model
        Predictions for News Source Reliability Inference}
 \titlerunning{Aggregating LM Predictions for News Source Reliability}
 
-\author{%
-John Bianchi\inst{1}\orcidID{0009-0006-2582-1480} \and
-Manuel Pratelli\inst{2}\orcidID{0000-0002-9978-791X} \and
-Fabio Pinelli\inst{1}\orcidID{0000-0003-1058-6917} \and
-Marinella Petrocchi\inst{2,1}\orcidID{0000-0003-0591-877X}}
-\authorrunning{J. Bianchi et al.}
+\ifanonymous
+  \author{Anonymous Author(s)}
+  \authorrunning{Anonymous Author(s)}
+  \institute{Affiliation withheld for double-blind review}
+\else
+  \author{%
+  John Bianchi\inst{1}\orcidID{0009-0006-2582-1480} \and
+  Manuel Pratelli\inst{2}\orcidID{0000-0002-9978-791X} \and
+  Fabio Pinelli\inst{1}\orcidID{0000-0003-1058-6917} \and
+  Marinella Petrocchi\inst{2,1}\orcidID{0000-0003-0591-877X}}
+  \authorrunning{J. Bianchi et al.}
 
-\institute{%
-IMT School for Advanced Studies Lucca, 55100 Lucca, Italy\\
-\email{\{john.bianchi,fabio.pinelli\}@imtlucca.it}
-\and
-Institute of Informatics and Telematics, National Research Council (IIT-CNR),
-56124 Pisa, Italy\\
-\email{\{manuel.pratelli,marinella.petrocchi\}@iit.cnr.it}}
+  \institute{%
+  IMT School for Advanced Studies Lucca, 55100 Lucca, Italy\\
+  \email{\{john.bianchi,fabio.pinelli\}@imtlucca.it}
+  \and
+  Institute of Informatics and Telematics, National Research Council (IIT-CNR),
+  56124 Pisa, Italy\\
+  \email{\{manuel.pratelli,marinella.petrocchi\}@iit.cnr.it}}
+\fi
 
 \maketitle
 
@@ -709,10 +727,12 @@ The study also presents important scope constraints. First, the dataset is restr
 Future research should extend this framework to multilingual settings, explore confidence-aware aggregation strategies, and develop training objectives explicitly tailored to ordinal classification. More broadly, combining content-based approaches with ecosystem-level signals, such as ownership transparency, citation networks, or audience interactions, may provide a more comprehensive and robust framework for scalable news source reliability assessment.
 
 \begin{credits}
-\subsubsection{\ackname}
-This work is partially supported by the IIT-CNR internal project SIMULARE
-`SIMULAzione delle Reazioni alla disinformazionE con LLM'.
-% TODO(double-blind): remove or anonymize the acknowledgement above for submission.
+\ifanonymous
+\else
+  \subsubsection{\ackname}
+  This work is partially supported by the IIT-CNR internal project SIMULARE
+  `SIMULAzione delle Reazioni alla disinformazionE con LLM'.
+\fi
 
 \subsubsection{\discintname}
 The authors have no competing interests to declare that are relevant to the
