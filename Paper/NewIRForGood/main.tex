@@ -52,7 +52,7 @@
 \newcommand{\john}[1]{\ifshowedits\textcolor{johnblue}{#1}\else#1\fi}
 \newif\ifshowrevnotes
 \showrevnotestrue   % <-- commentare per la submission
-\usepackage[textsize=tiny,textwidth=2.3cm,linecolor=red!60,%
+\usepackage[textsize=tiny,textwidth=2.9cm,linecolor=red!60,%
             backgroundcolor=red!8,bordercolor=red!60]{todonotes}
 \newcommand{\revnote}[2]{\ifshowrevnotes\todo{\textbf{#1}\\#2}\fi}
 \newenvironment{johnblock}{\ifshowedits\color{johnblue}\fi}{\ignorespacesafterend}
@@ -210,7 +210,7 @@ where $N$ is the total number of samples, while $r$ and $c$ represent the number
 The publisher-level reliability function \(r_P : P \rightarrow L\) is derived from NewsGuard,\footnote{\url{https://www.newsguardtech.com/}} a professional media rating system in which trained journalists evaluate online news outlets.
 Each publisher \(p \in P\) is assessed against nine widely adopted journalistic criteria, including deceptive headlines, transparency of ownership and financing, and correction practices.
 
-The evaluation produces a continuous reliability score in \([0,100]\), measuring a publisher’s adherence to professional journalistic standards.\footnote{\url{https://www.newsguardtech.com/ratings/rating-process-criteria/}}  
+The evaluation produces a continuous reliability score in \([0,100]\), measuring a publisher's adherence to professional journalistic standards.\footnote{\url{https://www.newsguardtech.com/ratings/rating-process-criteria/}}  
 The proprietary ratings were licensed for use to the authors of this publication.
 
 \paragraph{Label Construction and Publishers Selection}
@@ -340,7 +340,7 @@ Political orientation is a property of the publisher, inherited by each article 
 \begin{table}[t]
 \centering
 \begin{tabular}{lcccc}
-\textbf{Model} & \textbf{Accuracy} & $\boldsymbol{\chi^2}$ & \textbf{$p$-value} & \textbf{Cramér’s V} \\
+\textbf{Model} & \textbf{Accuracy} & $\boldsymbol{\chi^2}$ & \textbf{$p$-value} & \textbf{Cramér's V} \\
 \midrule
 BERT & 58.27\% & 1684.13 & $<10^{-300}$ & 0.294 \\
 RoBERTa & 60.34\% & 1418.31 & $<10^{-300}$ & 0.270 \\
@@ -353,13 +353,13 @@ Mistral & 61.16\% & 1343.98 & $<10^{-300}$ & {0.263} \\
 
 Error rates are computed separately for each leaning, which makes them independent of class frequency.
 
-All models exhibit systematic variation across political leanings: there are substantially higher error rates for far left and far right outlets (59–72\%) compared to lower rates for slightly right and non-labelled outlets (30–34\%), and intermediate error rates for slightly left articles (47–58\%). 
+All models exhibit systematic variation across political leanings: there are substantially higher error rates for far left and far right outlets (59--72\%) compared to lower rates for slightly right and non-labelled outlets (30--34\%), and intermediate error rates for slightly left articles (47--58\%). 
 
-A chi-square test of independence rejects, for every model, the hypothesis that correctness is independent of political leaning (Table~\ref{tab:chi_square_results}), with Cramér's~$V$ indicating a consistent small-to-moderate effect size. \john{Leaning is a publisher-level attribute, and every article of an outlet carries the same value. We therefore repeat the test with one observation per publisher, and the association holds: $\chi^2$ ranges from 18.8 to 44.8, $p<10^{-3}$, and $V$ from 0.21 to 0.32. Leaning and reliability are themselves entangled, and no analysis separates them completely: 142 of the 207 slightly right publishers sit in $l_1$, and no far-right publisher reaches $l_5$. A regression that controls for the true reliability level still leaves the two extremes with 4.0 to 6.5 times the odds of error of non-labelled outlets, but it rests on thin cells (Supplementary Material~\cite{suppmaterial2026}). The disparity is therefore a property of the corpus and the model together. A system trained on this ground truth inherits the political structure of the dataset, and the disparity would appear in deployment whatever its mechanism.}\revnote{Disparita' per orientamento}{Il test di indipendenza e' riportato anche all'unita' publisher, con 439 osservazioni al posto dei 77.904 articoli, e accanto un logit dell'errore sul leaning con controllo per l'affidabilita' vera e errori standard clusterizzati sul publisher. Il testo dichiara anche che orientamento e affidabilita' sono quasi collineari nel corpus, quindi legge la disparita' come proprieta' del dataset oltre che del modello. Composizione per cella e tassi d'errore dentro ogni livello nei supplementary.}
+A chi-square test of independence rejects, for every model, the hypothesis that correctness is independent of political leaning (Table~\ref{tab:chi_square_results}), with Cramér's~$V$ indicating a consistent small-to-moderate effect size. \john{Leaning is a publisher-level attribute, so the articles of one outlet are not independent observations. We therefore repeat the test with one observation per publisher, and the association holds, with $V$ between 0.21 and 0.32. It is not an effect of leaning alone: leaning and reliability are entangled in the corpus, and 142 of the 207 slightly right publishers sit in $l_1$. We therefore read the disparity as a property of the corpus and the model together. A system trained on this ground truth inherits the political structure of the dataset, so the disparity would appear in deployment whatever its mechanism. The Supplementary Material~\cite{suppmaterial2026} reports the publisher-level test, a regression controlling for reliability, and the composition of every cell.}\revnote{Disparita' per orientamento}{Il test di indipendenza e' rifatto all'unita' publisher, 439 osservazioni invece di 77.904 articoli, e l'associazione regge. Non e' pero' attribuibile al solo orientamento: nel corpus orientamento e affidabilita' sono quasi sovrapposti, e 142 dei 207 publisher slightly right stanno tutti in l1. Per questo il testo legge la disparita' come proprieta' del dataset oltre che del modello. Nei supplementary il test all'unita' publisher, la regressione con controllo per l'affidabilita' e la composizione di ogni cella.}
 
 We then focus on misclassified instances to assess whether models systematically overestimate or underestimate reliability as a function of political leaning. Figure~\ref{fig:politicalErrorsDirection} reports the Mean Error Direction (MED) for each orientation (see Section~\ref{subsec:bias_methodology}); positive values indicate overestimation of reliability, negative values underestimation.
 
-Clear directional patterns emerge across all four models. Far Left and Far Right articles exhibit consistent overestimation, with mean signed errors ranging from +0.33 to +1.00, approaching a full reliability level. Slightly Left articles show systematic underestimation, with average values between -0.54 and –0.82. Slightly Right and non-labelled outlets display smaller, less consistent deviations; the Supplementary Material~\cite{suppmaterial2026} reports the corpus composition by leaning, the per-leaning error rates and the full confusion matrices stratified by political leaning.\revnote{Nei supplementary}{Figure della composizione del corpus per orientamento e dei tassi di errore per orientamento, piu' le matrici di confusione stratificate per leaning.}
+Clear directional patterns emerge across all four models. Far Left and Far Right articles exhibit consistent overestimation, with mean signed errors ranging from +0.33 to +1.00, approaching a full reliability level. Slightly Left articles show systematic underestimation, with average values between -0.54 and $-0.82$. Slightly Right and non-labelled outlets display smaller, less consistent deviations; the Supplementary Material~\cite{suppmaterial2026} reports the corpus composition by leaning, the per-leaning error rates and the full confusion matrices stratified by political leaning.\revnote{Nei supplementary}{Figure della composizione del corpus per orientamento e dei tassi di errore per orientamento, piu' le matrici di confusione stratificate per leaning.}
 
 \begin{figure}[t!]
     \centering
