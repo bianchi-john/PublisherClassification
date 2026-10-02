@@ -327,6 +327,69 @@ Mistral & 0.683 [0.642, 0.727] & 0.856 [0.822, 0.888] \\
 \label{tab:bootstrap}
 \end{table}
 
+\paragraph{Leaning and reliability are entangled in the corpus.}
+The regression above controls for the true reliability level, but the two
+variables are close to collinear in our data, so no analysis can separate them
+completely. Table~\ref{tab:composition} counts the publishers in each
+combination. Of the 207 slightly right publishers, 142 sit in $l_1$; no slightly
+left publisher sits there at all, and no far-right publisher reaches $l_5$.
+Several cells hold fewer than ten publishers, and two are empty, so the
+additive control rests on thin support.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lccccc}
+\toprule
+& \textbf{Far Left} & \textbf{Sl.\ Left} & \textbf{Non lab.} & \textbf{Sl.\ Right} & \textbf{Far Right} \\
+\midrule
+$l_1$ & 1 & --- & 2 & 142 & 7 \\
+$l_2$ & 6 & 7 & 5 & 22 & 29 \\
+$l_3$ & 1 & 4 & 64 & 19 & 7 \\
+$l_4$ & 9 & 29 & 24 & 17 & 9 \\
+$l_5$ & 3 & 10 & 15 & 7 & --- \\
+\midrule
+\textbf{Total} & 20 & 50 & 110 & 207 & 52 \\
+\bottomrule
+\end{tabular}
+\caption{Publishers by political leaning and true reliability level. A dash
+marks an empty combination.}
+\label{tab:composition}
+\end{table}
+
+Table~\ref{tab:err_within} gives the article-level error rate inside each
+combination, pooled over the four models. Two cells dominate the corpus and the
+models get both of them right: the 142 slightly right publishers in $l_1$ carry a
+5\% error rate, and the 64 non-labelled publishers in $l_3$ carry 12\%. Every
+other combination falls between 32\% and 99\%. The models therefore recognise the
+two largest blocks of the ground truth, and they do poorly outside them. Cells
+built on a handful of publishers are noisy, but the composition counts behind
+them are exact.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lccccc}
+\toprule
+& \textbf{Far Left} & \textbf{Sl.\ Left} & \textbf{Non lab.} & \textbf{Sl.\ Right} & \textbf{Far Right} \\
+\midrule
+$l_1$ & 99 & --- & 81 & \textbf{5} & 82 \\
+$l_2$ & 76 & 48 & 91 & 40 & 44 \\
+$l_3$ & 79 & 93 & \textbf{12} & 79 & 90 \\
+$l_4$ & 48 & 39 & 32 & 68 & 70 \\
+$l_5$ & 94 & 73 & 69 & 87 & --- \\
+\bottomrule
+\end{tabular}
+\caption{Article-level error rate (\%) by political leaning within each true
+reliability level, pooled over the four models. Bold marks the two combinations
+that hold most of the corpus. Read these against the publisher counts of
+Table~\ref{tab:composition}.}
+\label{tab:err_within}
+\end{table}
+
+Two readings follow. The per-leaning disparity is a property of the corpus and
+of the model together, not an isolated effect of political leaning. And a system
+trained on this ground truth inherits the political structure of the dataset, so
+the disparity would appear in deployment whatever its mechanism.
+
 \paragraph{Why no source-identifier masking.}
 We use the article texts as collected, and we mask no outlet name, byline or
 boilerplate. Under the publisher-disjoint protocol this cannot inflate the
