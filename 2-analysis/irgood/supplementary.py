@@ -91,7 +91,16 @@ def _draw_article_cm(ax, cm, title, cmap, normalized):
         else ["l1", "l2", "l3", "l4", "l5"]
     )
     vmax = 1.0 if normalized else cm.max()
-    ax.imshow(cm, interpolation="nearest", cmap=cmap, vmin=0, vmax=vmax)
+    # pcolormesh e non imshow: disegna le celle come quadrilateri vettoriali
+    # invece che come un'immagine raster. Stesso risultato visivo -- celle piatte,
+    # stessa colormap, stessi estremi -- ma il contenuto resta vettoriale, cosi'
+    # le figure si vedono anche nei visualizzatori che ignorano le immagini.
+    edges_x = np.arange(cm.shape[1] + 1) - 0.5
+    edges_y = np.arange(cm.shape[0] + 1) - 0.5
+    ax.pcolormesh(edges_x, edges_y, cm, cmap=cmap, vmin=0, vmax=vmax, shading="flat")
+    ax.set_aspect("equal")
+    ax.set_xlim(edges_x[0], edges_x[-1])
+    ax.set_ylim(edges_y[-1], edges_y[0])
     if title:
         ax.set_title(title, fontsize=18, pad=20)
 
