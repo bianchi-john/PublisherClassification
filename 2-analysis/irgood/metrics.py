@@ -101,31 +101,41 @@ METRIC_LABELS = {
 # --------------------------------------------------------------------------
 # Baselines
 # --------------------------------------------------------------------------
-def baselines(y_true) -> dict[str, float]:
-    """Reference values for each metric.
+def baselines(
+    y_true, n_random: int = 1000, seed: int = C.RANDOM_SEED
+) -> dict[str, dict[str, float]]:
+    """Both non-informative baselines, on every metric.
 
-    - Accuracy and both tolerant accuracies: a constant majority-class
-      predictor, evaluated on the same ground truth.
-    - Macro P/R/F1: the analytic uniform-random floor, 1/K.
+    Returns ``{"majority": {...}, "random": {...}}``, each carrying the same six
+    metrics as :func:`metric_bundle`, so that the two can be compared on all of
+    them rather than each only on the metrics it happens to challenge.
 
-    The 1/K figure is exact for macro *recall* only. Macro precision and macro
-    F1 of a uniform random classifier on an imbalanced problem are not exactly
-    1/K, so 1/K is an approximation. It is kept because the paper's figures use
-    it, but it should be described as a nominal floor, not an exact
-    expectation.
+    The **majority** baseline is the constant predictor on the most frequent
+    class. It is the best any *constant* predictor can do on accuracy, and it
+    scores zero Recall and F1 on the other four classes, so its macro figures
+    are low by construction.
+
+    The **uniform random** baseline draws each of the K levels with equal
+    probability. It is stochastic, so its values are means over ``n_random``
+    seeded draws. Its expected accuracy, macro precision and macro recall are
+    1/K; its macro F1 is slightly lower whenever the classes are unevenly
+    represented, because F1 is a harmonic mean and the per-class precision of a
+    random guesser equals that class's frequency. The earlier code reported a
+    flat 1/K for all three macro metrics, which is exact only for recall.
     """
     y_true = np.asarray(y_true)
+
     majority = int(pd.Series(y_true).mode().min())
-    y_major = np.full_like(y_true, majority)
-    random_floor = 1.0 / C.N_CLASSES
-    return {
-        "Accuracy": float((y_true == y_major).mean()),
-        "Precision_Macro": random_floor,
-        "Recall_Macro": random_floor,
-        "F1_Macro": random_floor,
-        "Tolerant_0.5": tolerant_accuracy(y_true, y_major, 0.5),
-        "Tolerant_1.0": tolerant_accuracy(y_true, y_major, 1.0),
-    }
+    maj = metric_bundle(y_true, np.full_like(y_true, majority))
+
+    rng = np.random.default_rng(seed)
+    draws = [
+        metric_bundle(y_true, rng.integers(0, C.N_CLASSES, len(y_true)))
+        for _ in range(n_random)
+    ]
+    rnd = {k: float(np.mean([d[k] for d in draws])) for k in draws[0]}
+
+    return {"majority": maj, "random": rnd}
 
 
 # --------------------------------------------------------------------------

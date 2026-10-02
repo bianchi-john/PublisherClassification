@@ -41,6 +41,29 @@ from matplotlib.patches import Patch
 from . import config as C
 from .metrics import baselines
 
+# Baseline line styles. Both baselines are drawn across the FULL width of every
+# metric group -- drawing them over half each would suggest they apply only to
+# some of the models. They share one dash period and are offset by half of it,
+# so where the two values coincide (Macro Recall, where both are 1/K) the line
+# alternates red and violet instead of the two dash patterns interleaving into
+# an illegible mess.
+BASELINE_STYLES = {
+    "majority": dict(color="red", linestyle=(0, (7, 7))),
+    "random": dict(color="darkviolet", linestyle=(7, (7, 7))),
+}
+BASELINE_LABELS = {
+    "majority": "Majority Class Baseline",
+    "random": "Uniform Random Baseline",
+}
+# The legend key is a short segment, so the half-period offset that makes the
+# two lines alternate on the axes would start the violet key inside a gap and
+# render it as a stub. The keys therefore use the same dash pattern with no
+# offset, and differ by colour alone.
+BASELINE_LEGEND_STYLES = {
+    k: dict(color=v["color"], linestyle=(0, (4, 3)))
+    for k, v in BASELINE_STYLES.items()
+}
+
 METRIC_ORDER = [
     "Accuracy",
     "Precision_Macro",
@@ -214,12 +237,12 @@ def _model_handles(models: list[str], linewidth: float | None = None) -> list[Pa
 
 
 # --------------------------------------------------------------------------
-# 1. Article-level metrics across folds -> results_boxplot_baselines_updated
+# 1. Article-level metrics across folds -> results_boxplot_baselines
 # --------------------------------------------------------------------------
 def fig_article_metrics_boxplot(
     per_fold: pd.DataFrame,
     y_true_pool,
-    name: str = "results_boxplot_baselines_updated",
+    name: str = "results_boxplot_baselines",
     include_gpt: bool = False,
 ) -> plt.Figure:
     """Per-fold distribution of the six metrics, with baselines.
@@ -252,19 +275,17 @@ def fig_article_metrics_boxplot(
                 box.set(facecolor=C.MODEL_COLORS[model],
                         hatch=C.MODEL_HATCHES[model], alpha=0.9)
 
-        # Baselines. The macro metrics share ONE line spanning groups 1-3,
-        # which is how the published figure draws it.
+        # Both baselines on every metric. The published figure drew only the
+        # one each metric "naturally challenges", which hid that the majority
+        # baseline has a non-zero macro F1 and that the random baseline is not
+        # at a flat 1/K on macro F1.
         offset = width * (len(models) - 1) / 2
         centers = x + offset
         half = width * len(models) / 2 * 0.95
-        ax.hlines(base["Accuracy"], centers[0] - half, centers[0] + half,
-                  color="red", linestyle="--", linewidth=1.8, zorder=5)
-        ax.hlines(base["F1_Macro"], centers[1] - half, centers[3] + half,
-                  color="darkviolet", linestyle="-.", linewidth=1.8, zorder=5)
-        ax.hlines(base["Tolerant_0.5"], centers[4] - half, centers[4] + half,
-                  color="red", linestyle="--", linewidth=1.8, zorder=5)
-        ax.hlines(base["Tolerant_1.0"], centers[5] - half, centers[5] + half,
-                  color="red", linestyle="--", linewidth=1.8, zorder=5)
+        for i, metric in enumerate(METRIC_ORDER):
+            for which in ("majority", "random"):
+                ax.hlines(base[which][metric], centers[i] - half, centers[i] + half,
+                          linewidth=1.8, zorder=5, **BASELINE_STYLES[which])
 
         ax.set_xticks(centers)
         ax.set_xticklabels(BOXPLOT_METRIC_LABELS)
@@ -274,8 +295,10 @@ def fig_article_metrics_boxplot(
 
         handles = _model_handles(models)
         handles += [
-            Line2D([0], [0], color="red", linestyle="--", label="Majority Class Baseline"),
-            Line2D([0], [0], color="darkviolet", linestyle="-.", label="Random Baseline (1/N)"),
+            Line2D([0], [0], label=BASELINE_LABELS["majority"],
+                   **BASELINE_LEGEND_STYLES["majority"]),
+            Line2D([0], [0], label=BASELINE_LABELS["random"],
+                   **BASELINE_LEGEND_STYLES["random"]),
         ]
         ax.legend(handles=handles, loc="upper left", frameon=True)
         fig.tight_layout()
@@ -316,16 +339,16 @@ def fig_publisher_metrics(
 
         half = (len(models) * width) / 2 + 0.02
         for i, metric in enumerate(METRIC_ORDER):
-            is_macro = "Macro" in metric
-            line = ax.hlines(
-                base[metric], x[i] - half, x[i] + half,
-                colors="darkviolet" if is_macro else "red",
-                linestyles="-." if is_macro else "--",
-                linewidth=2.2, zorder=10,
-            )
-            line.set_path_effects(
-                [pe.Stroke(linewidth=4, foreground="black", alpha=0.7), pe.Normal()]
-            )
+            for which in ("majority", "random"):
+                st = BASELINE_STYLES[which]
+                line = ax.hlines(
+                    base[which][metric], x[i] - half, x[i] + half,
+                    colors=st["color"], linestyles=st["linestyle"],
+                    linewidth=2.2, zorder=10,
+                )
+                line.set_path_effects(
+                    [pe.Stroke(linewidth=4, foreground="black", alpha=0.7), pe.Normal()]
+                )
 
         ax.set_xticks(x)
         ax.set_xticklabels(BARCHART_METRIC_LABELS, rotation=0, fontsize=10)
@@ -338,10 +361,10 @@ def fig_publisher_metrics(
 
         handles = _model_handles(models)
         handles += [
-            Line2D([], [], color="red", linestyle="--", linewidth=2.0,
-                   label="Majority Class Baseline"),
-            Line2D([], [], color="darkviolet", linestyle="-.", linewidth=2.0,
-                   label="Random Baseline (Macro)"),
+            Line2D([], [], linewidth=2.0, label=BASELINE_LABELS["majority"],
+                   **BASELINE_LEGEND_STYLES["majority"]),
+            Line2D([], [], linewidth=2.0, label=BASELINE_LABELS["random"],
+                   **BASELINE_LEGEND_STYLES["random"]),
         ]
         ax.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.01, 0.99),
                   ncol=3, frameon=True, fancybox=True, framealpha=0.95)
