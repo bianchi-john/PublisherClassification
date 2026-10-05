@@ -1,0 +1,8 @@
+,BERT,BERT,RoBERTa,RoBERTa,Llama,Llama,Mistral,Mistral
+,correct,incorrect,correct,incorrect,correct,incorrect,correct,incorrect
+leaning,,,,,,,,
+Far Left,299,716,288,727,285,730,370,645
+Slightly Left,1018,1389,1167,1240,1269,1138,1044,1363
+Non labelled,4292,2130,4376,2046,4340,2082,4463,1959
+Slightly Right,5062,2428,5123,2367,4976,2514,5166,2324
+Far Right,678,1464,798,1344,809,1333,869,1273

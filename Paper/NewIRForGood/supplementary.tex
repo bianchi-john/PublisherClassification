@@ -247,6 +247,38 @@ observation. Political leaning and reliability are publisher-level attributes,
 and every article of an outlet carries the same value. This section therefore
 repeats the analyses at the unit on which the labels actually live.
 
+\paragraph{The contingency tables behind the test.}
+The $\chi^2$ test of independence reported in the main paper is computed on the
+table that crosses political orientation with classification outcome: five
+orientations against two outcomes, over all 19,476 articles.
+Table~\ref{tab:contingency} gives it for each model. With $c=2$ the factor
+$\min(r-1,c-1)$ equals one, so Cram\'er's $V$ is simply $\sqrt{\chi^2/N}$.
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{lcccccccc}
+\toprule
+& \multicolumn{2}{c}{\textbf{BERT}} & \multicolumn{2}{c}{\textbf{RoBERTa}}
+& \multicolumn{2}{c}{\textbf{Llama 3}} & \multicolumn{2}{c}{\textbf{Mistral}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
+\textbf{Leaning} & correct & wrong & correct & wrong & correct & wrong & correct & wrong \\
+\midrule
+Far Left & 299 & 716 & 288 & 727 & 285 & 730 & 370 & 645 \\
+Slightly Left & 1018 & 1389 & 1167 & 1240 & 1269 & 1138 & 1044 & 1363 \\
+Non labelled & 4292 & 2130 & 4376 & 2046 & 4340 & 2082 & 4463 & 1959 \\
+Slightly Right & 5062 & 2428 & 5123 & 2367 & 4976 & 2514 & 5166 & 2324 \\
+Far Right & 678 & 1464 & 798 & 1344 & 809 & 1333 & 869 & 1273 \\
+\midrule
+\textbf{Total} & 11349 & 8127 & 11752 & 7724 & 11679 & 7797 & 11912 & 7564 \\
+\bottomrule
+\end{tabular}
+\caption{Political orientation against classification outcome, article level, one
+pair of columns per model. These are the tables the $\chi^2$ statistics and the
+effect sizes of the main paper are computed from.}
+\label{tab:contingency}
+\end{table}
+
 \paragraph{Independence at the publisher unit.}
 Table~\ref{tab:chi2_pub} repeats the $\chi^2$ test of independence with one
 observation per publisher: was the aggregated prediction for that outlet correct?

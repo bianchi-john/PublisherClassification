@@ -93,30 +93,7 @@
 
 \begin{abstract}
 \ifshowedits\color{johnblue}\fi
-Whether a news outlet can be trusted is conventionally judged by expert
-organisations, which weigh editorial practice, factual accuracy and
-transparency at the level of the outlet itself. Those judgements are careful but
-manual, and the outlets they never reach stay unrated. Computational formulations
-of the same task usually operate one article at a time: they fit a classifier to
-pre-labelled items and score it on held-out ones.
-We instead cast the task as prediction about the source. Our framework has two
-stages: transformer-based language models rate individual articles, and we then
-pool those ratings to characterise outlets the models never saw during
-training.
-To keep the setting close to deployment, every split is publisher-disjoint, so
-no outlet contributes to both the training and the test side.
-We work with 19,476 English-language political news items from 439 outlets
-carrying NewsGuard ratings. Exact accuracy rises from roughly 0.60 on single
-articles to 0.69 on outlets, and the vote itself accounts for one to four of
-those points. Counting a prediction one level away from the true rating as
-correct, accuracy rises from 0.84 to 0.88. The labels invite that tolerance,
-because the five levels bin a continuous 0--100 score.
-We then ask how the errors distribute across the political spectrum, and find
-systematic associations between the leaning of an outlet and the mistakes made
-on its articles. We report that disparity as a bound on responsible use.
-Taken together, the results indicate that text alone carries enough signal to
-place an unseen outlet on a reliability scale, and we set out what that evidence does
-and does not license.
+Reliability ratings are assigned to news publishers, yet computational approaches often formulate the task as article-level classification, inheriting publisher labels at the article level and, in some cases, allowing the same publishers to appear in both training and test data. This mismatch creates a risk of publisher leakage and leaves unclear whether the reported performance generalizes to previously unseen outlets. We reformulate the task as publisher-level reliability inference from multiple articles. Our two-stage framework first derives a reliability prediction from each article and then aggregates these predictions to assign the publisher one of five ordinal reliability levels. We evaluate four transformer-based models using five-fold publisher-disjoint cross-validation on 19,476 English-language political news articles from 439 publishers annotated with NewsGuard scores. The best models achieve approximately 0.60 exact accuracy at the article level and 0.69 after aggregation at the publisher level. When predictions adjacent to the reference level are accepted, accuracy reaches 0.84 and 0.88, respectively, indicating that most errors remain local on the ordinal scale. Larger decoder-based models provide no consistent advantage over encoder-based models in this setting. We additionally examine how errors vary across publishers' political leanings, highlighting the importance of complementing aggregate performance with group-level error analysis. These results show that aggregating evidence across articles supports reliability estimation for unseen publishers while providing a stricter protocol for evaluating cross-publisher generalization.
 
 
 \keywords{News source reliability \and
@@ -201,7 +178,7 @@ To quantify the magnitude of this effect independent of sample size, we compute 
 \begin{equation}
 V = \sqrt{\frac{\chi^2}{N \cdot \min(r-1, c-1)}}
 \end{equation}
-where $N$ is the total number of samples, while $r$ and $c$ represent the number of rows (political orientations) and columns (classification outcomes) in the contingency table.
+where $N$ is the total number of samples, while $r$ and $c$ represent the number of rows and columns of the contingency table that crosses political orientation with classification outcome. \john{Here $r=5$ orientations and $c=2$ outcomes, correct and incorrect, so $\min(r-1,c-1)=1$ and $V$ reduces to $\sqrt{\chi^2/N}$. The tables themselves, one per model, are reported in the Supplementary Material~\cite{suppmaterial2026}.}
 
 \section{Dataset and Labeling}
 \label{sec:dataset}
@@ -401,41 +378,59 @@ what we expect this work to change, what must hold for it to do so, and how it
 may cause harm.
 
 \paragraph{The Need and What We Claim About It}
-Expert ratings are mostly manual, and the publishers they never reach stay unrated. That
-gap motivates automation, but it is not the gap this paper closes. What we claim
-to change is how the task is posed and evaluated. Reliability is a property of
-the publisher, yet most computational work predicts it one article at a time, and
-trains and tests on articles from the same outlets. A model can then recognise
-the outlet rather than the signal, and what it reports need not hold on a source
-it has never seen. We pose the task at the publisher level, enforce
-publisher-disjoint splits, and report what the text alone supports: 0.69 accuracy
-on unseen outlets (Section~\ref{subsec:stage2}), with errors predominantly local
-and no gain from model scale.
+Expert ratings rely largely on manual assessment, leaving publishers outside their
+coverage unrated. This gap motivates automation, but expanding coverage is not
+itself the contribution of this paper. Instead, we change how the task is
+formulated and evaluated. Reliability labels apply at the publisher level, yet much
+computational work predicts them one article at a time, and some studies allow
+articles from the same outlets to appear in both training and test data. Under such
+protocols, a model may rely on outlet-specific cues rather than transferable
+indicators of reliability, so its reported performance may not generalize to unseen
+sources. We therefore formulate the task at the publisher level, enforce
+publisher-disjoint splits, and aggregate evidence across multiple articles. Under
+this stricter setting, our best method achieves 0.69 accuracy on unseen publishers
+(Section~\ref{subsec:stage2}); most errors involve adjacent reliability levels, and
+larger models show no consistent advantage in our experiments. The protocol and the
+accompanying audit are released as reusable code, so that the change we propose can
+be applied to corpora and label scales other than ours.
 
 \paragraph{Preconditions and Their Plausibility}
-Four conditions must hold, and they are unevenly likely to. \textbf{The ground
-truth must be valid}: we inherit the NewsGuard scale together with its editorial
-judgements, and nothing internal to our data can test this. \textbf{The unit must
-be the publisher}, never the article: article-level accuracy is 0.60 and supports
-no claim about an individual piece. \textbf{Enough text must be available}. Small
-and recent outlets lack a rating most often, and they are the least likely to
-qualify. \textbf{The signal must survive beyond our corpus}: our evidence covers
-English-language political news alone.
+The applicability of our approach depends on four conditions, whose plausibility
+varies across settings. \textbf{The reference labels must be appropriate for the
+intended use}: our models reproduce the NewsGuard scale and therefore inherit its
+editorial judgements. Our experiments assess whether these labels can be predicted,
+not whether the scale itself is a definitive measure of reliability. \textbf{Predictions
+must be interpreted at the publisher level}: because article labels are inherited
+from their sources, neither the supervision nor the observed article-level accuracy
+supports claims about the reliability of individual articles. \textbf{Sufficient
+textual evidence must be available}: the approach requires multiple articles per
+publisher, which may limit its applicability to small, recent, or infrequently
+publishing outlets. \textbf{Generalization must be validated in the target domain}:
+our evidence concerns English-language political news, and applications to other
+languages, domains, or time periods require further evaluation.
 
 \paragraph{Negative Externalities}
-The principal risk is measured rather than hypothesised. Misclassification rates
-vary systematically with political leaning (Section~\ref{subsec:politicalBias}):
-they reach 59--72\% for far-left and far-right outlets, against 30--34\% for
-slightly right and non-labelled ones. The models also overestimate reliability at
-either extreme and underestimate it for slightly left-leaning outlets. Leaning and
-reliability are entangled in the ground truth itself, so any system trained on it
-would reproduce the pattern. Two further risks follow from presentation and use. A single
-level out of five reads as a measurement, although the $l_4$/$l_5$ boundary is
-close to unresolvable (Section~\ref{subsec:error_analysis}). An inexpensive score
-is also a target, and surface features are easy to optimise.
+Our experiments reveal one potential source of harm: error rates vary systematically
+across political-leaning groups (Section~\ref{subsec:politicalBias}), reaching
+59--72\% for far-left and far-right outlets, compared with 30--34\% for slightly
+right and non-labelled outlets. Among misclassified instances, the models also tend
+to overestimate reliability at both political extremes and underestimate it for
+slightly left-leaning outlets. These disparities should not be attributed to
+political leaning alone, because leaning and reliability are unevenly distributed in
+the corpus and cannot be fully separated by our analysis. Nevertheless, deploying the
+models without accounting for this uncertainty could reproduce or amplify the
+observed disparities.
+
+Two additional risks concern how the predictions are presented and used. First,
+assigning a single level on a five-point scale may convey more precision than the
+models support, particularly because they struggle to distinguish \(l_4\) from
+\(l_5\) (Section~\ref{subsec:error_analysis}). Second, once an automated score
+influences rankings or access to resources, publishers may adapt their writing to
+superficial cues learned by the model without improving the underlying editorial
+practices.
 
 \paragraph{Scope of the Evidence}
-Our evaluation shows how accurately the proposed approach predicts reliability labels for previously unseen publishers under a publisher-disjoint experimental protocol. It does not establish whether these predictions improve human assessment in practice, how publishers should be prioritized for expert review, or when the system should abstain because too little textual evidence is available. Answering these questions would require a deployment-oriented evaluation involving explicit decision rules and human assessors. We therefore present the approach as a potential source of decision support, not as a validated replacement for expert evaluation. \john{The reporting this implies is released as a checklist alongside the code, so that the conditions stated here can be applied rather than only read.}
+Our evaluation shows how accurately the proposed approach predicts reliability labels for previously unseen publishers under a publisher-disjoint experimental protocol. It does not establish whether these predictions improve human assessment in practice, how publishers should be prioritized for expert review, or when the system should abstain because too little textual evidence is available. Answering these questions would require a deployment-oriented evaluation involving explicit decision rules and human assessors. We therefore present the approach as a potential source of decision support, not as a validated replacement for expert evaluation. The reporting that these conditions imply is released as a checklist alongside the code and the fold assignment, so that they can be applied rather than only read.
 
 
 \end{johnblock}
