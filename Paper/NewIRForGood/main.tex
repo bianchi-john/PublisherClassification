@@ -54,14 +54,14 @@ Assessing the reliability of news publishers has become increasingly important f
 
 A large body of computational work instead focuses on article-level classification~\cite{pandolfi2020automatic,Przybyla2021plugin,10.1145/3770077,DBLP:journals/dbsk/AdjiLS26}. Assessing a publisher across multiple articles can give a more robust estimate, and better reflects professional practice, in which reliability is a persistent property of a source: even highly reliable outlets occasionally publish lower-quality content, while unreliable publishers may produce individual articles that appear plausible.
 
-Moreover, article-level evaluation is vulnerable to publisher leakage. When article labels are inherited from publisher-level annotations, testing generalization to unseen outlets requires publisher-disjoint splits. Some studies do not enforce this separation~\cite{burdisso-etal-2024-reliability,DBLP:journals/dbsk/AdjiLS26,batDataset}, allowing articles from the same publisher on both sides, so models may exploit publisher-specific patterns instead of transferable indicators of reliability~\cite{azizov-etal-2024-safari,verhoeven2025yesterday}.
+Moreover, article-level evaluation is vulnerable to publisher leakage. When article labels are inherited from publisher-level annotations, testing generalization to unseen outlets requires publisher-disjoint splits. Some studies do not enforce this separation~\cite{burdisso-etal-2024-reliability,DBLP:journals/dbsk/AdjiLS26,batDataset}, allowing articles from the same publisher on both sides, so models may exploit publisher-specific patterns instead of transferable indicators of reliability~\cite{azizov-etal-2024-safari,verhoeven2025yesterday,zhou-etal-2021-hidden}.
 
-We address these limitations by framing reliability assessment as publisher-level inference: transformer-based language models derive a reliability prediction from each article, and those predictions are aggregated to assess previously unseen publishers. We make four contributions: (i) a strict publisher-disjoint evaluation protocol that prevents source leakage and measures generalization to unseen publishers; (ii) a dataset of 19,476 political news articles from 439 English-language publishers annotated with NewsGuard scores; (iii) evidence that aggregation improves reliability estimation, reaching 0.69 publisher-level accuracy on unseen sources; and (iv) an analysis of how prediction errors distribute across the political spectrum. Given the consequences such assessments carry for the outlets evaluated, Section~\ref{sec:theoryofchange} states the need motivating this work, the conditions under which it may provide benefits, and the harms it may introduce.
+We address these limitations by framing reliability assessment as publisher-level inference: transformer-based language models derive a reliability prediction from each article, and those predictions are aggregated to assess previously unseen publishers. We make four contributions: (i) a strict publisher-disjoint evaluation protocol, in line with the site-level splits recommended by Zhou et al.~\cite{zhou-etal-2021-hidden}, that prevents source leakage and measures generalization to unseen publishers; (ii) a corpus of 19,476 political news articles from 439 English-language publishers annotated with NewsGuard scores, released as article URLs with their fold assignment; (iii) evidence that aggregation improves reliability estimation, reaching 0.69 publisher-level accuracy on unseen sources; and (iv) an analysis of how prediction errors distribute across the political spectrum. Given the consequences such assessments carry for the outlets evaluated, Section~\ref{sec:theoryofchange} states the need motivating this work, the conditions under which it may provide benefits, and the harms it may introduce.
 
 \section{Related Work}
 Early work on online news quality focused on article-level classification, detecting misleading content through linguistic features or neural architectures~\cite{pandolfi2020automatic}, usually without considering the publisher.
 
-\paragraph{Publisher reliability and the signals used to estimate it} A parallel line shifts the focus to the source, variously termed \emph{reliability}, \emph{trustworthiness} or \emph{credibility}~\cite{digitalmedia2007,infodisorder2017,10.1145/302979.303001}, whose reputation is known to influence perceived information quality~\cite{doi:10.1080/07421222.2019.1628921}. Computational approaches rely on textual and stylistic features~\cite{Przybyla2021plugin} or on external signals such as user interactions, social networks and metadata~\cite{bazmi2023multi,DBLP:conf/ecir/PratelliSP25,DBLP:conf/icwsm/WilliamsCC25,DBLP:journals/jdiq/LongoZCZC25}; journalistic rating systems are commonly used as ground truth~\cite{lin2023high,DBLP:conf/icwsm/PratelliP22}, and recent work explores LLM-based estimation~\cite{10.1145/3770077,nakov2024survey,yang2023large,Leite2025}.
+\paragraph{Publisher reliability and the signals used to estimate it} A parallel line shifts the focus to the source, variously termed \emph{reliability}, \emph{trustworthiness} or \emph{credibility}~\cite{digitalmedia2007,infodisorder2017,10.1145/302979.303001}, whose reputation is known to influence perceived information quality~\cite{doi:10.1080/07421222.2019.1628921}. Computational approaches rely on textual and stylistic features~\cite{Przybyla2021plugin}, on article text combined with external sources at the outlet level~\cite{baly-etal-2018-predicting}, or on external signals such as user interactions, social networks and metadata~\cite{bazmi2023multi,DBLP:conf/ecir/PratelliSP25,DBLP:conf/icwsm/WilliamsCC25,DBLP:journals/jdiq/LongoZCZC25}; journalistic rating systems are commonly used as ground truth~\cite{lin2023high,DBLP:conf/icwsm/PratelliP22}, and recent work explores LLM-based estimation~\cite{10.1145/3770077,nakov2024survey,yang2023large,Leite2025}.
 
 \paragraph{Datasets and cross-domain generalization} Datasets with explicit publisher reliability labels remain limited~\cite{bohavcek2022fine,DBLP:journals/dbsk/AdjiLS26,batDataset}, and recent work shows that performance degrades under distribution shifts across domains and publishers~\cite{azizov-etal-2024-safari,burdisso-etal-2024-reliability,verhoeven2025yesterday}.
 
@@ -189,7 +189,7 @@ For each publisher \(p \in P\) we scrape at most 200 articles from its homepage 
 \paragraph{Data Curation and Labeling}
 \label{sec:datacleaning}
 
-We apply no text normalization or cleaning, so as to preserve the original linguistic characteristics. Some domains nonetheless returned localized content, which the \texttt{langdetect} library\footnote{\url{https://pypi.org/project/langdetect/}} filters out, removing 6,346 articles and leaving 19,476 in the dataset.
+We apply no text normalization or cleaning, so the pipeline runs unattended from URL to prediction. Residual page elements, such as advertising notices, stay in the text as evidence about the outlet, and publisher-disjoint splits keep a model from memorising them for a site seen in training. Some domains nonetheless returned localized content, which the \texttt{langdetect} library\footnote{\url{https://pypi.org/project/langdetect/}} filters out, removing 6,346 articles and leaving 19,476 in the dataset.
 % >>> COMMENTO OVERLEAF ----------------------------------------------------
 % Marinella Petrocchi, 2 October, 4:49 pm:
 %   commentato perche' mi sembra superfluo
@@ -207,7 +207,6 @@ Reliability levels are unevenly represented across political categories, a struc
 
 \section{Experiments}
 
-This section presents the experiments and results.
 
 \subsection{Experimental Setup}
 \label{sec:experimental_setup}
@@ -236,7 +235,7 @@ Mistral) full fine-tuning was computationally infeasible, so we adopted Low-Rank
 % Marinella Petrocchi, 2 October, 4:57 pm:
 %   ok
 % <<< ----------------------------------------------------------------------
-Each model was trained for 5 epochs per fold, except Mistral, which was trained for 3. This follows a preliminary convergence study (see Supplementary Material~\cite{suppmaterial2026}, which also reports the remaining optimisation and batching details) showing that validation loss minimizes at Epoch 4 for Llama, while Mistral converges within three epochs. We used early stopping on validation loss and a fixed global random seed (42). The maximum sequence length for input processing was set to 256 tokens, except for Mistral, for which it was increased to 1,024 tokens. This tests whether a longer context improves classification.
+Each model was trained for 5 epochs per fold, except Mistral, which was trained for 3. This follows a preliminary convergence study (see Supplementary Material~\cite{suppmaterial2026}, which also reports the remaining optimisation and batching details) showing that validation loss minimizes at Epoch 4 for Llama, while Mistral converges within three epochs. Only Llama used early stopping, on a 10\% hold-out of its training articles; the other models ran for the fixed number of epochs, and no test fold informed training or model selection. All runs used a fixed global random seed (42). The maximum sequence length for input processing was set to 256 tokens, except for Mistral, for which it was increased to 1,024 tokens. This tests whether a longer context improves classification.
 
 % >>> COMMENTO OVERLEAF ----------------------------------------------------
 % John Bianchi, 2 October, 12:10 pm:
@@ -246,7 +245,7 @@ Each model was trained for 5 epochs per fold, except Mistral, which was trained 
 % Marinella Petrocchi, 2 October, 4:59 pm:
 %   non possiamo metter su un repo anonimo?
 % <<< ----------------------------------------------------------------------
-All fine-tuned models and code will be released to encourage further research. They are withheld during the review process to preserve anonymity, but will be made available in case of acceptance.
+The fine-tuned weights are withheld during review to preserve anonymity and will be released on acceptance.
 
 \subsection{Stage 1: Article-level Reliability Prediction}
 \label{sec:results}
@@ -260,7 +259,7 @@ We first evaluate the Stage~1 predictors.
 \label{fig:results}
 \end{figure}
 
-Figure~\ref{fig:results} illustrates the results, with both baselines drawn across every metric: the Majority Class Baseline (MCB) in red and the Uniform Random Baseline (RB) in violet.
+Figure~\ref{fig:results} illustrates the results against the Majority Class Baseline (MCB, red) and the Uniform Random Baseline (RB, violet).
 All models reach a standard accuracy around 0.60, more than double the MCB, with Mistral highest at 0.61. On macro-averaged performance Llama leads with $\mathrm{F1}_{\mathrm{macro}}$ of 0.55, followed by Mistral and RoBERTa at 0.54 and BERT at 0.52, all well above the RB of 0.19; the variance across folds is minimal (standard deviation about 0.02). Under the stricter tolerance ($\alpha = 0.5$), Mistral, Llama and RoBERTa reach approximately 0.72 against an adjusted MCB of 0.43.
 With $\alpha = 1.0$ Llama reaches 0.84 and the others 0.82--0.83; the baseline is naturally higher here (0.60), so the gain is $+0.24$. Misclassifications are therefore rarely severe, typically involving adjacent labels.
 
@@ -323,7 +322,7 @@ is inferred only from articles the model never saw in training.
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{img/domain_metrics_comparison.pdf}
-  \caption{Publisher-level metrics, with both baselines across every metric. Red: Majority Class Baseline; violet: Uniform Random Baseline. Where they coincide the dashes alternate.}
+  \caption{Publisher-level metrics, with baselines drawn as in Fig.~\ref{fig:results}.}
   \label{fig:metrics}
 \end{figure}
 
@@ -335,7 +334,7 @@ predictor earns credit only next to its own level.
 
 With an Accuracy of 0.69 RoBERTa leads, followed closely by Mistral at 0.68, more than triple the Random Baseline. On the same publishers, scoring one randomly chosen article per outlet already yields 0.63 to 0.66, so the vote itself adds 1.6 to 4.3 points; the rest of the gap from article-level accuracy reflects the change of evaluation unit. Considering $\mathrm{Accuracy}_{\mathrm{tolerant}}$ (1.0), Llama achieves the top score of 0.88, followed by RoBERTa (0.87) and Mistral (0.86), substantially outperforming the majority class baseline.
 
-Publisher-level errors are strictly local, concentrating between $l_4$ (Generally Credible) and $l_5$ (High Credibility); the Supplementary Material~\cite{suppmaterial2026} reports full publisher-level confusion matrices and a detailed error analysis.
+Most publisher-level errors involve adjacent levels, the most frequent being $l_5$ (High Credibility) predicted as $l_4$ (Generally Credible); the Supplementary Material~\cite{suppmaterial2026} reports full publisher-level confusion matrices and a detailed error analysis.
 
     
     
@@ -469,9 +468,7 @@ Our evaluation shows how accurately the approach predicts reliability labels for
 
 \section{Discussion and Conclusion}
 \label{sec:conclusions}
-In this study, we investigated whether the reliability of news publishers could be inferred from their articles, framing the task as a five-level ordinal classification problem aligned with NewsGuard ratings and evaluating four transformer-based models under a strict publisher-disjoint protocol.
-
-Our findings show that language models capture generalizable signals of publisher reliability. The substantially larger Mistral 24B does not consistently outperform smaller architectures, and its 1,024-token context window, four times the limit used for the others, brings no measurable gain: the cues discriminating reliable publishers appear concentrated in the beginning of articles, and neither model size nor input length alone overcomes the limits imposed by weak supervision. Publisher reliability is therefore better modelled as a collective signal that stabilises when evidence is aggregated across a source than as a property of isolated articles.
+Under a strict publisher-disjoint protocol, our findings show that language models capture generalizable signals of publisher reliability from articles alone. The substantially larger Mistral 24B does not consistently outperform smaller architectures, and its 1,024-token context window, four times the limit used for the others, brings no measurable gain. Since Mistral also differs in size and epochs, this does not isolate the effect of context length, but neither larger models nor longer inputs overcome the limits imposed by weak supervision. Publisher reliability is therefore better modelled as a collective signal that stabilises when evidence is aggregated across a source than as a property of isolated articles.
 
 Future research should extend this framework to multilingual settings, explore confidence-aware aggregation strategies, and develop training objectives tailored to ordinal classification. The value of such systems, however, will not be settled by accuracy alone. Whoever builds one has to show where its errors fall across the political spectrum, which is why we report that disparity alongside the scores.
 
@@ -487,10 +484,9 @@ Future research should extend this framework to multilingual settings, explore c
 The supplementary document, the evaluation code, the fold assignment, the
 aggregate statistics and a deployment checklist are at
 \url{https://anonymous.4open.science/r/supplementary-material-DD54/}. The
-NewsGuard labels are licensed to us and cannot be redistributed, and we do not
+NewsGuard labels are licensed to us and cannot be redistributed. Article texts are the publishers' copyright, so we release only their URLs. We do not
 publish predicted reliability for named outlets either: at the error rates
-reported here such a list would be the harm this paper argues against. Weights
-follow on acceptance.
+reported here such a list would be the harm this paper argues against.
 
 \subsubsection{\discintname}
 The authors have no competing interests to declare.

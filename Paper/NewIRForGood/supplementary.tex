@@ -119,7 +119,7 @@ Figure~\ref{fig:publisher_cms} reports the publisher-level confusion matrices ob
 \label{fig:publisher_cms}
 \end{figure*}
 
-The matrices reveal that errors are strictly local. The most frequent confusion occurs between $l_4$ (Generally Credible) and $l_5$ (High Credibility). As observed at the article level, distinguishing $l_5$ from $l_4$ is inherently difficult because $l_5$ represents a strict ceiling (score = 100) while $l_4$ covers the immediately lower high-credibility range (75--99). Misclassifying these two adjacent levels constitutes a minor severity error, as both indicate high reliability. No model exhibits systematic confusion across non-adjacent levels, confirming that aggregation stabilizes predictions.
+Most errors are local. The most frequent confusion is $l_5$ (High Credibility) predicted as $l_4$ (Generally Credible) for BERT, Llama~3 and Mistral, and the second most frequent for RoBERTa. As observed at the article level, distinguishing $l_5$ from $l_4$ is inherently difficult because $l_5$ represents a strict ceiling (score = 100) while $l_4$ covers the immediately lower high-credibility range (75--99). Misclassifying these two adjacent levels constitutes a minor severity error, as both indicate high reliability. Errors of two levels are nonetheless common, 39 to 46 publishers per model, and mostly fall between $l_2$ and $l_4$ in either direction; errors of three or more levels affect 10 to 17 publishers.
 
 One caveat applies to every publisher-level number reported here and in the main paper. Aggregation is a majority vote, and ties are resolved deterministically in favour of the \emph{lowest} reliability level. This affects a small but non-negligible share of publishers -- 13 of 439 for BERT, 20 for RoBERTa, 15 for Llama~3 and 11 for Mistral -- and always in the same direction, so it is a mild systematic pull toward lower predicted reliability rather than a neutral rule.
 
@@ -477,9 +477,12 @@ respectively. For the decoders we use the causal \texttt{LlamaTokenizer} and
 \texttt{MistralTokenizer} with manual padding management, and enable Flash
 Attention~2 for Mistral. Batch sizes were adjusted to memory: 32 (training) / 16
 (evaluation) for BERT, 16/8 for RoBERTa, 8/8 for Llama with gradient
-accumulation, and 6/48 for Mistral with five gradient accumulation steps. Early
-stopping saves the model state with the lowest validation loss, and a fixed
-global seed (42) ensures identical data splits across architectures.
+accumulation, and 6/48 for Mistral with five gradient accumulation steps. For Llama~3,
+early stopping on a stratified 10\% hold-out of the training articles, with a
+patience of two epochs, restores the state with the lowest validation loss; the
+other models run for a fixed number of epochs. No test fold informs training or
+model selection, and a fixed global seed (42) ensures identical data splits
+across architectures.
 
 
 \section{Convergence Analysis}
