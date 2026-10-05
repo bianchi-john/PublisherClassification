@@ -188,11 +188,11 @@ Beyond aggregate performance, we investigate \textit{how} and \textit{why} model
 
 \paragraph{Error Analysis}
 
-We compute the Error Rate per level, $(1 - \mathrm{Recall}_l)$. To identify systematic over- or under-estimation, we analyze the Mean Error Direction (MED) over misclassified samples:
+We compute the Error Rate per level, $(1 - \mathrm{Recall}_l)$. To identify systematic over- or under-estimation, we analyze the Mean Error Direction (MED) over \john{the set $E$ of misclassified samples}:
 \begin{equation}
 \mathrm{MED} = \frac{1}{|E|} \sum_{i \in E} (\hat{y}_i - y_i)
 \end{equation}
-where $\hat{y}_i$ and $y_i$ represent the predicted and true reliability levels (mapped to their ordinal values $1, \dots, 5$), respectively. Positive values indicate a tendency to overestimate reliability, while negative values indicate a tendency to underestimate reliability.
+where \john{$|E|$ is the number of such samples, and} $\hat{y}_i$ and $y_i$ represent the predicted and true reliability levels (mapped to their ordinal values $1, \dots, 5$), respectively. Positive values indicate a tendency to overestimate reliability, while negative values indicate a tendency to underestimate reliability. \john{Correctly classified items are excluded from the average, so the MED describes the direction of the errors and not how often they occur.}
 
 \paragraph{Statistical Significance of Political Bias}
 To determine whether classification errors depend on the publisher's political leaning, we conduct a Pearson's $\chi^2$ test of independence. We test the null hypothesis ($H_0$) that error frequency is independent of political orientation.
@@ -435,7 +435,7 @@ close to unresolvable (Section~\ref{subsec:error_analysis}). An inexpensive scor
 is also a target, and surface features are easy to optimise.
 
 \paragraph{Scope of the Evidence}
-Our evaluation shows how accurately the proposed approach predicts reliability labels for previously unseen publishers under a publisher-disjoint experimental protocol. It does not establish whether these predictions improve human assessment in practice, how publishers should be prioritized for expert review, or when the system should abstain because too little textual evidence is available. Answering these questions would require a deployment-oriented evaluation involving explicit decision rules and human assessors. We therefore present the approach as a potential source of decision support, not as a validated replacement for expert evaluation.
+Our evaluation shows how accurately the proposed approach predicts reliability labels for previously unseen publishers under a publisher-disjoint experimental protocol. It does not establish whether these predictions improve human assessment in practice, how publishers should be prioritized for expert review, or when the system should abstain because too little textual evidence is available. Answering these questions would require a deployment-oriented evaluation involving explicit decision rules and human assessors. We therefore present the approach as a potential source of decision support, not as a validated replacement for expert evaluation. \john{The reporting this implies is released as a checklist alongside the code, so that the conditions stated here can be applied rather than only read.}
 
 
 \end{johnblock}
@@ -447,6 +447,29 @@ In this study, we investigated whether the reliability of news publishers could 
 Our findings demonstrate that language models can capture meaningful and generalizable signals of publisher reliability. Interestingly, the substantially larger Mistral 24B does not outperform smaller architectures, suggesting that performance is limited by dataset characteristics rather than model size. Despite operating with a 1,024-token context window, four times larger than the limit used for the other models, Mistral shows no measurable gain, which may indicate that the cues discriminating reliable publishers are concentrated in the beginning of articles and further supports the hypothesis that increasing model size or input length alone cannot overcome limitations imposed by weak supervision. A key finding is that publisher reliability should not be modelled as a property of isolated articles: it emerges as a collective signal that becomes more stable when evidence is aggregated across a source, which supports a shift from article-centric formulations toward source-level inference.
 
 Future research should extend this framework to multilingual settings, explore confidence-aware aggregation strategies, and develop training objectives tailored to ordinal classification. \john{The value of such systems, however, will not be settled by accuracy alone. Whoever builds one has to show where its errors fall across the political spectrum, which is why we report that disparity alongside the scores.}
+
+\begin{johnblock}
+\section*{Data and Code Availability}
+The evaluation protocol, the corpus definition and the material behind every claim
+are available at
+\url{https://anonymous.4open.science/r/supplementary-material-DD54/}. The
+repository holds the supplementary document; the \texttt{irgood} package, which
+implements the publisher-disjoint protocol, the tolerant metrics, the aggregation
+rule with its tie-breaking made explicit, and the bias audit as reusable code; the
+fold assignment for all 19,476 articles across 439 publishers; the aggregate
+statistics behind every figure and table; and a checklist of what a system of this
+kind has to report before anyone relies on it.
+
+The NewsGuard reliability levels and leaning annotations are licensed to us and
+cannot be redistributed, so readers with a licence of their own can rebuild our
+exact splits from the released fold assignment, and readers without one can still
+see which corpus the claims rest on. We also do not publish our predicted
+reliability for named outlets: with a 31\% publisher-level error rate that falls
+unevenly across the political spectrum, such a list would be the harm this paper
+argues against. That this line of work depends on proprietary ground truth is
+itself worth stating. Fine-tuned weights follow on acceptance, with a model card
+recording intended and out-of-scope uses alongside the error rates reported here.
+\end{johnblock}
 
 \begin{credits}
 \ifanonymous

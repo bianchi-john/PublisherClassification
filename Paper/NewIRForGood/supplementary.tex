@@ -185,16 +185,15 @@ Direction (MED), the average signed difference between predicted and true
 reliability labels over misclassified instances. Positive values indicate
 overestimation of reliability, negative values underestimation.
 
-Figure~\ref{fig:error_direction} plots the Mean Error Direction (MED) to quantify the prediction bias. MED is defined as the average signed difference between predicted and true reliability labels over misclassified instances . 
-We observe a tendency to regress towards the center. We attribute this to two structural factors:
+Figure~\ref{fig:error_direction} plots the Mean Error Direction (MED) to quantify the prediction bias. MED is the average signed difference between predicted and true reliability labels over the set of misclassified instances, correctly classified ones being excluded from the average. We observe a tendency to regress towards the center. We attribute this to two structural factors:
 
 
 \begin{itemize}
     \item \textbf{Boundary Constraints} ($l_1$ and $l_5$).
-    Errors at the extremes are naturally constrained: models can only overestimate $l_1$ and underestimate $l_5$. However, the significant negative MED in $l_5$, $\approx -1.30 $ (BERT -1.29, RoBERTa -1.37, Llama -1.20, Mistral -1.36). The confusion matrices reveal that the vast majority of misclassifications for $l_5$ are concentrated in adjacent $l_4$ (Section~\ref{app:performance_cms}). This confirms that the high error rate is primarily due to the models struggling to distinguish between perfect (100) and generally credible (75--99) reliability, likely because there is little textual distinction between these high-standard categories. The fact that the MED is slightly below -1.0 indicates a minor tendency to misclassify some $l_5$ instances into lower tiers (levels 2 and 3), but the main misclassification consists of labeling $l_5$  as $l_4$ . 
+    Errors at the extremes are naturally constrained: models can only overestimate $l_1$ and underestimate $l_5$. However, the MED in $l_5$ is strongly negative, around $-1.7$ (BERT $-1.60$, RoBERTa $-1.72$, Llama $-1.67$, Mistral $-1.74$), and the one in $l_1$ strongly positive, around $+2.1$. The confusion matrices reveal that the vast majority of misclassifications for $l_5$ are concentrated in adjacent $l_4$ (Section~\ref{app:performance_cms}). This confirms that the high error rate is primarily due to the models struggling to distinguish between perfect (100) and generally credible (75--99) reliability, likely because there is little textual distinction between these high-standard categories. The magnitude beyond $-1.0$ indicates a minor tendency to misclassify some $l_5$ instances into lower tiers as well, but the bulk of the errors consists of labeling $l_5$ as $l_4$. 
     
     \item \textbf{The `Safe Harbor' Effect ($l_3$).} 
-    Class $l_3$ shows a Mean Error Direction close to zero (0.03 to 0.12 across models, with Mistral at 0.10). $l_3$ acts as a gravitational center for uncertainty: it absorbs a significant portion of misclassifications from the lower-reliability $l_2$ and from the higher-reliability $l_4$. Since the model overestimates $l_2$ (pushing it up to 3) and underestimates $l_4$ (pushing it down to 3), these opposing error vectors cancel each other out, resulting in a net directional bias of zero.    
+    Class $l_3$ shows the smallest Mean Error Direction of all levels, between $0.10$ and $0.35$ across models. $l_3$ acts as a gravitational center for uncertainty: it absorbs a significant portion of misclassifications from the lower-reliability $l_2$ and from the higher-reliability $l_4$. Since the model overestimates $l_2$ (pushing it up to 3) and underestimates $l_4$ (pushing it down to 3), these opposing error vectors cancel each other out, resulting in a net directional bias of zero.    
 \end{itemize}
 
 \begin{figure}[!t]
