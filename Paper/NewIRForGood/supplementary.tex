@@ -167,7 +167,7 @@ In contrast, the `Far Left' ($N=1015$) and `Far Right' ($N=2142$) matrices displ
 For `Far Left', all models perform poorly with accuracies between 28.1\% and 29.5\% for the three smaller models and 36.5\% for Mistral.
 Visual inspection confirms a systematic directional bias: predictions frequently land in the upper triangle of the matrix, confirming that models overestimate the reliability of these sources.
 
-The `Far Right' category shows the greatest difference between the models. Mistral, Llama 3, and RoBERTa achieved 40.6\%, 37.8\%, and 37.3\%, respectively, while BERT dropped to 31.7\%.
+The `Far Right' category shows one of the largest differences between the models, second only to `Slightly Left'. Mistral, Llama 3, and RoBERTa achieved 40.6\%, 37.8\%, and 37.3\%, respectively, while BERT dropped to 31.7\%.
 
 Domain metrics further clarify that errors in these extreme categories are driven by a small set of outlets. Unlike the diverse `Slightly Right' group, the `Far Left' and `Far Right' categories contain fewer unique domains e.g., \textit{Dom: 1/1} or \textit{Dom: 5/7}, yet these specific outlets consistently trigger model errors.
 The `Slightly Left' matrix confirms the specific discrediting pattern discussed in the main manuscript, where models tend to underestimate the reliability of slightly left-leaning sources.
@@ -218,9 +218,10 @@ The distribution is markedly imbalanced: reliability levels are not uniformly
 represented within each political category, which is a structural property of the
 media ecosystem rather than of our sampling. This is why error rates are computed
 class-conditionally in the main paper, making them independent of category
-frequency. Mistral deviates from the other three models, showing fewer errors in
-the extreme categories and a higher error rate on Slightly Left, while performing
-comparably on Non labelled and Slightly Right.
+frequency. Mistral deviates from the other three models, showing the fewest errors in
+both extreme categories, while its error rate on Slightly Left is close to BERT's
+and above those of RoBERTa and Llama, and it performs comparably on Non labelled
+and Slightly Right.
 
 \begin{figure}[!t]
 \centering
@@ -485,7 +486,7 @@ global seed (42) ensures identical data splits across architectures.
 \label{app:convergence}
 To ascertain the most suitable training duration, a preliminary experiment involving 20 epochs was conducted using the Llama 3 model. As can be seen in Figure \ref{fig:loss_plot}, the model converges quickly. The validation loss reaches its minimum at epoch 4 (0.4416), after which the generalisation gap widens, indicating overfitting. The empirical evidence gathered from our most complex architecture validates our decision to limit fine-tuning to five epochs across all models, with the exception noted below.
 
-We conducted an analogous convergence check for Mistral across the five-fold cross-validation. As can be seen in Figure \ref{fig:loss_mistral}, the training loss decreased sharply from an average of 2.02 at Epoch 1 to 0.36 at Epoch 2 and then to 0.23 at Epoch 3. The average improvement between epochs 2 and 3 is 0.13, indicating diminishing returns and stabilisation. This pattern mirrors the rapid convergence observed for Llama 3, supporting the idea of limiting Mistral training to three epochs to improve efficiency without compromising on convergence.
+We conducted an analogous convergence check for Mistral across the five-fold cross-validation. As can be seen in Figure \ref{fig:loss_mistral}, the training loss decreased sharply from an average of 2.023 at Epoch 1 to 0.355 at Epoch 2 and then to 0.231 at Epoch 3. The average improvement between epochs 2 and 3 is 0.124, indicating diminishing returns and stabilisation. This pattern mirrors the rapid convergence observed for Llama 3, supporting the idea of limiting Mistral training to three epochs to improve efficiency without compromising on convergence.
 
 
 \begin{figure*}[!t]

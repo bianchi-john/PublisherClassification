@@ -245,8 +245,8 @@ We first evaluate the Stage~1 predictors.
 \end{figure}
 
 Figure~\ref{fig:results} illustrates the results, with both baselines drawn across every metric: the Majority Class Baseline (MCB) in red and the Uniform Random Baseline (RB) in violet.
-All models reach a standard accuracy around 0.60, more than double the MCB, with Mistral highest at 0.61. On macro-averaged performance RoBERTa leads with $\mathrm{F1}_{\mathrm{macro}}$ of 0.55, followed by Mistral and Llama at 0.54 and BERT at 0.52, all well above the RB of 0.19; the variance across folds is minimal (standard deviation about 0.02). Under the stricter tolerance ($\alpha = 0.5$), Mistral, RoBERTa and Llama reach approximately 0.72 against an adjusted MCB of 0.43.
-With $\alpha = 1.0$ RoBERTa reaches 0.84 and the others 0.82--0.83; the baseline is naturally higher here (0.60), so the gain is $+0.24$. Misclassifications are therefore rarely severe, typically involving adjacent labels.
+All models reach a standard accuracy around 0.60, more than double the MCB, with Mistral highest at 0.61. On macro-averaged performance Llama leads with $\mathrm{F1}_{\mathrm{macro}}$ of 0.55, followed by Mistral and RoBERTa at 0.54 and BERT at 0.52, all well above the RB of 0.19; the variance across folds is minimal (standard deviation about 0.02). Under the stricter tolerance ($\alpha = 0.5$), Mistral, Llama and RoBERTa reach approximately 0.72 against an adjusted MCB of 0.43.
+With $\alpha = 1.0$ Llama reaches 0.84 and the others 0.82--0.83; the baseline is naturally higher here (0.60), so the gain is $+0.24$. Misclassifications are therefore rarely severe, typically involving adjacent labels.
 
 \subsection{Biases in Article-level Reliability Prediction}
 \label{subsec:error_analysis}
@@ -270,13 +270,15 @@ We examine whether classification errors are distributed evenly across the polit
 
 \begin{table}[t]
 \centering
-\begin{tabular}{lcccc}
+\begin{tabular}{lcr@{\hspace{2em}}l@{\hspace{2em}}c}
+\toprule
 \textbf{Model} & \textbf{Accuracy} & $\boldsymbol{\chi^2}$ & \textbf{$p$-value} & \textbf{Cramér's V} \\
 \midrule
 BERT & 58.27\% & 1684.13 & $<10^{-300}$ & 0.294 \\
 RoBERTa & 60.34\% & 1418.31 & $<10^{-300}$ & 0.270 \\
 Llama & 59.97\% & 1207.83 & $<10^{-250}$ & 0.249 \\
-Mistral & 61.16\% & 1343.98 & $<10^{-300}$ & {0.263} \\
+Mistral & 61.16\% & 1343.98 & $<10^{-280}$ & 0.263 \\
+\bottomrule
 \end{tabular}
 \caption{Political leaning vs.\ classification correctness: $\chi^2$ test of independence with $p$-values, and Cramér's V as effect size.}
 \label{tab:chi_square_results}
@@ -288,7 +290,7 @@ All models exhibit systematic variation across political leanings: there are sub
 
 A chi-square test of independence rejects, for every model, the hypothesis that correctness is independent of political leaning (Table~\ref{tab:chi_square_results}), with Cramér's~$V$ indicating a non-negligible association of broadly similar magnitude across models. Articles of the same outlet are not independent observations: they share both the leaning and the reliability label. We therefore repeat the test with one observation per publisher, namely whether its aggregated prediction is correct, and the association holds, with no expected count below five: $\chi^2$ ranges from 18.8 to 44.8, $p<10^{-3}$, and $V$ from 0.21 to 0.32. Leaning and reliability are themselves unevenly distributed in the corpus, and the overlap between them is incomplete: 142 of the 207 slightly right publishers sit in $l_1$, and no far-right publisher reaches $l_5$. A logistic regression that controls for the true reliability level, with standard errors clustered on the publisher, still leaves the two extremes with 4.0 to 6.5 times the odds of error of the non-labelled group, although the sparse cells limit how far the two variables can be separated; the Supplementary Material~\cite{suppmaterial2026} reports the coefficients, their intervals and the cell counts. A model trained on these labels may therefore reproduce the political structure of the corpus, regardless of whether the disparity originates in the annotations, in the article distributions, or in the model itself.
 
-We also report the Mean Error Direction for each orientation (Section~\ref{subsec:bias_methodology}), where positive values indicate overestimation of reliability and negative values underestimation.
+The Supplementary Material~\cite{suppmaterial2026} plots the Mean Error Direction for each orientation (Section~\ref{subsec:bias_methodology}), where positive values indicate overestimation of reliability and negative values underestimation.
 
 Clear directional patterns emerge across all four models. Far Left and Far Right articles exhibit consistent overestimation, with mean signed errors ranging from +0.33 to +1.00, approaching a full reliability level. Slightly Left articles show systematic underestimation, with average values between -0.54 and $-0.82$. Slightly Right and non-labelled outlets display smaller, less consistent deviations; the Supplementary Material~\cite{suppmaterial2026} reports the corpus composition by leaning, the per-leaning error rates and the full confusion matrices stratified by political leaning.
 
@@ -316,7 +318,7 @@ predictor also collects partial and then full credit under tolerance. Under full
 tolerance the random baseline (0.52) in fact overtakes it (0.50), since a constant
 predictor earns credit only next to its own level.
 
-With an Accuracy of 0.69 RoBERTa leads, followed closely by Mistral at 0.68, more than triple the Random Baseline. Considering $\mathrm{Accuracy}_{\mathrm{tolerant}}$ (1.0), Llama achieves the top score of 0.88, followed by RoBERTa (0.87) and Mistral (0.86), substantially outperforming the majority class baseline.
+With an Accuracy of 0.69 RoBERTa leads, followed closely by Mistral at 0.68, more than triple the Random Baseline. On the same publishers, scoring one randomly chosen article per outlet already yields 0.63 to 0.66, so the vote itself adds 1.6 to 4.3 points; the rest of the gap from article-level accuracy reflects the change of evaluation unit. Considering $\mathrm{Accuracy}_{\mathrm{tolerant}}$ (1.0), Llama achieves the top score of 0.88, followed by RoBERTa (0.87) and Mistral (0.86), substantially outperforming the majority class baseline.
 
 Publisher-level errors are strictly local, concentrating between $l_4$ (Generally Credible) and $l_5$ (High Credibility); the Supplementary Material~\cite{suppmaterial2026} reports full publisher-level confusion matrices and a detailed error analysis.
 
@@ -390,7 +392,7 @@ Our evaluation shows how accurately the approach predicts reliability labels for
 \label{sec:conclusions}
 In this study, we investigated whether the reliability of news publishers could be inferred from their articles, framing the task as a five-level ordinal classification problem aligned with NewsGuard ratings and evaluating four transformer-based models under a strict publisher-disjoint protocol.
 
-Our findings show that language models capture generalizable signals of publisher reliability. The substantially larger Mistral 24B does not outperform smaller architectures, and its 1,024-token context window, four times the limit used for the others, brings no measurable gain: the cues discriminating reliable publishers appear concentrated in the beginning of articles, and neither model size nor input length alone overcomes the limits imposed by weak supervision. Publisher reliability is therefore better modelled as a collective signal that stabilises when evidence is aggregated across a source than as a property of isolated articles.
+Our findings show that language models capture generalizable signals of publisher reliability. The substantially larger Mistral 24B does not consistently outperform smaller architectures, and its 1,024-token context window, four times the limit used for the others, brings no measurable gain: the cues discriminating reliable publishers appear concentrated in the beginning of articles, and neither model size nor input length alone overcomes the limits imposed by weak supervision. Publisher reliability is therefore better modelled as a collective signal that stabilises when evidence is aggregated across a source than as a property of isolated articles.
 
 Future research should extend this framework to multilingual settings, explore confidence-aware aggregation strategies, and develop training objectives tailored to ordinal classification. The value of such systems, however, will not be settled by accuracy alone. Whoever builds one has to show where its errors fall across the political spectrum, which is why we report that disparity alongside the scores.
 
