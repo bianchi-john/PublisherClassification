@@ -313,24 +313,45 @@ the true reliability level as a control, and we cluster the standard errors on
 the publisher. Table~\ref{tab:logit} reports the result against the non-labelled
 reference group. Far-left and far-right outlets keep four to six and a half times
 the odds of error of non-labelled ones, with the reliability level already
-accounted for.
+accounted for. The confidence intervals are wide, and deliberately shown: with
+several cells holding fewer than ten publishers, the direction of the effect is
+better established than its size.
 
 \begin{table}[ht]
 \centering
-\begin{tabular}{lcccc}
+\small
+\begin{tabular}{llccc}
 \toprule
-\textbf{Leaning} & \textbf{BERT} & \textbf{RoBERTa} & \textbf{Llama 3} & \textbf{Mistral} \\
+\textbf{Model} & \textbf{Leaning} & \textbf{Odds ratio} & \textbf{95\% CI} & \textbf{$p$} \\
 \midrule
-Far Left       & 4.81$^{**}$ & 5.55$^{**}$ & 6.29$^{**}$ & 4.00$^{*}$  \\
-Slightly Left  & 2.11$^{*}$  & 1.49        & 1.41        & 2.12        \\
-Slightly Right & 2.11$^{*}$  & 2.46$^{*}$  & 2.74$^{*}$  & 2.56$^{*}$  \\
-Far Right      & 6.52$^{***}$& 6.18$^{**}$ & 6.29$^{**}$ & 5.57$^{**}$ \\
+\textbf{BERT} & Far Left & 4.81$^{**}$ & [1.74, 13.34] & 0.003 \\
+ & Slightly Left & 2.11$^{*}$ & [1.10, 4.05] & 0.025 \\
+ & Slightly Right & 2.11$^{*}$ & [1.05, 4.23] & 0.035 \\
+ & Far Right & 6.52$^{***}$ & [2.18, 19.47] & 0.001 \\
+\addlinespace
+\textbf{RoBERTa} & Far Left & 5.55$^{**}$ & [1.69, 18.26] & 0.005 \\
+ & Slightly Left & 1.49 & [0.63, 3.51] & 0.360 \\
+ & Slightly Right & 2.46$^{*}$ & [1.18, 5.11] & 0.016 \\
+ & Far Right & 6.18$^{**}$ & [1.97, 19.37] & 0.002 \\
+\addlinespace
+\textbf{Llama 3} & Far Left & 6.29$^{**}$ & [1.86, 21.28] & 0.003 \\
+ & Slightly Left & 1.41 & [0.60, 3.33] & 0.436 \\
+ & Slightly Right & 2.74$^{*}$ & [1.23, 6.10] & 0.014 \\
+ & Far Right & 6.29$^{**}$ & [1.93, 20.56] & 0.002 \\
+\addlinespace
+\textbf{Mistral} & Far Left & 4.00$^{*}$ & [1.13, 14.13] & 0.031 \\
+ & Slightly Left & 2.12 & [0.89, 5.08] & 0.090 \\
+ & Slightly Right & 2.56$^{*}$ & [1.18, 5.53] & 0.017 \\
+ & Far Right & 5.57$^{**}$ & [1.81, 17.13] & 0.003 \\
 \bottomrule
 \end{tabular}
 \caption{Odds ratios of misclassification by political leaning, relative to the
 non-labelled group, from a logistic regression controlling for the true
-reliability level with publisher-clustered standard errors.
-$^{*}p<0.05$, $^{**}p<0.01$, $^{***}p<0.001$.}
+reliability level with standard errors clustered on the publisher.
+$^{*}p<0.05$, $^{**}p<0.01$, $^{***}p<0.001$. The intervals are wide: several
+leaning-by-reliability cells hold fewer than ten publishers
+(Table~\ref{tab:composition}), which is what limits how far the two variables can
+be separated.}
 \label{tab:logit}
 \end{table}
 
