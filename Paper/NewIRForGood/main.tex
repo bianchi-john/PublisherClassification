@@ -156,7 +156,6 @@ Because each article inherits its publisher's label, articles from the same sour
 P_{\text{train}} \cap P_{\text{test}} = \emptyset .
 \end{equation}
 All test articles thus originate from publishers that are entirely unseen during training. This protocol reflects the source-level nature of the labels and prevents models from improving test performance by memorizing publisher-label associations. For the same reason, we do not mask source identifiers: because every test publisher is absent from the training data, its identifier is also unseen and cannot serve as a key to a memorized publisher-label association.
-All test articles thus originate from publishers that are entirely unseen during training. This protocol reflects the source-level nature of the labels and prevents models from improving test performance by memorizing publisher-label associations. For the same reason, we do not mask source identifiers: because every test publisher is absent from the training data, its identifier is also unseen and cannot serve as a key to a memorized publisher-label association.
 
 
 \subsection{Evaluation Metrics and Baselines}\label{subsection:metrics}
