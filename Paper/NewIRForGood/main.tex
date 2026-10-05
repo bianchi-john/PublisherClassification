@@ -1,18 +1,3 @@
-% =========================================================================
-% Source-Level Reliability Estimation under Publisher-Disjoint Evaluation -- ECIR 2027
-% Springer LNCS, single column. Double-blind review.
-% Limit: 6-12 pages of content + unlimited references.
-% (Appendices and the mandatory "Theory of Change" section count toward the
-%  12-page limit; only the reference list is unlimited.)
-% Deadline: 5 October 2026 (AoE).
-%
-% Build:  pdflatex main && bibtex main && pdflatex main && pdflatex main
-%
-% NOTE (conversion pass): this file is the IEEEtran paper converted to LNCS,
-% preserving the original text/narrative. The revision-plan additions
-% (zero-shot baseline, corrected statistics, Theory of Change) are added later.
-%
-% =========================================================================
 \documentclass[runningheads]{llncs}
 
 \usepackage[T1]{fontenc}
@@ -20,34 +5,18 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{xcolor}
-\usepackage[nospace]{cite}  % sorts multiple citations into ascending order
+\usepackage[nospace]{cite}
 \usepackage{hyperref}
-\usepackage{xurl}          % lets long URLs break across lines
+\usepackage{xurl}
 \renewcommand\UrlFont{\color{blue}\rmfamily}
 \urlstyle{rm}
 
-% ---- Double-blind switch -------------------------------------------------
-% \anonymoustrue hides everything that identifies the authors: names, ORCIDs,
-% affiliations, e-mails, the funding acknowledgement and the self-authored
-% supplementary reference. Comment the line out for the camera-ready.
-%
-% Self-citations are NOT hidden: ECIR runs double-blind, not anonymous-authorship.
-% Prior work by (some of) the authors is cited in the third person like any other
-% reference, which is what the policy expects. Removing it would leave a hole in
-% the related work and is the more suspicious choice.
 \newif\ifanonymous
-\anonymoustrue   % <-- comment out for the camera-ready
-
+\anonymoustrue
 
 \begin{document}
 
-% Title deliberately differs from the earlier technical report, as the call
-% recommends: "You might not want to use the exact same title and abstract for
-% your ECIR submission (in case of acceptance at ECIR, the title of your
-% submission still might be changed 'back')."
-%\title{Source-Level Reliability Estimation under Publisher-Disjoint Evaluation}
 \title{News Publisher Reliability from Article Collections: A Publisher-Disjoint Evaluation}
-%\titlerunning{Source-Level Reliability under Publisher-Disjoint Evaluation}
 \titlerunning{News Publisher Reliability from Article Collections}
 
 \ifanonymous
@@ -75,7 +44,6 @@
 
 \begin{abstract}
 Reliability ratings are assigned to news publishers, yet computational approaches often formulate the task as article-level classification, inheriting publisher labels at the article level and, in some cases, allowing the same publishers to appear in both training and test data. This mismatch creates a risk of publisher leakage and leaves unclear whether the reported performance generalizes to previously unseen outlets. We reformulate the task as publisher-level reliability inference from multiple articles. Our two-stage framework first derives a reliability prediction from each article and then aggregates these predictions to assign the publisher one of five ordinal reliability levels. We evaluate four transformer-based models using five-fold publisher-disjoint cross-validation on 19,476 English-language political news articles from 439 publishers annotated with NewsGuard scores. The best models achieve approximately 0.60 exact accuracy at the article level and 0.69 after aggregation at the publisher level. When predictions adjacent to the reference level are accepted, accuracy reaches 0.84 and 0.88, respectively, indicating that most errors remain local on the ordinal scale. Larger decoder-based models provide no consistent advantage over encoder-based models in this setting. We additionally examine how errors vary across publishers' political leanings, highlighting the importance of complementing aggregate performance with group-level error analysis. These results show that aggregating evidence across articles supports reliability estimation for unseen publishers while providing a stricter protocol for evaluating cross-publisher generalization.
-
 
 \keywords{News source reliability \and
 Transformer-based classification \and Cross-publisher generalization \and Political bias analysis}
@@ -115,7 +83,6 @@ P_{\text{train}} \cap P_{\text{test}} = \emptyset .
 \end{equation}
 All test articles thus come from publishers entirely unseen during training, which reflects the source-level nature of the labels and prevents models from improving test performance by memorizing publisher-label associations. For the same reason we do not mask source identifiers: a publisher absent from training has an identifier that is unseen too, and cannot key a memorized association.
 
-
 \subsection{Evaluation Metrics and Baselines}\label{subsection:metrics}
 We use the same metrics for both article-level and source-level evaluations.
 
@@ -131,6 +98,28 @@ Given the ordinal nature of our labels, standard accuracy may be overly punitive
 \end{equation}
 where $w_{ij}$ is $1$ for $|i-j|=0$, $\alpha$ for $|i-j|=1$ and $0$ otherwise. The parameter $\alpha \in [0,1]$ controls the tolerance: we report \(\alpha=0.5\), half credit for adjacent errors, and \(\alpha=1.0\), which treats adjacent classes as correct.
 
+% >>> COMMENTO OVERLEAF ----------------------------------------------------
+% Marinella Petrocchi, 2 October, 3:51 pm:
+%   vedi commenti chatgpt
+% Marinella Petrocchi, 2 October, 4:13 pm:
+%   We compare our models against two non-informative baselines and report the
+%   same evaluation metrics for all methods. The \textbf{Majority Baseline}
+%   assigns every publisher to the most frequent reliability level in the
+%   training set, providing the strongest constant baseline in terms of
+%   accuracy. The \textbf{Uniform Random Baseline} samples each of the five
+%   reliability levels with equal probability. Its expected accuracy and Macro
+%   Recall are both \(0.20\), whereas its expected Macro F1 depends on the
+%   class distribution in the test set. Because this baseline is stochastic,
+%   we report its mean performance across multiple random seeds. The Majority
+%   Baseline complements this comparison by exposing the effect of class
+%   imbalance: it obtains zero Recall and F1 for every class except the
+%   majority class.
+% Marinella Petrocchi, 2 October, 4:15 pm:
+%   attenzione pero' xche' suggerisce anche di utilizzare le stesse metriche
+%   per ogni baseline, non so s...
+% John Bianchi, 2 October, 5:38 pm:
+%   dovrebbe essere tutto aggiornato sia testo che figure
+% <<< ----------------------------------------------------------------------
 \paragraph{Baselines}
 We compare against two baselines that ignore the article text, and report both of them on every metric. The \textbf{Majority Baseline} assigns every instance to the most frequent class observed in the training set, which is the best any constant predictor can do on accuracy; it scores zero Recall and F1 on every other class, so its macro figures are low by construction. The \textbf{Uniform Random Baseline} draws each of the five reliability levels with equal probability. Its expected accuracy, Macro Precision and Macro Recall are all $0.20$, while its expected Macro F1 is $0.19$, slightly lower because the classes are unevenly represented. Being stochastic, it is reported as the mean over 1{,}000 seeded draws.
 
@@ -140,6 +129,10 @@ Beyond aggregate performance, we investigate \textit{how} and \textit{why} model
 \paragraph{Error Analysis}
 
 We compute the Error Rate per level, $(1 - \mathrm{Recall}_l)$, and the Mean Error Direction (MED) over the set $E$ of misclassified samples, which identifies systematic over- or under-estimation:
+% >>> COMMENTO OVERLEAF ----------------------------------------------------
+% Marinella Petrocchi, 2 October, 3:56 pm:
+%   |E| non definito?
+% <<< ----------------------------------------------------------------------
 \begin{equation}
 \mathrm{MED} = \frac{1}{|E|} \sum_{i \in E} (\hat{y}_i - y_i)
 \end{equation}
@@ -148,6 +141,10 @@ where $|E|$ is the number of such samples and $\hat{y}_i$, $y_i$ are the predict
 \paragraph{Statistical Significance of Political Bias}
 To determine whether classification errors depend on the publisher's political leaning, we conduct a Pearson's $\chi^2$ test of independence. We test the null hypothesis ($H_0$) that error frequency is independent of political orientation.
 
+% >>> COMMENTO OVERLEAF ----------------------------------------------------
+% Marinella Petrocchi, 2 October, 4:01 pm:
+%   questa contingency table dove la troviamo?
+% <<< ----------------------------------------------------------------------
 To quantify the magnitude of this effect independent of sample size, we compute Cramér's $V = \sqrt{\chi^2 / (N \cdot \min(r-1,c-1))}$, where $N$ is the number of samples and $r$ and $c$ are the rows and columns of the contingency table crossing political orientation with classification outcome. Here $r=5$ and $c=2$, so $V$ reduces to $\sqrt{\chi^2/N}$; the tables themselves, one per model, are in the Supplementary Material~\cite{suppmaterial2026}.
 
 \section{Dataset and Labeling}
@@ -193,8 +190,14 @@ For each publisher \(p \in P\) we scrape at most 200 articles from its homepage 
 \label{sec:datacleaning}
 
 We apply no text normalization or cleaning, so as to preserve the original linguistic characteristics. Some domains nonetheless returned localized content, which the \texttt{langdetect} library\footnote{\url{https://pypi.org/project/langdetect/}} filters out, removing 6,346 articles and leaving 19,476 in the dataset.
-
-% The final composition of is given in the last two columns of Table~\ref{tab:labels_domains}; $l_5$ remains the least represented class, reflecting its limited presence in the original NewsGuard data.
+% >>> COMMENTO OVERLEAF ----------------------------------------------------
+% Marinella Petrocchi, 2 October, 4:49 pm:
+%   commentato perche' mi sembra superfluo
+%   (riferito alla frase, ora rimossa: "The final composition of is given in
+%   the last two columns of Table~\ref{tab:labels_domains}; $l_5$ remains the
+%   least represented class, reflecting its limited presence in the original
+%   NewsGuard data.")
+% <<< ----------------------------------------------------------------------
 
 \paragraph{Political Leaning Annotation}
 \label{sec:politicalLeaningDataset}
@@ -226,11 +229,24 @@ $2e^{-5}$ and weight decay \cite{devlin2019bert,liu2019roberta}. For the decoder
 Mistral) full fine-tuning was computationally infeasible, so we adopted Low-Rank Adaptation
 (LoRA) with a learning rate of $2e^{-4}$ in mixed precision.
 
+% >>> COMMENTO OVERLEAF ----------------------------------------------------
+% John Bianchi, 2 October, 12:09 pm:
+%   Ho spostato nei supplementary gli iperparametri completi e studio di
+%   convergenza con le curve di los...
+% Marinella Petrocchi, 2 October, 4:57 pm:
+%   ok
+% <<< ----------------------------------------------------------------------
 Each model was trained for 5 epochs per fold, except Mistral, which was trained for 3. This follows a preliminary convergence study (see Supplementary Material~\cite{suppmaterial2026}, which also reports the remaining optimisation and batching details) showing that validation loss minimizes at Epoch 4 for Llama, while Mistral converges within three epochs. We used early stopping on validation loss and a fixed global random seed (42). The maximum sequence length for input processing was set to 256 tokens, except for Mistral, for which it was increased to 1,024 tokens. This tests whether a longer context improves classification.
 
-
+% >>> COMMENTO OVERLEAF ----------------------------------------------------
+% John Bianchi, 2 October, 12:10 pm:
+%   I modelli non sono disponibili durante la review perché OSF non consente
+%   piu' di caricare file di grandi dimensioni in modalita' anonima. Il repo
+%   di prima non era anonimo
+% Marinella Petrocchi, 2 October, 4:59 pm:
+%   non possiamo metter su un repo anonimo?
+% <<< ----------------------------------------------------------------------
 All fine-tuned models and code will be released to encourage further research. They are withheld during the review process to preserve anonymity, but will be made available in case of acceptance.
-
 
 \subsection{Stage 1: Article-level Reliability Prediction}
 \label{sec:results}
@@ -294,7 +310,6 @@ The Supplementary Material~\cite{suppmaterial2026} plots the Mean Error Directio
 
 Clear directional patterns emerge across all four models. Far Left and Far Right articles exhibit consistent overestimation, with mean signed errors ranging from +0.33 to +1.00, approaching a full reliability level. Slightly Left articles show systematic underestimation, with average values between -0.54 and $-0.82$. Slightly Right and non-labelled outlets display smaller, less consistent deviations; the Supplementary Material~\cite{suppmaterial2026} reports the corpus composition by leaning, the per-leaning error rates and the full confusion matrices stratified by political leaning.
 
-
 \subsection{Stage 2: News Source Reliability Inference}
 \label{subsec:stage2}
 
@@ -322,7 +337,6 @@ With an Accuracy of 0.69 RoBERTa leads, followed closely by Mistral at 0.68, mor
 
 Publisher-level errors are strictly local, concentrating between $l_4$ (Generally Credible) and $l_5$ (High Credibility); the Supplementary Material~\cite{suppmaterial2026} reports full publisher-level confusion matrices and a detailed error analysis.
 
-
     
     
 
@@ -333,6 +347,24 @@ Work on misinformation is not socially beneficial by default. We therefore state
 what we expect this work to change, what must hold for it to do so, and how it
 may cause harm.
 
+% >>> COMMENTO OVERLEAF ----------------------------------------------------
+% Marinella Petrocchi, 2 October, 5:20 pm:
+%   suggerisco qualcosa di un po' piu' smussato: Expert ratings rely largely
+%   on manual assessment, leaving publishers outside their coverage unrated.
+%   This gap motivates automation, but expanding coverage is not itself the
+%   contribution of this paper. Instead, we change how the task is formulated
+%   and evaluated. Reliability labels apply at the publisher level, yet much
+%   computational work predicts them one article at a time, and some studies
+%   allow articles from the same outlets to appear in both training and test
+%   data. Under such protocols, a model may rely on outlet-specific cues
+%   rather than transferable indicators of reliability, so its reported
+%   performance may not generalize to unseen sources. We therefore formulate
+%   the task at the publisher level, enforce publisher-disjoint splits, and
+%   aggregate evidence across multiple articles. Under this stricter setting,
+%   our best method achieves 0.69 accuracy on unseen publishers
+%   (Section~\ref{subsec}); most errors involve adjacent reliability levels,
+%   and larger models show no consistent advantage in our experiments.
+% <<< ----------------------------------------------------------------------
 \paragraph{The Need and What We Claim About It}
 Expert ratings rely largely on manual assessment, leaving publishers outside their
 coverage unrated. This gap motivates automation, but expanding coverage is not
@@ -349,6 +381,26 @@ larger models show no consistent advantage in our experiments. The protocol and 
 accompanying audit are released as reusable code, so that the change we propose can
 be applied to corpora and label scales other than ours.
 
+% >>> COMMENTO OVERLEAF ----------------------------------------------------
+% Marinella Petrocchi, 2 October, 5:23 pm:
+%   suggerisco qualcosa di un po' meno contro di noi, scritto cosi' sembra che
+%   abbiamo grosseeee limitazioni, mentre potrebbe essere un: The
+%   applicability of our approach depends on four conditions, whose
+%   plausibility varies across settings. \textbf{The reference labels must be
+%   appropriate for the intended use}: our models reproduce the NewsGuard
+%   scale and therefore inherit its editorial judgements. Our experiments
+%   assess whether these labels can be predicted, not whether the scale itself
+%   is a definitive measure of reliability. \textbf{Predictions must be
+%   interpreted at the publisher level}: because article labels are inherited
+%   from their sources, neither the supervision nor the observed article-level
+%   accuracy supports claims about the reliability of individual articles.
+%   \textbf{Sufficient textual evidence must be available}: the approach
+%   requires multiple articles per publisher, which may limit its
+%   applicability to small, recent, or infrequently publishing outlets.
+%   \textbf{Generalization must be validated in the target domain}: our
+%   evidence concerns English-language political news, and applications to
+%   other languages, domains, or time periods require further evaluation.
+% <<< ----------------------------------------------------------------------
 \paragraph{Preconditions and Their Plausibility}
 The applicability of our approach depends on four conditions, whose plausibility
 varies across settings. \textbf{The reference labels must be appropriate for the
@@ -363,6 +415,30 @@ for small, recent or infrequently publishing outlets. \textbf{Generalization mus
 validated in the target domain}: our evidence concerns English-language political
 news, and other languages, domains or periods require further evaluation.
 
+% >>> COMMENTO OVERLEAF ----------------------------------------------------
+% Marinella Petrocchi, 2 October, 5:26 pm:
+%   ancora troppo forte e non e' detto che any system will reproduce the
+%   pattern... consiglio una revisione: \paragraph{Negative Externalities}
+%   Our experiments reveal one potential source of harm: error rates vary
+%   systematically across political-leaning groups
+%   (Section~\ref{subsec:politicalBias}), reaching 59--72% for far-left and
+%   far-right outlets, compared with 30--34% for slightly right and non-
+%   labelled outlets. Among misclassified instances, the models also tend to
+%   overestimate reliability at both political extremes and underestimate it
+%   for slightly left-leaning outlets. These disparities should not be
+%   attributed to political leaning alone, because leaning and reliability are
+%   unevenly distributed in the corpus and cannot be fully separated by our
+%   analysis. Nevertheless, deploying the models without accounting for this
+%   uncertainty could reproduce or amplify the observed disparities.
+%   
+%   Two additional risks concern how the predictions are presented and used.
+%   First, assigning a single level on a five-point scale may convey more
+%   precision than the models support, particularly because they struggle to
+%   distinguish \(l_4\) from \(l_5\) (Section~\ref{subsec:error_analysis}).
+%   Second, once an automated score influences rankings or access to
+%   resources, publishers may adapt their writing to superficial cues learned
+%   by the model without improving the underlying editorial practices.
+% <<< ----------------------------------------------------------------------
 \paragraph{Negative Externalities}
 Our experiments reveal one potential source of harm: error rates vary systematically
 across political-leaning groups (Section~\ref{subsec:politicalBias}), reaching
@@ -383,10 +459,13 @@ influences rankings or access to resources, publishers may adapt their writing t
 superficial cues learned by the model without improving the underlying editorial
 practices.
 
+% >>> COMMENTO OVERLEAF ----------------------------------------------------
+% Marinella Petrocchi, 2 October, 5:29 pm:
+%   anche questo ho revisonato per rendere piu' soft, scritto comera prima
+%   sembrava avessimo fatto qualcosa che non serve  anulla...
+% <<< ----------------------------------------------------------------------
 \paragraph{Scope of the Evidence}
 Our evaluation shows how accurately the approach predicts reliability labels for previously unseen publishers under a publisher-disjoint protocol. It does not establish whether those predictions improve human assessment in practice, how publishers should be prioritized for expert review, or when the system should abstain for lack of textual evidence; answering these would require a deployment-oriented evaluation with explicit decision rules and human assessors. We therefore present the approach as a potential source of decision support, not as a validated replacement for expert evaluation. The reporting these conditions imply is released as a checklist alongside the code, so that they can be applied rather than only read.
-
-
 
 \section{Discussion and Conclusion}
 \label{sec:conclusions}
