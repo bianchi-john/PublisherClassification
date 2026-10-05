@@ -63,8 +63,10 @@
 % recommends: "You might not want to use the exact same title and abstract for
 % your ECIR submission (in case of acceptance at ECIR, the title of your
 % submission still might be changed 'back')."
-\title{Source-Level Reliability Estimation under Publisher-Disjoint Evaluation}
-\titlerunning{Source-Level Reliability under Publisher-Disjoint Evaluation}
+%\title{Source-Level Reliability Estimation under Publisher-Disjoint Evaluation}
+\title{News Publisher Reliability from Article Collections: A Publisher-Disjoint Evaluation}
+%\titlerunning{Source-Level Reliability under Publisher-Disjoint Evaluation}
+\titlerunning{News Publisher Reliability from Article Collections}
 
 \ifanonymous
   \author{Anonymous Author(s)}
@@ -117,9 +119,8 @@ place an unseen outlet on a reliability scale, and we set out what that evidence
 and does not license.
 
 
-\keywords{News source reliability \and Publisher reliability inference \and
-Transformer-based text classification \and Cross-publisher generalization \and
-Reliability aggregation \and Political bias analysis.}
+\keywords{News source reliability \and
+Transformer-based classification \and Cross-publisher generalization \and Political bias analysis}
 \end{abstract}
 
 \section{Introduction}
@@ -129,7 +130,7 @@ A large body of computational work instead focuses on article-level classificati
 
 Moreover, article-level evaluation is vulnerable to publisher leakage. When article-level reliability labels are inherited from publisher-level annotations, assessing whether a model can generalize to articles from previously unseen outlets requires publisher-disjoint training and test sets. Some existing studies do not enforce this separation~\cite{burdisso-etal-2024-reliability,DBLP:journals/dbsk/AdjiLS26,batDataset}, allowing articles from the same publisher to appear in both sets. Models may therefore exploit publisher-specific patterns instead of learning transferable indicators of reliability~\cite{azizov-etal-2024-safari,verhoeven2025yesterday}.
 
-We address these limitations by framing news reliability assessment as publisher-level inference. Our two-stage framework uses transformer-based language models to derive a publisher-reliability prediction from each article and then aggregates these predictions across articles to assess previously unseen publishers. We make four main contributions: (i) a strict publisher-disjoint evaluation protocol that prevents source leakage and measures generalization to unseen publishers; (ii) a dataset of 19,476 political news articles from 439 English-language publishers annotated with NewsGuard scores; (iii) evidence that aggregating predictions across articles improves reliability estimation, achieving 0.69 publisher-level accuracy on unseen sources; and (iv) an analysis of how prediction errors are distributed across the political spectrum. Given the potential consequences of such assessments for the outlets being evaluated, Section~\ref{sec:theoryofchange} also articulates the need motivating this work, the conditions under which it may provide benefits, and the harms it may introduce.
+We address these limitations by framing reliability assessment as publisher-level inference. Our two-stage framework uses transformer-based language models to derive a publisher-reliability prediction from each article and then aggregates these predictions across articles to assess previously unseen publishers. We make four main contributions: (i) a strict publisher-disjoint evaluation protocol that prevents source leakage and measures generalization to unseen publishers; (ii) a dataset of 19,476 political news articles from 439 English-language publishers annotated with NewsGuard scores; (iii) evidence that aggregating predictions across articles improves reliability estimation, achieving 0.69 publisher-level accuracy on unseen sources; and (iv) an analysis of how prediction errors are distributed across the political spectrum. Given the potential consequences of such assessments for the outlets being evaluated, Section~\ref{sec:theoryofchange} also articulates the need motivating this work, the conditions under which it may provide benefits, and the harms it may introduce.
 
 \section{Related Work}
 Early work on online news quality focused on article-level classification, detecting misleading content through linguistic features or neural architectures~\cite{pandolfi2020automatic}, often without considering the publisher.
@@ -181,7 +182,7 @@ w_{ij} =
 The parameter $\alpha \in [0, 1]$ controls the tolerance level. We report results for \(\alpha=0.5\) (half credit for adjacent errors) and \(\alpha=1.0\) (full credit, effectively treating adjacent classes as correct).
 
 \paragraph{Baselines}
-We compare against two non-informative baselines and report both of them on every metric. The \textbf{Majority Baseline} assigns every instance to the most frequent class observed in the training set, which is the best any constant predictor can do on accuracy; it scores zero Recall and F1 on every other class, so its macro figures are low by construction. The \textbf{Uniform Random Baseline} draws each of the five reliability levels with equal probability. Its expected accuracy, Macro Precision and Macro Recall are all $0.20$, while its expected Macro F1 is $0.19$, slightly lower because the classes are unevenly represented. Being stochastic, it is reported as the mean over 1{,}000 seeded draws.
+We compare against two baselines that ignore the article text, and report both of them on every metric. The \textbf{Majority Baseline} assigns every instance to the most frequent class observed in the training set, which is the best any constant predictor can do on accuracy; it scores zero Recall and F1 on every other class, so its macro figures are low by construction. The \textbf{Uniform Random Baseline} draws each of the five reliability levels with equal probability. Its expected accuracy, Macro Precision and Macro Recall are all $0.20$, while its expected Macro F1 is $0.19$, slightly lower because the classes are unevenly represented. Being stochastic, it is reported as the mean over 1{,}000 seeded draws.
 
 \subsection{Bias Assessment and Statistical Analysis}\label{subsec:bias_methodology}
 Beyond aggregate performance, we investigate \textit{how} and \textit{why} models fail.
@@ -215,7 +216,7 @@ Each publisher \(p \in P\) is assessed against nine widely adopted journalistic 
 The evaluation produces a continuous reliability score in \([0,100]\), measuring a publisher's adherence to professional journalistic standards.\footnote{\url{https://www.newsguardtech.com/ratings/rating-process-criteria/}}  
 The proprietary ratings were licensed for use to the authors of this publication.
 
-\paragraph{Labels and Selecion of Publishers}
+\paragraph{Labels and Selection of Publishers}
 \label{sec:labelConstruction}
 
 We discretize the continuous score into five ordinal categories \(L = \{l_1, \dots, l_5\}\) following NewsGuard's own thresholds. Table~\ref{tab:labels_domains} reports the mapping, the initial number of publishers, the actual scraped domains, and the final number of articles per label. 
@@ -434,14 +435,9 @@ level out of five reads as a measurement, although the $l_4$/$l_5$ boundary is
 close to unresolvable (Section~\ref{subsec:error_analysis}). An inexpensive score
 is also a target, and surface features are easy to optimise.
 
-\paragraph{What the Evidence Does Not License}
-We measure classification accuracy on held-out publishers, and nothing else. We
-do not evaluate the approach inside any workflow, we do not measure how it would
-order outlets for human review, and we do not test abstention on outlets with
-little text. Any such use needs evidence this paper does not provide. What it does
-establish is that the error disparity survives clustering at the publisher level
-and controlling for the true reliability level. Reporting it is part of the
-result, not an appendix to it.
+\paragraph{Scope of the Evidence}
+Our evaluation shows how accurately the proposed approach predicts reliability labels for previously unseen publishers under a publisher-disjoint experimental protocol. It does not establish whether these predictions improve human assessment in practice, how publishers should be prioritized for expert review, or when the system should abstain because too little textual evidence is available. Answering these questions would require a deployment-oriented evaluation involving explicit decision rules and human assessors. We therefore present the approach as a potential source of decision support, not as a validated replacement for expert evaluation.
+
 
 \end{johnblock}
 
