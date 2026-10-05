@@ -16,7 +16,7 @@
 % =========================================================================
 \documentclass[11pt,a4paper]{article}
 \usepackage[margin=1in]{geometry}
-\usepackage{graphicx,hyperref,amsmath,booktabs,subcaption}
+\usepackage{graphicx,hyperref,amsmath,booktabs,subcaption,multirow}
 \usepackage[numbers]{natbib}
 \usepackage{orcidlink}
 \usepackage{authblk}
@@ -459,6 +459,52 @@ boilerplate. Under the publisher-disjoint protocol this cannot inflate the
 results. The model never sees a test-fold publisher during training, so a cue
 tied to a particular outlet carries no usable information at test time.
 
+\section{Lexical Baseline: TF-IDF + Logistic Regression}
+\label{app:tfidf}
+
+To separate the contribution of the pre-trained transformers from what surface
+word statistics already provide, we evaluate a linear lexical baseline under the
+same publisher-disjoint folds. Each article is represented by TF-IDF features
+over word unigrams and bigrams, with sublinear term-frequency scaling, a minimum
+document frequency of five, a maximum document frequency of $0.9$ and at most
+$100{,}000$ features. A multinomial logistic regression with balanced class
+weights is then trained on these features. The vectoriser is fit on
+each fold's training articles only, so no test-fold vocabulary leaks into
+training; article-level predictions are pooled across the five test folds and
+aggregated to the publisher level by the same majority vote (ties broken toward
+the lowest level) used for the transformers.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+ & \multicolumn{2}{c}{\textbf{Article level}} & \multicolumn{2}{c}{\textbf{Publisher level}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+\textbf{Metric} & \textbf{TF-IDF + LR} & \textbf{Transformers} & \textbf{TF-IDF + LR} & \textbf{Transformers} \\
+\midrule
+Accuracy          & 0.576 & 0.583--0.612 & 0.681 & 0.665--0.690 \\
+Precision (macro) & 0.539 & 0.529--0.560 & 0.573 & 0.561--0.617 \\
+Recall (macro)    & 0.523 & 0.519--0.553 & 0.581 & 0.556--0.602 \\
+F1 (macro)        & 0.527 & 0.523--0.555 & 0.564 & 0.551--0.605 \\
+Tolerant (0.5)    & 0.696 & 0.702--0.723 & 0.780 & 0.768--0.782 \\
+Tolerant (1.0)    & 0.816 & 0.821--0.838 & 0.879 & 0.856--0.879 \\
+\bottomrule
+\end{tabular}
+\caption{The lexical baseline against the range spanned by the four fine-tuned
+transformers. At the article level the
+baseline is below all four transformers on accuracy and tolerant accuracy, and
+level with BERT on the macro metrics. At the publisher level it falls within
+their range on every metric and ties the best tolerant accuracy ($0.879$).}
+\label{tab:tfidf_baseline}
+\end{table}
+
+As Table~\ref{tab:tfidf_baseline} shows, and as the baseline line in the
+main-paper figures makes visual, the gap between a bag-of-words linear model and
+the fine-tuned transformers is small, and it closes almost entirely once
+predictions are aggregated per publisher. Most of the usable signal is therefore
+lexical, and the choice of encoder matters little for the publisher-level
+results.
+
 \section{Experimental Details}
 \label{app:experimental_details}
 
@@ -515,7 +561,9 @@ steps or on the order in which cells were executed. The notebook also emits the
 tables it reports, and validates that all four models are scored against the
 same ground truth for the same article. Anyone can therefore re-derive the error
 and bias figures behind the paper's claims about responsible use, instead of
-relying on the printed versions.
+relying on the printed versions. The lexical baseline of
+Section~\ref{app:tfidf} is trained by a separate script in the same
+repository, and the notebook reads its metrics to draw the baseline line.
 
 
 \bibliographystyle{plainnat}

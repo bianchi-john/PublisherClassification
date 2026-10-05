@@ -43,7 +43,7 @@
 \maketitle
 
 \begin{abstract}
-Reliability ratings are assigned to news publishers, yet computational approaches often formulate the task as article-level classification, inheriting publisher labels at the article level and, in some cases, allowing the same publishers to appear in both training and test data. This mismatch creates a risk of publisher leakage and leaves unclear whether the reported performance generalizes to previously unseen outlets. We reformulate the task as publisher-level reliability inference from multiple articles. Our two-stage framework first derives a reliability prediction from each article and then aggregates these predictions to assign the publisher one of five ordinal reliability levels. We evaluate four transformer-based models using five-fold publisher-disjoint cross-validation on 19,476 English-language political news articles from 439 publishers annotated with NewsGuard scores. The best models achieve approximately 0.60 exact accuracy at the article level and 0.69 after aggregation at the publisher level. When predictions adjacent to the reference level are accepted, accuracy reaches 0.84 and 0.88, respectively, indicating that most errors remain local on the ordinal scale. Larger decoder-based models provide no consistent advantage over encoder-based models in this setting. We additionally examine how errors vary across publishers' political leanings, highlighting the importance of complementing aggregate performance with group-level error analysis. These results show that aggregating evidence across articles supports reliability estimation for unseen publishers while providing a stricter protocol for evaluating cross-publisher generalization.
+Reliability ratings are assigned to news publishers, yet computational approaches often formulate the task as article-level classification, inheriting publisher labels at the article level and, in some cases, allowing the same publishers to appear in both training and test data. This mismatch creates a risk of publisher leakage and leaves unclear whether the reported performance generalizes to previously unseen outlets. We reformulate the task as publisher-level reliability inference from multiple articles. Our two-stage framework first derives a reliability prediction from each article and then aggregates these predictions to assign the publisher one of five ordinal reliability levels. We evaluate four transformer-based models using five-fold publisher-disjoint cross-validation on 19,476 English-language political news articles from 439 publishers annotated with NewsGuard scores. The best models achieve approximately 0.60 exact accuracy at the article level and 0.69 after aggregation at the publisher level. When predictions adjacent to the reference level are accepted, accuracy reaches 0.84 and 0.88, respectively, indicating that most errors remain local on the ordinal scale. Larger decoder-based models provide no consistent advantage over encoder-based models in this setting, and a TF-IDF logistic-regression baseline trails them by only a few points. We additionally examine how errors vary across publishers' political leanings, highlighting the importance of complementing aggregate performance with group-level error analysis. These results show that aggregating evidence across articles supports reliability estimation for unseen publishers while providing a stricter protocol for evaluating cross-publisher generalization.
 
 \keywords{News source reliability \and
 Transformer-based classification \and Cross-publisher generalization \and Political bias analysis}
@@ -121,7 +121,7 @@ where $w_{ij}$ is $1$ for $|i-j|=0$, $\alpha$ for $|i-j|=1$ and $0$ otherwise. T
 %   dovrebbe essere tutto aggiornato sia testo che figure
 % <<< ----------------------------------------------------------------------
 \paragraph{Baselines}
-We compare against two baselines that ignore the article text, and report both of them on every metric. The \textbf{Majority Baseline} assigns every instance to the most frequent class observed in the training set, which is the best any constant predictor can do on accuracy; it scores zero Recall and F1 on every other class, so its macro figures are low by construction. The \textbf{Uniform Random Baseline} draws each of the five reliability levels with equal probability. Its expected accuracy, Macro Precision and Macro Recall are all $0.20$, while its expected Macro F1 is $0.19$, slightly lower because the classes are unevenly represented. Being stochastic, it is reported as the mean over 1{,}000 seeded draws.
+We compare against two baselines that ignore the article text, and report both of them on every metric. The \textbf{Majority Baseline} assigns every instance to the most frequent class observed in the training set, which is the best any constant predictor can do on accuracy; it scores zero Recall and F1 on every other class, so its macro figures are low by construction. The \textbf{Uniform Random Baseline} draws each of the five reliability levels with equal probability. Its expected accuracy, Macro Precision and Macro Recall are all $0.20$, while its expected Macro F1 is $0.19$, slightly lower because the classes are unevenly represented. Being stochastic, it is reported as the mean over 1{,}000 seeded draws. We add one \emph{informative} baseline: a logistic regression over TF-IDF features (unigrams and bigrams), under the same publisher-disjoint folds, to show how much of the task is solvable from word statistics alone~\cite{suppmaterial2026}.
 
 \subsection{Bias Assessment and Statistical Analysis}\label{subsec:bias_methodology}
 Beyond aggregate performance, we investigate \textit{how} and \textit{why} models fail.
@@ -250,18 +250,16 @@ The fine-tuned weights are withheld during review to preserve anonymity and will
 \subsection{Stage 1: Article-level Reliability Prediction}
 \label{sec:results}
 
-We first evaluate the Stage~1 predictors.
-
 \begin{figure}[h!]
     \centering
     \includegraphics[width=1\linewidth]{img/results_boxplot_baselines.pdf}
-    \caption{Article-level metrics across the five folds. Both baselines are drawn across every metric: red for Majority Class, violet for Uniform Random. Where the two coincide, as on Macro Recall at 0.20, the dashes alternate.}
+    \caption{Article-level metrics across the five folds. The two non-informative baselines are drawn across every metric, red for Majority Class and violet for Uniform Random, with the dashes alternating where they coincide (Macro Recall at 0.20); the green line is the TF-IDF logistic-regression baseline.}
 \label{fig:results}
 \end{figure}
 
 Figure~\ref{fig:results} illustrates the results against the Majority Class Baseline (MCB, red) and the Uniform Random Baseline (RB, violet).
 All models reach a standard accuracy around 0.60, more than double the MCB, with Mistral highest at 0.61. On macro-averaged performance Llama leads with $\mathrm{F1}_{\mathrm{macro}}$ of 0.55, followed by Mistral and RoBERTa at 0.54 and BERT at 0.52, all well above the RB of 0.19; the variance across folds is minimal (standard deviation about 0.02). Under the stricter tolerance ($\alpha = 0.5$), Mistral, Llama and RoBERTa reach approximately 0.72 against an adjusted MCB of 0.43.
-With $\alpha = 1.0$ Llama reaches 0.84 and the others 0.82--0.83; the baseline is naturally higher here (0.60), so the gain is $+0.24$. Misclassifications are therefore rarely severe, typically involving adjacent labels.
+With $\alpha = 1.0$ Llama reaches 0.84 and the others 0.82--0.83; the baseline is naturally higher here (0.60), so the gain is $+0.24$. Misclassifications are therefore rarely severe, typically involving adjacent labels. The lexical baseline is close behind: TF-IDF with logistic regression reaches 0.58 accuracy, 0.53 macro F1 and 0.82 at $\alpha=1.0$, within a few points of the transformers, so surface word statistics already capture most of the signal.
 
 \subsection{Biases in Article-level Reliability Prediction}
 \label{subsec:error_analysis}
@@ -312,12 +310,11 @@ Clear directional patterns emerge across all four models. Far Left and Far Right
 \subsection{Stage 2: News Source Reliability Inference}
 \label{subsec:stage2}
 
-Publisher-level inference is the primary objective; the article-level predictors are
-intermediate. We instantiate \(Agg\) as the mode of a publisher's predictions,
-i.e.\ majority voting, which assigns the most frequent class as \(\hat{r}_P(p)\), on the
-hypothesis that combining them offsets the noise of individual classifications.
-Predictions are pooled across the five test folds, so each publisher's reliability
-is inferred only from articles the model never saw in training.
+Publisher-level inference is the primary objective. We instantiate \(Agg\) as the
+mode of a publisher's predictions (majority voting), assigning the most frequent
+class as \(\hat{r}_P(p)\). Predictions are pooled across the five test folds, so each
+publisher's reliability is inferred only from articles the model never saw in
+training.
 
 \begin{figure}[t]
   \centering
@@ -332,7 +329,7 @@ predictor also collects partial and then full credit under tolerance. Under full
 tolerance the random baseline (0.52) in fact overtakes it (0.50), since a constant
 predictor earns credit only next to its own level.
 
-With an Accuracy of 0.69 RoBERTa leads, followed closely by Mistral at 0.68, more than triple the Random Baseline. On the same publishers, scoring one randomly chosen article per outlet already yields 0.63 to 0.66, so the vote itself adds 1.6 to 4.3 points; the rest of the gap from article-level accuracy reflects the change of evaluation unit. Considering $\mathrm{Accuracy}_{\mathrm{tolerant}}$ (1.0), Llama achieves the top score of 0.88, followed by RoBERTa (0.87) and Mistral (0.86), substantially outperforming the majority class baseline.
+With an Accuracy of 0.69 RoBERTa leads, followed closely by Mistral at 0.68, more than triple the Random Baseline. On the same publishers, scoring one randomly chosen article per outlet already yields 0.63 to 0.66, so the vote itself adds 1.6 to 4.3 points; the rest of the gap from article-level accuracy reflects the change of evaluation unit. Considering $\mathrm{Accuracy}_{\mathrm{tolerant}}$ (1.0), Llama achieves the top score of 0.88, followed by RoBERTa (0.87) and Mistral (0.86), substantially outperforming the majority class baseline. The lexical baseline aggregates to 0.68 accuracy and 0.88 at $\alpha=1.0$, matching the transformers, so fine-tuning adds little after aggregation.
 
 Most publisher-level errors involve adjacent levels, the most frequent being $l_5$ (High Credibility) predicted as $l_4$ (Generally Credible); the Supplementary Material~\cite{suppmaterial2026} reports full publisher-level confusion matrices and a detailed error analysis.
 
@@ -468,9 +465,9 @@ Our evaluation shows how accurately the approach predicts reliability labels for
 
 \section{Discussion and Conclusion}
 \label{sec:conclusions}
-Under a strict publisher-disjoint protocol, our findings show that language models capture generalizable signals of publisher reliability from articles alone. The substantially larger Mistral 24B does not consistently outperform smaller architectures, and its 1,024-token context window, four times the limit used for the others, brings no measurable gain. Since Mistral also differs in size and epochs, this does not isolate the effect of context length, but neither larger models nor longer inputs overcome the limits imposed by weak supervision. Publisher reliability is therefore better modelled as a collective signal that stabilises when evidence is aggregated across a source than as a property of isolated articles.
+Under a strict publisher-disjoint protocol, our findings show that language models capture generalizable signals of publisher reliability from articles alone. The substantially larger Mistral 24B does not consistently outperform smaller architectures, and its 1,024-token context window, four times the limit used for the others, brings no measurable gain. Since Mistral also differs in size and epochs, this does not isolate the effect of context length, but neither larger models nor longer inputs overcome the limits imposed by weak supervision. A linear bag-of-words baseline trails them by only a few points and matches them at the publisher level, placing the useful signal in lexical regularities rather than model scale. Publisher reliability is therefore better modelled as a collective signal that stabilises when evidence is aggregated across a source than as a property of isolated articles.
 
-Future research should extend this framework to multilingual settings, explore confidence-aware aggregation strategies, and develop training objectives tailored to ordinal classification. The value of such systems, however, will not be settled by accuracy alone. Whoever builds one has to show where its errors fall across the political spectrum, which is why we report that disparity alongside the scores.
+Future research should extend this framework to multilingual settings and develop training objectives tailored to ordinal classification. The value of such systems will not be settled by accuracy alone: whoever builds one must show where its errors fall across the political spectrum, which is why we report that disparity alongside the scores.
 
 \begin{credits}
 \ifanonymous

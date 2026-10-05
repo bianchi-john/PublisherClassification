@@ -120,7 +120,14 @@ display(article_tbl.round(4))
 per_fold = data.load_per_fold_metrics()
 y_true_articles = preds[preds["model"] == C.MODEL_ORDER[0]]["y_true"]
 
-plots.fig_article_metrics_boxplot(per_fold, y_true_articles)
+# TF-IDF + logistic regression, trained by run_tfidf_lr_baseline.py on the same
+# publisher-disjoint folds. Drawn as a third, informative baseline line.
+tfidf = pd.read_csv(C.DERIVED_DIR / "tfidf_lr_metrics.csv").set_index("level")
+tfidf_article = tfidf.loc["article"].to_dict()
+tfidf_publisher = tfidf.loc["publisher"].to_dict()
+display(tfidf.round(4))
+
+plots.fig_article_metrics_boxplot(per_fold, y_true_articles, tfidf=tfidf_article)
 article_tbl.to_csv(C.TABLES_DIR / "article_level_metrics.csv", index=False)
 ''')
 
@@ -194,7 +201,7 @@ print("\\nPublishers decided by the tie-break rule:")
 display(aggregate.tie_report(preds).round(2))
 
 y_true_publishers = pub[pub["model"] == C.MODEL_ORDER[0]]["y_true"]
-plots.fig_publisher_metrics(publisher_tbl, y_true_publishers)
+plots.fig_publisher_metrics(publisher_tbl, y_true_publishers, tfidf=tfidf_publisher)
 
 publisher_tbl.to_csv(C.TABLES_DIR / "publisher_level_metrics.csv", index=False)
 pub.to_csv(C.DERIVED_DIR / "publisher_predictions.csv", index=False)

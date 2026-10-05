@@ -50,10 +50,15 @@ from .metrics import baselines
 BASELINE_STYLES = {
     "majority": dict(color="red", linestyle=(0, (7, 7))),
     "random": dict(color="darkviolet", linestyle=(7, (7, 7))),
+    # TF-IDF + logistic regression is an informative, trained baseline, not a
+    # constant one, so it gets a solid line to set it apart from the two dashed
+    # non-informative baselines above.
+    "tfidf": dict(color="#117733", linestyle=(0, (1, 0))),
 }
 BASELINE_LABELS = {
     "majority": "Majority Class Baseline",
     "random": "Uniform Random Baseline",
+    "tfidf": "TF-IDF + Log. Reg.",
 }
 # The legend key is a short segment, so the half-period offset that makes the
 # two lines alternate on the axes would start the violet key inside a gap and
@@ -244,6 +249,7 @@ def fig_article_metrics_boxplot(
     y_true_pool,
     name: str = "results_boxplot_baselines",
     include_gpt: bool = False,
+    tfidf: dict | None = None,
 ) -> plt.Figure:
     """Per-fold distribution of the six metrics, with baselines.
 
@@ -286,6 +292,9 @@ def fig_article_metrics_boxplot(
             for which in ("majority", "random"):
                 ax.hlines(base[which][metric], centers[i] - half, centers[i] + half,
                           linewidth=1.8, zorder=5, **BASELINE_STYLES[which])
+            if tfidf is not None:
+                ax.hlines(tfidf[metric], centers[i] - half, centers[i] + half,
+                          linewidth=2.2, zorder=6, **BASELINE_STYLES["tfidf"])
 
         ax.set_xticks(centers)
         ax.set_xticklabels(BOXPLOT_METRIC_LABELS)
@@ -294,6 +303,10 @@ def fig_article_metrics_boxplot(
         ax.grid(axis="y", linestyle="--", alpha=0.4)
 
         handles = _model_handles(models)
+        if tfidf is not None:
+            handles.append(
+                Line2D([0], [0], label=BASELINE_LABELS["tfidf"], linewidth=2.2,
+                       **BASELINE_STYLES["tfidf"]))
         handles += [
             Line2D([0], [0], label=BASELINE_LABELS["majority"],
                    **BASELINE_LEGEND_STYLES["majority"]),
@@ -311,7 +324,7 @@ def fig_article_metrics_boxplot(
 # --------------------------------------------------------------------------
 def fig_publisher_metrics(
     metrics: pd.DataFrame, y_true_pub, name: str = "domain_metrics_comparison",
-    match_paper: bool = True,
+    match_paper: bool = True, tfidf: dict | None = None,
 ) -> plt.Figure:
     """Publisher-level metrics with baselines.
 
@@ -349,6 +362,16 @@ def fig_publisher_metrics(
                 line.set_path_effects(
                     [pe.Stroke(linewidth=4, foreground="black", alpha=0.7), pe.Normal()]
                 )
+            if tfidf is not None:
+                st = BASELINE_STYLES["tfidf"]
+                line = ax.hlines(
+                    tfidf[metric], x[i] - half, x[i] + half,
+                    colors=st["color"], linestyles=st["linestyle"],
+                    linewidth=2.6, zorder=11,
+                )
+                line.set_path_effects(
+                    [pe.Stroke(linewidth=4.4, foreground="black", alpha=0.7), pe.Normal()]
+                )
 
         ax.set_xticks(x)
         ax.set_xticklabels(BARCHART_METRIC_LABELS, rotation=0, fontsize=10)
@@ -360,6 +383,10 @@ def fig_publisher_metrics(
         ax.set_ylabel("Score", fontsize=12)
 
         handles = _model_handles(models)
+        if tfidf is not None:
+            handles.append(
+                Line2D([], [], linewidth=2.2, label=BASELINE_LABELS["tfidf"],
+                       **BASELINE_STYLES["tfidf"]))
         handles += [
             Line2D([], [], linewidth=2.0, label=BASELINE_LABELS["majority"],
                    **BASELINE_LEGEND_STYLES["majority"]),
