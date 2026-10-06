@@ -12,7 +12,7 @@
 % not identify the authors. Keep \anonymoustrue until acceptance; flip it for
 % the camera-ready to restore the author block and the funding note.
 %
-% Build:  pdflatex supplementary && pdflatex supplementary
+% Build:  bash build-supplementary.sh   (LaTeX, then PDF/A-1 conversion)
 % =========================================================================
 \documentclass[11pt,a4paper]{article}
 \usepackage[margin=1in]{geometry}
@@ -56,14 +56,13 @@
 
 \vspace{-1.5em}
 \begin{center}
-\textit{This supplementary material accompanies the main manuscript submitted to ECIR 2027, ``IR for Good'' track.}\\[0.3em]
-\textit{It reports in full the error and bias audit behind the main paper's conditions for responsible use, together with the experimental detail needed to reproduce them.}
+\textit{Companion to the ECIR 2027 IR for Good submission: full error and bias analyses, and experimental details.}
 \end{center}
 
 
 \section{Model performance}
 \label{app:performance_cms}
-Figure \ref{fig:performance_cms} shows the confusion matrices for each fold and for the average.
+Figure~\ref{fig:performance_cms} gives the article-level confusion matrices per fold and on average.
 
 \begin{figure*}[!t]
 \centering
@@ -87,7 +86,7 @@ Figure \ref{fig:performance_cms} shows the confusion matrices for each fold and 
   \caption{Mistral}\label{fig:mistral_cms}
 \end{subfigure}
 
-\caption{Confusion matrices showing the models' performance across five cross-validation folds and their overall average. The rows correspond to the true labels and the columns to the predicted ones.}
+\caption{Article-level confusion matrices for each of the five folds and their average. Rows are true labels, columns predicted labels.}
 \label{fig:performance_cms}
 \end{figure*}
 
@@ -95,7 +94,7 @@ Figure \ref{fig:performance_cms} shows the confusion matrices for each fold and 
 \section{Publisher-level Results}
 \label{app:publisher_cms}
 
-Figure~\ref{fig:publisher_cms} reports the publisher-level confusion matrices obtained after aggregating article-level predictions by majority voting.
+Figure~\ref{fig:publisher_cms} gives the publisher-level confusion matrices after majority voting.
 
 \begin{figure*}[!t]
 \centering
@@ -115,13 +114,13 @@ Figure~\ref{fig:publisher_cms} reports the publisher-level confusion matrices ob
   \includegraphics[width=\linewidth]{img/domain_confusion_matrix_mistral.pdf}
   \caption{Mistral}\label{fig:pub_mistral}
 \end{subfigure}
-\caption{Publisher-level confusion matrices for BERT, RoBERTa, Llama 3, and Mistral. Rows indicate true reliability levels, columns indicate predicted levels.}
+\caption{Publisher-level confusion matrices. Rows are true levels, columns predicted levels.}
 \label{fig:publisher_cms}
 \end{figure*}
 
-Most errors are local. The most frequent confusion is $l_5$ (High Credibility) predicted as $l_4$ (Generally Credible) for BERT, Llama~3 and Mistral, and the second most frequent for RoBERTa. As observed at the article level, distinguishing $l_5$ from $l_4$ is inherently difficult because $l_5$ represents a strict ceiling (score = 100) while $l_4$ covers the immediately lower high-credibility range (75--99). Misclassifying these two adjacent levels constitutes a minor severity error, as both indicate high reliability. Errors of two levels are nonetheless common, 39 to 46 publishers per model, and mostly fall between $l_2$ and $l_4$ in either direction; errors of three or more levels affect 10 to 17 publishers.
+Most errors are between adjacent levels. The most frequent is $l_5$ predicted as $l_4$ (first for BERT, Llama~3 and Mistral, second for RoBERTa): $l_5$ is the single score 100, $l_4$ the range 75--99. Errors of two levels still affect 39 to 46 publishers per model, mostly between $l_2$ and $l_4$; errors of three or more levels affect 10 to 17.
 
-One caveat applies to every publisher-level number reported here and in the main paper. Aggregation is a majority vote, and ties are resolved deterministically in favour of the \emph{lowest} reliability level. This affects a small but non-negligible share of publishers -- 13 of 439 for BERT, 20 for RoBERTa, 15 for Llama~3 and 11 for Mistral -- and always in the same direction, so it is a mild systematic pull toward lower predicted reliability rather than a neutral rule.
+Majority-vote ties are broken toward the \emph{lowest} level. This decides 13 of the 439 publishers for BERT, 20 for RoBERTa, 15 for Llama~3 and 11 for Mistral, always toward lower predicted reliability.
 
 
 \section{Political leaning}
@@ -155,45 +154,26 @@ One caveat applies to every publisher-level number reported here and in the main
   \label{fig:cmPoliticalLeaningMistral}
 \end{subfigure}
 
-\caption{Confusion matrices for political orientation across the four models. The rows correspond to the true labels and the columns to the predicted ones. The cells show class-wise percentages and counts, dataset-level percentages and contributing domains, and the colour represents the error rate per true class.}
+\caption{Confusion matrices stratified by political leaning. Rows are true labels, columns predicted labels. Cells show class-wise percentages and counts, dataset-level percentages and contributing domains (`Dom'); colour encodes the error rate per true class.}
 \label{fig:cmPoliticalLeaning}
 \end{figure*}
 
-
-Figure \ref{fig:cmPoliticalLeaning} reveals why the Chi-square test rejects the hypothesis of independence: the distribution of errors varies between moderate and extreme political groups, with notable differences across models.
-The matrices for `Slightly Right' and `Non-labelled' orientations exhibit strong diagonal dominance across all architectures. For the former (the largest group, $N=7490$), Mistral, RoBERTa, and BERT achieve comparable accuracies of 69.0\%, 68.4\%, and 67.6\%, respectively, with Llama 3 at 66.4\%. The domain counts (annotated as `Dom' in the cells) show that this performance is robust across a large number of unique sources.
-
-In contrast, the `Far Left' ($N=1015$) and `Far Right' ($N=2142$) matrices display high off-diagonal scattering and significantly lower global accuracy.
-For `Far Left', all models perform poorly with accuracies between 28.1\% and 29.5\% for the three smaller models and 36.5\% for Mistral.
-Visual inspection confirms a systematic directional bias: predictions frequently land in the upper triangle of the matrix, confirming that models overestimate the reliability of these sources.
-
-The `Far Right' category shows one of the largest differences between the models, second only to `Slightly Left'. Mistral, Llama 3, and RoBERTa achieved 40.6\%, 37.8\%, and 37.3\%, respectively, while BERT dropped to 31.7\%.
-
-Domain metrics further clarify that errors in these extreme categories are driven by a small set of outlets. Unlike the diverse `Slightly Right' group, the `Far Left' and `Far Right' categories contain fewer unique domains e.g., \textit{Dom: 1/1} or \textit{Dom: 5/7}, yet these specific outlets consistently trigger model errors.
-The `Slightly Left' matrix confirms the specific discrediting pattern discussed in the main manuscript, where models tend to underestimate the reliability of slightly left-leaning sources.
-A substantial cluster of misclassifications appears in the lower triangle, below the diagonal. This visually demonstrates that models penalize these articles, assigning them lower reliability labels compared to the ground truth, a behavior consistent across all four architectures.
-
-We stress that these matrices are descriptive. Because political leaning and reliability are both properties of the publisher, and are themselves associated in the media ecosystem, the per-leaning error rates visible here cannot on their own separate a political effect from a reliability effect. The main paper addresses this with publisher-clustered tests that control for the true reliability level.
+Figure~\ref{fig:cmPoliticalLeaning} shows the article-level confusion matrices for each leaning.
+\begin{itemize}
+  \item \textbf{Slightly Right} (largest group, $N=7490$) and \textbf{Non labelled} are strongly diagonal; on Slightly Right accuracy is 66.4--69.0\%.
+  \item \textbf{Far Left} ($N=1015$) reaches 28.1--29.5\% accuracy, 36.5\% for Mistral, and \textbf{Far Right} ($N=2142$) 31.7--40.6\%. Errors fall mostly above the diagonal (overestimated reliability) and come from few domains.
+  \item \textbf{Slightly Left} errors fall mostly below the diagonal (underestimated reliability) for all four models.
+\end{itemize}
+These matrices are descriptive: leaning and reliability are both publisher attributes and are associated in the corpus. Section~\ref{app:robustness} controls for this.
 
 
 \section{Error Direction at the Article Level}
 \label{app:error_direction}
 
-The main paper reports the per-class error rate; here we report the companion
-analysis of the \emph{direction} of those errors, measured by the Mean Error
-Direction (MED), the average signed difference between predicted and true
-reliability labels over misclassified instances. Positive values indicate
-overestimation of reliability, negative values underestimation.
-
-Figure~\ref{fig:error_direction} plots the Mean Error Direction (MED) to quantify the prediction bias. MED is the average signed difference between predicted and true reliability labels over the set of misclassified instances, correctly classified ones being excluded from the average. We observe a tendency to regress towards the center. We attribute this to two structural factors:
-
-
+Figure~\ref{fig:error_direction} gives the Mean Error Direction (MED) per true reliability level, computed over misclassified articles only. Errors regress toward the centre of the scale:
 \begin{itemize}
-    \item \textbf{Boundary Constraints} ($l_1$ and $l_5$).
-    Errors at the extremes are naturally constrained: models can only overestimate $l_1$ and underestimate $l_5$. However, the MED in $l_5$ is strongly negative, around $-1.7$ (BERT $-1.60$, RoBERTa $-1.72$, Llama $-1.67$, Mistral $-1.74$), and the one in $l_1$ strongly positive, around $+2.1$. The confusion matrices reveal that the vast majority of misclassifications for $l_5$ are concentrated in adjacent $l_4$ (Section~\ref{app:performance_cms}). This confirms that the high error rate is primarily due to the models struggling to distinguish between perfect (100) and generally credible (75--99) reliability, likely because there is little textual distinction between these high-standard categories. The magnitude beyond $-1.0$ indicates a minor tendency to misclassify some $l_5$ instances into lower tiers as well, but the bulk of the errors consists of labeling $l_5$ as $l_4$. 
-    
-    \item \textbf{The `Safe Harbor' Effect ($l_3$).} 
-    Class $l_3$ shows the smallest Mean Error Direction of all levels, between $0.10$ and $0.35$ across models. $l_3$ acts as a gravitational center for uncertainty: it absorbs a significant portion of misclassifications from the lower-reliability $l_2$ and from the higher-reliability $l_4$. Since the model overestimates $l_2$ (pushing it up to 3) and underestimates $l_4$ (pushing it down to 3), these opposing error vectors cancel each other out, resulting in a net directional bias of zero.    
+  \item \textbf{$l_1$ and $l_5$} can only be over- and underestimated respectively. The MED is about $+2.1$ for $l_1$ and about $-1.7$ for $l_5$ (BERT $-1.60$, RoBERTa $-1.72$, Llama $-1.67$, Mistral $-1.74$); most $l_5$ errors land on $l_4$.
+  \item \textbf{$l_3$} has the smallest MED, $0.10$ to $0.35$: it absorbs overestimated $l_2$ and underestimated $l_4$ articles, and the two directions largely cancel.
 \end{itemize}
 
 \begin{figure}[!t]
@@ -207,21 +187,7 @@ Figure~\ref{fig:error_direction} plots the Mean Error Direction (MED) to quantif
 \section{Political Leaning: Distribution and Error Rates}
 \label{app:political_rates}
 
-The main paper reports the directional bias by political leaning and the
-associated significance tests, and it makes the disclosure of per-leaning error
-rates a condition for responsible deployment. Figure~\ref{fig:orientationDistributionInverted}
-gives the composition of the corpus, and Figure~\ref{fig:politicalErrorRates} the
-per-leaning error rates behind those tests. Readers can therefore inspect the
-disparity rather than take it on trust.
-
-The distribution is markedly imbalanced: reliability levels are not uniformly
-represented within each political category, which is a structural property of the
-media ecosystem rather than of our sampling. This is why error rates are computed
-class-conditionally in the main paper, making them independent of category
-frequency. Mistral deviates from the other three models, showing the fewest errors in
-both extreme categories, while its error rate on Slightly Left is close to BERT's
-and above those of RoBERTa and Llama, and it performs comparably on Non labelled
-and Slightly Right.
+Figure~\ref{fig:political_descriptive} gives the reliability composition of each leaning and the per-leaning error rates; Figure~\ref{fig:politicalErrorsDirectionSupp} gives the Mean Error Direction by leaning discussed in the main paper.
 
 \begin{figure}[!t]
 \centering
@@ -245,25 +211,17 @@ and Slightly Right.
 \centering
 \includegraphics[width=0.85\linewidth]{img/politicalErrorsDirection.pdf}
 \caption{Mean Error Direction by political leaning. Positive values indicate
-overestimation of reliability (prediction above the reference level), negative
-values underestimation. The values are discussed in the main paper.}
+overestimation of reliability, negative values underestimation.}
 \label{fig:politicalErrorsDirectionSupp}
 \end{figure}
 
 \section{Robustness of the Bias and Performance Analyses}
 \label{app:robustness}
 
-The main paper reports tests that treat each article as an independent
-observation. Political leaning and reliability are publisher-level attributes,
-and every article of an outlet carries the same value. This section therefore
-repeats the analyses at the unit on which the labels actually live.
+Leaning and reliability are publisher attributes shared by all articles of an outlet. The analyses below repeat the tests at the publisher level and control for reliability.
 
-\paragraph{The contingency tables behind the test.}
-The $\chi^2$ test of independence reported in the main paper is computed on the
-table that crosses political orientation with classification outcome: five
-orientations against two outcomes, over all 19,476 articles.
-Table~\ref{tab:contingency} gives it for each model. With $c=2$ the factor
-$\min(r-1,c-1)$ equals one, so Cram\'er's $V$ is simply $\sqrt{\chi^2/N}$.
+\paragraph{Contingency tables.}
+Table~\ref{tab:contingency} gives the tables behind the article-level $\chi^2$ tests of the main paper. With two outcomes, Cram\'er's $V=\sqrt{\chi^2/N}$.
 
 \begin{table}[ht]
 \centering
@@ -284,18 +242,12 @@ Far Right & 678 & 1464 & 798 & 1344 & 809 & 1333 & 869 & 1273 \\
 \textbf{Total} & 11349 & 8127 & 11752 & 7724 & 11679 & 7797 & 11912 & 7564 \\
 \bottomrule
 \end{tabular}
-\caption{Political orientation against classification outcome, article level, one
-pair of columns per model. These are the tables the $\chi^2$ statistics and the
-effect sizes of the main paper are computed from.}
+\caption{Political leaning against classification outcome, article level (19,476 articles per model).}
 \label{tab:contingency}
 \end{table}
 
-\paragraph{Independence at the publisher unit.}
-Table~\ref{tab:chi2_pub} repeats the $\chi^2$ test of independence with one
-observation per publisher: was the aggregated prediction for that outlet correct?
-The 439 publishers replace the 77{,}904 articles, and no expected count falls
-below five. The association between political leaning and correctness survives
-for every model, and the effect size is larger than at the article level.
+\paragraph{Independence at the publisher level.}
+With one observation per publisher (whether its aggregated prediction is correct), the association holds for every model, with no expected count below five (Table~\ref{tab:chi2_pub}).
 
 \begin{table}[ht]
 \centering
@@ -309,24 +261,12 @@ Llama 3 & 439 & 23.88 & $8.4\times10^{-5}$ & 0.233 \\
 Mistral & 439 & 24.06 & $7.8\times10^{-5}$ & 0.234 \\
 \bottomrule
 \end{tabular}
-\caption{Political leaning vs.\ classification correctness at the publisher
-unit, 4 degrees of freedom. Compare with the article-level table of the main
-paper.}
+\caption{Political leaning vs.\ classification correctness, one observation per publisher, 4 degrees of freedom.}
 \label{tab:chi2_pub}
 \end{table}
 
-\paragraph{Leaning or reliability?}
-Reliability levels are unevenly distributed across political leanings, and some
-levels are harder than others. An apparent political effect could therefore be a
-reliability effect in political guise. For each model we fit a logistic
-regression of the article-level error indicator on political leaning, we enter
-the true reliability level as a control, and we cluster the standard errors on
-the publisher. Table~\ref{tab:logit} reports the result against the non-labelled
-reference group. Far-left and far-right outlets keep four to six and a half times
-the odds of error of non-labelled ones, with the reliability level already
-accounted for. The confidence intervals are wide, and deliberately shown: with
-several cells holding fewer than ten publishers, the direction of the effect is
-better established than its size.
+\paragraph{Controlling for reliability.}
+Table~\ref{tab:logit} reports a logistic regression of the article-level error on political leaning, with the true reliability level as a control and standard errors clustered on the publisher. Far-left and far-right outlets keep 4.0 to 6.5 times the odds of error of non-labelled ones. The wide intervals reflect sparse leaning-by-reliability cells (Table~\ref{tab:composition}).
 
 \begin{table}[ht]
 \centering
@@ -357,21 +297,13 @@ better established than its size.
 \bottomrule
 \end{tabular}
 \caption{Odds ratios of misclassification by political leaning, relative to the
-non-labelled group, from a logistic regression controlling for the true
-reliability level with standard errors clustered on the publisher.
-$^{*}p<0.05$, $^{**}p<0.01$, $^{***}p<0.001$. The intervals are wide: several
-leaning-by-reliability cells hold fewer than ten publishers
-(Table~\ref{tab:composition}), which is what limits how far the two variables can
-be separated.}
+non-labelled group, controlling for the true reliability level; standard errors
+clustered on the publisher. $^{*}p<0.05$, $^{**}p<0.01$, $^{***}p<0.001$.}
 \label{tab:logit}
 \end{table}
 
-\paragraph{Uncertainty on the publisher-level scores.}
-Table~\ref{tab:bootstrap} reports 95\% percentile intervals from a
-\emph{cluster} bootstrap, which resamples whole publishers rather than individual
-articles. The intervals of the four models overlap on both metrics. At this
-sample size the differences between them, 0.69 against 0.68 on accuracy, are not
-distinguishable from sampling variation.
+\paragraph{Uncertainty on publisher-level scores.}
+Table~\ref{tab:bootstrap} gives 95\% intervals from a bootstrap that resamples publishers. The intervals of the four models overlap, so their differences are within sampling variation.
 
 \begin{table}[ht]
 \centering
@@ -390,14 +322,8 @@ Mistral & 0.683 [0.642, 0.727] & 0.856 [0.822, 0.888] \\
 \label{tab:bootstrap}
 \end{table}
 
-\paragraph{Leaning and reliability are entangled in the corpus.}
-The regression above controls for the true reliability level, but the two
-variables are close to collinear in our data, so no analysis can separate them
-completely. Table~\ref{tab:composition} counts the publishers in each
-combination. Of the 207 slightly right publishers, 142 sit in $l_1$; no slightly
-left publisher sits there at all, and no far-right publisher reaches $l_5$.
-Several cells hold fewer than ten publishers, and two are empty, so the
-additive control rests on thin support.
+\paragraph{Leaning and reliability in the corpus.}
+Table~\ref{tab:composition} counts publishers per combination. Of the 207 slightly right publishers, 142 sit in $l_1$; no slightly left publisher is in $l_1$ and no far-right publisher in $l_5$. Table~\ref{tab:err_within} gives the error rate inside each combination: the two largest blocks are classified well (5\% and 12\% error), every other combination falls between 32\% and 99\%.
 
 \begin{table}[ht]
 \centering
@@ -419,15 +345,6 @@ marks an empty combination.}
 \label{tab:composition}
 \end{table}
 
-Table~\ref{tab:err_within} gives the article-level error rate inside each
-combination, pooled over the four models. Two cells dominate the corpus and the
-models get both of them right: the 142 slightly right publishers in $l_1$ carry a
-5\% error rate, and the 64 non-labelled publishers in $l_3$ carry 12\%. Every
-other combination falls between 32\% and 99\%. The models therefore recognise the
-two largest blocks of the ground truth, and they do poorly outside them. Cells
-built on a handful of publishers are noisy, but the composition counts behind
-them are exact.
-
 \begin{table}[ht]
 \centering
 \begin{tabular}{lccccc}
@@ -442,66 +359,38 @@ $l_5$ & 94 & 73 & 69 & 87 & --- \\
 \bottomrule
 \end{tabular}
 \caption{Article-level error rate (\%) by political leaning within each true
-reliability level, pooled over the four models. Bold marks the two combinations
-that hold most of the corpus. Read these against the publisher counts of
-Table~\ref{tab:composition}.}
+reliability level, pooled over the four models. Bold: the two combinations that
+hold most of the corpus.}
 \label{tab:err_within}
 \end{table}
 
-Two readings follow. The per-leaning disparity is a property of the corpus and
-of the model together, not an isolated effect of political leaning. And a system
-trained on this ground truth inherits the political structure of the dataset, so
-the disparity would appear in deployment whatever its mechanism.
-
-\paragraph{Why no source-identifier masking.}
-We use the article texts as collected, and we mask no outlet name, byline or
-boilerplate. Under the publisher-disjoint protocol this cannot inflate the
-results. The model never sees a test-fold publisher during training, so a cue
-tied to a particular outlet carries no usable information at test time.
+The per-leaning disparity is therefore a property of the corpus and the model together. A system trained on this ground truth inherits the political structure of the dataset, whatever the mechanism.
 
 \section{Experimental Details}
 \label{app:experimental_details}
 
-\paragraph{Fold construction.}
-To build the five folds we retain all articles associated with each publisher.
-Publishers contribute varying numbers of articles, up to 200 each; we include them
-all to preserve signal diversity rather than discarding potentially informative
-examples. As a dispersion check we compute, for each reliability class, the
-standard deviation of its proportion across the five folds. The resulting values
-range from 1.37 to 3.61 percentage points, indicating that the reliability
-distribution is well preserved across folds.
+\paragraph{Folds.}
+All articles of a publisher (up to 200) stay in the same fold. Across folds, the share of each reliability class has a standard deviation of 1.37 to 3.61 percentage points.
 
 \paragraph{Optimisation and batching.}
-Encoders use the \texttt{BertTokenizerFast} and \texttt{RobertaTokenizerFast}
-respectively. For the decoders we use the causal \texttt{LlamaTokenizer} and
-\texttt{MistralTokenizer} with manual padding management, and enable Flash
-Attention~2 for Mistral. Batch sizes were adjusted to memory: 32 (training) / 16
-(evaluation) for BERT, 16/8 for RoBERTa, 8/8 for Llama with gradient
-accumulation, and 6/48 for Mistral with five gradient accumulation steps. For Llama~3,
-early stopping on a stratified 10\% hold-out of the training articles, with a
-patience of two epochs, restores the state with the lowest validation loss; the
-other models run for a fixed number of epochs. No test fold informs training or
-model selection, and a fixed global seed (42) ensures identical data splits
-across architectures.
+Tokenizers: \texttt{BertTokenizerFast}, \texttt{RobertaTokenizerFast}, and the causal \texttt{LlamaTokenizer} and \texttt{MistralTokenizer} with manual padding; Flash Attention~2 for Mistral. Batch sizes (training/evaluation): 32/16 for BERT, 16/8 for RoBERTa, 8/8 for Llama with gradient accumulation, 6/48 for Mistral with five accumulation steps. Only Llama~3 uses early stopping, on a stratified 10\% hold-out of the training articles (patience two epochs), restoring the state with the lowest validation loss; the other models run for a fixed number of epochs. No test fold informs training or model selection. A fixed seed (42) gives identical splits across models.
 
 
 \section{Convergence Analysis}
 \label{app:convergence}
-To ascertain the most suitable training duration, a preliminary experiment involving 20 epochs was conducted using the Llama 3 model. As can be seen in Figure \ref{fig:loss_plot}, the model converges quickly. The validation loss reaches its minimum at epoch 4 (0.4416), after which the generalisation gap widens, indicating overfitting. The empirical evidence gathered from our most complex architecture validates our decision to limit fine-tuning to five epochs across all models, with the exception noted below.
-
-We conducted an analogous convergence check for Mistral across the five-fold cross-validation. As can be seen in Figure \ref{fig:loss_mistral}, the training loss decreased sharply from an average of 2.023 at Epoch 1 to 0.355 at Epoch 2 and then to 0.231 at Epoch 3. The average improvement between epochs 2 and 3 is 0.124, indicating diminishing returns and stabilisation. This pattern mirrors the rapid convergence observed for Llama 3, supporting the idea of limiting Mistral training to three epochs to improve efficiency without compromising on convergence.
+In a preliminary 20-epoch run of Llama~3 (Figure~\ref{fig:loss_plot}), the validation loss is lowest at epoch 4 (0.4416) and the generalisation gap widens afterwards, so the other models are trained for five epochs. For Mistral (Figure~\ref{fig:loss_mistral}), the training loss averaged over folds falls from 2.023 to 0.355 and 0.231 in the first three epochs, so it is trained for three.
 
 
 \begin{figure*}[!t]
 \centering
 \begin{subfigure}[b]{0.48\linewidth}
   \includegraphics[width=\linewidth]{img/loss_plot.pdf}
-  \caption{Training and Validation loss over 20 epochs for Llama 3. The green marker indicates the optimal model checkpoint at epoch 4. Longer training durations result in poorer generalisation performance.}
+  \caption{Training and validation loss over 20 epochs for Llama 3; the green marker is the best checkpoint (epoch 4).}
   \label{fig:loss_plot}
 \end{subfigure}\hfill
 \begin{subfigure}[b]{0.48\linewidth}
   \includegraphics[width=\linewidth]{img/training_loss_mistral.pdf}
-  \caption{Training loss over three epochs for Mistral, shown across five folds.}
+  \caption{Training loss over three epochs for Mistral, across the five folds.}
   \label{fig:loss_mistral}
 \end{subfigure}
 \end{figure*}
@@ -509,13 +398,7 @@ We conducted an analogous convergence check for Mistral across the five-fold cro
 
 \section{Reproducibility}
 \label{app:repro}
-Every figure in this document and in the main paper is regenerated from the
-stored model predictions by a single notebook, so no figure depends on manual
-steps or on the order in which cells were executed. The notebook also emits the
-tables it reports, and validates that all four models are scored against the
-same ground truth for the same article. Anyone can therefore re-derive the error
-and bias figures behind the paper's claims about responsible use, instead of
-relying on the printed versions.
+A single notebook in the accompanying code regenerates every figure and table of this document and of the main paper from the stored predictions, and checks that all models are scored against the same ground truth.
 
 
 \bibliographystyle{plainnat}
