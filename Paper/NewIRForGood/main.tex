@@ -56,7 +56,7 @@ A large body of computational work instead focuses on article-level classificati
 
 Moreover, article-level evaluation is vulnerable to publisher leakage. When article labels are inherited from publisher-level annotations, testing generalization to unseen outlets requires publisher-disjoint splits. Some studies do not enforce this separation~\cite{burdisso-etal-2024-reliability,DBLP:journals/dbsk/AdjiLS26,batDataset}, allowing articles from the same publisher on both sides, so models may exploit publisher-specific patterns instead of transferable indicators of reliability~\cite{azizov-etal-2024-safari,verhoeven2025yesterday,zhou-etal-2021-hidden}.
 
-We address these limitations by framing reliability assessment as publisher-level inference: transformer-based language models derive a reliability prediction from each article, and those predictions are aggregated to assess previously unseen publishers. We make four contributions: (i) a strict publisher-disjoint evaluation protocol, in line with the site-level splits recommended by Zhou et al.~\cite{zhou-etal-2021-hidden}, that prevents source leakage and measures generalization to unseen publishers; (ii) a corpus of 19,476 political news articles from 439 English-language publishers annotated with NewsGuard scores, released as article URLs with their fold assignment; (iii) evidence that aggregation improves reliability estimation, reaching 0.69 publisher-level accuracy on unseen sources; and (iv) an analysis of how prediction errors distribute across the political spectrum. Given the consequences such assessments carry for the outlets evaluated, Section~\ref{sec:theoryofchange} states the need motivating this work, the conditions under which it may provide benefits, and the harms it may introduce.
+We address these limitations by framing reliability assessment as publisher-level inference: transformer-based language models derive a reliability prediction from each article, and those predictions are aggregated to assess previously unseen publishers. We make four contributions: (i) a strict publisher-disjoint evaluation protocol, in line with the site-level splits recommended by Zhou et al.~\cite{zhou-etal-2021-hidden}, that prevents source leakage and measures generalization to unseen publishers; (ii) a corpus of 19,476 political news articles from 439 English-language publishers annotated with NewsGuard scores, released as article URLs with their fold assignment; (iii) evidence that aggregation improves reliability estimation, reaching 0.69 publisher-level accuracy on unseen sources; and (iv) an analysis of how prediction errors distribute across reliability levels and across the political spectrum. Given the consequences such assessments carry for the outlets evaluated, Section~\ref{sec:theoryofchange} states the need motivating this work, the conditions under which it may provide benefits, and the harms it may introduce.
 
 \section{Related Work}
 Early work on online news quality focused on article-level classification, detecting misleading content through linguistic features or neural architectures~\cite{pandolfi2020automatic}, usually without considering the publisher.
@@ -217,8 +217,6 @@ The fine-tuned weights are withheld during review to preserve anonymity and will
 \subsection{Stage 1: Article-level Reliability Prediction}
 \label{sec:results}
 
-We first evaluate the Stage~1 predictors.
-
 \begin{figure}[h!]
     \centering
     \includegraphics[width=1\linewidth]{img/results_boxplot_baselines.pdf}
@@ -272,32 +270,33 @@ All models exhibit systematic variation across political leanings: there are sub
 
 A chi-square test of independence rejects, for every model, the hypothesis that correctness is independent of political leaning (Table~\ref{tab:chi_square_results}), with Cramér's~$V$ indicating a non-negligible association of broadly similar magnitude across models. Articles of the same outlet are not independent observations: they share both the leaning and the reliability label. We therefore repeat the test with one observation per publisher, namely whether its aggregated prediction is correct, and the association holds, with no expected count below five: $\chi^2$ ranges from 18.8 to 44.8, $p<10^{-3}$, and $V$ from 0.21 to 0.32. Leaning and reliability are themselves unevenly distributed in the corpus, and the overlap between them is incomplete: 142 of the 207 slightly right publishers sit in $l_1$, and no far-right publisher reaches $l_5$. A logistic regression that controls for the true reliability level, with standard errors clustered on the publisher, still leaves the two extremes with 4.0 to 6.5 times the odds of error of the non-labelled group, although the sparse cells limit how far the two variables can be separated; the Supplementary Material~\cite{suppmaterial2026} reports the coefficients, their intervals and the cell counts. A model trained on these labels may therefore reproduce the political structure of the corpus, regardless of whether the disparity originates in the annotations, in the article distributions, or in the model itself.
 
-The Supplementary Material~\cite{suppmaterial2026} plots the Mean Error Direction for each orientation (Section~\ref{subsec:bias_methodology}), where positive values indicate overestimation of reliability and negative values underestimation.
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{img/bias_med_by_leaning.pdf}\\[-2pt]
+  {\scriptsize (a)}\\[3pt]
+  \includegraphics[width=\linewidth]{img/publisher_metrics_compact.pdf}\\[-2pt]
+  {\scriptsize (b)}
+  \caption{(a) Mean Error Direction by political leaning over misclassified articles: positive values indicate overestimated reliability, negative values underestimated. (b) Publisher-level metrics, with baselines drawn as in Fig.~\ref{fig:results}.}
+  \label{fig:metrics}
+\end{figure}
+
+Figure~\ref{fig:metrics}a plots the Mean Error Direction for each orientation (Section~\ref{subsec:bias_methodology}).
 
 Clear directional patterns emerge across all four models. Far Left and Far Right articles exhibit consistent overestimation, with mean signed errors ranging from +0.33 to +1.00, approaching a full reliability level. Slightly Left articles show systematic underestimation, with average values between -0.54 and $-0.82$. Slightly Right and non-labelled outlets display smaller, less consistent deviations; the Supplementary Material~\cite{suppmaterial2026} reports the corpus composition by leaning, the per-leaning error rates and the full confusion matrices stratified by political leaning.
 
 \subsection{Stage 2: News Source Reliability Inference}
 \label{subsec:stage2}
 
-Publisher-level inference is the primary objective; the article-level predictors are
-intermediate. We instantiate \(Agg\) as the mode of a publisher's predictions,
-i.e.\ majority voting, which assigns the most frequent class as \(\hat{r}_P(p)\), on the
-hypothesis that combining them offsets the noise of individual classifications.
-Predictions are pooled across the five test folds, so each publisher's reliability
-is inferred only from articles the model never saw in training.
+Publisher-level inference is the primary objective. We instantiate \(Agg\) as the
+mode of a publisher's predictions (majority voting), assigning the most frequent
+class as \(\hat{r}_P(p)\). Predictions are pooled across the five test folds, so each
+publisher's reliability is inferred only from articles the model never saw in
+training.
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\linewidth]{img/domain_metrics_comparison.pdf}
-  \caption{Publisher-level metrics, with baselines drawn as in Fig.~\ref{fig:results}.}
-  \label{fig:metrics}
-\end{figure}
 
-Figure~\ref{fig:metrics} presents the results against the same two baselines. The
-majority-class reference differs across the three accuracy variants, since a constant
-predictor also collects partial and then full credit under tolerance. Under full
-tolerance the random baseline (0.52) in fact overtakes it (0.50), since a constant
-predictor earns credit only next to its own level.
+Figure~\ref{fig:metrics}b presents the results against the same two baselines. Under
+full tolerance the random baseline (0.52) overtakes the majority one (0.50), since a
+constant predictor earns credit only next to its own level.
 
 With an Accuracy of 0.69 RoBERTa leads, followed closely by Mistral at 0.68, more than triple the Random Baseline. On the same publishers, scoring one randomly chosen article per outlet already yields 0.63 to 0.66, so the vote itself adds 1.6 to 4.3 points; the rest of the gap from article-level accuracy reflects the change of evaluation unit. Considering $\mathrm{Accuracy}_{\mathrm{tolerant}}$ (1.0), Llama achieves the top score of 0.88, followed by RoBERTa (0.87) and Mistral (0.86), substantially outperforming the majority class baseline.
 
