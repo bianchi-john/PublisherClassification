@@ -187,7 +187,7 @@ Figure~\ref{fig:error_direction} gives the Mean Error Direction (MED) per true r
 \section{Political Leaning: Distribution and Error Rates}
 \label{app:political_rates}
 
-Figure~\ref{fig:political_descriptive} gives the reliability composition of each leaning and the per-leaning error rates; Figure~\ref{fig:politicalErrorsDirectionSupp} gives the Mean Error Direction by leaning discussed in the main paper.
+Figure~\ref{fig:political_descriptive} gives the reliability composition of each leaning and the per-leaning error rates. The Mean Error Direction by leaning is in Fig.~3a of the main paper.
 
 \begin{figure}[!t]
 \centering
@@ -205,15 +205,6 @@ Figure~\ref{fig:political_descriptive} gives the reliability composition of each
 \label{fig:political_descriptive}
 \end{figure}
 
-
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=0.85\linewidth]{img/politicalErrorsDirection.pdf}
-\caption{Mean Error Direction by political leaning. Positive values indicate
-overestimation of reliability, negative values underestimation.}
-\label{fig:politicalErrorsDirectionSupp}
-\end{figure}
 
 \section{Robustness of the Bias and Performance Analyses}
 \label{app:robustness}
@@ -398,7 +389,7 @@ In a preliminary 20-epoch run of Llama~3 (Figure~\ref{fig:loss_plot}), the valid
 
 \section{Reproducibility}
 \label{app:repro}
-A single notebook in the accompanying code regenerates every figure and table of this document and of the main paper from the stored predictions, and checks that all models are scored against the same ground truth.
+The accompanying code regenerates every figure and table of this document and of the main paper from the stored predictions: a single notebook, plus a short script for the two panels of Fig.~3 of the main paper. The notebook also checks that all models are scored against the same ground truth.
 
 
 \bibliographystyle{plainnat}
