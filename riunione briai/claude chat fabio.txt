@@ -1,0 +1,211 @@
+Using bert-llama etc sounds out of date. Something duable few years ago. 
+However, for this task, we need train a model, but I think only fine tuning is possible and for limited resources, we can stick with this small/medium languages.
+
+Is there another "paradigm" to leverage big models to answers questions included in the paper? I don't know, distillation, agentic-ai, or just few-shots setting is enough?
+
+The short answer: few-shot prompting alone probably won't beat your fine-tuned RoBERTa on this task, but there are two or three "modern" paradigms that fit limited resources and would strengthen the paper. One caveat first, because it shapes everything else.
+
+The contamination problem with big models. The paper's central claim is that reliability is inferable from text alone on unseen publishers. A frontier LLM breaks that premise: it has likely read Breitbart, Reuters, and most of the 439 outlets, and it knows their reputations (your own ref [22], Yang & Menczer, shows LLMs rate domains by name). Articles leak publisher identity constantly through self-references, bylines, boilerplate, URLs in the body. So a zero-shot GPT/Claude/Gemini score isn't "unseen publisher" inference; it's partly reputation recall. That is actually a good argument for why small fine-tuned models are the right scientific instrument here, even if they are not the best product. Worth stating explicitly in the paper, and it suggests an experiment: mask outlet names/domains/bylines, run a frontier model zero-shot on a sample, and compare masked vs. unmasked. That directly tests how much of "LLM credibility judgment" is memorized reputation.
+
+With that in mind, the paradigms, roughly in order of value-for-cost:
+
+    LLM as feature extractor (credibility signals), then a cheap classifier. Prompt a big model to score each article on interpretable signals (sensationalism, sourcing/attribution, hedging, opinion-vs-reporting, clickbait, presence of corrections, etc.), then train logistic regression or a small MLP on those signal vectors. This is the direction of Leite et al. [23] and the Srba survey [5]. Cost is one API call per article (~20k articles is affordable); training is trivial; publisher aggregation becomes natural (average the signal vector per publisher) and you get interpretability for free. It also lets you ask which signals carry reliability, which the fine-tuned models can't tell you.
+    Embeddings + multiple-instance learning at the publisher level. Encode every article once with a modern embedding model, then train directly on bags (sets of articles from one publisher) with mean or attention pooling. This matches the weak-supervision structure better than article-level training followed by majority voting: the label is a bag label, so train on bags. 439 publishers is few, but you can sample random sub-bags of 10–20 articles per publisher as augmentation and get thousands of training bags. This also gives you confidence-aware aggregation for free, which you list as future work.
+    Just use current small models. The "dated" critique is mostly cosmetic and cheap to fix: replace BERT-base with ModernBERT or DeBERTa-v3 (same fine-tuning recipe, longer context), and replace Llama 3 8B with whatever the current small open decoders are. Same compute budget, same protocol, and reviewers stop asking.
+    Distillation. Less useful here than it sounds, because you already have gold labels; distilling a big model's labels would just inject its contamination into the student. The variant that could help is rationale distillation: have the big model explain why an article looks (un)reliable, and train the small model on label + rationale. There's evidence this improves data efficiency, but it's more engineering for an uncertain gain. The other defensible use is label denoising: use the big model to flag articles that look atypical for their publisher's tier and downweight them, attacking the label-noise problem you identify in the discussion.
+    Agentic. An agent that visits a publisher, reads the about/ownership/corrections pages and scores NewsGuard's nine criteria is closer to what NewsGuard actually does, and would be a nice future-work paragraph. But it's a different task (not content-only), expensive per publisher, and it abandons the paper's framing, so I wouldn't put it in this version.
+
+If I had to pick one addition with the best ratio of novelty to effort, it's (1) plus the masked/unmasked frontier-model baseline: together they modernize the paper, keep the publisher-disjoint story intact, and turn the "why not just ask GPT?" reviewer question into a result rather than a weakness.
+
+Ad ogni modo, come lo trovi il paper che ti ho passato? 
+Potresti farmi una review?
+
+Volentieri. Te la scrivo come la scriverei da reviewer per TCSS: sintesi, punti di forza, criticità maggiori, minori, raccomandazione.
+
+Giudizio sintetico
+
+Lavoro pulito e ben scritto, con una domanda di ricerca chiara (l'affidabilità di una testata è inferibile dal solo testo, su testate mai viste?) e un protocollo di valutazione corretto, cosa non scontata in questa letteratura. Però il contributo metodologico è sottile (voto di maggioranza su predizioni articolo-livello), le baseline sono troppo deboli per sostenere le conclusioni, e l'analisi del bias politico, che è la parte più "vendibile" del paper, ha un confondimento che a mio avviso ne invalida l'interpretazione così com'è. Lo metterei a major revision.
+
+Punti di forza
+
+    Lo split publisher-disjoint con stratificazione è la scelta giusta e viene motivata bene; molti lavori citati non lo fanno.
+    Il dataset (439 testate, ~19.5k articoli, etichette NewsGuard a cinque livelli) è di dimensione rispettabile e il processo di costruzione è documentato con onestà (fallimenti di scraping, filtro lingua).
+    Le metriche sono ragionate: macro-F1 per lo sbilanciamento, tolerant accuracy per l'ordinalità, baseline diverse per metriche diverse.
+    Il risultato principale (0.60 → 0.69 con aggregazione; errori quasi tutti tra classi adiacenti) è credibile e utile.
+    Modelli rilasciati, materiale supplementare con le matrici di confusione.
+
+Criticità maggiori
+
+    L'analisi del bias politico è confusa dalla composizione delle classi. La Fig. 4 mostra che le leaning hanno mix di affidabilità molto diversi: Slightly Right è quasi tutto l1, Slightly Left è dominato da l4/l5, Non-labelled da l3/l4. Ma la Fig. 2 mostra che l'errore dipende fortemente dal livello (l1 < 20%, l5 > 70%). Quindi "Slightly Right ha errore basso" può voler dire solo "Slightly Right è pieno di l1". Lo stesso vale per la direzione: se Far Left/Far Right sono per lo più l1–l2, gli errori possono solo essere positivi (il vincolo di bordo che voi stessi descrivete in V-C), e se Slightly Left è l4–l5, possono solo essere negativi. Il paper non controlla per il livello di affidabilità: serve almeno un'analisi stratificata (errore per leaning a parità di livello) o una regressione logistica con entrambi i fattori. Senza, la frase in abstract e conclusioni "i modelli sovrastimano gli outlet estremi e sottostimano quelli slightly left" non è supportata.
+    Il chi-quadro viola l'indipendenza. Gli articoli della stessa testata condividono etichetta, leaning e stile: sono osservazioni clusterizzate. Con 19k articoli ma 439 cluster, p < 10⁻³⁰⁰ non dice nulla. Il test andrebbe fatto a livello di publisher, o con correzione per cluster.
+    Baseline troppo deboli. Majority e random non dicono se i transformer servono. Manca la baseline ovvia e gratuita (TF-IDF + regressione logistica/SVM), che su segnali stilistici spesso va vicina a BERT, e manca una baseline zero/few-shot con un LLM generalista, che è la prima domanda che si fa chiunque legga il paper nel 2026 (ne abbiamo parlato prima: con mascheramento dei nomi delle testate diventa anche un esperimento interessante).
+    L'aggregazione non è studiata. Il titolo promette "aggregating LM predictions", ma c'è una sola funzione (moda) e nessun confronto con media/mediana dei livelli ordinali o media delle probabilità. Soprattutto manca la curva "accuratezza publisher-livello vs numero di articoli per testata": è l'informazione più utile per chi volesse usare il sistema davvero (quanti articoli mi servono per profilare una fonte nuova?). Con fino a 200 articoli per testata il voto di maggioranza è quasi certamente saturo; a 5–10 articoli?
+    Nessuna varianza a livello publisher. La Fig. 7 riporta barre senza intervalli: 0.69 su 439 testate sono ~303 corrette, e la differenza RoBERTa 0.69 vs Mistral 0.68 è una testata e mezza. Servono intervalli (bootstrap sui publisher) e idealmente più seed, non solo il 42.
+    Possibile leakage nell'early stopping. Si dice che si salva il modello con la minima validation loss, ma non si descrive un validation set separato dal test fold. Se la validation loss è calcolata sul fold di test, la selezione del modello è contaminata. Va chiarito.
+    Confondimento temporale/topic. Lo scraping dalla homepage in una finestra temporale ristretta fa sì che ogni testata contribuisca con i temi di quel momento; se tema e livello di affidabilità correlano (plausibile nel political news), il classificatore potrebbe aver imparato il tema. Un controllo (es. classificare il topic e verificare la correlazione con il livello, o un'analisi delle feature) rafforzerebbe molto la tesi "textual signals alone".
+    Alcune conclusioni della discussione sono speculative. "I segnali sono concentrati all'inizio dell'articolo" si basa sul fatto che Mistral a 1024 token non migliora: ma cambiano insieme modello, LoRA, epoche e batch. Non è un'ablazione sulla lunghezza. Lo stesso per "limitato dal dataset e non dalla dimensione del modello". Da presentare come ipotesi, non come finding.
+
+Criticità minori
+
+    Bibliografia: [4] e [15] sono lo stesso articolo (Przybyła & Soto), [5] e [20] pure (Srba et al.). [30] cita "Mixtral of Experts" per Mistral 24B, che è un modello diverso; serve il riferimento corretto (Mistral Small 3).
+    Il contributo 4 nella lista è un risultato, non un contributo; i contributi 1 e 2 si sovrappongono con [7] (Burdisso et al.), che fa già stima source-level: va spiegato cosa cambia.
+    Rinvii interni: "In V-B we instantiate Agg" dovrebbe essere V-E; "Section IV-0c" è un refuso di LaTeX; Fig. 4 viene citata in Sez. IV ma compare in V-D.
+    Tabella II riporta accuracy 58.27% per BERT mentre il testo dice ~0.60: immagino sia pooled vs. media sui fold, ma va detto.
+    l5 = "score esattamente 100" è una classe strana; la nota 7 lo ammette, ma allora vale la pena discutere se unire l4 e l5 (o riportare anche i risultati a 4 classi).
+    Perdita ordinale: trattate il problema come nominale (cross-entropy); almeno citare che è un limite, visto che poi usate metriche ordinali.
+    Non è chiaro se il dataset (testi + etichette) è rilasciabile dato che le rating NewsGuard sono proprietarie; dirlo esplicitamente.
+    Fig. 1–3, 5–7: le legende a tratteggio sono poco leggibili in stampa; "Cramér" ha l'accento rotto nel PDF.
+
+Raccomandazione
+
+Major revision. Il nucleo (protocollo + dataset + aggregazione) regge, ma per essere accettabile il paper deve (a) rifare l'analisi del bias politico controllando per livello di affidabilità e con test a livello di cluster, ridimensionando le claim di conseguenza; (b) aggiungere baseline non-neurali e LLM zero-shot; (c) riportare incertezza a livello publisher e la curva accuratezza-vs-numero-di-articoli. Il punto (a) in particolare può cambiare il segno di una delle due conclusioni principali, quindi lo farei prima di tutto il resto.
+
+Se vuoi te la metto in un documento formattato da inviare.
+
+Come imposteresti questa analisi?
+L'analisi del bias politico è confusa dalla composizione delle classi. La Fig. 4 mostra che le leaning hanno mix di affidabilità molto diversi: Slightly Right è quasi tutto l1, Slightly Left è dominato da l4/l5, Non-labelled da l3/l4. Ma la Fig. 2 mostra che l'errore dipende fortemente dal livello (l1 < 20%, l5 > 70%). Quindi "Slightly Right ha errore basso" può voler dire solo "Slightly Right è pieno di l1". Lo stesso vale per la direzione: se Far Left/Far Right sono per lo più l1–l2, gli errori possono solo essere positivi (il vincolo di bordo che voi stessi descrivete in V-C), e se Slightly Left è l4–l5, possono solo essere negativi. Il paper non controlla per il livello di affidabilità: serve almeno un'analisi stratificata (errore per leaning a parità di livello) o una regressione logistica con entrambi i fattori. Senza, la frase in abstract e conclusioni "i modelli sovrastimano gli outlet estremi e sottostimano quelli slightly left" non è supportata.
+
+La imposterei in quattro livelli, dal più semplice (e leggibile per il lettore) al più rigoroso, tenendo ferme due idee: il livello di affidabilità vero va sempre tenuto fisso o inserito come covariata, e l'unità su cui si valuta la significatività è la testata, non l'articolo.
+
+0. Diagnostica: la tabella 5×5
+
+Prima di qualunque test, una heatmap errore-per-cella (livello vero × leaning) con il conteggio di articoli e di testate in ogni cella. Se dentro una riga (stesso livello) i tassi d'errore sono simili tra leaning, il bias è composizione e la storia finisce lì; se differiscono, hai qualcosa. Ti dirà anche quali celle sono vuote o rette da 1–2 testate (sospetto: Far Left × l5, Slightly Right × l5), che vanno marcate e non interpretate. Questa figura sostituisce di fatto Fig. 5.
+
+1. Tasso d'errore standardizzato (per il lettore)
+
+È la standardizzazione diretta dell'epidemiologia: per ogni leaning o calcoli l'errore per livello e lo ripesi con una distribuzione di livelli comune (quella dell'intero dataset):
+
+err_std(o) = Σ_l w_l · err(o, l), con w_l = quota di articoli di livello l nel dataset
+
+Così confronti "l'errore che avrebbe ogni leaning se avesse lo stesso mix di affidabilità". È un numero solo per leaning, si capisce al volo e va direttamente in un barplot al posto dei tassi grezzi. Intervallo via bootstrap sulle testate (ricampioni publisher, non articoli).
+
+2. Modello di regressione (per il test)
+
+Regressione logistica con entrambi i fattori e clustering per testata:
+
+errore_i ~ livello_i + leaning_i + (1 | publisher)
+
+con livello e leaning categoriche (riferimento: Non-labelled o Slightly Right). Il test è il rapporto di verosimiglianza tra il modello con e senza leaning: risponde esattamente alla domanda "leaning spiega qualcosa oltre il livello?". Riporti odds ratio con CI al posto del Cramér's V. Se la dimensione lo permette, aggiungi l'interazione livello × leaning: ti dice se il bias esiste solo a certi livelli (es. solo tra l4/l5), che è probabilmente ciò che troverai, se trovi qualcosa. Alternativa senza effetti casuali: GEE con errori standard cluster-robust per testata. Alternativa senza regressione: test di Cochran–Mantel–Haenszel leaning vs correttezza stratificato per livello, ma non risolve il clustering, quindi lo userei solo come conferma.
+
+3. Direzione dell'errore, senza il vincolo di bordo
+
+Qui cambierei tre cose rispetto alla MED attuale.
+
+Primo, non restringere ai soli errori: è una selezione sull'esito e mescola quanto si sbaglia con in che direzione. Usa ŷ − y su tutti gli articoli (bias medio), e se vuoi anche la MED sugli errori, ma a lato.
+
+Secondo, modella la predizione dato il vero: regressione ordinale (cumulative link, mixed) ŷ ~ y + leaning + (1 | publisher). Il coefficiente di leaning è lo spostamento sistematico della predizione a parità di etichetta vera, che è la definizione corretta di bias direzionale. A livello fissato il vincolo di bordo è identico per tutte le leaning, quindi il confronto è pulito.
+
+Terzo, come lettura semplice: barplot di ŷ − y medio per leaning dentro ciascun livello (5 pannelli piccoli). Se in l2 sia Far Right che Slightly Left vengono sovrastimati nella stessa misura, non c'è bias politico; se a parità di l2 Far Right viene spinto su e Slightly Left no, c'è.
+
+4. Test di permutazione a livello testata (il più onesto)
+
+Per ogni testata hai: livello, leaning, tasso d'errore, bias medio. Statistica: differenza tra leaning dell'errore standardizzato (o il coefficiente del modello). Null: permuta le etichette di leaning tra testate dello stesso livello e ricalcola, 10k volte. Il p-value rispetta sia il clustering sia il condizionamento al livello, non assume distribuzioni, e si spiega in due righe. Con 439 testate non è costoso.
+
+Un'aggiunta che vale la pena
+
+Rifai l'analisi anche sulle predizioni di Stage 2, cioè sulle 439 etichette publisher-livello: sono l'output reale del sistema ed è lì che il bias conta per chi lo usa. Con 439 punti la tabella 5×5 sarà sparsa, quindi usa il modello (2) con livello come covariata, non la stratificazione piena.
+
+Come si legge il risultato
+
+Tre esiti possibili, tutti pubblicabili se detti bene: (a) l'effetto di leaning sparisce a parità di livello → la Sez. V-D diventa "il bias apparente è un artefatto di composizione", che è un risultato metodologico utile e un avvertimento per la letteratura; (b) persiste → la claim attuale è supportata e molto più forte; (c) persiste solo in certe celle, tipicamente l4/l5 dove il modello è già incerto → la claim va riscritta in forma condizionata. In tutti e tre i casi abstract e conclusioni vanno riallineati.
+
+Strumenti: in R lme4::glmer e ordinal::clmm; in Python statsmodels (GEE con cov_struct=Exchangeable, StratifiedTable per CMH), e la permutazione è venti righe di NumPy.
+
+Prima di qualunque test, una heatmap errore-per-cella (livello vero × leaning) con il conteggio di articoli e di testate in ogni cella. Se dentro una riga (stesso livello) i tassi d'errore sono simili tra leaning, il bias è composizione e la storia finisce lì; se differiscono, hai qualcosa. Ti dirà anche quali celle sono vuote o rette da 1–2 testate (sospetto: Far Left × l5, Slightly Right × l5), che vanno marcate e non interpretate. Questa figura sostituisce di fatto Fig. 5.
+
+ma è sostanzialmente la figura 4 del paper, rappresentata con istogrammi:
+
+Hai ragione sui conteggi, ma il contenuto principale è diverso. Fig. 4 mostra quanti articoli ci sono in ogni cella livello × leaning: è la composizione, cioè il denominatore. La figura che propongo mostra il tasso d'errore in ogni cella, cioè la quantità che il paper non riporta mai in forma congiunta.
+
+Il paper ha oggi tre viste separate:
+
+    Fig. 4: conteggio per (livello, leaning) → composizione
+    Fig. 2: errore per livello, marginalizzato sulle leaning
+    Fig. 5: errore per leaning, marginalizzato sui livelli
+
+Il problema è proprio che Fig. 5 è una marginale: media gli errori su un mix di livelli diverso per ogni leaning, e Fig. 4 serve a dimostrare che quel mix è diverso. Quello che manca è la tabella congiunta errore(livello, leaning), che è l'unica da cui si vede se, a parità di livello, le leaning sbagliano in modo diverso. I conteggi di articoli e testate li metterei solo come annotazione nelle celle, per segnalare dove la stima è instabile; il colore è l'errore.
+
+Se preferisci evitare la heatmap, l'equivalente a barre è una Fig. 2 "esplosa": per ogni livello vero, cinque barre affiancate, una per leaning, invece di una per modello. Stessa informazione, formato coerente con il resto del paper. Il numero di testate per cella invece non c'è da nessuna parte, nemmeno in Fig. 4 (che conta articoli), e per il tema del clustering è il dato che conta.
+
+dai grafici tu riesci a generarla?
+
+No, la tabella congiunta non si ricava dai grafici: Fig. 2 e Fig. 5 sono marginali, e da due marginali non si ricostruisce la distribuzione congiunta. Quello che si può fare è il contrario, e vale come controllo rapido: assumere che l'errore dipenda solo dal livello, calcolare l'errore atteso per ogni leaning con i pesi di Fig. 4, e confrontarlo con l'osservato di Fig. 5. Se coincidono, è composizione; se divergono, c'è qualcosa oltre.
+
+L'ho fatto a occhio leggendo i grafici (conteggi di Fig. 4 arrotondati a ±100 articoli, tassi di Fig. 2 mediati sui modelli: l1≈0.15, l2≈0.55, l3≈0.35, l4≈0.45, l5≈0.75), quindi prendi i numeri con ±0.05 di incertezza:
+Leaning	Mix dominante	Errore atteso (solo livello)	Errore osservato (Fig. 5)
+Far Left	l2, l3	≈0.43	≈0.65–0.72
+Slightly Left	l4, l5	≈0.54	≈0.47–0.58
+Non-labelled	l3, l4	≈0.43	≈0.32
+Slightly Right	l1	≈0.30	≈0.32
+Far Right	l2, l1	≈0.40	≈0.60–0.68
+
+Lettura: per Slightly Left e Slightly Right la composizione spiega tutto, il che smonta la parte della claim su "slightly left". Per Far Left e Far Right invece l'osservato è nettamente sopra l'atteso, e per Non-labelled sotto: qui qualcosa oltre il livello sembra esserci. Attenzione però a due cose. Primo, i tassi per livello di Fig. 2 sono essi stessi dominati dalle celle grandi (l1 è quasi tutto Slightly Right, l3 quasi tutto Non-labelled), quindi il "match" di quelle due leaning è in parte tautologico. Secondo, Far Left e Far Right sono probabilmente poche testate (dall'ordine di 10–20), e lo scarto potrebbe reggersi su due o tre outlet anomali: è esattamente il caso in cui serve il test a livello di testata.
+
+Sulla direzione il discorso non cambia: Far Left/Far Right restano per lo più l1–l2, quindi la sovrastima è attesa per costruzione; quello che il controllo suggerisce è che sbagliano più spesso dell'atteso, non che sbaglino in una direzione inattesa.
+
+Questo è di fatto una standardizzazione indiretta (rapporto osservato/atteso, come un SMR). Gli autori hanno i dati e possono farla esatta in dieci righe; se il rapporto per gli estremi resta intorno a 1.5 con dati veri e con intervalli bootstrap sulle testate, la claim sugli estremi sopravvive in forma ridotta e quella su slightly left va tolta.
+Citazione, 1 riga
+
+    L'analisi del bias politico è confusa dalla composizione delle classi. La Fig. 4 mostra che le leaning hanno mix di affidabilità molto diversi: Slightly Right è quasi tutto l1, Slightly Left è dominato da l4/l5, Non-labelled da l3/l4. Ma la
+
+Ragioniamo un attimo su questo punto. 
+Noi l'analisi la facciamo expost, cioe' distribuiamo gli errori una volta fatta la classificazione e vediamo come questi si distribuiscono sui vari leaning. 
+Ora te mi dici, guarda che l'errore piu' grande su L1, chiaramente peserà di piu' su slightly right perché piu' rappresentata, giusto?
+
+Quasi, ma con il segno invertito: l1 è il livello con l'errore più basso (< 20%, Fig. 2), non più alto. E proprio per questo Slightly Right risulta la leaning "più facile": è fatta per l'85% di articoli l1, che il modello azzecca quasi sempre. Il suo 0.30 di errore è in gran parte lo 0.15 di l1 diluito con un po' di l2–l5. Il modello non sta trattando meglio la destra moderata; sta trattando bene gli articoli l1, che per caso stanno quasi tutti lì.
+
+Il punto generale è meccanico. Il tasso d'errore di una leaning, calcolato ex post come fate voi, è una media pesata degli errori per livello, con pesi dati dal mix di livelli di quella leaning:
+
+err(leaning) = Σ_livello quota(livello | leaning) · err(livello)
+
+Quindi, anche se il classificatore fosse perfettamente cieco al colore politico, le leaning avrebbero errori diversi solo perché hanno mix diversi: chi è pieno di l1 o l3 (errore basso) sembra "facile", chi è pieno di l2 o l5 (errore alto) sembra "difficile". Far Left è per lo più l2 → parte da ~0.43 di errore atteso senza alcun bias politico; Slightly Left è l4/l5 → ~0.54; Slightly Right è l1 → ~0.30. Le differenze che vedete in Fig. 5 nascono in buona parte già qui.
+
+Il fatto che l'analisi sia ex post non è il problema, è normale che sia così. Il problema è che il confronto tra leaning non è "a parità di difficoltà": per isolare l'effetto del leaning dovete confrontare gli errori tra leaning dentro lo stesso livello, oppure ripesare ogni leaning con lo stesso mix di livelli, come dicevo prima. E solo lo scarto che resta dopo questo aggiustamento è attribuibile al colore politico. Dal controllo a occhio di prima, quello scarto sembra restare per gli estremi (che sbagliano più del previsto dato il loro mix) e sparire per slightly left/right.
+
+abbiamo queste matrici di confusione per ogni leaning. Ti possono aiutare?
+
+Sì, moltissimo: sono esattamente la tabella congiunta che mancava, con in più il numero di testate per cella. Ti faccio i conti precisi invece di leggere a occhio.
+Eseguiti 2 comandi
+Eseguiti 2 comandi
+
+Sì, e cambiano la storia rispetto a quello che avevo stimato a occhio. Ho ricostruito dalle matrici la tabella congiunta per i quattro modelli; qui la media (errore = 1 − accuratezza di cella; in grigio mentale le celle con poche testate).
+
+Composizione (articoli / testate)
+	l1	l2	l3	l4	l5
+Far Left	86 / 1	355 / 6	6 / 1	408 / 9	160 / 3
+Far Right	469 / 7	999 / 29	291 / 7	383 / 9	—
+Non labelled	71 / 2	635 / 5	3189 / 64	1964 / 24	563 / 15
+Slightly Left	—	245 / 7	174 / 4	1325 / 29	663 / 10
+Slightly Right	4245 / 142	782 / 22	960 / 19	961 / 17	542 / 7
+
+Due cose saltano all'occhio: l1 è all'87% Slightly Right (142 testate su 152), l3 è al 69% Non labelled (64 su 95). Ogni livello ha una leaning "padrona".
+
+Errore per cella, media dei 4 modelli (righe = leaning, colonne = livello vero)
+	l1	l2	l3	l4	l5
+Far Left	0.99*	0.76	0.79*	0.48	0.94*
+Far Right	0.82	0.44	0.90	0.70	—
+Non labelled	0.81*	0.91	0.12	0.32	0.69
+Slightly Left	—	0.48	0.93*	0.39	0.73
+Slightly Right	0.05	0.40	0.79	0.68	0.87
+
+(* = ≤4 testate, non interpretare)
+
+Il risultato è netto e stabile su tutti e quattro i modelli: dentro ogni livello, sbaglia poco solo la leaning che domina quel livello nel training. l1: Slightly Right 0.05, Far Right 0.82. l3: Non labelled 0.12, tutte le altre 0.79–0.93. l4: Non labelled/Slightly Left 0.32–0.39, Far Right/Slightly Right ~0.70. Il campo "Dom" delle vostre matrici dice anche che non è un outlier: gli errori di Far Right in l1 vengono da 7 testate su 7, quelli di Slightly Right in l3 da 18–19 su 19.
+
+Osservato vs atteso (se l'errore dipendesse solo dal livello), per leaning
+	O/E RoBERTa	Mistral	Llama	BERT
+Far Left	1.37	1.25	1.44	1.30
+Far Right	1.50	1.46	1.50	1.48
+Non labelled	0.75	0.72	0.73	0.75
+Slightly Left	0.93	1.04	0.89	1.05
+Slightly Right	1.07	1.08	1.10	1.00
+
+Quindi, cosa regge e cosa no della Sez. V-D:
+
+    "Gli estremi sbagliano di più" regge anche a parità di livello (O/E ≈ 1.3–1.5), ma la lettura corretta non è "il modello penalizza gli estremi": è che Far Left e Far Right sono quasi sempre la leaning minoritaria del loro livello, e il modello sbaglia su qualunque leaning minoritaria, destra o sinistra che sia. Slightly Right è la "facile" solo perché possiede l1; nei livelli l3–l5 è pessima quanto gli altri (0.68–0.87).
+    "Slightly Left è sottostimata" non regge. L'O/E è ≈ 1. E guardando l'errore firmato dentro ogni livello, la direzione è la stessa per tutte le leaning: in l1–l2 tutti sovrastimati (+0.5…+2.8), in l4–l5 tutti sottostimati (−0.2…−1.6). Far Left in l4 è sottostimata (−0.23), Far Right in l4 è la più sottostimata di tutte (−0.94). La sovrastima degli estremi e la sottostima di slightly left in Fig. 6 sono interamente composizione + vincolo di bordo. Questa parte va tolta da abstract e conclusioni.
+    La cosa interessante che emerge, e che secondo me vale più della claim attuale: il classificatore di affidabilità ha imparato in parte un classificatore di leaning. Dato lo squilibrio leaning × affidabilità del dataset (che è una proprietà dell'ecosistema NewsGuard, non un vostro errore), "suona slightly-right" è un predittore eccellente di l1 e "suona mainstream non etichettato" di l3, e il modello li usa come scorciatoia. Il test di generalizzazione publisher-disjoint non lo rivela perché la correlazione si trasferisce alle testate nuove. Lo si vede anche dal fatto che gli errori tendono a cadere nei livelli dove la leaning dell'articolo è ben rappresentata: per Far Left e Slightly Left circa il 40% degli errori finisce nel livello modale della leaning, contro un 25% atteso se fossero distribuiti a caso.
+
+Come lo riscriverei: V-D diventa "leaning come scorciatoia", con la tabella congiunta sopra al posto di Fig. 5 e 6, l'O/E con bootstrap sulle testate come misura dell'effetto residuo, e la regressione mista errore ~ livello + leaning + (1|testata) per la significatività. Volendo chiudere il cerchio, un probe lineare sulle rappresentazioni del modello che predice la leaning dall'articolo: se funziona bene, hai la prova diretta del meccanismo. È un contributo più onesto e più forte di "i modelli hanno un bias politico", e dà anche la risposta al perché Mistral 24B non migliora: se la scorciatoia è nei dati, più capacità non la elimina.
+
+Se ti serve, ti passo lo script che ha generato i numeri così li rifate sulle predizioni originali con gli intervalli.

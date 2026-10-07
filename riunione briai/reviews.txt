@@ -1,0 +1,130 @@
+Decision letter (Initial Submission)
+From Articles to Publishers: Aggregating Language Model Predictions for News Source Reliability Inference
+Subject	TCSS-2026-06-1033
+Date sent	24 September 2026 at 05:25 CEST
+From	
+TCSS.IEEE@gmail.com
+To	
+john.bianchi@imtlucca.it
+Dear Mr. Bianchi:
+
+Based on the reviewer reports and the Associate Editor's recommendation, I regret to inform you that your paper cannot be accepted. The journal is very competitive, and we only hope that the attached reviews are useful to you in your research. If the reviewers have attached a PDF or text file review, you will need to retrieve it from your Author Center. Therefore, please check the Author Center for more information when appropriate.
+
+Associate Editor comments for Authors:
+
+Associate Editor
+Comments to the Author:
+This paper has been reviewed by two reviewers and some important comments are shown. In particular, both reviewers provided negative comments, pointing out limited novelty, insufficient rigor in technical analysis, inadequate experimental work and etc. I agree with their comments and recommend that the paper should be rejected.
+
+Thank you for submitting to the IEEE Transactions on Computational Social Systems.  We hope that you will consider us as an outlet for future research papers.
+
+
+Sincerely,
+
+Prof. Dr. Bin Hu, FIEEE, FIET, FAAIA, the EiC of IEEE TCSS.
+
+
+********************** Reviews **********************
+
+Reviewer: 1
+
+Recommendation: Reject
+
+Comments:
+(There are no comments. Please check to see if comments were included as a file attachment with this e-mail or as an attachment in your Author Center.)
+
+Additional Questions:
+Summary of Evaluation: Poor
+
+Organization: 1
+
+Clarity: 2
+
+Length: 3
+
+References: 2
+
+Correctness: 2
+
+Significance: 1
+
+Originality: 3
+
+Attachments: 2
+
+If Survey Coverage: 1
+
+Contribution: 1
+
+Please make very detailed technical and editorial comments and suggestions in your comments. If it is necessary to provide mathematical corrections, please email them to us as a pdf file. If you must get other information back to us that cannot be sent via email, please mail it to us. Your comments are an invaluable aid to the author to help in improving the overall technical quality, utility, and readability of the material. Such comments are not just useful, they are necessary to maintain the quality of the articles that are published in the SMC Transactions. Particular attention should be given to details that guide possible revisions, or that clearly explain reasons for rejection.:
+
+What are the contributions of the paper?: The paper addresses a meaningful problem, but I have several concerns about the current version. The proposed approach is largely based on existing pretrained language models, standard fine-tuning, and majority voting, so the methodological contribution is fairly limited. More importantly, the evidence for the claimed benefit of aggregation is not yet convincing, since the article-level and publisher-level results are not directly comparable under the same evaluation setup. The political bias analysis also does not sufficiently account for reliability-level confounding or publisher-level clustering.
+
+These issues affect the main conclusions of the paper and would require additional controlled experiments and a substantial reanalysis, rather than minor revisions. For this reason, I recommend rejection.
+
+Specific comments:
+
+1. Limited methodological novelty. The two-stage framework is essentially standard fine-tuning of pretrained language models followed by majority voting. The main contribution seems to be the task formulation, dataset construction, and evaluation setup, rather than a new model architecture, learning objective, or aggregation method.
+
+2. The aggregation gain is not cleanly measured. The comparison between the article-level score (~0.60) and the publisher-level score (~0.69) changes both the evaluation unit and the weighting of publishers. As a result, the improvement cannot be attributed to aggregation alone.
+
+3. The political bias analysis may be confounded by reliability level. The distribution of reliability labels differs substantially across political leanings, and some reliability levels are clearly more difficult to classify than others. The relationship between political leaning and prediction error should therefore be tested again after controlling for the true reliability level.
+
+4. The chi-square analysis treats clustered observations as independent. Political leaning and reliability are publisher-level attributes shared by multiple articles from the same publisher. Using all articles as independent observations may lead to pseudo-replication and overstate the effective sample size and significance of the results.
+
+5. Publisher-specific cues and extraction artifacts are not ruled out. The paper does not include systematic text cleaning, source-identifier masking, or sanitized-text ablations. It is therefore difficult to tell whether the model is learning reliability-related content or simply exploiting publisher-specific signals and scraping artifacts.
+
+6. The scraping process may introduce selection bias. Only 439 of the 669 candidate publishers were included in the final dataset, and the scraping success rates differ across reliability levels. The paper does not examine whether the publishers that were successfully scraped differ systematically from those that were not.
+
+7. The discussion of model size is not based on a controlled comparison. The models differ in architecture, fine-tuning strategy, training schedule, and context length, in addition to parameter count. The observed performance differences therefore cannot be attributed to model size alone. The current results also do not support the conclusion that the main bottleneck is the data rather than model scale.
+
+8. The publisher-level model comparison lacks uncertainty estimates. Differences such as 0.69 versus 0.68 are small, but the paper does not report confidence intervals, bootstrap results, or paired significance tests. It is therefore unclear whether these differences are meaningful.
+
+What are the additional ways in which the paper could be improved?: See contributions
+
+If you are suggesting additional references they must be entered in the text box provided.  All suggestions must include full bibliographic information plus a DOI.
+: None
+
+
+Reviewer: 2
+
+Recommendation: Reject
+
+Comments:
+This paper reformulates news source reliability assessment as a source-level inference problem, in which transformer-based models score individual articles and their predictions are aggregated to estimate the reliability of unseen publishers. Its contributions are a two-stage aggregation framework using majority voting, a strict publisher-disjoint evaluation protocol that removes the label leakage inherent in publisher-inherited article labels, a benchmark of 19,476 English-language political news articles from 439 publishers labelled with discretized NewsGuard ratings, and a bias-aware error analysis across reliability levels and political leanings. Aggregation raises accuracy from roughly 0.60 to 0.69, with errors confined to adjacent levels; the authors conclude that publisher reliability is inferable from aggregated textual signals alone, that model scale is not the bottleneck, and that politically asymmetric error patterns call for bias-aware evaluation. However, there are still some limitations：
+1. I am not persuaded by the motivation for recasting the task at the publisher level. Although the paper shifts from article-level to publisher-level scoring, the proposed pipeline remains heavily dependent on the article-level task: publisher reliability is, by construction, obtained as a fixed aggregation of article-level outputs. It is expected that any improvement in the article-level scorer would be inherited at the publisher level, and on this reading the re-formulation does not introduce substantial new insight beyond a change in the unit of evaluation.
+2. The paper lacks a comparison against dedicated article-level scoring models. Publisher-level scores can equally be produced by first scoring individual articles with a model pretrained specifically for article-level reliability classification, or with a general-purpose LLM such as Qwen, and then applying the same voting strategy to obtain the publisher-level rating. No such comparison is reported.
+3. The scale of the dataset does not support the characterization "large-scale". Although the corpus contains 19,476 articles, the objective of the paper is scoring at the level of the publisher, and the dataset comprises only 439 publishers. The dataset is therefore unlikely to support effective use in real-world applications.
+
+
+Additional Questions:
+Summary of Evaluation: Fair
+
+Organization: 3
+
+Clarity: 4
+
+Length: 3
+
+References: 3
+
+Correctness: 4
+
+Significance: 2
+
+Originality: 4
+
+Attachments: 3
+
+If Survey Coverage: 4
+
+Contribution: 3
+
+Please make very detailed technical and editorial comments and suggestions in your comments. If it is necessary to provide mathematical corrections, please email them to us as a pdf file. If you must get other information back to us that cannot be sent via email, please mail it to us. Your comments are an invaluable aid to the author to help in improving the overall technical quality, utility, and readability of the material. Such comments are not just useful, they are necessary to maintain the quality of the articles that are published in the SMC Transactions. Particular attention should be given to details that guide possible revisions, or that clearly explain reasons for rejection.:
+
+What are the contributions of the paper?:
+
+What are the additional ways in which the paper could be improved?:
+
+If you are suggesting additional references they must be entered in the text box provided.  All suggestions must include full bibliographic information plus a DOI.
+: N/A
