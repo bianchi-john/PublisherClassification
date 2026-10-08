@@ -595,47 +595,23 @@
     \item Non solo intrecciati: in alcune combinazioni i dati \hl{mancano del tutto}
     \item Nessuna testata far-right \`e in $l_5$; 142 su 207 slightly-right sono in $l_1$
     \item Quando due variabili sono cos\`i sovrapposte, \hl{nessuna analisi} pu\`o separarle del tutto
-    \item[] {\small\itshape Quindi ``controllare per l'affidabilit\`a'' suona pi\`u sicuro di quanto sia.}
   \end{itemize}
   \vfill
 \end{frame}
 
-\begin{frame}{Problema 4 --- cosa dice ChatGPT}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.9em}
-    \item Nel paper: gli estremi (far left/right) hanno \hl{4--6 volte} pi\`u errori del gruppo di riferimento
-    \item \`E un ``odds ratio'': quante volte pi\`u spesso sbagliano, a parit\`a del resto
-    \item ChatGPT: un numero cos\`i, \hl{da solo}, non basta
-  \end{itemize}
-  \vfill
-\end{frame}
 
-\begin{frame}{Problema 4 --- cosa manca}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.7em}
-    \item Serve il suo \hl{margine di incertezza} (intervallo di confidenza)
-    \item[] {\small\itshape Invece di ``6 volte'' potrebbe essere ``tra 2 e 19 volte'': molto incerto.}
-    \item E \hl{quante testate} ci sono dietro ogni gruppo
-    \item[] {\small\itshape Se il ``6 volte'' nasce da 2--3 testate, pu\`o essere fortuna.}
-    \item E va calcolato \hl{per testata}, non per articolo (come nel Problema 1)
-  \end{itemize}
-  \vfill
-\end{frame}
-
-\begin{frame}{Problema 5 --- il $\chi^2$ ha bisogno di abbastanza dati}
+\begin{frame}{Problema 4 --- il $\chi^2$ ha bisogno di abbastanza dati}
   \vfill
   \begin{itemize}[<+->]
     \setlength\itemsep{0.9em}
     \item Il $\chi^2$ confronta, in ogni casella, quello che \hl{osserva} con quello che \hl{si aspetterebbe}
-    \item Funziona solo se in ogni casella c'\`e \hl{abbastanza} roba (regola pratica: almeno $\sim$5 attesi)
+    \item Funziona solo se in ogni casella ci sono \hl{abbastanza osservazioni} (regola pratica: almeno $\sim$5 attese)
     \item Con poche testate, alcune caselle sono quasi \hl{vuote}
   \end{itemize}
   \vfill
 \end{frame}
 
-\begin{frame}{Problema 5 --- nel nostro caso}
+\begin{frame}{Problema 4 --- nel nostro caso}
   \vfill
   \begin{itemize}[<+->]
     \setlength\itemsep{0.8em}
@@ -647,19 +623,8 @@
   \vfill
 \end{frame}
 
-\begin{frame}{Problema 5 --- la soluzione}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.8em}
-    \item Invece di fidarsi dell'approssimazione, si \hl{mescolano a caso} le etichette tante volte (es. 10.000)
-    \item Si guarda quanto spesso il puro caso d\`a un legame forte come il nostro
-    \item[] {\small\itshape Se quasi mai $\rightarrow$ il nostro legame \`e vero.}
-    \item Nessuna approssimazione $\rightarrow$ funziona \hl{anche con pochi dati} (``test esatto'' o ``di permutazione'')
-  \end{itemize}
-  \vfill
-\end{frame}
 
-\begin{frame}{Problema 6 --- la MED guarda solo gli errori}
+\begin{frame}{Problema 5 --- la MED guarda solo gli errori}
   \vfill
   \begin{itemize}[<+->]
     \setlength\itemsep{1.0em}
@@ -669,7 +634,7 @@
   \vfill
 \end{frame}
 
-\begin{frame}{Problema 6 --- l'esempio}
+\begin{frame}{Problema 5 --- l'esempio}
   \vfill
   \begin{itemize}[<+->]
     \setlength\itemsep{0.7em}
@@ -677,12 +642,24 @@
     \item Gruppo B: sbaglia il \hl{10\%}, con la stessa MED $+0.5$
     \item Stessa MED, ma l'effetto totale \`e \hl{diversissimo}: A viene spinto in alto 7 volte su 10, B solo 1 su 10
     \item[] {\small\itshape Nel paper gli estremi sbagliano il 60--72\%, i non-labelled il 30\%: confrontare le loro MED inganna.}
-    \item Soluzione: riportare anche la direzione media su \hl{tutti} gli articoli
+    \item Soluzione: riportare anche la direzione media su \hl{tutti} gli articoli, compresi quelli classificati \hl{correttamente} (che contano zero)
   \end{itemize}
   \vfill
 \end{frame}
 
-\begin{frame}{Problema 7 --- la direzione \`e ``obbligata'' dai bordi}
+\begin{frame}{Problema 5 --- un'incoerenza nel paper bocciato}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.9em}
+    \item La \hl{formula} della MED usa solo gli articoli \hl{sbagliati}
+    \item Ma i numeri \hl{per livello} (es.\ $l_5 \approx -1{,}30$) sono calcolati su \hl{tutti} gli articoli
+    \item Mentre quelli \hl{per orientamento} (estremi da $+0{,}33$ a $+1{,}00$) solo sugli \hl{errori}
+    \item[] {\small\itshape Due definizioni diverse nello stesso paper: nel nuovo va scelta una sola, e dichiarata.}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Problema 6 --- la direzione \`e ``obbligata'' dai bordi}
   \vfill
   \begin{itemize}[<+->]
     \setlength\itemsep{0.8em}
@@ -693,34 +670,11 @@
   \vfill
 \end{frame}
 
-\begin{frame}{Problema 8 --- la frase sul deployment}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.8em}
-    \item Nel paper: \emph{``the disparity would appear in deployment whatever its mechanism''}
-    \item Vuol dire: la disparit\`a si vedr\`a comunque quando il modello \`e usato davvero, \hl{qualunque} ne sia la causa
-    \item ChatGPT: non possiamo saperlo --- dipende da quali testate, dal cambio di dominio, da come si aggrega
-    \item Meglio: ``il modello \hl{potrebbe} riprodurla''
-  \end{itemize}
-  \vfill
-\end{frame}
-
-\begin{frame}{Problema 8 --- la forza del legame (Cramér's V)}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.8em}
-    \item Nel paper l'effetto \`e definito ``\hl{small-to-moderate}'' (piccolo-moderato)
-    \item Cramér's V misura la \hl{forza} del legame (lo abbiamo visto)
-    \item ChatGPT: le soglie ``piccolo/moderato'' \hl{non sono universali} $\rightarrow$ meglio ``associazione non trascurabile''
-    \item[] {\small\itshape (minore) ``ground truth'' $\rightarrow$ ``reference labels'': tema politicamente sensibile.}
-  \end{itemize}
-  \vfill
-\end{frame}
 
 % ================================================================
-%  RISPOSTA DI JOHN A CHATGPT (al posto della conclusione di ChatGPT)
+%  CONSIDERAZIONE DI JOHN A CHATGPT (al posto della conclusione di ChatGPT)
 % ================================================================
-\begin{frame}{Risposta di John a ChatGPT (1)}
+\begin{frame}{Considerazione di John a ChatGPT (1)}
   \vfill
   \begin{itemize}[<+->]
     \setlength\itemsep{0.8em}
@@ -732,7 +686,7 @@
   \vfill
 \end{frame}
 
-\begin{frame}{Risposta di John a ChatGPT (2)}
+\begin{frame}{Considerazione di John a ChatGPT (2)}
   \vfill
   \begin{itemize}[<+->]
     \setlength\itemsep{0.8em}
@@ -744,7 +698,7 @@
   \vfill
 \end{frame}
 
-\begin{frame}{Risposta di John a ChatGPT (3)}
+\begin{frame}{Considerazione di John a ChatGPT (3)}
   \vfill
   \begin{itemize}[<+->]
     \setlength\itemsep{0.9em}
@@ -756,25 +710,326 @@
   \vfill
 \end{frame}
 
-\begin{frame}{Fabio $\times$ Claude --- (1) idee e review}
+% ================================================================
+%  FABIO x CLAUDE: solo cio' che e' nuovo rispetto a revisori e ChatGPT
+% ================================================================
+\begin{frame}{Fabio $\times$ Claude --- cos'\`e}
+  \vfill
   \begin{itemize}[<+->]
-    \setlength\itemsep{0.8em}
-    \item Tre parti: idee sui modelli, una review completa, un'analisi quantitativa del bias
-    \item \hl{Modelli}: gli LLM grandi ``conoscono'' le testate per nome (contaminazione) $\rightarrow$ i piccoli fine-tuned sono lo strumento giusto; baseline LLM con \hl{mascheramento dei nomi}
-    \item Idee nuove: LLM come \hl{estrattore di feature} + classificatore; \hl{embeddings + multiple-instance learning}
-    \item \hl{Review} (major revision): baseline deboli, aggregazione non studiata, incertezza mancante, bias confuso
+    \setlength\itemsep{0.9em}
+    \item Fabio ha chiesto a Claude tre cose: come usare i modelli grandi, una review del paper, come impostare l'analisi del bias
+    \item Gli ha anche dato le \hl{matrici di confusione per orientamento}: Claude ci ha fatto dei conti veri
+    \item Qui solo quello che \hl{non} hanno gi\`a detto i revisori o ChatGPT
+    \item[] {\small\itshape I numeri li ho ricontrollati sulle nostre predizioni: coincidono.}
   \end{itemize}
+  \vfill
 \end{frame}
 
-\begin{frame}{Fabio $\times$ Claude --- (2) l'analisi del bias}
+% ---------------------------------------------------------------- A. bias
+\begin{frame}{Fabio --- la tabella congiunta: l'idea}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.9em}
+    \item Il paper guarda l'errore \hl{per livello} (Fig.~2) e \hl{per orientamento} (Fig.~5), ma \hl{separatamente}
+    \item Fabio: guardiamoli \hl{insieme}, in una sola tabella: righe = orientamenti, colonne = livelli
+    \item In ogni casella: quanto sbaglia il modello su \emph{quel} tipo di testate
+    \item[] {\small\itshape Es.: la casella ``Far Right $\times$ $l_1$'' dice quanto sbaglia sugli articoli delle testate far-right di livello 1.}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Fabio --- la tabella congiunta: cosa mostra}
+  \begin{columns}[c]
+    \begin{column}{0.47\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{0.7em}
+        \item Ogni livello ha un orientamento ``\hl{padrone}'': $l_1$ \`e all'87\% slightly right, $l_3$ al 69\% non-labelled
+        \item Dentro il livello sbaglia poco \hl{solo il padrone}: in $l_1$ slightly right 5\%, far right 82\%
+        \item[] {\small\itshape Chiarissimo nei due livelli pi\`u grandi, $l_1$ e $l_3$.}
+        \item Conferma la considerazione di John: ``$l_1$ facile'' \`e in realt\`a ``\hl{slightly right} facile''
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.53\textwidth}
+      \onslide<2->{%
+      \footnotesize
+      \begin{center}
+      Errore (\%), media dei 4 modelli\\[0.3em]
+      \begin{tabular}{lrrrrr}
+        \toprule
+         & $l_1$ & $l_2$ & $l_3$ & $l_4$ & $l_5$ \\
+        \midrule
+        Far Left       & 99 & 76 & 79 & 48 & 94 \\
+        Slightly Left  & -- & 48 & 93 & 39 & 73 \\
+        Non labelled   & 81 & 91 & \textbf{12} & 32 & 69 \\
+        Slightly Right & \textbf{5} & 40 & 79 & 68 & 87 \\
+        Far Right      & 82 & 44 & 90 & 70 & -- \\
+        \bottomrule
+      \end{tabular}
+      \end{center}}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Fabio --- osservato contro atteso: l'idea}
+  \vfill
   \begin{itemize}[<+->]
     \setlength\itemsep{0.8em}
-    \item Dalle matrici di confusione ha ricostruito l'errore per \hl{(livello $\times$ orientamento)}
-    \item ``Slightly Left sottostimata'' \`e un \hl{artefatto di composizione} $\rightarrow$ va tolta
-    \item ``Gli estremi sbagliano di pi\`u'' regge, ma perch\'e sono la \hl{minoranza} del loro livello
-    \item Il modello ha imparato l'orientamento come \hl{scorciatoia} $\rightarrow$ spiega anche il nullo di Mistral
-    \item \`E la riformulazione pi\`u forte della sezione bias
+    \item Domanda: un orientamento sbaglia di pi\`u \hl{per s\'e}, o solo perch\'e contiene livelli difficili?
+    \item \hl{Atteso}: l'errore che avrebbe se contasse \hl{solo il livello}
+    \item[] {\small\itshape Es.: met\`a articoli $l_1$ (errore 15\%) e met\`a $l_5$ (errore 75\%) $\rightarrow$ atteso 45\%.}
+    \item \hl{Osservato}: l'errore vero. Si fa il rapporto osservato/atteso:
+    \item[] $=1$: nulla oltre il livello \quad $>1$: sbaglia \hl{pi\`u} del previsto \quad $<1$: \hl{meno}
+    \item[] {\small\itshape Far right: atteso 43\%, osservato 63\% $\rightarrow$ rapporto $\approx 1{,}5$.}
   \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Fabio --- osservato contro atteso: i risultati}
+  \begin{columns}[c]
+    \begin{column}{0.52\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{0.8em}
+        \item Slightly left e slightly right $\approx 1$: le loro differenze sono \hl{solo composizione}
+        \item Gli estremi sbagliano \hl{pi\`u del previsto}, anche a parit\`a di livello
+        \item I non-labelled \hl{meno} del previsto
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \onslide<2->{%
+      \small
+      \begin{center}
+      Osservato / atteso (4 modelli)\\[0.3em]
+      \begin{tabular}{lc}
+        \toprule
+        Far Left       & 1,25 -- 1,44 \\
+        Far Right      & 1,46 -- 1,50 \\
+        Non labelled   & 0,72 -- 0,75 \\
+        Slightly Left  & 0,89 -- 1,05 \\
+        Slightly Right & 1,00 -- 1,10 \\
+        \bottomrule
+      \end{tabular}
+      \end{center}}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Fabio --- perch\'e gli estremi sbagliano di pi\`u}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.9em}
+    \item Non perch\'e il modello li ``penalizzi'' politicamente
+    \item Far left e far right sono quasi sempre l'orientamento \hl{minoritario} del loro livello
+    \item E il modello sbaglia su \hl{qualunque} minoranza, di destra o di sinistra
+    \item[] {\small\itshape Slightly right \`e ``facile'' solo dove \`e padrone ($l_1$); in $l_3$--$l_5$ sbaglia quanto gli altri (68--87\%).}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Fabio --- l'ipotesi: l'orientamento come scorciatoia}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Il modello avrebbe imparato in parte a riconoscere l'\hl{orientamento}, e lo usa per indovinare l'affidabilit\`a
+    \item[] {\small\itshape ``Suona slightly right'' $\rightarrow$ $l_1$; ``suona mainstream'' $\rightarrow$ $l_3$.}
+    \item La separazione per testata \hl{non lo smaschera}: la scorciatoia funziona anche sulle testate nuove
+    \item Spiegherebbe perch\'e \hl{Mistral 24B non migliora}: se la scorciatoia \`e nei dati, pi\`u capacit\`a non la toglie
+    \item[] {\small\itshape \`E un'ipotesi: va verificata (slide successiva).}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Fabio --- come verificarla: il ``linear probe''}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Dentro di s\'e, il modello trasforma ogni articolo in una lista di numeri (la sua ``rappresentazione'')
+    \item Su questi numeri si addestra un classificatore \hl{semplicissimo} che deve indovinare l'\hl{orientamento}
+    \item Se ci riesce bene $\rightarrow$ il modello ``conosce'' l'orientamento, anche se nessuno glielo ha insegnato
+    \item[] {\small\itshape Se dal compito di uno studente si indovina da quale scuola viene, il compito ne porta traccia.}
+    \item Sarebbe la \hl{prova diretta} della scorciatoia
+  \end{itemize}
+  \vfill
+\end{frame}
+
+% ---------------------------------------------------------------- B. baseline e LLM
+\begin{frame}{Fabio --- una baseline semplice: TF-IDF}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Oggi confrontiamo i transformer solo con baseline ``stupide'' (classe pi\`u frequente, caso)
+    \item Fabio: aggiungere un modello \hl{semplice ma serio}, senza reti neurali
+    \item \hl{TF-IDF}: conta le parole di ogni articolo, dando pi\`u peso a quelle rare e distintive; sopra, una regressione logistica
+    \item[] {\small\itshape Se un ``contatore di parole'' arriva vicino ai transformer, i transformer non stanno aggiungendo molto.}
+    \item Costa pochissimo da fare
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Fabio --- il problema della ``contaminazione''}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Domanda di ogni lettore: ``perch\'e non chiedere direttamente a GPT?''
+    \item Ma un LLM grande \hl{conosce gi\`a} queste testate: le ha lette in addestramento e ne sa la reputazione
+    \item E negli articoli il nome della testata compare spesso (firma, pi\`e di pagina, link)
+    \item Quindi GPT potrebbe \hl{ricordare la reputazione} invece di leggere il testo
+    \item[] {\small\itshape Come far giudicare un vino ``alla cieca'' lasciando l'etichetta sulla bottiglia.}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Fabio --- l'esperimento: con e senza nomi}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Si fa valutare a un LLM lo stesso articolo due volte: \hl{normale} e con nomi, siti e firme \hl{cancellati}
+    \item Se senza nomi va molto peggio $\rightarrow$ prima stava \hl{riconoscendo la testata}, non giudicando il testo
+    \item Trasforma la domanda ``perch\'e non GPT?'' in un \hl{risultato}
+    \item E spiega perch\'e i modelli piccoli addestrati da noi sono lo strumento giusto per \emph{questa} domanda
+  \end{itemize}
+  \vfill
+\end{frame}
+
+% ---------------------------------------------------------------- C. nuovi metodi
+\begin{frame}{Fabio --- LLM come estrattore di segnali: l'idea}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Invece di chiedere all'LLM ``\`e affidabile?'', gli si chiede un \hl{voto su segnali precisi}
+    \item[] {\small\itshape Sensazionalismo, fonti citate, toni prudenti, opinione o cronaca, titolo acchiappa-clic, presenza di rettifiche\dots}
+    \item Ogni articolo diventa una \hl{lista di voti}
+    \item[] {\small\itshape Es.: sensazionalismo 8/10, fonti citate 2/10, opinione 9/10, \dots}
+    \item Poi un classificatore semplice impara \hl{quali segnali contano}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Fabio --- LLM come estrattore di segnali: perch\'e}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item \hl{Costa poco}: una chiamata all'LLM per articolo ($\sim$20.000 in tutto)
+    \item \hl{Si capisce}: sappiamo \emph{quali} segnali distinguono una testata affidabile
+    \item Aggregare \`e naturale: il profilo di una testata \`e la \hl{media} dei voti dei suoi articoli
+    \item Per Fabio \`e la proposta con il miglior rapporto novit\`a/fatica, insieme all'esperimento con e senza nomi
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Fabio --- multiple-instance learning: l'idea}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Oggi: classifichiamo \hl{ogni articolo}, poi \hl{votiamo}
+    \item Ma l'etichetta vera \`e della \hl{testata}, non del singolo articolo
+    \item Idea: addestrare il modello direttamente su ``\hl{sacchetti}'' di articoli: tutti quelli di una testata insieme, con l'etichetta della testata
+    \item[] {\small\itshape Come giudicare un ristorante leggendo tutte le recensioni insieme, invece di dare un voto a ciascuna e fare la maggioranza.}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Fabio --- multiple-instance learning: come}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Ogni articolo viene trasformato una volta in un \hl{embedding}: una lista di numeri che ne riassume il significato
+    \item Il modello impara a combinare gli embedding di una testata (media, o pesando di pi\`u gli articoli pi\`u utili)
+    \item 439 testate sono poche: si creano tanti sacchetti \hl{a caso} da 10--20 articoli della stessa testata $\rightarrow$ migliaia di esempi
+    \item In pi\`u d\`a una \hl{misura di confidenza} sul giudizio della testata
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Fabio --- modelli pi\`u recenti e altre idee}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.7em}
+    \item BERT e Llama~3 sembrano ``datati'': stessa ricetta con modelli attuali (\hl{ModernBERT}, \hl{DeBERTa-v3}, piccoli decoder recenti)
+    \item[] {\small\itshape Quasi solo estetica, ma toglie un appiglio ai revisori.}
+    \item \hl{Pulizia delle etichette}: un LLM segnala gli articoli atipici per la loro testata e si d\`a loro meno peso
+    \item \hl{Distillazione}: poco utile, le etichette le abbiamo gi\`a
+    \item \hl{Agente}: visita la testata, legge le pagine ``chi siamo'', propriet\`a, rettifiche, e valuta i 9 criteri di NewsGuard
+    \item[] {\small\itshape \`E un altro task (non solo testo): lavoro futuro.}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+% ---------------------------------------------------------------- D. aggregazione
+\begin{frame}{Fabio --- confrontare modi di aggregare}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Oggi usiamo un solo modo: il \hl{voto di maggioranza}
+    \item Alternative: \hl{media} dei livelli, \hl{mediana}, media delle \hl{probabilit\`a}
+    \item Esempio, 10 articoli: 4 dicono $l_2$, 3 dicono $l_3$, 3 dicono $l_4$
+    \item[] Maggioranza: $l_2$ \qquad Media: $(4{\cdot}2+3{\cdot}3+3{\cdot}4)/10 = 2{,}9 \rightarrow l_3$
+    \item Risposte \hl{diverse}: vale la pena confrontarle
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Fabio --- quanti articoli servono?}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Domanda pratica: per giudicare una testata \hl{nuova}, quanti articoli mi servono?
+    \item La curva: accuratezza sulla testata usando 5, 10, 20, 50\dots\ articoli
+    \item Con fino a 200 articoli il voto \`e probabilmente gi\`a ``saturo'': la domanda interessante \`e \hl{con pochi}
+    \item[] {\small\itshape \`E l'informazione pi\`u utile per chi volesse usare il sistema davvero.}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+% ---------------------------------------------------------------- E. altri punti nuovi
+\begin{frame}{Fabio --- l'early stopping}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Nel paper: un \emph{early stopping} ``che salva il modello con la validation loss minima''
+    \item Ma non si dice \hl{su quali dati} si calcola la validation loss
+    \item Se fosse il fold di \hl{test}, avremmo scelto il modello guardando il test: risultati \hl{gonfiati}
+    \item[] {\small\itshape Dal codice: lo usa solo Llama, su un 10\% degli articoli di training, quindi nessuna contaminazione. Ma va scritto.}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Fabio --- tema e periodo}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Gli articoli sono presi dalle homepage in un \hl{periodo breve}: ogni testata porta i \hl{temi del momento}
+    \item Se tema e affidabilit\`a vanno insieme, il modello potrebbe imparare il \hl{tema}, non l'affidabilit\`a
+    \item[] {\small\itshape Es.: se quella settimana le testate inaffidabili parlano tutte dello stesso argomento, basta riconoscere l'argomento.}
+    \item Controllo: classificare il tema degli articoli e vedere se \`e legato al livello
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Fabio --- la classe $l_5$ e l'ordine dei livelli}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item $l_5$ = punteggio \hl{esattamente 100}: classe piccola e quasi impossibile da distinguere da $l_4$
+    \item Proposta: \hl{unire} $l_4$ e $l_5$, o riportare anche i risultati a 4 classi
+    \item I livelli sono \hl{ordinati}, ma il modello \`e addestrato come se fossero categorie slegate
+    \item[] {\small\itshape In addestramento confondere $l_5$ con $l_4$ costa quanto confonderlo con $l_1$: va almeno detto come limite.}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Fabio --- correzioni di scrittura (verificate)}
+  \vfill
+  \small
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.55em}
+    \item Bibliografia doppia: [4] = [15] (Przyby\l{}a \& Soto), [5] = [20] (Srba et al.)
+    \item {[30]} cita ``Mixtral of Experts'' per Mistral 24B: \`e un modello diverso
+    \item Rinvii sbagliati: ``In V-B we instantiate Agg'' (\`e V-E), ``Section IV-0c''
+    \item Tabella II: BERT 58,27\%, mentre il testo dice ``around 0.60'' (dato complessivo contro media sui fold)
+    \item Il contributo 4 \`e un \hl{risultato}, non un contributo; i contributi 1--2 si sovrappongono a Burdisso et al.\ [7]
+    \item Dire chiaramente se il dataset \`e \hl{rilasciabile} (etichette NewsGuard proprietarie)
+  \end{itemize}
+  \vfill
 \end{frame}
 
 \begin{frame}{Cosa hanno in comune}
