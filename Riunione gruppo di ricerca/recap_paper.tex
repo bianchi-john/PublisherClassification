@@ -718,153 +718,13 @@
   \begin{itemize}[<+->]
     \setlength\itemsep{0.9em}
     \item Fabio ha chiesto a Claude tre cose: come usare i modelli grandi, una review del paper, come impostare l'analisi del bias
-    \item Gli ha anche dato le \hl{matrici di confusione per orientamento}: Claude ci ha fatto dei conti veri
-    \item Qui solo quello che \hl{non} hanno gi\`a detto i revisori o ChatGPT
-    \item[] {\small\itshape I numeri li ho ricontrollati sulle nostre predizioni: coincidono.}
-  \end{itemize}
-  \vfill
-\end{frame}
-
-% ---------------------------------------------------------------- A. bias
-\begin{frame}{Fabio --- la tabella congiunta: l'idea}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.9em}
-    \item Il paper guarda l'errore \hl{per livello} (Fig.~2) e \hl{per orientamento} (Fig.~5), ma \hl{separatamente}
-    \item Fabio: guardiamoli \hl{insieme}, in una sola tabella: righe = orientamenti, colonne = livelli
-    \item In ogni casella: quanto sbaglia il modello su \emph{quel} tipo di testate
-    \item[] {\small\itshape Es.: la casella ``Far Right $\times$ $l_1$'' dice quanto sbaglia sugli articoli delle testate far-right di livello 1.}
-  \end{itemize}
-  \vfill
-\end{frame}
-
-\begin{frame}{Fabio --- la tabella congiunta: cosa mostra}
-  \begin{columns}[c]
-    \begin{column}{0.47\textwidth}
-      \begin{itemize}[<+->]
-        \setlength\itemsep{0.7em}
-        \item Ogni livello ha un orientamento ``\hl{padrone}'': $l_1$ \`e all'87\% slightly right, $l_3$ al 69\% non-labelled
-        \item Dentro il livello sbaglia poco \hl{solo il padrone}: in $l_1$ slightly right 5\%, far right 82\%
-        \item[] {\small\itshape Chiarissimo nei due livelli pi\`u grandi, $l_1$ e $l_3$.}
-        \item Conferma la considerazione di John: ``$l_1$ facile'' \`e in realt\`a ``\hl{slightly right} facile''
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.53\textwidth}
-      \onslide<2->{%
-      \footnotesize
-      \begin{center}
-      Errore (\%), media dei 4 modelli\\[0.3em]
-      \begin{tabular}{lrrrrr}
-        \toprule
-         & $l_1$ & $l_2$ & $l_3$ & $l_4$ & $l_5$ \\
-        \midrule
-        Far Left       & 99 & 76 & 79 & 48 & 94 \\
-        Slightly Left  & -- & 48 & 93 & 39 & 73 \\
-        Non labelled   & 81 & 91 & \textbf{12} & 32 & 69 \\
-        Slightly Right & \textbf{5} & 40 & 79 & 68 & 87 \\
-        Far Right      & 82 & 44 & 90 & 70 & -- \\
-        \bottomrule
-      \end{tabular}
-      \end{center}}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{Fabio --- osservato contro atteso: l'idea}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.8em}
-    \item Domanda: un orientamento sbaglia di pi\`u \hl{per s\'e}, o solo perch\'e contiene livelli difficili?
-    \item \hl{Atteso}: l'errore che avrebbe se contasse \hl{solo il livello}
-    \item[] {\small\itshape Es.: met\`a articoli $l_1$ (errore 15\%) e met\`a $l_5$ (errore 75\%) $\rightarrow$ atteso 45\%.}
-    \item \hl{Osservato}: l'errore vero. Si fa il rapporto osservato/atteso:
-    \item[] $=1$: nulla oltre il livello \quad $>1$: sbaglia \hl{pi\`u} del previsto \quad $<1$: \hl{meno}
-    \item[] {\small\itshape Far right: atteso 43\%, osservato 63\% $\rightarrow$ rapporto $\approx 1{,}5$.}
-  \end{itemize}
-  \vfill
-\end{frame}
-
-\begin{frame}{Fabio --- osservato contro atteso: i risultati}
-  \begin{columns}[c]
-    \begin{column}{0.52\textwidth}
-      \begin{itemize}[<+->]
-        \setlength\itemsep{0.8em}
-        \item Slightly left e slightly right $\approx 1$: le loro differenze sono \hl{solo composizione}
-        \item Gli estremi sbagliano \hl{pi\`u del previsto}, anche a parit\`a di livello
-        \item I non-labelled \hl{meno} del previsto
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \onslide<2->{%
-      \small
-      \begin{center}
-      Osservato / atteso (4 modelli)\\[0.3em]
-      \begin{tabular}{lc}
-        \toprule
-        Far Left       & 1,25 -- 1,44 \\
-        Far Right      & 1,46 -- 1,50 \\
-        Non labelled   & 0,72 -- 0,75 \\
-        Slightly Left  & 0,89 -- 1,05 \\
-        Slightly Right & 1,00 -- 1,10 \\
-        \bottomrule
-      \end{tabular}
-      \end{center}}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{Fabio --- perch\'e gli estremi sbagliano di pi\`u}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.9em}
-    \item Non perch\'e il modello li ``penalizzi'' politicamente
-    \item Far left e far right sono quasi sempre l'orientamento \hl{minoritario} del loro livello
-    \item E il modello sbaglia su \hl{qualunque} minoranza, di destra o di sinistra
-    \item[] {\small\itshape Slightly right \`e ``facile'' solo dove \`e padrone ($l_1$); in $l_3$--$l_5$ sbaglia quanto gli altri (68--87\%).}
-  \end{itemize}
-  \vfill
-\end{frame}
-
-\begin{frame}{Fabio --- l'ipotesi: l'orientamento come scorciatoia}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.8em}
-    \item Il modello avrebbe imparato in parte a riconoscere l'\hl{orientamento}, e lo usa per indovinare l'affidabilit\`a
-    \item[] {\small\itshape ``Suona slightly right'' $\rightarrow$ $l_1$; ``suona mainstream'' $\rightarrow$ $l_3$.}
-    \item La separazione per testata \hl{non lo smaschera}: la scorciatoia funziona anche sulle testate nuove
-    \item Spiegherebbe perch\'e \hl{Mistral 24B non migliora}: se la scorciatoia \`e nei dati, pi\`u capacit\`a non la toglie
-    \item[] {\small\itshape \`E un'ipotesi: va verificata (slide successiva).}
-  \end{itemize}
-  \vfill
-\end{frame}
-
-\begin{frame}{Fabio --- come verificarla: il ``linear probe''}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.8em}
-    \item Dentro di s\'e, il modello trasforma ogni articolo in una lista di numeri (la sua ``rappresentazione'')
-    \item Su questi numeri si addestra un classificatore \hl{semplicissimo} che deve indovinare l'\hl{orientamento}
-    \item Se ci riesce bene $\rightarrow$ il modello ``conosce'' l'orientamento, anche se nessuno glielo ha insegnato
-    \item[] {\small\itshape Se dal compito di uno studente si indovina da quale scuola viene, il compito ne porta traccia.}
-    \item Sarebbe la \hl{prova diretta} della scorciatoia
+    \item Il bias l'abbiamo \hl{gi\`a visto}: non ci torniamo
+    \item Qui solo le \hl{proposte nuove}: esperimenti, metodi, aggregazione, correzioni
   \end{itemize}
   \vfill
 \end{frame}
 
 % ---------------------------------------------------------------- B. baseline e LLM
-\begin{frame}{Fabio --- una baseline semplice: TF-IDF}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.8em}
-    \item Oggi confrontiamo i transformer solo con baseline ``stupide'' (classe pi\`u frequente, caso)
-    \item Fabio: aggiungere un modello \hl{semplice ma serio}, senza reti neurali
-    \item \hl{TF-IDF}: conta le parole di ogni articolo, dando pi\`u peso a quelle rare e distintive; sopra, una regressione logistica
-    \item[] {\small\itshape Se un ``contatore di parole'' arriva vicino ai transformer, i transformer non stanno aggiungendo molto.}
-    \item Costa pochissimo da fare
-  \end{itemize}
-  \vfill
-\end{frame}
-
 \begin{frame}{Fabio --- il problema della ``contaminazione''}
   \vfill
   \begin{itemize}[<+->]
@@ -886,6 +746,19 @@
     \item Se senza nomi va molto peggio $\rightarrow$ prima stava \hl{riconoscendo la testata}, non giudicando il testo
     \item Trasforma la domanda ``perch\'e non GPT?'' in un \hl{risultato}
     \item E spiega perch\'e i modelli piccoli addestrati da noi sono lo strumento giusto per \emph{questa} domanda
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Fabio --- una baseline semplice: TF-IDF}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Oggi confrontiamo i transformer solo con baseline ``stupide'' (classe pi\`u frequente, caso)
+    \item Fabio: aggiungere un modello \hl{semplice ma serio}, senza reti neurali
+    \item \hl{TF-IDF}: conta le parole di ogni articolo, dando pi\`u peso a quelle rare e distintive; sopra, una regressione logistica
+    \item[] {\small\itshape Se un ``contatore di parole'' arriva vicino ai transformer, i transformer non stanno aggiungendo molto.}
+    \item Costa pochissimo da fare
   \end{itemize}
   \vfill
 \end{frame}
@@ -1028,17 +901,6 @@
     \item Tabella II: BERT 58,27\%, mentre il testo dice ``around 0.60'' (dato complessivo contro media sui fold)
     \item Il contributo 4 \`e un \hl{risultato}, non un contributo; i contributi 1--2 si sovrappongono a Burdisso et al.\ [7]
     \item Dire chiaramente se il dataset \`e \hl{rilasciabile} (etichette NewsGuard proprietarie)
-  \end{itemize}
-  \vfill
-\end{frame}
-
-\begin{frame}{Cosa hanno in comune}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.9em}
-    \item Entrambe convergono col Revisore 1: il nodo \`e il \hl{confondimento} leaning/reliability e il \hl{clustering}
-    \item Fabio va oltre: lo \hl{quantifica} e propone la riscrittura
-    \item La sezione bias \`e il punto che decide il nuovo paper
   \end{itemize}
   \vfill
 \end{frame}
