@@ -19,7 +19,17 @@
 \setbeamercovered{transparent}
 \setbeamertemplate{caption}{\insertcaption}
 \newcommand{\hl}[1]{\textbf{#1}}
+\newcommand{\divider}[2]{%
+  \begin{frame}[plain]
+    \vfill
+    \begin{center}
+      {\color{dividerblue}\Huge\textbf{#1}}\\[0.8em]
+      {\large #2}
+    \end{center}
+    \vfill
+  \end{frame}}
 \definecolor{wrongred}{RGB}{176,0,32}
+\definecolor{dividerblue}{RGB}{28,42,92}
 \newcommand{\wrong}[1]{\textcolor{wrongred}{#1}}
 
 \title[Verso Web Science 2027]{Verso Web Science 2027}
@@ -36,14 +46,7 @@
 \end{frame}
 
 % ---------------------------------------------------------------- divider: recap
-\begin{frame}[plain]
-  \vfill
-  \begin{center}
-    {\usebeamercolor[fg]{title}\Large\textbf{Parte 1 --- Recap del paper}}\\[0.8em]
-    \normalsize \textbf{Recap del paper bocciato} (non della versione sottomessa ad IR FOR GOOD)\\[0.3em]
-  \end{center}
-  \vfill
-\end{frame}
+\divider{Recap del paper bocciato}{non la versione sottomessa a IR for Good}
 
 % ---------------------------------------------------------------- dati
 \begin{frame}{Dati}
@@ -348,13 +351,176 @@
   \onslide<5->{\begin{center}\small Dettagli a supporto delle analisi del paper, non nuovi risultati.\end{center}}
 \end{frame}
 
-% ---------------------------------------------------------------- chiusura
-\begin{frame}[plain]
+% ---------------------------------------------------------------- divider: review
+\divider{Le review dei revisori}{quali critiche affrontare}
+
+% >>> QUI arriveranno le slide di analisi delle review (da costruire insieme)
+
+\begin{frame}{Revisore 1 --- (1) Novit\`a metodologica limitata}
+  \begin{block}{\footnotesize English}
+    \small\itshape ``The two-stage framework is essentially standard fine-tuning of pretrained language models followed by majority voting. The main contribution seems to be the task formulation, dataset construction, and evaluation setup, rather than a new model architecture, learning objective, or aggregation method.''
+  \end{block}
+  \begin{block}{\footnotesize Italiano}
+    \small Il framework a due stadi \`e essenzialmente fine-tuning standard di modelli pre-addestrati seguito da majority voting. Il contributo principale sembra la formulazione del task, la costruzione del dataset e il setup di valutazione, pi\`u che una nuova architettura, obiettivo di apprendimento o metodo di aggregazione.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Revisore 1 --- (2) Il guadagno dell'aggregazione non \`e misurato pulito}
+  \begin{block}{\footnotesize English}
+    \small\itshape ``The comparison between the article-level score ($\sim$0.60) and the publisher-level score ($\sim$0.69) changes both the evaluation unit and the weighting of publishers. As a result, the improvement cannot be attributed to aggregation alone.''
+  \end{block}
+  \begin{block}{\footnotesize Italiano}
+    \small Il confronto tra il punteggio ad articolo ($\sim$0.60) e quello a editore ($\sim$0.69) cambia sia l'unit\`a di valutazione sia il peso degli editori. Di conseguenza il miglioramento non pu\`o essere attribuito alla sola aggregazione.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Revisore 1 --- (3) Bias confuso con il livello di affidabilit\`a}
+  \begin{block}{\footnotesize English}
+    \small\itshape ``The distribution of reliability labels differs substantially across political leanings, and some reliability levels are clearly more difficult to classify than others. The relationship between political leaning and prediction error should therefore be tested again after controlling for the true reliability level.''
+  \end{block}
+  \begin{block}{\footnotesize Italiano}
+    \small La distribuzione delle etichette differisce molto tra gli orientamenti, e alcuni livelli sono pi\`u difficili da classificare. Il legame tra orientamento politico ed errore andrebbe quindi testato di nuovo controllando per il vero livello di affidabilit\`a.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Revisore 1 --- (4) Il chi-quadro ignora il clustering}
+  \begin{block}{\footnotesize English}
+    \small\itshape ``Political leaning and reliability are publisher-level attributes shared by multiple articles from the same publisher. Using all articles as independent observations may lead to pseudo-replication and overstate the effective sample size and significance of the results.''
+  \end{block}
+  \begin{block}{\footnotesize Italiano}
+    \small Orientamento e affidabilit\`a sono attributi dell'editore, condivisi da pi\`u articoli dello stesso editore. Usare tutti gli articoli come osservazioni indipendenti porta a pseudo-replica e sovrastima la dimensione effettiva del campione e la significativit\`a.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Revisore 1 --- (5) Indizi dell'editore e artefatti non esclusi}
+  \begin{block}{\footnotesize English}
+    \small\itshape ``The paper does not include systematic text cleaning, source-identifier masking, or sanitized-text ablations. It is therefore difficult to tell whether the model is learning reliability-related content or simply exploiting publisher-specific signals and scraping artifacts.''
+  \end{block}
+  \begin{block}{\footnotesize Italiano}
+    \small Il paper non include pulizia del testo, mascheramento degli identificativi della fonte o ablation su testo sanificato. \`E quindi difficile dire se il modello impara contenuti legati all'affidabilit\`a o sfrutta segnali specifici dell'editore e artefatti dello scraping.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Revisore 1 --- (6) Possibile bias di selezione nello scraping}
+  \begin{block}{\footnotesize English}
+    \small\itshape ``Only 439 of the 669 candidate publishers were included in the final dataset, and the scraping success rates differ across reliability levels. The paper does not examine whether the publishers that were successfully scraped differ systematically from those that were not.''
+  \end{block}
+  \begin{block}{\footnotesize Italiano}
+    \small Solo 439 dei 669 editori candidati sono finiti nel dataset finale, e i tassi di successo dello scraping differiscono tra i livelli. Il paper non verifica se gli editori scrapati differiscano sistematicamente da quelli non scrapati.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Revisore 1 --- (7) Confronto sulla taglia del modello non controllato}
+  \begin{block}{\footnotesize English}
+    \small\itshape ``The models differ in architecture, fine-tuning strategy, training schedule, and context length, in addition to parameter count. The observed performance differences therefore cannot be attributed to model size alone.''
+  \end{block}
+  \begin{block}{\footnotesize Italiano}
+    \small I modelli differiscono per architettura, strategia di fine-tuning, schedule di addestramento e lunghezza del contesto, oltre che per numero di parametri. Le differenze di performance non possono quindi essere attribuite alla sola taglia.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Revisore 1 --- (8) Nessuna stima di incertezza}
+  \begin{block}{\footnotesize English}
+    \small\itshape ``Differences such as 0.69 versus 0.68 are small, but the paper does not report confidence intervals, bootstrap results, or paired significance tests. It is therefore unclear whether these differences are meaningful.''
+  \end{block}
+  \begin{block}{\footnotesize Italiano}
+    \small Differenze come 0.69 contro 0.68 sono piccole, ma il paper non riporta intervalli di confidenza, bootstrap o test di significativit\`a appaiati. Non \`e quindi chiaro se queste differenze siano reali.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Revisore 2 --- (1) Motivazione debole del passaggio a livello editore}
+  \begin{block}{\footnotesize English}
+    \small\itshape ``publisher reliability is, by construction, obtained as a fixed aggregation of article-level outputs\dots the re-formulation does not introduce substantial new insight beyond a change in the unit of evaluation.''
+  \end{block}
+  \begin{block}{\footnotesize Italiano}
+    \small L'affidabilit\`a dell'editore \`e, per costruzione, un'aggregazione fissa degli output ad articolo\dots la riformulazione non introduce un'intuizione sostanzialmente nuova oltre a un cambio dell'unit\`a di valutazione.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Revisore 2 --- (2) Mancano confronti con altri scorer}
+  \begin{block}{\footnotesize English}
+    \small\itshape ``Publisher-level scores can equally be produced by first scoring individual articles with a model pretrained specifically for article-level reliability classification, or with a general-purpose LLM such as Qwen, and then applying the same voting strategy\dots No such comparison is reported.''
+  \end{block}
+  \begin{block}{\footnotesize Italiano}
+    \small I punteggi a editore si possono ottenere anche valutando prima i singoli articoli con un modello pre-addestrato apposta per l'affidabilit\`a ad articolo, o con un LLM generalista come Qwen, e poi applicando lo stesso voto\dots Nessun confronto di questo tipo \`e riportato.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Revisore 2 --- (3) Il dataset non \`e ``large-scale''}
+  \begin{block}{\footnotesize English}
+    \small\itshape ``Although the corpus contains 19,476 articles, the objective of the paper is scoring at the level of the publisher, and the dataset comprises only 439 publishers. The dataset is therefore unlikely to support effective use in real-world applications.''
+  \end{block}
+  \begin{block}{\footnotesize Italiano}
+    \small Sebbene il corpus contenga 19.476 articoli, l'obiettivo \`e il punteggio a livello di editore, e il dataset comprende solo 439 editori. \`E quindi improbabile che supporti un uso efficace in applicazioni reali.
+  \end{block}
+\end{frame}
+
+
+
+
+% ================================================================
+%  OLTRE LE REVIEW: LE DUE ANALISI (Marinella/ChatGPT, Fabio/Claude)
+% ================================================================
+\divider{Oltre le review: due analisi}{Marinella con ChatGPT \quad$\cdot$\quad Fabio con Claude}
+
+\begin{frame}{Due analisi di supporto}
   \vfill
-  \begin{center}
-    {\usebeamercolor[fg]{title}\large Prossimo passo: le \textbf{review}}
-  \end{center}
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.9em}
+    \item Oltre ai due revisori del journal, due analisi del paper fatte con strumenti AI
+    \item \hl{Marinella} con \hl{ChatGPT} --- focalizzata sulla statistica del bias
+    \item \hl{Fabio} con \hl{Claude} --- review completa + analisi quantitativa del bias
+    \item Fatte in modo \hl{indipendente}: le riassumiamo qui, cos\`i le conosciamo tutti
+  \end{itemize}
   \vfill
 \end{frame}
+
+\begin{frame}{Marinella $\times$ ChatGPT}
+  \small
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.7em}
+    \item \`E una revisione \hl{statistica} della sezione bias
+    \item Il $\chi^2$ ad articolo non \`e un test valido come analisi principale (articoli non indipendenti) $\rightarrow$ test a livello di editore
+    \item Leaning e reliability: problema di \hl{overlap/positivity}, non solo ``entangled'' --- ``controlling for reliability'' rischia di sembrare pi\`u conclusivo di quanto sia
+    \item La MED calcolata solo sugli errori pu\`o fuorviare $\rightarrow$ riportare anche il bias su \emph{tutti} gli articoli
+    \item Linguaggio: ``reference labels'' invece di ``ground truth''; cautela su ``small-to-moderate''
+    \item Messaggio: stiamo misurando un'\hl{associazione}, non una discriminazione causata dal modello
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Fabio $\times$ Claude --- (1) idee e review}
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Tre parti: idee sui modelli, una review completa, un'analisi quantitativa del bias
+    \item \hl{Modelli}: gli LLM grandi ``conoscono'' le testate per nome (contaminazione) $\rightarrow$ i piccoli fine-tuned sono lo strumento giusto; baseline LLM con \hl{mascheramento dei nomi}
+    \item Idee nuove: LLM come \hl{estrattore di feature} + classificatore; \hl{embeddings + multiple-instance learning}
+    \item \hl{Review} (major revision): baseline deboli, aggregazione non studiata, incertezza mancante, bias confuso
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Fabio $\times$ Claude --- (2) l'analisi del bias}
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Dalle matrici di confusione ha ricostruito l'errore per \hl{(livello $\times$ orientamento)}
+    \item ``Slightly Left sottostimata'' \`e un \hl{artefatto di composizione} $\rightarrow$ va tolta
+    \item ``Gli estremi sbagliano di pi\`u'' regge, ma perch\'e sono la \hl{minoranza} del loro livello
+    \item Il modello ha imparato l'orientamento come \hl{scorciatoia} $\rightarrow$ spiega anche il nullo di Mistral
+    \item \`E la riformulazione pi\`u forte della sezione bias
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Cosa hanno in comune}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.9em}
+    \item Entrambe convergono col Revisore 1: il nodo \`e il \hl{confondimento} leaning/reliability e il \hl{clustering}
+    \item Fabio va oltre: lo \hl{quantifica} e propone la riscrittura
+    \item La sezione bias \`e il punto che decide il nuovo paper
+  \end{itemize}
+  \vfill
+\end{frame}
+
+% >>> QUI arriveranno le slide punto-per-punto "cosa faremo" (da costruire insieme)
+
 
 \end{document}
