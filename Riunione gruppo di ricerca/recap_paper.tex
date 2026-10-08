@@ -13,7 +13,7 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{xcolor}
-\graphicspath{{../Paper/OldPaperRejected/img/}}
+\graphicspath{{../Paper/OldPaperRejected/img/}{./}}
 
 \beamertemplatenavigationsymbolsempty
 \setbeamercovered{transparent}
@@ -357,102 +357,69 @@
 % >>> QUI arriveranno le slide di analisi delle review (da costruire insieme)
 
 \begin{frame}{Revisore 1 --- (1) Novit\`a metodologica limitata}
-  \vfill
-  \begin{center}
-  \itshape\small
-  ``The two-stage framework is essentially standard fine-tuning of pretrained language models followed by majority voting. The main contribution seems to be the task formulation, dataset construction, and evaluation setup, rather than a new model architecture, learning objective, or aggregation method.''
-  \end{center}
-  \vfill
+  \begin{block}{\footnotesize English}
+    \small\itshape ``The two-stage framework is essentially standard fine-tuning of pretrained language models followed by majority voting. The main contribution seems to be the task formulation, dataset construction, and evaluation setup, rather than a new model architecture, learning objective, or aggregation method.''
+  \end{block}
 \end{frame}
 
 \begin{frame}{Revisore 1 --- (2) Il guadagno dell'aggregazione non \`e misurato pulito}
-  \vfill
-  \begin{center}
-  \itshape\small
-  ``The comparison between the article-level score ($\sim$0.60) and the publisher-level score ($\sim$0.69) changes both the evaluation unit and the weighting of publishers. As a result, the improvement cannot be attributed to aggregation alone.''
-  \end{center}
-  \vfill
+  \begin{block}{\footnotesize English}
+    \small\itshape ``The comparison between the article-level score ($\sim$0.60) and the publisher-level score ($\sim$0.69) changes both the evaluation unit and the weighting of publishers. As a result, the improvement cannot be attributed to aggregation alone.''
+  \end{block}
 \end{frame}
 
 \begin{frame}{Revisore 1 --- (3) Bias confuso con il livello di affidabilit\`a}
-  \vfill
-  \begin{center}
-  \itshape\small
-  ``The distribution of reliability labels differs substantially across political leanings, and some reliability levels are clearly more difficult to classify than others. The relationship between political leaning and prediction error should therefore be tested again after controlling for the true reliability level.''
-  \end{center}
-  \vfill
+  \begin{block}{\footnotesize English}
+    \small\itshape ``The distribution of reliability labels differs substantially across political leanings, and some reliability levels are clearly more difficult to classify than others. The relationship between political leaning and prediction error should therefore be tested again after controlling for the true reliability level.''
+  \end{block}
 \end{frame}
 
 \begin{frame}{Revisore 1 --- (4) Il chi-quadro ignora il clustering}
-  \vfill
-  \begin{center}
-  \itshape\small
-  ``Political leaning and reliability are publisher-level attributes shared by multiple articles from the same publisher. Using all articles as independent observations may lead to pseudo-replication and overstate the effective sample size and significance of the results.''
-  \end{center}
-  \vfill
+  \begin{block}{\footnotesize English}
+    \small\itshape ``Political leaning and reliability are publisher-level attributes shared by multiple articles from the same publisher. Using all articles as independent observations may lead to pseudo-replication and overstate the effective sample size and significance of the results.''
+  \end{block}
 \end{frame}
 
 \begin{frame}{Revisore 1 --- (5) Indizi dell'editore e artefatti non esclusi}
-  \vfill
-  \begin{center}
-  \itshape\small
-  ``The paper does not include systematic text cleaning, source-identifier masking, or sanitized-text ablations. It is therefore difficult to tell whether the model is learning reliability-related content or simply exploiting publisher-specific signals and scraping artifacts.''
-  \end{center}
-  \vfill
+  \begin{block}{\footnotesize English}
+    \small\itshape ``The paper does not include systematic text cleaning, source-identifier masking, or sanitized-text ablations. It is therefore difficult to tell whether the model is learning reliability-related content or simply exploiting publisher-specific signals and scraping artifacts.''
+  \end{block}
 \end{frame}
 
 \begin{frame}{Revisore 1 --- (6) Possibile bias di selezione nello scraping}
-  \vfill
-  \begin{center}
-  \itshape\small
-  ``Only 439 of the 669 candidate publishers were included in the final dataset, and the scraping success rates differ across reliability levels. The paper does not examine whether the publishers that were successfully scraped differ systematically from those that were not.''
-  \end{center}
-  \vfill
+  \begin{block}{\footnotesize English}
+    \small\itshape ``Only 439 of the 669 candidate publishers were included in the final dataset, and the scraping success rates differ across reliability levels. The paper does not examine whether the publishers that were successfully scraped differ systematically from those that were not.''
+  \end{block}
 \end{frame}
 
 \begin{frame}{Revisore 1 --- (7) Confronto sulla taglia del modello non controllato}
-  \vfill
-  \begin{center}
-  \itshape\small
-  ``The models differ in architecture, fine-tuning strategy, training schedule, and context length, in addition to parameter count. The observed performance differences therefore cannot be attributed to model size alone.''
-  \end{center}
-  \vfill
+  \begin{block}{\footnotesize English}
+    \small\itshape ``The models differ in architecture, fine-tuning strategy, training schedule, and context length, in addition to parameter count. The observed performance differences therefore cannot be attributed to model size alone.''
+  \end{block}
 \end{frame}
 
 \begin{frame}{Revisore 1 --- (8) Nessuna stima di incertezza}
-  \vfill
-  \begin{center}
-  \itshape\small
-  ``Differences such as 0.69 versus 0.68 are small, but the paper does not report confidence intervals, bootstrap results, or paired significance tests. It is therefore unclear whether these differences are meaningful.''
-  \end{center}
-  \vfill
+  \begin{block}{\footnotesize English}
+    \small\itshape ``Differences such as 0.69 versus 0.68 are small, but the paper does not report confidence intervals, bootstrap results, or paired significance tests. It is therefore unclear whether these differences are meaningful.''
+  \end{block}
 \end{frame}
 
 \begin{frame}{Revisore 2 --- (1) Motivazione debole del passaggio a livello editore}
-  \vfill
-  \begin{center}
-  \itshape\small
-  ``publisher reliability is, by construction, obtained as a fixed aggregation of article-level outputs\dots the re-formulation does not introduce substantial new insight beyond a change in the unit of evaluation.''
-  \end{center}
-  \vfill
+  \begin{block}{\footnotesize English}
+    \small\itshape ``publisher reliability is, by construction, obtained as a fixed aggregation of article-level outputs\dots the re-formulation does not introduce substantial new insight beyond a change in the unit of evaluation.''
+  \end{block}
 \end{frame}
 
 \begin{frame}{Revisore 2 --- (2) Mancano confronti con altri scorer}
-  \vfill
-  \begin{center}
-  \itshape\small
-  ``Publisher-level scores can equally be produced by first scoring individual articles with a model pretrained specifically for article-level reliability classification, or with a general-purpose LLM such as Qwen, and then applying the same voting strategy\dots No such comparison is reported.''
-  \end{center}
-  \vfill
+  \begin{block}{\footnotesize English}
+    \small\itshape ``Publisher-level scores can equally be produced by first scoring individual articles with a model pretrained specifically for article-level reliability classification, or with a general-purpose LLM such as Qwen, and then applying the same voting strategy\dots No such comparison is reported.''
+  \end{block}
 \end{frame}
 
 \begin{frame}{Revisore 2 --- (3) Il dataset non \`e ``large-scale''}
-  \vfill
-  \begin{center}
-  \itshape\small
-  ``Although the corpus contains 19,476 articles, the objective of the paper is scoring at the level of the publisher, and the dataset comprises only 439 publishers. The dataset is therefore unlikely to support effective use in real-world applications.''
-  \end{center}
-  \vfill
+  \begin{block}{\footnotesize English}
+    \small\itshape ``Although the corpus contains 19,476 articles, the objective of the paper is scoring at the level of the publisher, and the dataset comprises only 439 publishers. The dataset is therefore unlikely to support effective use in real-world applications.''
+  \end{block}
 \end{frame}
 
 
@@ -475,17 +442,318 @@
   \vfill
 \end{frame}
 
-\begin{frame}{Marinella $\times$ ChatGPT}
-  \small
+% ---- Marinella x ChatGPT: spiegazione passo passo -------------------
+\begin{frame}{Marinella $\times$ ChatGPT --- cos'\`e}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{1.0em}
+    \item Marinella ha dato a ChatGPT la \hl{parte statistica} del bias e gli ha chiesto di controllarla
+    \item Ha trovato una serie di \hl{problemi}: li vediamo uno a uno, in modo semplice
+    \item Tutti ruotano attorno a una domanda: \hl{possiamo davvero dire che c'\`e un bias politico?}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Problema 1 --- il $\chi^2$ conta troppo}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item La domanda del test: l'errore del modello dipende dall'\hl{orientamento politico}?
+    \item Lo calcola contando i \hl{singoli articoli}: 19.476 ``prove''
+    \item Ma l'orientamento \`e \hl{fisso per testata}: tutti gli articoli di una testata hanno lo stesso orientamento (come hanno la stessa affidabilit\`a --- anche se sono due cose diverse)
+    \item Quindi gli articoli di una stessa testata \hl{non sono prove indipendenti}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Problema 1 --- l'esempio}
+  \vfill
   \begin{itemize}[<+->]
     \setlength\itemsep{0.7em}
-    \item \`E una revisione \hl{statistica} della sezione bias
-    \item Il $\chi^2$ ad articolo non \`e un test valido come analisi principale (articoli non indipendenti) $\rightarrow$ test a livello di editore
-    \item Leaning e reliability: problema di \hl{overlap/positivity}, non solo ``entangled'' --- ``controlling for reliability'' rischia di sembrare pi\`u conclusivo di quanto sia
-    \item La MED calcolata solo sugli errori pu\`o fuorviare $\rightarrow$ riportare anche il bias su \emph{tutti} gli articoli
-    \item Linguaggio: ``reference labels'' invece di ``ground truth''; cautela su ``small-to-moderate''
-    \item Messaggio: stiamo misurando un'\hl{associazione}, non una discriminazione causata dal modello
+    \item Una testata di destra, 200 articoli, tutti affidabilit\`a $l_4$
+    \item Il modello la trova difficile $\rightarrow$ sbaglia quasi tutti: 200 errori ``di destra''
+    \item Il test li legge come \hl{200 prove} che ``destra $\rightarrow$ errore''
+    \item Ma \`e \hl{una} testata difficile, non 200 fatti diversi
+    \item[] {\small\itshape Come chiedere l'opinione politica a 200 persone della stessa famiglia: non sono 200 opinioni indipendenti, \`e quasi una sola.}
+    \item Le prove vere sono le \hl{testate} (439), non gli articoli (19.476): pi\`u il campione \`e (finto) grande, pi\`u ogni differenza sembra ``significativa''
+    \item Soluzione: un conteggio \hl{per testata}
   \end{itemize}
+  \vfill
+\end{frame}
+
+% ---- Osservazione di John: la correlazione degli errori va verificata ----
+\begin{frame}{Osservazione di John --- ma \`e vero?}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item La critica regge solo se gli errori si \hl{ripetono} dentro la stessa testata
+    \item Se il modello facesse \hl{un po' giusti e un po' sbagliati a caso}, ogni articolo sarebbe una prova nuova: contarli tutti sarebbe giusto
+    \item Se invece \hl{azzecca (o sbaglia) quasi tutta} la testata insieme, i suoi articoli dicono \hl{la stessa cosa}: contarli tutti \`e come \hl{ripetere la stessa prova}
+    \item La domanda: quando sbaglia su una testata, sbaglia su \hl{quasi tutti} i suoi articoli? \quad Lo misuriamo.
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Cos'\`e l'ICC --- l'idea}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Per ogni testata guardiamo: che \hl{quota di articoli} sbaglia il modello?
+    \item Se sbagliasse \hl{a caso} dentro la testata, ogni testata starebbe vicino alla \hl{media} ($\sim$42\%)
+    \item L'ICC dice quanto invece le testate si \hl{spaccano} tra ``quasi tutte giuste'' e ``quasi tutte sbagliate''
+    \item \hl{0} = tutte vicine alla media (nessuna correlazione) \quad \hl{1} = ognuna a un estremo
+    \item[] {\small\itshape Come una classe di studenti: se vanno tutti bene o tutti male insieme, i voti sono ``correlati''.}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Osservazione di John --- cosa troviamo}
+  \begin{columns}[c]
+    \begin{column}{0.44\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{0.7em}
+        \item Su \hl{439 testate}:
+        \item[] \hl{221} quasi tutte giuste
+        \item[] \hl{84} quasi tutte sbagliate
+        \item[] solo 134 ``a met\`a''
+        \item L'esito lo decide quasi la \hl{testata}, non il singolo articolo
+        \item Riassunto in un numero: ICC \hl{$\approx 0.6$} (a caso $\approx 0.14$)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.56\textwidth}
+      \onslide<2->{\includegraphics[width=\linewidth]{pub_error_hist.pdf}}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Osservazione di John --- la conclusione}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.9em}
+    \item Gli articoli di una testata \hl{non sono prove indipendenti}
+    \item Quindi l'unit\`a giusta per il test sono le \hl{439 testate}, non i 19.476 articoli
+    \item[] {\small\itshape E vale anche a parit\`a di livello: non \`e solo perch\'e $l_5$ \`e difficile.}
+    \item La correzione \`e semplice: fare il test \hl{per testata}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Problema 2 --- cosa dice ChatGPT}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.9em}
+    \item Nel paper l'errore \`e calcolato \hl{separatamente per ogni orientamento}
+    \item E si afferma che cos\`i \`e ``\hl{indipendente dalla frequenza delle classi}''
+    \item In altre parole: calcolarlo separatamente dovrebbe renderlo \hl{non influenzato} da come sono distribuiti i dati
+    \item ChatGPT fa notare: \`e vero \hl{solo a met\`a}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Problema 2 --- perch\'e solo a met\`a}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.9em}
+    \item Calcolarlo separatamente toglie l'effetto della \hl{dimensione} del gruppo (quanti articoli ha)
+    \item Ma \hl{non} toglie l'effetto di \hl{quali livelli} ci sono dentro
+    \item E il livello pesa tanto: $l_1$ facile, $l_5$ difficile
+    \item Ogni orientamento ha un \hl{mix di livelli diverso}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Problema 2 --- l'esempio}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.9em}
+    \item Slightly Right \`e quasi tutto $l_1$ (il livello facile)
+    \item Quindi il suo errore basso dipende dal fatto che \`e \hl{pieno di articoli facili}\dots
+    \item[] {\small\itshape \dots non dal fatto che il modello ``tratti meglio'' la destra.}
+    \item Conclusione: la frase va riscritta --- l'errore per orientamento \hl{dipende ancora} dalla composizione dei livelli
+  \end{itemize}
+  \vfill
+\end{frame}
+
+% ---- Commento di John al Problema 2 ----
+\begin{frame}{Problema 2 --- commento di John}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.9em}
+    \item ChatGPT d\`a per scontato che i livelli abbiano \hl{difficolt\`a diverse}
+    \item Ma questa cosa \hl{non \`e mai dimostrata}
+    \item Il modello sbaglia meno su $l_1$ --- ma ``\hl{sbaglia meno}'' non vuol dire ``\hl{\`e pi\`u facile}''
+    \item[] {\small\itshape Potrebbe sbagliare meno per tanti altri motivi: orientamento, tema, com'\`e fatto il dataset.}
+    \item Non ha senso dire che $l_1$ \`e pi\`u facile di $l_2$ solo perch\'e il modello \hl{sbaglia meno}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Problema 3 --- orientamento e affidabilit\`a sono ``incollati''}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Non solo intrecciati: in alcune combinazioni i dati \hl{mancano del tutto}
+    \item Nessuna testata far-right \`e in $l_5$; 142 su 207 slightly-right sono in $l_1$
+    \item Quando due variabili sono cos\`i sovrapposte, \hl{nessuna analisi} pu\`o separarle del tutto
+    \item[] {\small\itshape Quindi ``controllare per l'affidabilit\`a'' suona pi\`u sicuro di quanto sia.}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Problema 4 --- cosa dice ChatGPT}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.9em}
+    \item Nel paper: gli estremi (far left/right) hanno \hl{4--6 volte} pi\`u errori del gruppo di riferimento
+    \item \`E un ``odds ratio'': quante volte pi\`u spesso sbagliano, a parit\`a del resto
+    \item ChatGPT: un numero cos\`i, \hl{da solo}, non basta
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Problema 4 --- cosa manca}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.7em}
+    \item Serve il suo \hl{margine di incertezza} (intervallo di confidenza)
+    \item[] {\small\itshape Invece di ``6 volte'' potrebbe essere ``tra 2 e 19 volte'': molto incerto.}
+    \item E \hl{quante testate} ci sono dietro ogni gruppo
+    \item[] {\small\itshape Se il ``6 volte'' nasce da 2--3 testate, pu\`o essere fortuna.}
+    \item E va calcolato \hl{per testata}, non per articolo (come nel Problema 1)
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Problema 5 --- il $\chi^2$ ha bisogno di abbastanza dati}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.9em}
+    \item Il $\chi^2$ confronta, in ogni casella, quello che \hl{osserva} con quello che \hl{si aspetterebbe}
+    \item Funziona solo se in ogni casella c'\`e \hl{abbastanza} roba (regola pratica: almeno $\sim$5 attesi)
+    \item Con poche testate, alcune caselle sono quasi \hl{vuote}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Problema 5 --- nel nostro caso}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item 439 testate divise in 5 orientamenti: \hl{Far Left ne ha solo 20}
+    \item Nella casella ``Far Left sbagliate'' ne aspettiamo appena \hl{$\sim$6}: proprio al limite
+    \item E guardando orientamento \emph{e} livello insieme, alcune caselle sono \hl{vuote}: nessuna far-right di livello 5, nessuna slightly-left di livello 1
+    \item[] {\small\itshape L\`i il $\chi^2$ non ha pi\`u senso.}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Problema 5 --- la soluzione}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Invece di fidarsi dell'approssimazione, si \hl{mescolano a caso} le etichette tante volte (es. 10.000)
+    \item Si guarda quanto spesso il puro caso d\`a un legame forte come il nostro
+    \item[] {\small\itshape Se quasi mai $\rightarrow$ il nostro legame \`e vero.}
+    \item Nessuna approssimazione $\rightarrow$ funziona \hl{anche con pochi dati} (``test esatto'' o ``di permutazione'')
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Problema 6 --- la MED guarda solo gli errori}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{1.0em}
+    \item La MED misura la direzione dell'errore \hl{solo quando il modello sbaglia}
+    \item Non tiene conto di \hl{quanto spesso} sbaglia
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Problema 6 --- l'esempio}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.7em}
+    \item Gruppo A: sbaglia il \hl{70\%} degli articoli, e quando sbaglia sovrastima di mezzo livello (MED $+0.5$)
+    \item Gruppo B: sbaglia il \hl{10\%}, con la stessa MED $+0.5$
+    \item Stessa MED, ma l'effetto totale \`e \hl{diversissimo}: A viene spinto in alto 7 volte su 10, B solo 1 su 10
+    \item[] {\small\itshape Nel paper gli estremi sbagliano il 60--72\%, i non-labelled il 30\%: confrontare le loro MED inganna.}
+    \item Soluzione: riportare anche la direzione media su \hl{tutti} gli articoli
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Problema 7 --- la direzione \`e ``obbligata'' dai bordi}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Se una testata \`e in $l_1$ (il pi\`u basso), l'errore pu\`o solo andare \hl{verso l'alto}; se \`e in $l_5$, solo verso il basso
+    \item Far-left e far-right stanno quasi tutti nei livelli bassi $\rightarrow$ i loro errori sono ``per forza'' positivi
+    \item[] {\small\itshape Quindi la sovrastima degli estremi pu\`o dipendere dalla composizione, non dall'orientamento.}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Problema 8 --- la frase sul deployment}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Nel paper: \emph{``the disparity would appear in deployment whatever its mechanism''}
+    \item Vuol dire: la disparit\`a si vedr\`a comunque quando il modello \`e usato davvero, \hl{qualunque} ne sia la causa
+    \item ChatGPT: non possiamo saperlo --- dipende da quali testate, dal cambio di dominio, da come si aggrega
+    \item Meglio: ``il modello \hl{potrebbe} riprodurla''
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Problema 8 --- la forza del legame (Cramér's V)}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Nel paper l'effetto \`e definito ``\hl{small-to-moderate}'' (piccolo-moderato)
+    \item Cramér's V misura la \hl{forza} del legame (lo abbiamo visto)
+    \item ChatGPT: le soglie ``piccolo/moderato'' \hl{non sono universali} $\rightarrow$ meglio ``associazione non trascurabile''
+    \item[] {\small\itshape (minore) ``ground truth'' $\rightarrow$ ``reference labels'': tema politicamente sensibile.}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+% ================================================================
+%  RISPOSTA DI JOHN A CHATGPT (al posto della conclusione di ChatGPT)
+% ================================================================
+\begin{frame}{Risposta di John a ChatGPT (1)}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item L'affidabilit\`a l'abbiamo \hl{stratificata} nei fold (tenuta sotto controllo)
+    \item L'orientamento invece \hl{no}: \`e lasciato a caso
+    \item E nel dataset orientamento $\times$ livello \`e \hl{sbilanciatissimo}
+    \item Alcune combinazioni \hl{non esistono}: nessuna slightly-left di livello 1, nessuna far-right di livello 5
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Risposta di John a ChatGPT (2)}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Quando dividiamo in fold, a volte il modello vede \hl{zero} esempi di una combinazione che poi deve indovinare
+    \item Es.\ (fold 1): nessun Far Left di livello 1 o 3 in addestramento, ma viene testato proprio su quelli
+    \item[] {\small\itshape Naturale che sbagli: non li ha mai visti.}
+    \item Quindi parte di questi ``errori politici'' \`e un \hl{artefatto} del dataset e dei fold
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Risposta di John a ChatGPT (3)}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.9em}
+    \item Questa analisi del bias \`e \hl{molto specifica}: vale per \emph{questo} dataset, \emph{questi} modelli, \emph{questo} training
+    \item Non \`e un risultato generale sul ``comportamento politico'' dei modelli
+    \item Se la teniamo, va detto \hl{chiaramente}
+    \item[] {\small\itshape \`E un po' un'analisi fine a s\'e stessa.}
+  \end{itemize}
+  \vfill
 \end{frame}
 
 \begin{frame}{Fabio $\times$ Claude --- (1) idee e review}
