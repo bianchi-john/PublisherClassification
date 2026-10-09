@@ -531,7 +531,7 @@
   \begin{itemize}[<+->]
     \setlength\itemsep{0.8em}
     \item La domanda del test: l'errore del modello dipende dall'\hl{orientamento politico}?
-    \item Lo calcola contando i \hl{singoli articoli}: 19.476 ``prove''
+    \item Nel paper viene calcolato contando i \hl{singoli articoli}: 19.476 ``prove''
     \item Ma l'orientamento \`e \hl{fisso per testata}: tutti gli articoli di una testata hanno lo stesso orientamento (come hanno la stessa affidabilit\`a --- anche se sono due cose diverse)
     \item Quindi gli articoli di una stessa testata \hl{non sono prove indipendenti}
   \end{itemize}
@@ -589,13 +589,26 @@
         \item[] \hl{84} quasi tutte sbagliate
         \item[] solo 134 ``a met\`a''
         \item L'esito lo decide quasi la \hl{testata}, non il singolo articolo
-        \item Riassunto in un numero: ICC \hl{$\approx 0.6$} (a caso $\approx 0.14$)
+        \item Riassunto in un numero: ICC \hl{$\approx 0{,}6$} (come leggerlo: slide successiva)
       \end{itemize}
     \end{column}
     \begin{column}{0.56\textwidth}
       \visible<2->{\includegraphics[width=\linewidth]{pub_error_hist.pdf}}
     \end{column}
   \end{columns}
+\end{frame}
+
+\begin{frame}{Osservazione di John --- come leggere 0,6}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Prova: \hl{rimescoliamo a caso} gli errori tra le testate (tenendo fisso il livello), cos\`i la testata non pu\`o pi\`u contare
+    \item In questo mondo ``a caso'' l'ICC viene circa \hl{0,14}
+    \item L'abbiamo rifatto 100 volte: non \`e \hl{mai} andato oltre $\sim$0,17
+    \item Il nostro \`e \hl{0,6}: pi\`u di 4 volte tanto
+    \item Quindi il risultato \hl{non \`e casuale}: gli errori si concentrano davvero in alcune testate
+  \end{itemize}
+  \vfill
 \end{frame}
 
 \begin{frame}{Osservazione di John --- la conclusione}
@@ -608,6 +621,50 @@
     \item La correzione \`e semplice: fare il test \hl{per testata}
   \end{itemize}
   \vfill
+\end{frame}
+
+\begin{frame}{Osservazione di John --- come si fa il test per testata}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Per ogni testata, il \hl{voto di maggioranza} dei suoi articoli d\`a \hl{un solo giudizio}
+    \item[] {\small\itshape Es.: una testata di livello 1 con 9 articoli: 7 predetti $l_2$, 1 $l_5$, 1 $l_1$ $\rightarrow$ voto $l_2$ $\rightarrow$ testata sbagliata.}
+    \item Ogni testata conta \hl{una volta sola}: giusta o sbagliata
+    \item Si rif\`a la stessa tabella di prima (orientamento $\times$ giusta/sbagliata), ma con \hl{439 testate} invece di 19.476 articoli
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Osservazione di John --- il test per testata: il risultato}
+  \begin{columns}[c]
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{0.8em}
+        \item $\chi^2$ per testata: \hl{18,8} (contro 1.418 per articolo)
+        \item Ancora sopra la soglia di 9,5: il legame \hl{resta}\dots
+        \item \dots ma \`e molto meno ``clamoroso''
+        \item[] {\small\itshape Esempio con RoBERTa; gli altri modelli danno da 19 a 45.}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \visible<2->{%
+      \footnotesize
+      \begin{center}
+      RoBERTa, una riga per orientamento\\[0.3em]
+      \begin{tabular}{lrr}
+        \toprule
+        \textbf{Orientamento} & \textbf{Giuste} & \textbf{Sbagliate} \\
+        \midrule
+        Far Left       & 9   & 11 \\
+        Slightly Left  & 29  & 21 \\
+        Non labelled   & 81  & 29 \\
+        Slightly Right & 156 & 51 \\
+        Far Right      & 28  & 24 \\
+        \bottomrule
+      \end{tabular}
+      \end{center}}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}{Problema 2 --- cosa dice ChatGPT}
@@ -684,13 +741,63 @@
 \end{frame}
 
 \begin{frame}{Problema 4 --- nel nostro caso}
+  \begin{columns}[c]
+    \begin{column}{0.47\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{0.7em}
+        \item Testate divise in 5 orientamenti: \hl{Far Left ne ha solo 20}
+        \item Nella casella ``Far Left sbagliate'' ne aspettiamo appena \hl{6,2}: proprio al limite (perch\'e: slide successive)
+        \item E guardando orientamento \emph{e} livello insieme, alcune caselle sono \hl{vuote}: nessuna far-right di livello 5, nessuna slightly-left di livello 1
+        \item[] {\small\itshape L\`i il $\chi^2$ non ha pi\`u senso.}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.53\textwidth}
+      \visible<2->{%
+      \footnotesize
+      \begin{center}
+      Test per testata, RoBERTa\\[0.3em]
+      \begin{tabular}{lrrr}
+        \toprule
+        & & \multicolumn{2}{c}{\textbf{Sbagliate}} \\
+        \cmidrule(lr){3-4}
+        \textbf{Orientamento} & \textbf{Testate} & \textbf{osservate} & \textbf{attese} \\
+        \midrule
+        Far Left       & 20  & 11 & \textbf{6,2} \\
+        Slightly Left  & 50  & 21 & 15,5 \\
+        Non labelled   & 110 & 29 & 34,1 \\
+        Slightly Right & 207 & 51 & 64,1 \\
+        Far Right      & 52  & 24 & 16,1 \\
+        \bottomrule
+      \end{tabular}
+      \end{center}}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Problema 4 --- perch\'e servono caselle piene (1)}
   \vfill
   \begin{itemize}[<+->]
     \setlength\itemsep{0.8em}
-    \item 439 testate divise in 5 orientamenti: \hl{Far Left ne ha solo 20}
-    \item Nella casella ``Far Left sbagliate'' ne aspettiamo appena \hl{$\sim$6}: proprio al limite
-    \item E guardando orientamento \emph{e} livello insieme, alcune caselle sono \hl{vuote}: nessuna far-right di livello 5, nessuna slightly-left di livello 1
-    \item[] {\small\itshape L\`i il $\chi^2$ non ha pi\`u senso.}
+    \item Il $\chi^2$ somma, casella per casella: $\dfrac{(\text{osservato} - \text{atteso})^2}{\text{atteso}}$
+    \item Poi confronta il totale con la soglia di \hl{9,5}: ma quella soglia \`e calcolata supponendo caselle \hl{abbastanza piene}
+    \item Con caselle piccole, \hl{una sola testata} pesa moltissimo:
+    \item[] casella con 2 attese, ne osservo 4: $\;(4-2)^2/2 = \mathbf{2}$
+    \item[] casella con 50 attese, ne osservo 52: $\;(52-50)^2/50 = \mathbf{0{,}08}$
+    \item[] {\small\itshape Stessa differenza di 2 testate, peso 25 volte diverso.}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Problema 4 --- perch\'e servono caselle piene (2)}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Nel nostro caso (RoBERTa) il $\chi^2$ per testata vale \hl{18,8}
+    \item Le sole 20 testate Far Left ne portano \hl{5,4}: quasi un terzo
+    \item Se \hl{una} testata Far Left passasse da sbagliata a giusta: $\chi^2$ da 18,8 a \hl{16,9}
+    \item Se lo facesse una testata Slightly Right: da 18,8 a 19,5
+    \item[] {\small\itshape Il risultato dipende molto da pochissime testate.}
+    \item Regola pratica: almeno \hl{5 attese} per casella. Noi ne abbiamo 6,2: appena sopra, \hl{al limite}
   \end{itemize}
   \vfill
 \end{frame}
@@ -907,10 +1014,35 @@
     \item BERT e Llama~3 sembrano ``datati'': stessa ricetta con modelli attuali (\hl{ModernBERT}, \hl{DeBERTa-v3}, piccoli decoder recenti)
     \item[] {\small\itshape Quasi solo estetica, ma toglie un appiglio ai revisori.}
     \item \hl{Pulizia delle etichette}: un LLM segnala gli articoli atipici per la loro testata e si d\`a loro meno peso
-    \item \hl{Distillazione}: poco utile, le etichette le abbiamo gi\`a
     \item \hl{Agente}: visita la testata, legge le pagine ``chi siamo'', propriet\`a, rettifiche, e valuta i 9 criteri di NewsGuard
     \item[] {\small\itshape \`E un altro task (non solo testo): lavoro futuro.}
   \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Fabio --- la distillazione: cos'\`e}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Un modello \hl{grande} (``insegnante'', es.\ un LLM) serve ad addestrare un modello \hl{piccolo} (``studente'')
+    \item L'insegnante legge gli articoli e d\`a le sue risposte; lo studente impara a \hl{imitarle}
+    \item[] {\small\itshape Come uno studente che impara dagli appunti del professore, non solo dal libro.}
+    \item Per Fabio, nella forma base serve a poco: le etichette giuste (NewsGuard) le abbiamo gi\`a, e l'insegnante porterebbe dentro la sua \hl{contaminazione} (riconosce le testate)
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Fabio --- la distillazione: come andrebbe fatta}
+  \vfill
+  \begin{enumerate}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Per ogni articolo l'LLM scrive una \hl{breve spiegazione}: perch\'e sembra affidabile o no
+    \item[] {\small\itshape Es.: ``titolo sensazionalistico, nessuna fonte citata, tono da opinione''.}
+    \item Il modello piccolo viene addestrato a dare \hl{l'etichetta NewsGuard} \emph{e} a riprodurre la \hl{spiegazione}
+    \item Cos\`i impara \emph{su cosa} guardare, non solo il risultato $\rightarrow$ gli servono \hl{meno dati}
+  \end{enumerate}
+  \vspace{0.6em}
+  \visible<5->{\small\itshape Per Fabio: guadagno incerto e parecchio lavoro, non prioritaria.}
   \vfill
 \end{frame}
 
@@ -941,14 +1073,43 @@
 \end{frame}
 
 % ---------------------------------------------------------------- E. altri punti nuovi
-\begin{frame}{Fabio --- l'early stopping}
+\begin{frame}{Fabio --- l'early stopping: cos'\`e}
   \vfill
   \begin{itemize}[<+->]
     \setlength\itemsep{0.8em}
-    \item Nel paper: un \emph{early stopping} ``che salva il modello con la validation loss minima''
-    \item Ma non si dice \hl{su quali dati} si calcola la validation loss
-    \item Se fosse il fold di \hl{test}, avremmo scelto il modello guardando il test: risultati \hl{gonfiati}
-    \item[] {\small\itshape Dal codice: lo usa solo Llama, su un 10\% degli articoli di training, quindi nessuna contaminazione. Ma va scritto.}
+    \item Il modello si addestra in pi\`u ``giri'' sugli stessi dati (le \hl{epoche})
+    \item Dopo un po' comincia a \hl{imparare a memoria} gli esempi e peggiora sui dati nuovi
+    \item Early stopping: dopo ogni giro misuro l'errore su dati \hl{messi da parte} (``validation'') e tengo la versione migliore
+    \item[] {\small\begin{tabular}{lccccc}
+      \toprule
+      \textbf{Giro} & 1 & 2 & 3 & 4 & 5 \\
+      \textbf{Errore sulla validation} & 0,60 & 0,50 & 0,46 & \hl{0,44} & 0,47 \\
+      \bottomrule
+    \end{tabular}}
+    \item[] {\small\itshape Tengo il giro 4: dopo, il modello peggiora (come Llama nel paper, minimo al giro 4).}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Fabio --- l'early stopping: il rischio}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item I dati di validation devono essere \hl{diversi} da quelli di test
+    \item Se scegliessi il giro migliore guardando il \hl{test}, sceglierei la versione che \emph{per caso} va meglio proprio sul test
+    \item[] {\small\itshape Come scegliere quale compito consegnare dopo aver visto le soluzioni: il voto sembra pi\`u alto di quello che vali.}
+    \item Il risultato riportato sarebbe \hl{gonfiato}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Fabio --- l'early stopping: nel nostro caso}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Nel paper: ``early stopping che salva il modello con la validation loss minima'', senza dire \hl{su quali dati}
+    \item Dal codice: lo usa \hl{solo Llama}, su un 10\% degli articoli di \hl{training}; gli altri modelli fanno un numero fisso di giri
+    \item Quindi nessuna contaminazione, ma \hl{va scritto} chiaramente
   \end{itemize}
   \vfill
 \end{frame}
