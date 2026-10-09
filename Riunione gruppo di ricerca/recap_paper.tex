@@ -19,6 +19,8 @@
 \setbeamercovered{transparent}
 \setbeamertemplate{caption}{\insertcaption}
 \newcommand{\hl}[1]{\textbf{#1}}
+\newenvironment{johnblock}{\begin{exampleblock}{\footnotesize Commento di John}\footnotesize}{\end{exampleblock}}
+\newenvironment{claudeblock}{\setbeamercolor{block title}{fg=white,bg=gray!65!black}\setbeamercolor{block body}{bg=gray!12}\begin{block}{\footnotesize Commento di Claude}\footnotesize}{\end{block}}
 \newcommand{\divider}[2]{%
   \begin{frame}[plain]
     \vfill
@@ -61,7 +63,7 @@
       \end{itemize}
     \end{column}
     \begin{column}{0.48\textwidth}
-      \onslide<3->{\includegraphics[width=\linewidth]{dataset_distribution.pdf}}
+      \visible<3->{\includegraphics[width=\linewidth]{dataset_distribution.pdf}}
     \end{column}
   \end{columns}
 \end{frame}
@@ -79,7 +81,7 @@
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
-      \onslide<5->{\includegraphics[width=\linewidth]{results_boxplot_baselines.pdf}}
+      \visible<5->{\includegraphics[width=\linewidth]{results_boxplot_baselines.pdf}}
     \end{column}
   \end{columns}
 \end{frame}
@@ -96,7 +98,7 @@
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
-      \onslide<4->{\includegraphics[width=\linewidth]{domain_metrics_comparison.pdf}}
+      \visible<4->{\includegraphics[width=\linewidth]{domain_metrics_comparison.pdf}}
     \end{column}
   \end{columns}
 \end{frame}
@@ -125,13 +127,14 @@
       \begin{itemize}[<+->]
         \setlength\itemsep{0.9em}
         \item \hl{Error rate} per ogni livello di affidabilit\`a
-        \item $l_1$ il pi\`u \hl{facile}: contenuti molto inaffidabili riconoscibili
-        \item $l_5$ il pi\`u \hl{difficile}: si confonde con $l_4$
-        \item $l_2$ difficile, $l_3$ intermedio
+        \item $l_1$: errore pi\`u \hl{basso} ($<20\%$)
+        \item $l_5$: errore pi\`u \hl{alto} ($>70\%$), spesso confuso con $l_4$
+        \item $l_2$ sopra il 50\%, $l_3$ intorno al 35\%
+        \item[] {\small\itshape Sappiamo solo dove sbaglia di pi\`u o di meno, non perch\'e.}
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
-      \onslide<2->{\includegraphics[width=\linewidth]{error_rate_analysis.pdf}}
+      \visible<2->{\includegraphics[width=\linewidth]{error_rate_analysis.pdf}}
     \end{column}
   \end{columns}
 \end{frame}
@@ -148,7 +151,7 @@
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
-      \onslide<2->{\includegraphics[width=\linewidth]{mean_error_direction.pdf}}
+      \visible<2->{\includegraphics[width=\linewidth]{mean_error_direction.pdf}}
     \end{column}
   \end{columns}
 \end{frame}
@@ -183,7 +186,7 @@
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
-      \onslide<2->{\includegraphics[width=\linewidth]{orientationDistributionInverted.pdf}}
+      \visible<2->{\includegraphics[width=\linewidth]{orientationDistributionInverted.pdf}}
     \end{column}
   \end{columns}
 \end{frame}
@@ -196,11 +199,11 @@
         \setlength\itemsep{0.9em}
         \item \hl{Error rate} per orientamento politico
         \item Gli estremi (\hl{far left}, \hl{far right}) sbagliano molto di pi\`u
-        \item Slightly right e non labelled i pi\`u \hl{facili}
+        \item Slightly right e non labelled sbagliano \hl{meno}
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
-      \onslide<2->{\includegraphics[width=\linewidth]{politicalErrorRates.pdf}}
+      \visible<2->{\includegraphics[width=\linewidth]{politicalErrorRates.pdf}}
     \end{column}
   \end{columns}
 \end{frame}
@@ -218,7 +221,7 @@
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
-      \onslide<2->{\includegraphics[width=\linewidth]{politicalErrorsDirection.pdf}}
+      \visible<2->{\includegraphics[width=\linewidth]{politicalErrorsDirection.pdf}}
     \end{column}
   \end{columns}
 \end{frame}
@@ -278,6 +281,19 @@
     \item Allora ogni gruppo dovrebbe sbagliare \hl{nella stessa proporzione} (circa la media, $\sim$42\%).
     \item Il $\chi^2$ misura \hl{quanto} gli errori \emph{osservati} si allontanano da questo scenario ``senza legame''.
     \item Pi\`u grande \`e lo scarto $\rightarrow$ $\chi^2$ grande $\rightarrow$ pi\`u probabile che un legame ci sia.
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Passo 2 --- quanto vale il nostro $\chi^2$}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Se \hl{non} ci fosse nessun legame, il $\chi^2$ starebbe intorno a \hl{4} (un valore che dipende solo dalla grandezza della tabella)
+    \item Per puro caso supererebbe \hl{9,5} solo 1 volta su 20: \`e la soglia classica
+    \item Il nostro: \hl{1.208--1.684}, a seconda del modello
+    \item[] {\small\itshape Oltre cento volte la soglia: lontanissimo dallo scenario ``senza legame''.}
+    \item Attenzione: il $\chi^2$ cresce con il \hl{numero di dati} (qui 19.476 articoli): per giudicare la \emph{forza} del legame serve Cram\'er's V (Passo 4)
   \end{itemize}
   \vfill
 \end{frame}
@@ -360,66 +376,122 @@
   \begin{block}{\footnotesize English}
     \small\itshape ``The two-stage framework is essentially standard fine-tuning of pretrained language models followed by majority voting. The main contribution seems to be the task formulation, dataset construction, and evaluation setup, rather than a new model architecture, learning objective, or aggregation method.''
   \end{block}
+  \vspace{0.3em}
+  \visible<2->{\begin{johnblock}
+    Dopo parliamo degli esperimenti in pi\`u: questo punto si dovrebbe addressare.
+  \end{johnblock}}
 \end{frame}
 
 \begin{frame}{Revisore 1 --- (2) Il guadagno dell'aggregazione non \`e misurato pulito}
   \begin{block}{\footnotesize English}
     \small\itshape ``The comparison between the article-level score ($\sim$0.60) and the publisher-level score ($\sim$0.69) changes both the evaluation unit and the weighting of publishers. As a result, the improvement cannot be attributed to aggregation alone.''
   \end{block}
+  \vspace{0.3em}
+  \visible<2->{\begin{johnblock}
+    Questa non l'ho capita. Forse dovremmo spiegare meglio perch\'e aggregare ha senso? Forse ha senso solo aggregare, e non andrebbe fatta la valutazione per singolo articolo?
+  \end{johnblock}}
 \end{frame}
 
 \begin{frame}{Revisore 1 --- (3) Bias confuso con il livello di affidabilit\`a}
   \begin{block}{\footnotesize English}
     \small\itshape ``The distribution of reliability labels differs substantially across political leanings, and some reliability levels are clearly more difficult to classify than others. The relationship between political leaning and prediction error should therefore be tested again after controlling for the true reliability level.''
   \end{block}
+  \vspace{0.3em}
+  \visible<2->{\begin{johnblock}
+    Di questa ne parliamo dopo in modo approfondito. Comunque non ha senso dire che alcune label sono pi\`u difficili da classificare di altre: non ci sono i dati per dirlo.
+  \end{johnblock}}
 \end{frame}
 
 \begin{frame}{Revisore 1 --- (4) Il chi-quadro ignora il clustering}
   \begin{block}{\footnotesize English}
     \small\itshape ``Political leaning and reliability are publisher-level attributes shared by multiple articles from the same publisher. Using all articles as independent observations may lead to pseudo-replication and overstate the effective sample size and significance of the results.''
   \end{block}
+  \vspace{0.3em}
+  \visible<2->{\begin{johnblock}
+    Questa la vediamo dopo nel dettaglio: \`e una critica importante.
+  \end{johnblock}}
 \end{frame}
 
 \begin{frame}{Revisore 1 --- (5) Indizi dell'editore e artefatti non esclusi}
   \begin{block}{\footnotesize English}
     \small\itshape ``The paper does not include systematic text cleaning, source-identifier masking, or sanitized-text ablations. It is therefore difficult to tell whether the model is learning reliability-related content or simply exploiting publisher-specific signals and scraping artifacts.''
   \end{block}
+  \vspace{0.3em}
+  \visible<2->{\begin{johnblock}
+    Anche questa la vediamo pi\`u avanti.
+  \end{johnblock}}
 \end{frame}
 
 \begin{frame}{Revisore 1 --- (6) Possibile bias di selezione nello scraping}
   \begin{block}{\footnotesize English}
     \small\itshape ``Only 439 of the 669 candidate publishers were included in the final dataset, and the scraping success rates differ across reliability levels. The paper does not examine whether the publishers that were successfully scraped differ systematically from those that were not.''
   \end{block}
+  \vspace{0.3em}
+  \visible<2->{\begin{johnblock}
+    Non so se questa ha senso.
+  \end{johnblock}}
 \end{frame}
 
 \begin{frame}{Revisore 1 --- (7) Confronto sulla taglia del modello non controllato}
   \begin{block}{\footnotesize English}
     \small\itshape ``The models differ in architecture, fine-tuning strategy, training schedule, and context length, in addition to parameter count. The observed performance differences therefore cannot be attributed to model size alone.''
   \end{block}
+  \vspace{0.3em}
+  \visible<2->{\begin{johnblock}
+    Ma praticamente non ci sono differenze di performance tra i vari modelli.
+  \end{johnblock}}
 \end{frame}
 
 \begin{frame}{Revisore 1 --- (8) Nessuna stima di incertezza}
   \begin{block}{\footnotesize English}
     \small\itshape ``Differences such as 0.69 versus 0.68 are small, but the paper does not report confidence intervals, bootstrap results, or paired significance tests. It is therefore unclear whether these differences are meaningful.''
   \end{block}
+  \vspace{0.3em}
+  \visible<2->{\begin{claudeblock}
+    \begin{itemize}\setlength\itemsep{0.2em}
+      \item \textbf{Bootstrap}: si ricampionano a caso le 439 testate migliaia di volte e ogni volta si ricalcola l'accuracy; la variazione d\`a un \textbf{intervallo di confidenza} (es.\ ``0,69'' diventa un intervallo come 0,65--0,73).
+      \item \textbf{Test appaiato}: si confrontano due modelli \emph{sulle stesse testate}, contando quelle dove uno ha ragione e l'altro torto (es.\ test di McNemar); dice se 0,69 contro 0,68 \`e una differenza reale.
+      \item Nel paper bocciato non ci sono n\'e intervalli n\'e test: critica giusta e veloce da risolvere. Su 439 testate, 0,69 contro 0,68 vuol dire circa 4 testate di differenza.
+    \end{itemize}
+  \end{claudeblock}}
 \end{frame}
 
 \begin{frame}{Revisore 2 --- (1) Motivazione debole del passaggio a livello editore}
   \begin{block}{\footnotesize English}
     \small\itshape ``publisher reliability is, by construction, obtained as a fixed aggregation of article-level outputs\dots the re-formulation does not introduce substantial new insight beyond a change in the unit of evaluation.''
   \end{block}
+  \vspace{0.3em}
+  \visible<2->{\begin{johnblock}
+    Non so che dire.
+  \end{johnblock}}
 \end{frame}
 
 \begin{frame}{Revisore 2 --- (2) Mancano confronti con altri scorer}
   \begin{block}{\footnotesize English}
     \small\itshape ``Publisher-level scores can equally be produced by first scoring individual articles with a model pretrained specifically for article-level reliability classification, or with a general-purpose LLM such as Qwen, and then applying the same voting strategy\dots No such comparison is reported.''
   \end{block}
+  \vspace{0.3em}
+  \visible<2->{\begin{johnblock}
+    Anche qui non so che dire: non ho capito cosa c'entra Qwen.
+  \end{johnblock}}
+  \vspace{0.3em}
+  \visible<3->{\begin{claudeblock}
+    Il nostro schema \`e ``voto a ogni articolo, poi maggioranza''. Il revisore nota che il voto per articolo potrebbe darlo anche un modello \emph{gi\`a esistente} per l'affidabilit\`a degli articoli, o un \emph{LLM generalista} interrogato direttamente. Qwen \`e solo un esempio di LLM open-source. Vuole sapere se i nostri modelli battono queste alternative ``pronte'': \`e vicino all'esperimento con e senza nomi proposto da Fabio.
+  \end{claudeblock}}
 \end{frame}
 
 \begin{frame}{Revisore 2 --- (3) Il dataset non \`e ``large-scale''}
   \begin{block}{\footnotesize English}
     \small\itshape ``Although the corpus contains 19,476 articles, the objective of the paper is scoring at the level of the publisher, and the dataset comprises only 439 publishers. The dataset is therefore unlikely to support effective use in real-world applications.''
   \end{block}
+  \vspace{0.3em}
+  \visible<2->{\begin{johnblock}
+    Secondo me invece i dati sono sufficienti.
+  \end{johnblock}}
+  \vspace{0.3em}
+  \visible<3->{\begin{claudeblock}
+    In parte d'accordo con John: 439 testate bastano per misurare le prestazioni, se riportiamo gli intervalli di confidenza. Ma il revisore ha ragione su un punto: l'unit\`a del compito \`e la testata, quindi il campione vero \`e 439, non 19.476 (lo conferma anche l'ICC). ``Large-scale'' \`e la parola sbagliata: basta toglierla. Che i dati non bastino per un uso reale \`e un'affermazione del revisore, non dimostrata.
+  \end{claudeblock}}
 \end{frame}
 
 
@@ -521,7 +593,7 @@
       \end{itemize}
     \end{column}
     \begin{column}{0.56\textwidth}
-      \onslide<2->{\includegraphics[width=\linewidth]{pub_error_hist.pdf}}
+      \visible<2->{\includegraphics[width=\linewidth]{pub_error_hist.pdf}}
     \end{column}
   \end{columns}
 \end{frame}
@@ -532,7 +604,7 @@
     \setlength\itemsep{0.9em}
     \item Gli articoli di una testata \hl{non sono prove indipendenti}
     \item Quindi l'unit\`a giusta per il test sono le \hl{439 testate}, non i 19.476 articoli
-    \item[] {\small\itshape E vale anche a parit\`a di livello: non \`e solo perch\'e $l_5$ \`e difficile.}
+    \item[] {\small\itshape E vale anche a parit\`a di livello: non \`e solo perch\'e su $l_5$ il modello sbaglia di pi\`u.}
     \item La correzione \`e semplice: fare il test \hl{per testata}
   \end{itemize}
   \vfill
