@@ -7,15 +7,18 @@ from __future__ import annotations
 from pathlib import Path
 
 # --------------------------------------------------------------------------
-# Paths. REPO_ROOT is resolved from this file's location, so the notebook works
-# regardless of the directory it is launched from.
+# Paths. Both roots are resolved from this file's location, so the notebook
+# works regardless of the directory it is launched from. VERSION_ROOT is this
+# version's folder (Code/IrForGood), which holds its Dataset and Results;
+# REPO_ROOT is the repository, which holds the Paper.
 # --------------------------------------------------------------------------
-REPO_ROOT = Path(__file__).resolve().parents[2]
+VERSION_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = VERSION_ROOT.parents[1]
 
 # Inputs (read-only -- never written to by this pipeline).
 # Model predictions live under Results/predictions: they are outputs of stage 1
 # (1-classification) and inputs to stage 2 (2-analysis).
-RESULTS_DIR = REPO_ROOT / "Results"
+RESULTS_DIR = VERSION_ROOT / "Results"
 PREDICTIONS_DIR = RESULTS_DIR / "predictions"
 CLASSIFICATION_DIR = PREDICTIONS_DIR / "finetuned"
 ZEROSHOT_DIR = PREDICTIONS_DIR / "zeroshot"
@@ -26,7 +29,7 @@ GPT_PRED_CSV = ZEROSHOT_DIR / "preds_gpt5mini_capNone.csv"
 
 # The only proprietary input: NewsGuard ratings and political orientation.
 # Not redistributable, and excluded from the repository.
-NEWSGUARD_CSV = REPO_ROOT / "Dataset" / "newsguard.csv"
+NEWSGUARD_CSV = VERSION_ROOT / "Dataset" / "newsguard.csv"
 
 # Outputs
 FIGURES_DIR = RESULTS_DIR / "figures"

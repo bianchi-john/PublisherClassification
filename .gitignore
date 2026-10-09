@@ -1,6 +1,7 @@
 # =====================================================================
 # Proprietary NewsGuard data -- licensed to the authors, NOT redistributable.
 # Also far too large for GitHub (single files up to 127 MB; limit is 100 MB).
+# Every version under Code/ has its own Dataset/; this pattern matches them all.
 # =====================================================================
 Dataset/
 
@@ -13,12 +14,12 @@ key.txt
 # =====================================================================
 # Large derived files (regenerable; 70-92 MB each, over GitHub's 100 MB limit)
 # =====================================================================
-Results/_archive/errors/
-Results/_archive/fullanalysis/
-Results/predictions/finetuned/mistral/24B_results_enriched_checkpoint.csv
+Code/IrForGood/Results/_archive/errors/
+Code/IrForGood/Results/_archive/fullanalysis/
+Code/IrForGood/Results/predictions/finetuned/mistral/24B_results_enriched_checkpoint.csv
 
 # Derived predictions: regenerable by analysis/paper_results.ipynb (14 MB)
-Results/derived/predictions_long.csv
+Code/IrForGood/Results/derived/predictions_long.csv
 
 # =====================================================================
 # Jupyter

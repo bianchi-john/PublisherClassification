@@ -79,7 +79,7 @@ C.ensure_output_dirs()
 pd.set_option("display.width", 160)
 pd.set_option("display.max_columns", 40)
 
-print("repo root :", C.REPO_ROOT)
+print("version root :", C.VERSION_ROOT)
 print("figures   ->", C.FIGURES_DIR)
 print("tables    ->", C.TABLES_DIR)
 print("derived   ->", C.DERIVED_DIR)
