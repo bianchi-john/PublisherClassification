@@ -13,6 +13,7 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{xcolor}
+\usepackage{tikz}
 \graphicspath{{../../Paper/OldPaperRejected/img/}{./}}
 
 \beamertemplatenavigationsymbolsempty
@@ -1153,7 +1154,402 @@
   \vfill
 \end{frame}
 
-% >>> QUI arriveranno le slide punto-per-punto "cosa faremo" (da costruire insieme)
+% ---------------------------------------------------------------- proposta di John
+\divider{Proposta di John}{come procedere verso Web Science 2027}
+
+\begin{frame}{Proposta di John --- da dove ripartiamo}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Il \hl{dataset resta quello}: scraping + filtro della lingua (langdetect), 439 testate e 19.476 articoli
+    \item Si rifanno gli \hl{esperimenti}, partendo dalla fine della creazione del dataset
+    \item Primo passo: un \hl{classificatore a feature}, semplice e leggibile
+    \item Lo scopo: capire \hl{su cosa} si basa la classificazione, prima di usare i modelli grandi
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Proposta di John --- il classificatore a feature}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Ogni articolo diventa un \hl{elenco di parole}, ciascuna con un peso (TF-IDF)
+    \item[] {\small\itshape Peso alto = parola frequente in quell'articolo ma rara negli altri.}
+    \item Il classificatore (regressione logistica) impara quali parole \hl{spingono} verso ciascun livello
+    \item Vantaggio: si pu\`o \hl{leggere}, cio\`e vedere per ogni livello le parole che contano di pi\`u
+    \item[] {\small\itshape L'abbiamo gi\`a provato dopo la submission a IR for Good: \`e una prova preliminare.}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Proposta di John --- cosa guarda il classificatore}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.7em}
+    \item Ci aspettavamo parole legate all'affidabilit\`a: fonti, toni, titoli
+    \item Invece le parole pi\`u importanti sono \hl{impronte di produzione}:
+    \item[] -- la didascalia fissa di una foto ufficiale (``official headshot'')
+    \item[] -- il lettore audio di un sistema di pubblicazione (``trinity audio player ready'')
+    \item[] -- la stessa data ripetuta su molti siti (``March 21 2025'')
+    \item[] -- i nomi delle testate stesse
+    \item Queste parole dicono \hl{da dove viene} l'articolo, non quanto \`e affidabile
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Proposta di John --- le reti di siti}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Prova: cercare articoli di \hl{testate diverse} che \hl{iniziano con lo stesso testo}
+    \item Due testate che condividono almeno due aperture sono \hl{collegate}
+    \item Le testate collegate formano delle \hl{reti}: 223 testate su 439, il 45\% degli articoli
+    \item La pi\`u grande: \hl{130 dei 152 siti $l_1$}, tutti con lo stesso punteggio NewsGuard (32)
+    \item Dentro quasi ogni rete il punteggio NewsGuard \`e \hl{identico}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Proposta di John --- perch\'e \`e un problema (1)}
+  \begin{columns}[c]
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{0.7em}
+        \item La separazione per testata mette il sito A nel training e il sito B nel test
+        \item Ma A e B sono \hl{fratelli}: stesso proprietario, stessa pagina, articoli copiati
+        \item Il modello riconosce la \hl{pagina} e indovina il livello di B
+        \item[] {\small\itshape Come un esame con domande nuove, ma copiate da un libro gemello di quello studiato.}
+        \item La valutazione \hl{non misura} pi\`u la capacit\`a di giudicare una testata davvero nuova
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \visible<2->{%
+      \centering
+      \begin{tikzpicture}[font=\small]
+        \draw[rounded corners, fill=blue!6] (0,0) rectangle (2.4,2.2);
+        \draw[rounded corners, fill=orange!8] (3.2,0) rectangle (5.6,2.2);
+        \node at (1.2,1.9) {\textbf{Training}};
+        \node at (4.4,1.9) {\textbf{Test}};
+        \node[draw, circle, fill=white] (A) at (1.2,0.8) {A};
+        \node[draw, circle, fill=white] (B) at (4.4,0.8) {B};
+        \draw<3->[wrongred, thick, dashed] (A) -- (B);
+        \node<3->[wrongred, font=\footnotesize] at (2.8,-0.35) {stessa pagina};
+      \end{tikzpicture}}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Proposta di John --- perch\'e \`e un problema (2)}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Accuratezza per testata \hl{dentro le reti}: 0,92--0,93 (tutti i modelli)
+    \item \hl{Fuori dalle reti}: 0,40--0,44
+    \item[] {\small\itshape Il risultato medio mescola questi due mondi.}
+    \item Se ogni rete sta tutta in un solo fold (prova fatta solo con il classificatore a feature): accuratezza per testata da \hl{0,68 a 0,57}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Proposta di John --- l'obiettivo}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.7em}
+    \item Un metodo per \hl{trovare} questi gruppi di testate e \hl{tenerne conto} nella valutazione
+    \item Requisiti, per non essere attaccabili:
+    \item[] -- \hl{automatico}: nessun articolo letto a mano, nessun LLM
+    \item[] -- \hl{cieco alle etichette}: non usa mai i livelli NewsGuard
+    \item[] -- \hl{verificabile} con un dato esterno
+    \item[] -- \hl{riutilizzabile} su altri dataset: \`e questo il contributo
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Proposta di John --- perch\'e ``cieco alle etichette''}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Se usassi le etichette per decidere cosa togliere, potrei togliere, anche senza volerlo, proprio ci\`o che \hl{cambia i risultati}
+    \item[] {\small\itshape Es.: tolgo le parole che il classificatore usa di pi\`u per $l_1$: il risultato dipende da come ho scelto io, non dai dati.}
+    \item Un revisore lo direbbe subito: \hl{ragionamento circolare}
+    \item Quindi i gruppi si costruiscono \hl{solo dal testo}; le etichette si guardano solo \hl{dopo}, per misurare
+    \item L'explainability del classificatore serve a \hl{descrivere}, mai a decidere cosa togliere
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Proposta di John --- il piano in 5 passi}
+  \vfill
+  \begin{enumerate}[<+->]
+    \setlength\itemsep{0.8em}
+    \item \hl{Collegare} le testate che condividono testo
+    \item \hl{Verificare} i gruppi con un dato esterno
+    \item \hl{Misurare} quanto i gruppi falsano la valutazione
+    \item \hl{Provare} le correzioni
+    \item Solo dopo, i \hl{modelli grandi}
+  \end{enumerate}
+  \vfill
+\end{frame}
+
+\begin{frame}{Passo 1 --- che cosa vuol dire ``parenti''}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.7em}
+    \item Due testate sono \hl{parenti} se condividono \hl{testo prodotto}, non argomenti
+    \item Primo segnale: lo \hl{stesso articolo} (o quasi) pubblicato su siti diversi
+    \item Secondo segnale: gli stessi \hl{pezzi fissi}: modello di pagina, firme, appelli, lettore audio
+    \item Parlare dello \hl{stesso tema} non basta
+    \item[] {\small\itshape Es.: due giornali locali che parlano entrambi di consigli comunali non sono parenti.}
+    \item Nel nostro dataset \hl{1.475 articoli} hanno un testo identico su almeno due testate diverse, e i quasi identici sono di pi\`u
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Passo 1 --- trovare gli articoli quasi uguali}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.7em}
+    \item Ogni articolo viene spezzato in \hl{pezzetti} di 5 parole consecutive
+    \item[] {\small\itshape ``the county commission approved the budget'' $\rightarrow$ ``the county commission approved the'', ``county commission approved the budget''}
+    \item Due articoli sono \hl{quasi uguali} se hanno quasi tutti i pezzetti in comune
+    \item[] {\small\itshape Es.: lo stesso comunicato su due siti, con solo il nome della citt\`a cambiato.}
+    \item Confrontare ogni coppia di articoli sarebbe lentissimo: si usa \hl{MinHash}, una tecnica standard che riassume ogni articolo in una breve impronta
+    \item[] {\small\itshape \`E la tecnica usata per togliere i duplicati dai dati di addestramento dei modelli linguistici.}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Passo 1 --- dai legami ai gruppi}
+  \begin{columns}[c]
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{0.7em}
+        \item Per ogni coppia di testate: quanti articoli di A hanno una \hl{copia} in B
+        \item Sopra una \hl{soglia}, A e B sono collegate
+        \item Un gruppo = testate collegate \hl{anche indirettamente}
+        \item Una testata senza legami resta un gruppo da sola: \`e \hl{indipendente}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \visible<2->{%
+      \centering
+      \begin{tikzpicture}[font=\small, every node/.style={draw, circle, fill=white, minimum size=6mm}]
+        \node (A) at (0,1.6) {A};
+        \node (B) at (1.2,1.6) {B};
+        \node (C) at (2.4,1.6) {C};
+        \node (D) at (0,0.2) {D};
+        \node (E) at (1.2,0.2) {E};
+        \node (F) at (2.4,0.2) {F};
+        \draw[thick] (A) -- (B) -- (C);
+        \draw[thick] (D) -- (E);
+        \draw<3->[blue!60, rounded corners, thick] (-0.5,1.1) rectangle (2.9,2.1);
+        \draw<3->[blue!60, rounded corners, thick] (-0.5,-0.3) rectangle (1.7,0.7);
+        \draw<4->[blue!60, rounded corners, thick] (1.95,-0.3) rectangle (2.85,0.7);
+      \end{tikzpicture}\\[0.4em]
+      \visible<3->{\footnotesize Gruppi: \{A, B, C\} \quad \{D, E\} \quad \visible<4->{\{F\}}}}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Passo 1 --- la soglia, senza barare}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item La soglia si \hl{fissa prima} di guardare i risultati dei classificatori
+    \item Poi la si fa \hl{variare}: soglia bassa $\rightarrow$ gruppi grandi, soglia alta $\rightarrow$ gruppi piccoli
+    \item Si mostra che le \hl{conclusioni non cambiano} (analisi di sensibilit\`a)
+    \item[] {\small\itshape Cos\`i nessuno pu\`o dire che abbiamo scelto la soglia che ci faceva comodo.}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Passo 2 --- verificare i gruppi con il proprietario}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.7em}
+    \item NewsGuard riporta per ogni sito il \hl{proprietario}
+    \item Non lo usiamo per costruire i gruppi, solo per \hl{controllarli}
+    \item[] {\small\itshape Perch\'e: molti altri dataset non hanno il proprietario, e il metodo deve funzionare anche l\`i.}
+    \item Prova preliminare, con le reti trovate a ottobre:
+    \item[] -- quando diciamo ``sono parenti'', nel \hl{98\%} dei casi hanno davvero lo stesso proprietario
+    \item[] -- delle coppie con lo stesso proprietario, ne troviamo \hl{8 su 10}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Passo 3 --- misurare quanto conta (1)}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Prima misura: i gruppi hanno quasi sempre \hl{un solo livello}?
+    \item[] {\small\itshape Prova preliminare: 13 proprietari su 18 hanno tutte le testate nello stesso livello.}
+    \item Si confronta con gruppi \hl{fatti a caso} della stessa grandezza: quanto spesso succede per caso?
+    \item Se succede molto pi\`u spesso che per caso, riconoscere il gruppo basta per \hl{indovinare il livello}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Passo 3 --- misurare quanto conta (2)}
+  \begin{columns}[c]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{0.7em}
+        \item Seconda misura: per ogni testata di test, quanto \`e \hl{parente} della testata di training pi\`u vicina
+        \item Si dividono le testate per grado di parentela e si guarda l'\hl{accuratezza} in ciascun gruppo
+        \item Se l'accuratezza \hl{sale} con la parentela, il modello riconosce i fratelli
+        \item Se resta \hl{piatta}, nessun problema
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \visible<3->{%
+      \centering
+      \begin{tikzpicture}[font=\footnotesize]
+        \draw[->] (0,0) -- (4.6,0);
+        \node[below] at (2.2,-0.3) {parentela con il training};
+        \draw[->] (0,0) -- (0,3.2) node[above right] {accuratezza};
+        \node[below] at (0.1,0) {0};
+        \node[below] at (4.2,0) {1};
+        \draw<3->[wrongred, very thick] (0.3,0.7) -- (1.5,1.1) -- (2.7,2.0) -- (3.9,2.8);
+        \node<3->[wrongred, right] at (3.0,2.95) {fuga};
+        \draw<4->[green!50!black, very thick] (0.3,1.4) -- (3.9,1.5);
+        \node<4->[green!50!black, right] at (3.9,1.5) {ok};
+      \end{tikzpicture}\\[0.3em]
+      {\scriptsize\itshape Grafico illustrativo, non sono dati.}}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Passo 3 --- misurare quanto conta (3)}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Terza misura: rifare la valutazione separando per \hl{gruppo} invece che per testata
+    \item[] {\small\itshape Tutto un gruppo sta nello stesso fold: nessun fratello nel training.}
+    \item Quanto \hl{scende} l'accuratezza = quanto la valutazione era falsata
+    \item Si riportano sempre a parte le testate \hl{nei gruppi} e quelle \hl{indipendenti}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Passo 4 --- provare le correzioni}
+  \begin{columns}[c]
+    \begin{column}{0.5\textwidth}
+      \footnotesize
+      \begin{tabular}{cl}
+        \toprule
+        & \textbf{Che cosa fa} \\
+        \midrule
+        A & Separazione per testata (come nel paper) \\
+        B & A + via gli articoli copiati tra siti \\
+        C & B + via i pezzi fissi ripetuti \\
+        D & Separazione per gruppo \\
+        E & Tutto insieme \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{0.7em}
+        \item Non scegliamo una correzione: le \hl{confrontiamo}
+        \item Prova preliminare: togliere fino a 10.000 parole pi\`u usate dal classificatore, o i paragrafi di servizio, sposta l'accuratezza per testata di \hl{al massimo 2 punti}
+        \item Ci aspettiamo che conti soprattutto la \hl{separazione per gruppo}
+        \item[] {\small\itshape Anche questo \`e un risultato: pulire il testo non basta.}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Passo 5 --- solo dopo, i modelli grandi}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Rifare BERT, RoBERTa, Llama e Mistral con la \hl{separazione per gruppo}
+    \item Domanda: sulle testate \hl{indipendenti}, i modelli grandi fanno meglio del classificatore a feature?
+    \item[] {\small\itshape Prova preliminare: l\`i avevano fino a 8 punti in pi\`u per articolo, che per\`o sparivano nel voto per testata.}
+    \item Ha senso solo \hl{dopo} aver tolto le scorciatoie: prima misureremmo il riconoscimento dei fratelli
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Proposta di John --- due cose da dire chiaramente}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Far parte di una rete di siti automatizzati \`e un \hl{vero segnale} di inaffidabilit\`a
+    \item Non lo neghiamo: distinguiamo \hl{riconoscere i fratelli} da \hl{giudicare una testata nuova}, e riportiamo entrambi
+    \item La rete pi\`u grande ha 130 siti, quasi tutti gli $l_1$: separando per gruppo finisce \hl{tutta in un fold}
+    \item[] {\small\itshape Serve una divisione dei fold pensata per i gruppi, e i risultati riportati livello per livello.}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Proposta di John --- \`e una novit\`a? (1)}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Che cosa \hl{esiste gi\`a}:
+    \item[] -- separare per testata: Zhou et al.\ 2021, Bozarth \& Budak 2020, Baly et al.\ 2020
+    \item[] -- trovare reti di siti dal testo copiato: Horne et al.\ 2019
+    \item[] -- separare per gruppi di dati simili: gi\`a fatto in \hl{biologia e chimica} (proteine e molecole simili)
+    \item Quindi \hl{non} possiamo dire di essere i primi a separare per testata, n\'e a misurare l'accuratezza in base alla somiglianza
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Proposta di John --- \`e una novit\`a? (2)}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Il lavoro pi\`u vicino, Zhou et al.\ 2021: i siti di test \hl{simili} ai siti di training vanno meglio, ma non formano gruppi e non cambiano la separazione
+    \item Gruppi et al.\ 2021: costruiscono quasi la stessa rete di testo copiato, ma la usano come \hl{indizio} per classificare, non come problema
+    \item Cosa sembra nuovo: mostrare che la separazione per testata \hl{non basta}, con un metodo automatico, cieco alle etichette e verificato sul proprietario
+    \item[] {\small\itshape Da scrivere con ``per quanto ne sappiamo'': la ricerca non pu\`o escludere lavori recentissimi.}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Proposta di John --- lo scraping: lo rifacciamo?}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.7em}
+    \item Proposta: \hl{non rifarlo}
+    \item Il metodo lavora sul \hl{testo}, e il testo che abbiamo basta
+    \item Lo scraping ha tolto i doppioni solo \hl{dentro la stessa testata}: le copie tra testate diverse sono ancora l\`i, ed \`e proprio quello che cerchiamo
+    \item Rifarlo oggi: siti cambiati o chiusi, articoli diversi, etichette NewsGuard di marzo 2025 \hl{non pi\`u allineate}
+    \item Il proprietario lo abbiamo gi\`a da NewsGuard: non serve scaricare le pagine per cercare altri indizi
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Proposta di John --- lo scraping: i limiti da dichiarare}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.7em}
+    \item \`E una \hl{fotografia}: gli articoli in homepage a marzo 2025, \hl{senza data}
+    \item Da 669 testate a 439: tra le perse di $l_4$ e $l_5$ la maggior parte sono testate \hl{internazionali} (scraping bloccato)
+    \item 1.055 articoli vengono dal \hl{dataset precedente}, raccolto in un altro periodo
+    \item $l_1$: 175 siti estratti a caso, ma l'87\% dei siti politici NewsGuard sotto 40 ha \hl{lo stesso proprietario}: per questo la rete grande \`e entrata in massa
+    \item[] {\small\itshape Non si correggono rifacendo lo scraping: vanno scritti.}
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Proposta di John --- il piano in sintesi}
+  \vfill
+  \begin{enumerate}[<+->]
+    \setlength\itemsep{0.6em}
+    \setcounter{enumi}{-1}
+    \item \hl{Dataset} com'\`e: scraping + langdetect
+    \item \hl{Gruppi} di testate dal testo copiato e dai pezzi fissi
+    \item \hl{Verifica} dei gruppi con il proprietario
+    \item \hl{Misure}: livelli nei gruppi, curva di parentela, calo separando per gruppo
+    \item \hl{Correzioni} a confronto, con il classificatore a feature
+    \item \hl{Modelli grandi} con la separazione per gruppo
+  \end{enumerate}
+  \vspace{0.5em}
+  \visible<7->{\small\itshape Tutto si fa senza GPU, tranne il passo 5.}
+  \vfill
+\end{frame}
 
 
 \end{document}
