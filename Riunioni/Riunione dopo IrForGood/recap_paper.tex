@@ -1498,16 +1498,76 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{BERT --- in corso}
+\begin{frame}{BERT --- come l'abbiamo addestrato}
   \vfill
   \begin{itemize}[<+->]
     \setlength\itemsep{0.8em}
     \item Stesse impostazioni del paper: bert-base-uncased, 256 token, 5 epoche, batch 32, learning rate 2e-5
     \item Stessi dati (min0) e \hl{stessi fold per gruppo} del classificatore a feature
-    \item Addestramento sul server del gruppo (GPU V100S): circa \hl{14 minuti per fold} (poco pi\`u di un'ora in tutto)
+    \item Addestramento sul server del gruppo (GPU V100S): circa 14 minuti per fold, 73 minuti in tutto
     \item Domanda: sulle testate \hl{nuove}, BERT fa meglio delle parole?
   \end{itemize}
   \vfill
+\end{frame}
+
+\begin{frame}{BERT --- i risultati}
+  \centering\small
+  min0, fold per gruppo, media sui 5 fold\\[0.4em]
+  \begin{tabular}{ll cccc}
+    \toprule
+    \textbf{Valutazione} & \textbf{Modello} & \textbf{Accuratezza} & \textbf{F1 macro} & \textbf{Tolerant 0,5} & \textbf{Tolerant 1} \\
+    \midrule
+    per testata  & TF-IDF + LR & 0,40 & 0,33 & 0,53 & 0,67 \\
+                 & BERT        & 0,40 & 0,33 & 0,56 & 0,73 \\
+    \midrule
+    per articolo & TF-IDF + LR & 0,39 & 0,31 & 0,54 & 0,69 \\
+                 & BERT        & 0,36 & 0,29 & 0,53 & 0,70 \\
+    \bottomrule
+  \end{tabular}
+  \raggedright
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.6em}
+    \item<2-> Sulle testate nuove BERT \hl{non fa meglio} del classificatore a feature: 0,40 contro 0,40
+    \item<3-> Con i fold del paper, sul dataset originale, BERT arrivava a \hl{0,67}: anche per BERT il calo viene dalle testate sorelle
+    \item<4-> Quando sbaglia, BERT sbaglia pi\`u spesso \hl{di un solo livello} (tolerant 1: 0,73 contro 0,67)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{BERT --- livello per livello}
+  \begin{columns}[c]
+    \begin{column}{0.52\textwidth}
+      \centering\small
+      Accuratezza per testata (n.\ testate)\\[0.3em]
+      \begin{tabular}{llcc}
+        \toprule
+        & & \textbf{TF-IDF} & \textbf{BERT} \\
+        \midrule
+        $l_1$ & indipendenti (18) & 0,11 & 0,22 \\
+              & nei gruppi (134)  & 0,01 & 0,04 \\
+        $l_2$ & indipendenti (42) & 0,64 & 0,62 \\
+              & nei gruppi (24)   & 0,54 & 0,21 \\
+        $l_3$ & indipendenti (39) & 0,26 & 0,23 \\
+              & nei gruppi (56)   & 0,88 & 0,88 \\
+        $l_4$ & indipendenti (72) & 0,57 & 0,54 \\
+              & nei gruppi (16)   & 0,25 & 0,50 \\
+        $l_5$ & indipendenti (32) & 0,12 & 0,22 \\
+              & nei gruppi (3)    & 0,00 & 0,00 \\
+        \midrule
+        tutte & indipendenti (203) & 0,41 & 0,42 \\
+              & nei gruppi (233)   & 0,29 & 0,29 \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{0.7em}
+        \item Nel complesso vanno \hl{quasi uguale} (indipendenti 0,41 e 0,42; nei gruppi 0,29 e 0,29), ma su singoli livelli con poche testate le differenze sono grandi
+        \item La rete da 131 siti $l_1$: BERT ne mette 70 in $l_2$ e 53 in $l_3$, pi\`u vicino al vero ma comunque sbagliato
+        \item I fold sono molto diversi tra loro: per BERT l'accuratezza per testata va da \hl{0,15 a 0,73} a seconda del fold
+        \item[] {\small\itshape Un solo addestramento per fold: le differenze piccole tra i modelli vanno lette con prudenza.}
+      \end{itemize}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}{Esperimenti --- punti da discutere}
@@ -1516,7 +1576,7 @@
     \setlength\itemsep{0.8em}
     \item Quale \hl{versione} usare come principale: min0, min10 o min20?
     \item La \hl{rete da 131 siti}: valutarla a parte (``una rete mai vista'') e dare le metriche principali sulle altre testate?
-    \item Ripetere gli stessi esperimenti con \hl{RoBERTa, Llama, Mistral}
+    \item Ripetere gli stessi esperimenti con \hl{RoBERTa, Llama, Mistral}, e BERT anche su min10 e min20
     \item La storia del paper: \hl{dati $\rightarrow$ testate parenti $\rightarrow$ pulizia $\rightarrow$ classificazione} su fold per gruppo
   \end{itemize}
   \vfill
