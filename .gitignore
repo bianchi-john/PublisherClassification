@@ -47,3 +47,6 @@ __pycache__/
 *.pyc
 .DS_Store
 Thumbs.db
+
+# Progress log written while notebooks run
+Code/WebScience2027/Results/*/avanzamento*.log

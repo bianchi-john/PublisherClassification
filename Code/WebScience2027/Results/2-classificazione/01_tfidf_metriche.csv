@@ -1,0 +1,13 @@
+livello di valutazione,versione,fold,Accuracy,F1 macro,Tolerant α=0.5,Tolerant α=1.0
+articoli,min0,per gruppo,0.389,0.306,0.54,0.692
+articoli,min0,per testata,0.489,0.456,0.629,0.769
+articoli,min10,per gruppo,0.397,0.309,0.544,0.691
+articoli,min10,per testata,0.492,0.468,0.627,0.762
+articoli,min20,per gruppo,0.404,0.301,0.558,0.712
+articoli,min20,per testata,0.442,0.401,0.597,0.752
+testate,min0,per gruppo,0.4,0.327,0.533,0.666
+testate,min0,per testata,0.645,0.531,0.747,0.849
+testate,min10,per gruppo,0.424,0.367,0.555,0.686
+testate,min10,per testata,0.663,0.571,0.76,0.858
+testate,min20,per gruppo,0.453,0.361,0.587,0.721
+testate,min20,per testata,0.561,0.503,0.687,0.813
