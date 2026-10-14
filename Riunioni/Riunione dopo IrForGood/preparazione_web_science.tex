@@ -14,7 +14,7 @@
 \usepackage{booktabs}
 \usepackage{xcolor}
 \usepackage{tikz}
-\graphicspath{{../../Paper/OldPaperRejected/img/}{./}}
+\graphicspath{{../../Paper/OldPaperRejected/img/}{./figure/}{./}}
 
 \beamertemplatenavigationsymbolsempty
 \setbeamercovered{invisible}
@@ -1160,17 +1160,43 @@
 \begin{frame}{Il punto di partenza}
   \vfill
   \begin{itemize}[<+->]
-    \setlength\itemsep{0.9em}
+    \setlength\itemsep{0.8em}
     \item Primo dataset (quello di IrForGood): 439 testate, 19.476 articoli
     \item Prima di classificare, un controllo: le testate sono davvero \hl{indipendenti}?
     \item No: molte pubblicano lo \hl{stesso testo} (reti di siti, catene, articoli ripresi)
+    \item[] {\small\itshape Nelle prossime slide vediamo come abbiamo identificato questi insiemi di siti.}
   \end{itemize}
   \vfill
 \end{frame}
 
-\divider{La pulizia del dataset}{questa la vediamo nel dettaglio}
+\begin{frame}{Ripulire il primo dataset non bastava}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.9em}
+    \item \hl{Rimozione dei duplicati e dei gruppi} dal primo dataset, e nuova classificazione
+    \item Valutata su testate \hl{davvero nuove}: risultati \hl{scarsi}
+    \item In pi\`u, $l_1$ quasi tutto \hl{una sola rete}: poche testate indipendenti per livello
+    \item Decisione: \hl{creare un nuovo dataset}, pi\`u grande e vario
+  \end{itemize}
+  \vfill
+\end{frame}
 
-\begin{frame}{Trovare gli articoli gemelli}
+\divider{Il nuovo dataset}{come l'abbiamo costruito, passo per passo}
+
+\begin{frame}{Un nuovo scraping}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item \hl{Tutte} le testate politiche in inglese di NewsGuard con un punteggio: 1.921
+    \item Scaricate in \hl{ordine casuale} (seme fisso): se lo scraping non finisce, quelle raccolte restano un \hl{campione non sbilanciato} (non le prime in ordine alfabetico, n\'e per livello)
+    \item La selezione \hl{non guarda il livello} di affidabilit\`a: il dataset si costruisce \hl{prima} e \hl{indipendentemente} da ci\`o che vogliamo predire
+    \item[] {\small\itshape Cos\`i la scelta delle testate non pu\`o favorire il risultato.}
+    \item Fino a 200 articoli recenti per testata (con la \hl{data}) + le \hl{pagine del sito} (about, contatti, redazione, correzioni, propriet\`a)
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Passo 1 --- trovare gli articoli gemelli}
   \begin{columns}[c]
     \begin{column}{0.5\textwidth}
       \begin{itemize}[<+->]
@@ -1193,132 +1219,106 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Dagli articoli gemelli alle reti di testate}
+\begin{frame}{Passo 2 --- che cosa intendiamo per ``gruppo''}
+  \begin{columns}[c]
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{0.7em}
+        \item Due testate \hl{collegate} se hanno almeno \hl{2 articoli gemelli} in comune
+        \item Un \hl{gruppo} = testate collegate anche a catena (A--B, B--C $\Rightarrow$ insieme)
+        \item Una testata senza legami \`e un gruppo \hl{da sola} (indipendente)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \visible<2->{%
+      \centering
+      \begin{tikzpicture}[font=\footnotesize, every node/.style={draw, circle, fill=white, minimum size=6mm}]
+        \node (A) at (0,1.5){A}; \node (B) at (1.3,1.5){B}; \node (C) at (2.6,1.5){C};
+        \node (D) at (0,0){D};   \node (E) at (1.3,0){E};   \node (F) at (2.6,0){F};
+        \draw[thick] (A)--(B)--(C); \draw[thick] (D)--(E);
+        \draw<3->[blue!60, rounded corners, thick] (-0.55,0.95) rectangle (3.15,2.05);
+        \draw<3->[blue!60, rounded corners, thick] (-0.55,-0.55) rectangle (1.85,0.55);
+        \draw<4->[wrongred, rounded corners, thick] (2.05,-0.55) rectangle (3.15,0.55);
+      \end{tikzpicture}\\[0.4em]
+      \visible<3->{\footnotesize gruppo \{A,B,C\}\quad gruppo \{D,E\}\quad \visible<4->{\{F\} indipendente}}}
+    \end{column}
+  \end{columns}
+  \vspace{0.4em}
+  \visible<5->{\small Nel nuovo dataset: \hl{15 gruppi} con pi\`u testate (73 testate in rete), \hl{199 indipendenti}.}
+\end{frame}
+
+\begin{frame}{Passo 2 --- la verifica con l'``owner'' di NewsGuard}
   \vfill
   \begin{itemize}[<+->]
-    \setlength\itemsep{0.8em}
-    \item Due testate \hl{collegate} se hanno almeno 2 articoli gemelli in comune
-    \item Un \hl{gruppo} = testate collegate anche indirettamente (A--B, B--C $\Rightarrow$ A, B, C insieme)
-    \item Nel primo dataset: 10 gruppi, \hl{236 testate} in rete, 203 indipendenti. Il gruppo pi\`u grande: \hl{131 siti $l_1$} con lo stesso proprietario
-    \item Verifica col \hl{proprietario} NewsGuard (non usato per i gruppi): precisione 0,93, richiamo 0,87
+    \setlength\itemsep{0.7em}
+    \item Nel dataset NewsGuard c'\`e un campo \hl{``Owner''}: chi possiede ogni sito
+    \item \`E un dato che \hl{non abbiamo usato} per costruire i gruppi (quelli nascono solo dal testo)
+    \item Lo usiamo per \hl{controllarli}, con due misure sulle coppie di testate:
+    \item[] -- \hl{precision}: tra le coppie che mettiamo nello \hl{stesso gruppo}, quante hanno davvero lo stesso owner
+    \item[] -- \hl{recall}: tra le coppie con lo \hl{stesso owner}, quante mettiamo nello stesso gruppo
+    \item Risultato: precision \hl{0,87}, recall \hl{0,76} $\rightarrow$ i gruppi trovati dal testo coincidono quasi sempre con la \hl{propriet\`a reale}
   \end{itemize}
   \vfill
 \end{frame}
 
-\begin{frame}{La pulizia --- quattro regole}
+\begin{frame}{Passo 3 --- la pulizia degli articoli}
   \vfill
   \begin{enumerate}[<+->]
-    \setlength\itemsep{0.7em}
-    \item Una sola copia per articolo gemello (somiglianza $\geq 0{,}9$)
-    \item Via le copie che attraversano \hl{gruppi diversi} (fuga oltre il confine dei fold)
+    \setlength\itemsep{0.6em}
+    \item Una sola copia per articolo \hl{gemello} (somiglianza $\geq 0{,}9$): dei pezzi ripresi se ne tiene uno
+    \item Via le copie che attraversano \hl{gruppi diversi}
+    \item[] {\small\itshape I fold per gruppo non le coprono: le due testate sono in gruppi diversi, finirebbero una in train e una in test.}
     \item Via i \hl{paragrafi condivisi} da pi\`u testate (template, didascalie, appelli)
     \item Via gli articoli rimasti con \hl{100 parole o meno}
   \end{enumerate}
-  \vspace{0.6em}
-  \visible<5->{\small\itshape La pulizia tocca solo le testate con testo copiato: le indipendenti restano quasi intatte (99,6\%).}
+  \vspace{0.5em}
+  \visible<5->{\small\itshape La pulizia tocca solo le testate con testo copiato: le \hl{indipendenti} restano quasi intatte (99,6\%).}
   \vfill
 \end{frame}
 
-\begin{frame}{E come si valuta}
+\begin{frame}{Passo 3 --- e come si valuta}
   \vfill
   \begin{itemize}[<+->]
     \setlength\itemsep{0.8em}
     \item I \hl{gruppi} diventano l'unit\`a con cui si dividono i fold
-    \item \hl{Fold per gruppo}: ogni gruppo tutto in un fold, nessuna testata ha sorelle nel training
-    \item \`E il modo onesto di misurare: ``so giudicare una testata \hl{davvero nuova}?''
-    \item[] {\small\itshape La pulizia del testo, da sola, non cambia i numeri: la fuga non \`e nel boilerplate, \`e nel riconoscere la fonte.}
+    \item \hl{Fold per gruppo}: ogni gruppo tutto in un fold, nessuna testata ha \hl{sorelle} nel training
+    \item Perch\'e pulire \emph{e} dividere per gruppo? Coprono fughe diverse:
+    \item[] -- la \hl{pulizia} toglie il testo copiato \hl{esplicito} (anche tra gruppi diversi)
+    \item[] -- i \hl{fold per gruppo} tolgono la fuga \hl{implicita}: siti fratelli riconoscibili per stile o argomenti
   \end{itemize}
   \vfill
 \end{frame}
 
-\divider{I risultati preliminari}{in breve}
-
-\begin{frame}{Classificatore a feature e BERT}
-  \begin{columns}[c]
-    \begin{column}{0.52\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{fig_accuratezza_fold.pdf}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \begin{itemize}[<+->]
-        \setlength\itemsep{0.7em}
-        \item Accuratezza per testata (min0):
-        \item[] fold del paper: \hl{0,65}
-        \item[] fold per gruppo: \hl{0,40}
-        \item \hl{BERT} va \hl{simile}: 0,40 per testata, nessun vantaggio su testate nuove
-        \item Il risultato ``alto'' del paper veniva dal \hl{riconoscere le testate sorelle}
-      \end{itemize}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{Il limite del primo dataset}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.8em}
-    \item $l_1$ era quasi tutto \hl{una sola rete} (131 siti su 152)
-    \item Poche testate \hl{indipendenti} per livello: solo 18 $l_1$, 35 $l_5$
-    \item Da qui l'idea: \hl{rifare lo scraping}, con pi\`u testate e pi\`u varie
-  \end{itemize}
-  \vfill
-\end{frame}
-
-\divider{Il nuovo dataset}{ripartiamo dallo scraping}
-
-\begin{frame}{Un nuovo scraping}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.8em}
-    \item \hl{Tutte} le testate politiche in inglese di NewsGuard con un punteggio: 1.921, in ordine casuale
-    \item[] {\small\itshape Nessuna scelta dipende dalle etichette di affidabilit\`a.}
-    \item Fino a 200 articoli recenti per testata, con la \hl{data}
-    \item In pi\`u, le \hl{pagine del sito}: about, contatti, redazione, correzioni, propriet\`a --- proprio ci\`o che NewsGuard valuta e che negli articoli manca
-    \item Robusto: una notte sul server, 600 testate raggiunte
-  \end{itemize}
-  \vfill
-\end{frame}
-
-\begin{frame}{Il disegno del dataset}
-  \vfill
-  \begin{enumerate}[<+->]
-    \setlength\itemsep{0.8em}
-    \item Teniamo le testate con \hl{almeno 20 articoli} (il voto di maggioranza dev'essere affidabile)
-    \item \hl{Puliamo gli articoli}: gemelli, copie tra gruppi, paragrafi condivisi, testi corti
-    \item Teniamo solo le testate con una \hl{pagina ``about'' utile} (about/propriet\`a/correzioni/redazione), anch'essa ripulita dal boilerplate
-    \item Risultato: \hl{272 testate}, ognuna con articoli \emph{e} pagine del sito
-  \end{enumerate}
-  \vfill
-\end{frame}
-
-\begin{frame}{Il dataset definitivo}
-  \begin{columns}[c]
-    \begin{column}{0.56\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{fig_nuovo_vs_vecchio.pdf}
-    \end{column}
-    \begin{column}{0.44\textwidth}
-      \begin{itemize}[<+->]
-        \setlength\itemsep{0.6em}
-        \item \hl{272 testate}, 44.935 articoli
-        \item $l_1$ ora \`e fatto di testate \hl{indipendenti}, non di una rete
-        \item Articoli con la \hl{data} (mediana: set.\ 2026)
-        \item Ogni testata ha anche le \hl{pagine del sito}
-      \end{itemize}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{Anche le pagine vanno ripulite}
+\begin{frame}{Passo 4 --- anche le pagine vanno ripulite}
   \vfill
   \begin{itemize}[<+->]
     \setlength\itemsep{0.8em}
     \item Problema: anche le pagine (terms, about\dots) sono spesso \hl{condivise} tra testate diverse
     \item[] {\small\itshape Stessa fuga delle reti: la stessa pagina in train e in test per lo stesso livello.}
-    \item Soluzione: via i tipi di pagina solo-boilerplate (terms, advertise) e via i \hl{paragrafi condivisi}
-    \item Dopo: pagine quasi uguali tra gruppi diversi da 625 a \hl{0}; valutazione onesta e ottimista \hl{coincidono}
+    \item Soluzione: via i tipi solo-boilerplate (terms, advertise) e via i \hl{paragrafi condivisi}
+    \item Dopo: pagine quasi uguali tra gruppi diversi da 625 a \hl{0}
   \end{itemize}
   \vfill
 \end{frame}
+
+\begin{frame}{Passo 5 --- il dataset definitivo}
+  \begin{columns}[c]
+    \begin{column}{0.55\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{fig_nuovo_vs_vecchio.pdf}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{0.6em}
+        \item Teniamo le testate con \hl{almeno 20 articoli} (voto di maggioranza affidabile)
+        \item \dots e con una \hl{pagina about} utile
+        \item Risultato: \hl{272 testate}, 44.935 articoli
+        \item $l_1$ ora \`e fatto di testate \hl{indipendenti}, non di una rete; articoli con la \hl{data}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 
 \divider{Classificazione sul nuovo dataset}{il disegno}
 

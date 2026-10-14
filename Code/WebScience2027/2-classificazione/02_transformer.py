@@ -44,15 +44,24 @@ def fissa_seed(s):
     torch.backends.cudnn.deterministic = True; torch.backends.cudnn.benchmark = False
 
 
+PAROLE_ART = 400   # ~512 token di articolo
+PAROLE_PAG = 400   # ~512 token di pagine; articolo identico in A e C, C aggiunge le pagine
+
+
+def taglia(testo, n):
+    return " ".join(str(testo).split()[:n])
+
+
 def carica():
     art = pd.read_csv(VERS / "dataset_finale.csv")
     art["testo"] = art["testo"].fillna("")
     fold = pd.read_csv(VERS / "fold_finale.csv")[["domain", "fold_gruppo", "fold_testata"]]
     art = art.merge(fold, on="domain", how="left")
     pag = pd.read_csv(VERS / "pagine_finale.csv")[["domain", "testo_pagine"]]
-    tp = dict(zip(pag.domain, pag.testo_pagine.fillna("")))
-    art["A"] = art.testo
-    art["C"] = art.testo + "\n\n" + art.domain.map(tp).fillna("")
+    tp = {d: taglia(t, PAROLE_PAG) for d, t in zip(pag.domain, pag.testo_pagine.fillna(""))}
+    art["art_cut"] = art.testo.map(lambda t: taglia(t, PAROLE_ART))
+    art["A"] = art.art_cut                                          # solo articolo (stesso troncamento)
+    art["C"] = art.art_cut + "\n\n" + art.domain.map(tp).fillna("")  # articolo + pagine
     return art
 
 
@@ -63,6 +72,7 @@ def main():
     ap.add_argument("--config", nargs="+", default=["A", "C"])
     ap.add_argument("--schemi", nargs="+", default=SCHEMI)
     ap.add_argument("--epoche", type=int, default=5)
+    ap.add_argument("--folds", nargs="+", type=int, default=None, help="quali fold (default tutti)")
     ap.add_argument("--prova", action="store_true")
     args = ap.parse_args()
 
@@ -92,22 +102,25 @@ def main():
         enc_te = tok(te[config].tolist(), truncation=True, padding="max_length", max_length=args.max_token, return_tensors="pt")
         dl_tr = DataLoader(TensorDataset(enc_tr.input_ids, enc_tr.attention_mask, torch.tensor(tr.label.tolist())), batch_size=32, shuffle=True)
         dl_te = DataLoader(TensorDataset(enc_te.input_ids, enc_te.attention_mask), batch_size=16)
-        model = AutoModelForSequenceClassification.from_pretrained(args.modello, num_labels=5).to(device)
+        kw = {"reference_compile": False} if "ModernBERT" in args.modello else {}   # niente torch.compile: tempi stabili
+        model = AutoModelForSequenceClassification.from_pretrained(args.modello, num_labels=5, **kw).to(device)
         opt = AdamW(model.parameters(), lr=2e-5)
+        scaler = torch.cuda.amp.GradScaler()                 # precisione mista: addestramento più veloce
         for epoca in range(1, args.epoche + 1):
             model.train(); t0, tot = time.time(), 0.0
             for ids, mask, y in dl_tr:
                 opt.zero_grad()
-                loss = model(ids.to(device), attention_mask=mask.to(device), labels=y.to(device)).loss
-                loss.backward(); opt.step(); tot += loss.item()
+                with torch.cuda.amp.autocast():
+                    loss = model(ids.to(device), attention_mask=mask.to(device), labels=y.to(device)).loss
+                scaler.scale(loss).backward(); scaler.step(opt); scaler.update(); tot += loss.item()
             media = tot / len(dl_tr)
             righe_loss.append({"config": config, "schema": schema, "fold": fold, "epoca": epoca, "loss": media})
             registra(f"{config} {schema} fold {fold}: epoca {epoca}/{args.epoche} in {time.time()-t0:.0f} s, loss {media:.4f}")
         model.eval(); probs = []
-        with torch.no_grad():
+        with torch.no_grad(), torch.cuda.amp.autocast():
             for ids, mask in dl_te:
                 logit = model(ids.to(device), attention_mask=mask.to(device)).logits
-                probs.append(torch.softmax(logit, dim=1).cpu().numpy())
+                probs.append(torch.softmax(logit.float(), dim=1).cpu().numpy())
         P = np.vstack(probs)
         out = pd.DataFrame(P, columns=CLASSI)
         out.insert(0, "domain", te.domain.values); out.insert(0, "article_id", te.article_id.values)
@@ -124,7 +137,8 @@ def main():
     for config in args.config:
         for schema in args.schemi:
             parti = []
-            for fold in sorted(art[schema].unique()):
+            folds = args.folds if args.folds else sorted(art[schema].unique())
+            for fold in folds:
                 ff = per_fold / f"{config}_{schema}_fold{fold}.csv"
                 if ff.exists():
                     registra(f"{config} {schema} fold {fold}: già fatto, salto")

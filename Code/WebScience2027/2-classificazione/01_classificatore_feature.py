@@ -78,19 +78,28 @@ def quattro_letture(art):
 
 
 def main():
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--config", nargs="+", default=["A", "C"])
+    ap.add_argument("--schemi", nargs="+", default=SCHEMI)
+    ap.add_argument("--folds", nargs="+", type=int, default=None, help="quali fold (default tutti)")
+    args = ap.parse_args()
     RESULTS.mkdir(parents=True, exist_ok=True)
     art = dati()
     registra(f"=== dataset definitivo: {len(art)} articoli, {art.domain.nunique()} testate ===")
     righe = []
-    for config, colonna in [("A", "testo"), ("C", "testo_AC")]:
-        for schema in SCHEMI:
+    colonne = {"A": "testo", "C": "testo_AC"}
+    for config in args.config:
+        colonna = colonne[config]
+        for schema in args.schemi:
             file_out = RESULTS / f"feature_{config}_{schema}_articoli.csv"
             if file_out.exists():
                 registra(f"{config} {schema}: già fatto, salto")
                 pred = pd.read_csv(file_out)
             else:
                 proba = np.zeros((len(art), 5))
-                for fold in sorted(art[schema].unique()):
+                folds = args.folds if args.folds else sorted(art[schema].unique())
+                for fold in folds:
                     t0 = time.time()
                     tr, te = art[art[schema] != fold], art[art[schema] == fold]
                     registra(f"{config} {schema} fold {fold}: inizio ({len(tr)} training, {len(te)} test)")
@@ -108,6 +117,7 @@ def main():
                 pred["fold"] = art[schema].values
                 pred["y_true"] = art.label.values
                 pred["y_pred"] = proba.argmax(1)
+                pred = pred[pred.fold.isin(folds)].reset_index(drop=True)   # solo i fold davvero eseguiti
                 pred.to_csv(file_out, index=False)
                 registra(f"=== {config} {schema}: salvato ({len(pred)} righe con probabilità) ===")
             etich = "per gruppo" if schema == "fold_gruppo" else "per testata"
