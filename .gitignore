@@ -49,4 +49,4 @@ __pycache__/
 Thumbs.db
 
 # Progress log written while notebooks run
-Code/WebScience2027/Results/*/avanzamento*.log
+Code/WebScience2027/EsperimentiPreliminari/Results/*/avanzamento*.log
