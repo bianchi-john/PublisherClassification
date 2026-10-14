@@ -1191,7 +1191,7 @@
     \item Scaricate in \hl{ordine casuale} (seme fisso): se lo scraping non finisce, quelle raccolte restano un \hl{campione non sbilanciato} (non le prime in ordine alfabetico, n\'e per livello)
     \item La selezione \hl{non guarda il livello} di affidabilit\`a: il dataset si costruisce \hl{prima} e \hl{indipendentemente} da ci\`o che vogliamo predire
     \item[] {\small\itshape Cos\`i la scelta delle testate non pu\`o favorire il risultato.}
-    \item Fino a 200 articoli recenti per testata (con la \hl{data}) + le \hl{pagine del sito} (about, contatti, redazione, correzioni, propriet\`a)
+    \item Fino a 200 articoli recenti per testata + le \hl{pagine del sito} (about, contatti, redazione, correzioni, propriet\`a)
   \end{itemize}
   \vfill
 \end{frame}
@@ -1313,7 +1313,7 @@
         \item Teniamo le testate con \hl{almeno 20 articoli} (voto di maggioranza affidabile)
         \item \dots e con una \hl{pagina about} utile
         \item Risultato: \hl{272 testate}, 44.935 articoli
-        \item $l_1$ ora \`e fatto di testate \hl{indipendenti}, non di una rete; articoli con la \hl{data}
+        \item $l_1$ ora \`e fatto di testate \hl{indipendenti}, non di una rete
       \end{itemize}
     \end{column}
   \end{columns}
@@ -1354,13 +1354,26 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Risultati}
-  \vfill
-  \begin{center}
-    {\large In corso.}\\[1em]
-    \itshape I numeri di A e C, per articolo e per testata, arriveranno qui.
-  \end{center}
-  \vfill
+\begin{frame}{Risultati provvisori (un fold, valutazione per gruppo)}
+  \centering\small
+  \begin{tabular}{llccc}
+    \toprule
+    \textbf{Modello} & \textbf{Input} & \textbf{art.\ 5 cl} & \textbf{testata 5 cl} & \textbf{testata bin.} \\
+    \midrule
+    feature & A, solo articoli & 0,62 & 0,70 & 0,91 \\
+            & C, + pagine & \textbf{0,73} & 0,71 & \textbf{0,94} \\
+    \midrule
+    ModernBERT & A, solo articoli & 0,60 & 0,65 & 0,90 \\
+               & C, + pagine & 0,60 & 0,59 & 0,86 \\
+    \bottomrule
+  \end{tabular}\\[0.9em]
+  \raggedright
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.5em}
+    \item Le pagine \hl{aiutano il classificatore a feature}; non ModernBERT
+    \item ModernBERT con le pagine va in \hl{overfitting}: memorizza le testate del training (loss $\to 0$)
+    \item[] {\small\itshape Un solo fold (69 testate, molte $l_3$): numeri \hl{direzionali}, non definitivi. In corso: tutti e 5 i fold.}
+  \end{itemize}
 \end{frame}
 
 

@@ -73,10 +73,15 @@ def main():
     ap.add_argument("--schemi", nargs="+", default=SCHEMI)
     ap.add_argument("--epoche", type=int, default=5)
     ap.add_argument("--folds", nargs="+", type=int, default=None, help="quali fold (default tutti)")
+    ap.add_argument("--early-stopping", action="store_true",
+                    help="tiene da parte il 15%% dei gruppi di training come validation e ferma all'epoca migliore")
+    ap.add_argument("--patience", type=int, default=1)
     ap.add_argument("--prova", action="store_true")
     args = ap.parse_args()
 
     nome = "modernbert" if "ModernBERT" in args.modello else ("bert" if "bert" in args.modello else args.modello.split("/")[-1])
+    if args.early_stopping:
+        nome += "_es"
     per_fold = RESULTS / nome
     per_fold.mkdir(parents=True, exist_ok=True)
     log = RESULTS / f"avanzamento_{nome}.log"
@@ -93,19 +98,46 @@ def main():
     art = carica()
     tok = AutoTokenizer.from_pretrained(args.modello)
     righe_loss = []
+    config_corrente = None
+
+    def tensori(sotto, con_y=True):
+        enc = tok(sotto[config_corrente].tolist(), truncation=True, padding="max_length",
+                  max_length=args.max_token, return_tensors="pt")
+        if con_y:
+            return TensorDataset(enc.input_ids, enc.attention_mask, torch.tensor(sotto.label.tolist()))
+        return TensorDataset(enc.input_ids, enc.attention_mask)
+
+    def val_loss(model, dl_val):
+        model.eval(); tot = 0.0
+        with torch.no_grad(), torch.cuda.amp.autocast():
+            for ids, mask, y in dl_val:
+                tot += model(ids.to(device), attention_mask=mask.to(device), labels=y.to(device)).loss.item()
+        return tot / len(dl_val)
 
     def un_fold(config, schema, fold):
+        nonlocal config_corrente
+        config_corrente = config
         fissa_seed(SEED)
-        tr, te = art[art[schema] != fold], art[art[schema] == fold]
-        registra(f"{config} {schema} fold {fold}: inizio ({len(tr)} training, {len(te)} test)")
-        enc_tr = tok(tr[config].tolist(), truncation=True, padding="max_length", max_length=args.max_token, return_tensors="pt")
-        enc_te = tok(te[config].tolist(), truncation=True, padding="max_length", max_length=args.max_token, return_tensors="pt")
-        dl_tr = DataLoader(TensorDataset(enc_tr.input_ids, enc_tr.attention_mask, torch.tensor(tr.label.tolist())), batch_size=32, shuffle=True)
-        dl_te = DataLoader(TensorDataset(enc_te.input_ids, enc_te.attention_mask), batch_size=16)
+        tr_all, te = art[art[schema] != fold], art[art[schema] == fold]
+        # early stopping: tengo da parte il 15% dei GRUPPI di training come validation
+        dl_val = None
+        if args.early_stopping:
+            from sklearn.model_selection import GroupShuffleSplit
+            gss = GroupShuffleSplit(n_splits=1, test_size=0.15, random_state=SEED)
+            i_tr, i_val = next(gss.split(tr_all, tr_all.label, tr_all.gruppo))
+            tr, val = tr_all.iloc[i_tr], tr_all.iloc[i_val]
+            dl_val = DataLoader(tensori(val), batch_size=16)
+        else:
+            tr = tr_all
+        registra(f"{config} {schema} fold {fold}: inizio ({len(tr)} training"
+                 + (f", {len(val)} validation" if args.early_stopping else "") + f", {len(te)} test)")
+        dl_tr = DataLoader(tensori(tr), batch_size=32, shuffle=True)
+        dl_te = DataLoader(tensori(te, con_y=False), batch_size=16)
         kw = {"reference_compile": False} if "ModernBERT" in args.modello else {}   # niente torch.compile: tempi stabili
         model = AutoModelForSequenceClassification.from_pretrained(args.modello, num_labels=5, **kw).to(device)
         opt = AdamW(model.parameters(), lr=2e-5)
         scaler = torch.cuda.amp.GradScaler()                 # precisione mista: addestramento più veloce
+        miglior_val, miglior_stato, attese = float("inf"), None, 0
         for epoca in range(1, args.epoche + 1):
             model.train(); t0, tot = time.time(), 0.0
             for ids, mask, y in dl_tr:
@@ -114,8 +146,21 @@ def main():
                     loss = model(ids.to(device), attention_mask=mask.to(device), labels=y.to(device)).loss
                 scaler.scale(loss).backward(); scaler.step(opt); scaler.update(); tot += loss.item()
             media = tot / len(dl_tr)
-            righe_loss.append({"config": config, "schema": schema, "fold": fold, "epoca": epoca, "loss": media})
-            registra(f"{config} {schema} fold {fold}: epoca {epoca}/{args.epoche} in {time.time()-t0:.0f} s, loss {media:.4f}")
+            vl = val_loss(model, dl_val) if args.early_stopping else None
+            righe_loss.append({"config": config, "schema": schema, "fold": fold, "epoca": epoca,
+                               "loss": media, "val_loss": vl})
+            registra(f"{config} {schema} fold {fold}: epoca {epoca}/{args.epoche} in {time.time()-t0:.0f} s, "
+                     f"loss {media:.4f}" + (f", val_loss {vl:.4f}" if args.early_stopping else ""))
+            if args.early_stopping:
+                if vl < miglior_val:
+                    miglior_val, miglior_stato, attese = vl, {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}, 0
+                else:
+                    attese += 1
+                    if attese > args.patience:
+                        registra(f"{config} {schema} fold {fold}: early stop all'epoca {epoca} (migliore: val_loss {miglior_val:.4f})")
+                        break
+        if args.early_stopping and miglior_stato is not None:
+            model.load_state_dict(miglior_stato)
         model.eval(); probs = []
         with torch.no_grad(), torch.cuda.amp.autocast():
             for ids, mask in dl_te:
