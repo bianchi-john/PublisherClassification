@@ -529,7 +529,7 @@
     \setlength\itemsep{0.8em}
     \item La domanda del test: l'errore del modello dipende dall'\hl{orientamento politico}?
     \item Nel paper viene calcolato contando i \hl{singoli articoli}: 19.476 ``prove''
-    \item Ma l'orientamento \`e \hl{fisso per testata}: tutti gli articoli di una testata hanno lo stesso orientamento (come hanno la stessa affidabilit\`a --- anche se sono due cose diverse)
+    \item Ma l'orientamento \`e \hl{fisso per testata}: tutti gli articoli di una testata hanno lo stesso orientamento
     \item Quindi gli articoli di una stessa testata \hl{non sono prove indipendenti}
   \end{itemize}
   \vfill
@@ -543,9 +543,8 @@
     \item Il modello la trova difficile $\rightarrow$ sbaglia quasi tutti: 200 errori ``di destra''
     \item Il test li legge come \hl{200 prove} che ``destra $\rightarrow$ errore''
     \item Ma \`e \hl{una} testata difficile, non 200 fatti diversi
-    \item[] {\small\itshape Come chiedere l'opinione politica a 200 persone della stessa famiglia: non sono 200 opinioni indipendenti, \`e quasi una sola.}
     \item Le prove vere sono le \hl{testate} (439), non gli articoli (19.476): pi\`u il campione \`e (finto) grande, pi\`u ogni differenza sembra ``significativa''
-    \item Soluzione: un conteggio \hl{per testata}
+    \item Soluzione: un conteggio \hl{per testata} con il majority voting
   \end{itemize}
   \vfill
 \end{frame}
@@ -555,7 +554,7 @@
   \vfill
   \begin{itemize}[<+->]
     \setlength\itemsep{0.8em}
-    \item La critica regge solo se gli errori si \hl{ripetono} dentro la stessa testata
+    \item La critica regge solo se gli errori \hl{sono consistenti} dentro la stessa testata
     \item Se il modello facesse \hl{un po' giusti e un po' sbagliati a caso}, ogni articolo sarebbe una prova nuova: contarli tutti sarebbe giusto
     \item Se invece \hl{azzecca (o sbaglia) quasi tutta} la testata insieme, i suoi articoli dicono \hl{la stessa cosa}: contarli tutti \`e come \hl{ripetere la stessa prova}
     \item La domanda: quando sbaglia su una testata, sbaglia su \hl{quasi tutti} i suoi articoli? \quad Lo misuriamo.
@@ -571,7 +570,6 @@
     \item Se sbagliasse \hl{a caso} dentro la testata, ogni testata starebbe vicino alla \hl{media} ($\sim$42\%)
     \item L'ICC dice quanto invece le testate si \hl{spaccano} tra ``quasi tutte giuste'' e ``quasi tutte sbagliate''
     \item \hl{0} = tutte vicine alla media (nessuna correlazione) \quad \hl{1} = ognuna a un estremo
-    \item[] {\small\itshape Come una classe di studenti: se vanno tutti bene o tutti male insieme, i voti sono ``correlati''.}
   \end{itemize}
   \vfill
 \end{frame}
@@ -987,7 +985,6 @@
     \item Oggi: classifichiamo \hl{ogni articolo}, poi \hl{votiamo}
     \item Ma l'etichetta vera \`e della \hl{testata}, non del singolo articolo
     \item Idea: addestrare il modello direttamente su ``\hl{sacchetti}'' di articoli: tutti quelli di una testata insieme, con l'etichetta della testata
-    \item[] {\small\itshape Come giudicare un ristorante leggendo tutte le recensioni insieme, invece di dare un voto a ciascuna e fare la maggioranza.}
   \end{itemize}
   \vfill
 \end{frame}
@@ -1017,31 +1014,6 @@
   \vfill
 \end{frame}
 
-\begin{frame}{Fabio --- la distillazione: cos'\`e}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.8em}
-    \item Un modello \hl{grande} (``insegnante'', es.\ un LLM) serve ad addestrare un modello \hl{piccolo} (``studente'')
-    \item L'insegnante legge gli articoli e d\`a le sue risposte; lo studente impara a \hl{imitarle}
-    \item[] {\small\itshape Come uno studente che impara dagli appunti del professore, non solo dal libro.}
-    \item Per Fabio, nella forma base serve a poco: le etichette giuste (NewsGuard) le abbiamo gi\`a, e l'insegnante porterebbe dentro la sua \hl{contaminazione} (riconosce le testate)
-  \end{itemize}
-  \vfill
-\end{frame}
-
-\begin{frame}{Fabio --- la distillazione: come andrebbe fatta}
-  \vfill
-  \begin{enumerate}[<+->]
-    \setlength\itemsep{0.8em}
-    \item Per ogni articolo l'LLM scrive una \hl{breve spiegazione}: perch\'e sembra affidabile o no
-    \item[] {\small\itshape Es.: ``titolo sensazionalistico, nessuna fonte citata, tono da opinione''.}
-    \item Il modello piccolo viene addestrato a dare \hl{l'etichetta NewsGuard} \emph{e} a riprodurre la \hl{spiegazione}
-    \item Cos\`i impara \emph{su cosa} guardare, non solo il risultato $\rightarrow$ gli servono \hl{meno dati}
-  \end{enumerate}
-  \vspace{0.6em}
-  \visible<5->{\small\itshape Per Fabio: guadagno incerto e parecchio lavoro, non prioritaria.}
-  \vfill
-\end{frame}
 
 % ---------------------------------------------------------------- D. aggregazione
 \begin{frame}{Fabio --- confrontare modi di aggregare}
@@ -1177,6 +1149,29 @@
   \vfill
 \end{frame}
 
+\begin{frame}{Le reti dentro il primo dataset}
+  \centering
+  \includegraphics[height=0.70\textheight]{fig_primo_rete.pdf}\\[0.1em]
+  {\footnotesize Una linea = le due testate hanno \hl{almeno 2 articoli quasi uguali} (somiglianza $\geq 0{,}5$; spesso \hl{lo stesso identico articolo}). La distanza nel disegno non misura nulla, serve solo a non sovrapporre i punti.\\
+  Il grumo rosso: \hl{una rete di 131 siti $l_1$} con lo stesso proprietario.}
+\end{frame}
+
+\begin{frame}{Il primo dataset: prima e dopo la pulizia}
+  \begin{columns}[c]
+    \begin{column}{0.58\textwidth}
+      \centering\includegraphics[width=\textwidth]{fig_primo_prima_dopo.pdf}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{0.7em}
+        \item Tolte le reti, restano le testate \hl{indipendenti}
+        \item $l_1$ crolla da \hl{152 a 20}: quasi tutto era una sola rete
+        \item Restano \hl{troppe poche} testate indipendenti --- per questo il primo dataset \hl{non basta}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 \divider{Il nuovo dataset}{come l'abbiamo costruito, passo per passo}
 
 \begin{frame}{Un nuovo scraping}
@@ -1257,6 +1252,12 @@
   \vfill
 \end{frame}
 
+\begin{frame}{Le reti nel nuovo dataset}
+  \centering
+  \includegraphics[height=0.68\textheight]{fig_nuovo_rete.pdf}\\[0.1em]
+  {\footnotesize Stesso metodo del primo dataset (una linea = $\geq 2$ articoli quasi uguali in comune). Qui \hl{nessuna rete domina}: il gruppo pi\`u grande \`e una catena di \hl{39 giornali locali $l_3$}, e solo 71 testate su 272 sono in rete.}
+\end{frame}
+
 \begin{frame}{Passo 3 --- la pulizia degli articoli}
   \vfill
   \begin{enumerate}[<+->]
@@ -1264,7 +1265,8 @@
     \item Una sola copia per articolo \hl{gemello} (somiglianza $\geq 0{,}9$): dei pezzi ripresi se ne tiene uno
     \item Via le copie che attraversano \hl{gruppi diversi}
     \item[] {\small\itshape I fold per gruppo non le coprono: le due testate sono in gruppi diversi, finirebbero una in train e una in test.}
-    \item Via i \hl{paragrafi condivisi} da pi\`u testate (template, didascalie, appelli)
+    \item Dal testo si \hl{tolgono i paragrafi condivisi} da pi\`u testate (template, didascalie, appelli)
+    \item[] {\small\itshape L'articolo \hl{resta}, con il resto del suo testo --- non si butta via.}
     \item Via gli articoli rimasti con \hl{100 parole o meno}
   \end{enumerate}
   \vspace{0.5em}
@@ -1345,7 +1347,7 @@
   \end{tabular}
   \vspace{1em}
   \begin{itemize}[<+->]
-    \item Modelli: \hl{classificatore a feature} (TF-IDF), \hl{BERT} (confronto), \hl{ModernBERT} (finale)
+    \item Modelli: \hl{classificatore a feature} (TF-IDF), vs. \hl{ModernBERT}
     \item Domanda: quanto aggiungono le \hl{pagine del sito} rispetto ai soli articoli?
   \end{itemize}
 \end{frame}
