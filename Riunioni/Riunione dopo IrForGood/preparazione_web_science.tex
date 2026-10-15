@@ -289,12 +289,11 @@
 \begin{frame}{Passo 2 --- quanto vale il nostro $\chi^2$}
   \vfill
   \begin{itemize}[<+->]
-    \setlength\itemsep{0.8em}
-    \item Se \hl{non} ci fosse nessun legame, il $\chi^2$ starebbe intorno a \hl{4} (un valore che dipende solo dalla grandezza della tabella)
-    \item Per puro caso supererebbe \hl{9,5} solo 1 volta su 20: \`e la soglia classica
-    \item Il nostro: \hl{1.208--1.684}, a seconda del modello
-    \item[] {\small\itshape Oltre cento volte la soglia: lontanissimo dallo scenario ``senza legame''.}
-    \item Attenzione: il $\chi^2$ cresce con il \hl{numero di dati} (qui 19.476 articoli): per giudicare la \emph{forza} del legame serve Cram\'er's V (Passo 4)
+    \setlength\itemsep{0.7em}
+    \item La tabella ha 5 orientamenti $\times$ 2 esiti (giusto/sbagliato): i \hl{gradi di libert\`a} sono $(5-1)\times(2-1)=\hl{4}$
+    \item Se \hl{non} ci fosse legame, il $\chi^2$ varrebbe in media proprio \hl{4} (quanto i gradi di libert\`a)
+    \item Con 4 gradi di libert\`a la soglia classica \`e \hl{9,5}. \`E il valore che per puro caso si supera solo il \hl{5\% delle volte} (1 su 20)
+    \item Il nostro: \hl{1.208--1.684}, a seconda del modello. Oltre \hl{cento volte} la soglia
   \end{itemize}
   \vfill
 \end{frame}
@@ -318,7 +317,8 @@
   \begin{itemize}[<+->]
     \setlength\itemsep{0.9em}
     \item Il $p$-value dice \hl{se} c'\`e un legame, non \hl{quanto} \`e forte.
-    \item Con tanti dati anche un legame \hl{piccolo} risulta ``significativo''.
+    \item Il $\chi^2$ cresce con il \hl{numero di dati} (qui 19.476 articoli): con tanti dati anche un legame \hl{piccolo} risulta ``significativo''.
+    \item Serve una misura che \hl{non} dipenda dalla quantit\`a di dati.
     \item \hl{Cram\'er's V} misura la \hl{forza}: 0 = nessun legame, 1 = legame massimo.
   \end{itemize}
   \vfill
@@ -379,7 +379,7 @@
   \end{block}
   \vspace{0.3em}
   \visible<2->{\begin{johnblock}
-    Dopo parliamo degli esperimenti in pi\`u: questo punto si dovrebbe addressare.
+    Con gli esperimenti nuovi che faremo questo punto si dovrebbe addressare.
   \end{johnblock}}
 \end{frame}
 
@@ -407,10 +407,6 @@
   \begin{block}{\footnotesize English}
     \small\itshape ``Political leaning and reliability are publisher-level attributes shared by multiple articles from the same publisher. Using all articles as independent observations may lead to pseudo-replication and overstate the effective sample size and significance of the results.''
   \end{block}
-  \vspace{0.3em}
-  \visible<2->{\begin{johnblock}
-    Questa la vediamo dopo nel dettaglio: \`e una critica importante.
-  \end{johnblock}}
 \end{frame}
 
 \begin{frame}{Revisore 1 --- (5) Indizi dell'editore e artefatti non esclusi}
@@ -449,10 +445,10 @@
   \end{block}
   \vspace{0.3em}
   \visible<2->{\begin{claudeblock}
-    \begin{itemize}\setlength\itemsep{0.2em}
-      \item \textbf{Bootstrap}: si ricampionano a caso le 439 testate migliaia di volte e ogni volta si ricalcola l'accuracy; la variazione d\`a un \textbf{intervallo di confidenza} (es.\ ``0,69'' diventa un intervallo come 0,65--0,73).
-      \item \textbf{Test appaiato}: si confrontano due modelli \emph{sulle stesse testate}, contando quelle dove uno ha ragione e l'altro torto (es.\ test di McNemar); dice se 0,69 contro 0,68 \`e una differenza reale.
-      \item Nel paper bocciato non ci sono n\'e intervalli n\'e test: critica giusta e veloce da risolvere. Su 439 testate, 0,69 contro 0,68 vuol dire circa 4 testate di differenza.
+    \begin{itemize}\setlength\itemsep{0.3em}\footnotesize
+      \item \textbf{Bootstrap} (per dare un margine al numero). Il modello \`e addestrato \textbf{una volta sola}: sappiamo gi\`a quali delle 439 testate sono giuste o sbagliate. Si \textbf{rimescolano le 439 testate con ripetizione} (un campione casuale che pu\`o ripetere alcune testate e saltarne altre) e si \textbf{ricalcola l'accuracy} --- niente nuovo addestramento, solo un nuovo conteggio. Ripetendolo migliaia di volte, la dispersione dei valori d\`a un \textbf{intervallo di confidenza}: ``0,69'' diventa es.\ 0,65--0,73.
+      \item \textbf{Test appaiato} (per confrontare due modelli). Si guardano le \emph{stesse} testate e contano solo quelle dove i due \textbf{non sono d'accordo} (uno giusto, l'altro sbagliato): il test di McNemar dice se 0,69 contro 0,68 \`e una differenza \textbf{vera} o solo fortuna.
+      \item Nel paper bocciato mancano entrambi: critica giusta e veloce da risolvere. Su 439 testate, 0,69 contro 0,68 \`e circa 4 testate di differenza.
     \end{itemize}
   \end{claudeblock}}
 \end{frame}
@@ -1354,26 +1350,50 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Risultati provvisori (un fold, valutazione per gruppo)}
+\begin{frame}{Risultati per testata (voto di maggioranza)}
+  \vspace{0.3em}
   \centering\small
-  \begin{tabular}{llccc}
+  \begin{tabular}{llcccc}
     \toprule
-    \textbf{Modello} & \textbf{Input} & \textbf{art.\ 5 cl} & \textbf{testata 5 cl} & \textbf{testata bin.} \\
+    \textbf{Modello} & \textbf{Input} & \textbf{5 classi} & \textbf{binario} & \textbf{tol.\ 0,5} & \textbf{tol.\ 1} \\
     \midrule
-    feature & A, solo articoli & 0,62 & 0,70 & 0,91 \\
-            & C, + pagine & \textbf{0,73} & 0,71 & \textbf{0,94} \\
+    feature & A, articoli & 0,56 & 0,80 & 0,70 & 0,84 \\
+            & \textbf{C, +pagine} & \textbf{0,60} & \textbf{0,84} & \textbf{0,72} & \textbf{0,85} \\
     \midrule
-    ModernBERT & A, solo articoli & 0,60 & 0,65 & 0,90 \\
-               & C, + pagine & 0,60 & 0,59 & 0,86 \\
+    ModernBERT & A, articoli & 0,53 & 0,77 & 0,66 & 0,79 \\
+               & C, +pagine & 0,49 & 0,78 & 0,64 & 0,79 \\
+    \midrule
+    ModernBERT & A, early stop & 0,50 & 0,78 & 0,65 & 0,80 \\
+    (early stop) & C, early stop & 0,50 & 0,78 & 0,65 & 0,80 \\
     \bottomrule
-  \end{tabular}\\[0.9em]
-  \raggedright
+  \end{tabular}\\[0.5em]
+  \raggedright {\footnotesize\itshape 5 fold, valutazione per gruppo. Binario = affidabile ($l_3/l_4/l_5$, punteggio $\geq 60$) contro inaffidabile.}
+  \vspace{0.4em}
   \begin{itemize}[<+->]
-    \setlength\itemsep{0.5em}
-    \item Le pagine \hl{aiutano il classificatore a feature}; non ModernBERT
-    \item ModernBERT con le pagine va in \hl{overfitting}: memorizza le testate del training (loss $\to 0$)
-    \item[] {\small\itshape Un solo fold (69 testate, molte $l_3$): numeri \hl{direzionali}, non definitivi. In corso: tutti e 5 i fold.}
+    \setlength\itemsep{0.35em}
+    \item Il migliore \`e il \hl{classificatore a feature + pagine}
+    \item Le \hl{pagine aiutano} il classificatore a feature; i \hl{transformer non lo battono}, nemmeno con early stopping
   \end{itemize}
+\end{frame}
+
+\begin{frame}{Risultati per articolo}
+  \vspace{0.3em}
+  \centering\small
+  \begin{tabular}{llcccc}
+    \toprule
+    \textbf{Modello} & \textbf{Input} & \textbf{5 classi} & \textbf{binario} & \textbf{tol.\ 0,5} & \textbf{tol.\ 1} \\
+    \midrule
+    feature & A, articoli & 0,48 & 0,75 & 0,63 & 0,78 \\
+            & \textbf{C, +pagine} & \textbf{0,59} & \textbf{0,83} & \textbf{0,71} & \textbf{0,84} \\
+    \midrule
+    ModernBERT & A, articoli & 0,46 & 0,74 & 0,61 & 0,76 \\
+               & C, +pagine & 0,48 & 0,78 & 0,64 & 0,79 \\
+    \midrule
+    ModernBERT & A, early stop & 0,45 & 0,73 & 0,61 & 0,76 \\
+    (early stop) & C, early stop & 0,49 & 0,78 & 0,65 & 0,80 \\
+    \bottomrule
+  \end{tabular}\\[0.5em]
+  \raggedright {\footnotesize\itshape 5 fold, valutazione per gruppo. Binario = affidabile ($l_3/l_4/l_5$, punteggio $\geq 60$) contro inaffidabile.}
 \end{frame}
 
 
