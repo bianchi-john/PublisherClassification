@@ -1,6 +1,6 @@
 # 0 — Scraping (Web Science 2027)
 
-Nuovo scraping, punto di partenza di questa linea di lavoro. Raccoglie articoli e pagine del sito per ogni
+Nuovo scraping, punto di partenza di questa linea di lavoro. Raccoglie gli articoli di ogni
 testata NewsGuard con argomento "Political news or commentary", lingua inglese e un punteggio (1.921 domini),
 in ordine casuale (seed 42). **Nessuna scelta dipende dalle etichette di affidabilità NewsGuard.**
 
@@ -25,6 +25,7 @@ automatiche (HTTP 403) e vengono saltate e annotate.
 
 ## Output
 
-`../Dataset/NuovoScraping/` (articoli, pagine_sito, html, stato, config.json, ...). Il notebook
+`../Dataset/NuovoScraping/` (articoli, html, stato, config.json, ...). Il notebook
 `costruisci_dataset.ipynb` ci legge e scrive `../Dataset/NuovoScraping/dataset_articoli.csv`
-(54.532 articoli in inglese, 354 testate) e `dataset_pagine_sito.csv`.
+(54.532 articoli in inglese, 354 testate). L'HTML grezzo di ogni articolo (`html/`, solo sul server) serve
+al data cleaning per riconoscere le reti di siti.

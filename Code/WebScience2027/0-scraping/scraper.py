@@ -1,4 +1,4 @@
-"""Nuovo scraping per Web Science 2027: più testate, più articoli, pagine del sito.
+"""Nuovo scraping per Web Science 2027: più testate, più articoli.
 
 Testate: tutte quelle di NewsGuard con argomento "Political news or commentary", lingua inglese e un
 punteggio, in ordine casuale (seed 42). Nessuna scelta dipende dai livelli NewsGuard.
@@ -9,9 +9,7 @@ Per ogni testata (dominio):
   3. li ordina dal più recente (prima i feed, poi la sitemap per data, poi la homepage);
   4. scarica gli articoli finché ne ha MAX_ARTICOLI con più di MIN_PAROLE parole (testo, titolo, data,
      autore estratti con trafilatura); salva anche quelli più corti, il filtro si applica dopo;
-  5. scarica le pagine "del sito" (about, contact, staff, corrections, ethics, ownership, advertise, terms):
-     i criteri NewsGuard riguardano anche queste informazioni, che negli articoli non ci sono;
-  6. archivia l'HTML grezzo di ogni pagina, per poter rifare l'estrazione senza rifare lo scraping.
+  5. archivia l'HTML grezzo di ogni articolo, per poter rifare l'estrazione senza rifare lo scraping.
 Rispetta robots.txt e fa al massimo una richiesta al secondo per sito.
 
 Robustezza:
@@ -22,8 +20,7 @@ Robustezza:
 
 Output (cartella --out, default ../../Dataset/NuovoScraping):
   articoli/<dominio>.jsonl     un articolo per riga
-  pagine_sito/<dominio>.jsonl  una pagina del sito per riga
-  html/<dominio>.jsonl.gz      l'HTML grezzo di tutte le pagine salvate
+  html/<dominio>.jsonl.gz      l'HTML grezzo degli articoli salvati
   config.json                  parametri e versioni delle librerie
   stato/<dominio>.json         esito della testata (numeri, tempi, errori)
   elenco_testate.csv           le testate scelte e l'ordine
@@ -67,18 +64,7 @@ MAX_BYTE = 5_000_000          # pagine più grandi vengono scartate
 TEMPO_TESTATA = 40 * 60       # dopo 40 minuti la testata si chiude con quello che ha
 TEMPO_KILL = TEMPO_TESTATA + 5 * 60
 MAX_SITEMAP = 25              # sitemap lette al massimo per testata
-MAX_PAGINE_SITO = 12
 
-PAROLE_PAGINE_SITO = {
-    "about": ["about", "who-we-are", "our-story", "mission", "chi-siamo"],
-    "contact": ["contact"],
-    "staff": ["staff", "team", "masthead", "editors", "leadership", "people", "our-writers", "authors"],
-    "corrections": ["correction", "corrections", "errata"],
-    "ethics": ["ethics", "standards", "editorial-policy", "editorial-standards", "principles", "code-of-conduct", "fact-check"],
-    "ownership": ["ownership", "funding", "funders", "transparency", "financial", "support-us", "donate"],
-    "advertise": ["advertise", "advertising", "sponsor"],
-    "terms": ["terms", "privacy", "disclaimer"],
-}
 NON_ARTICOLO = re.compile(
     r"/(tag|tags|category|categories|author|authors|page|feed|wp-content|wp-json|search|login|subscribe|"
     r"newsletter|account|cart|shop|events?|video|videos|gallery|galleries|podcasts?|topics?)(/|$)|"
@@ -268,32 +254,17 @@ def estrai(html_text, url, recall=False):
         return None
 
 
-def tipo_pagina_sito(url, testo_link):
-    """Riconosce le pagine del sito dall'ultimo pezzo dell'indirizzo o da un testo del link breve."""
-    pezzi = [x for x in urlparse(url).path.lower().split("/") if x]
-    if len(pezzi) > 2 or re.search(r"/20\d\d/", urlparse(url).path):
-        return None                                    # sembra un articolo, non una pagina del sito
-    ultimo = pezzi[-1] if pezzi else ""
-    breve = testo_link if len(testo_link.split()) <= 4 else ""
-    for tipo, parole in PAROLE_PAGINE_SITO.items():
-        for p in parole:
-            if p in ultimo or (breve and p.replace("-", " ") in breve):
-                return tipo
-    return None
-
-
 # --------------------------------------------------------------------------- una testata
 
 def scarica_testata(dominio, cartella):
-    """Gira in un processo separato. Scrive articoli, pagine del sito e lo stato della testata."""
+    """Gira in un processo separato. Scrive gli articoli e lo stato della testata."""
     signal.signal(signal.SIGALRM, _allarme)
     signal.alarm(TEMPO_TESTATA)
     inizio = time.time()
     scadenza = inizio + TEMPO_TESTATA - 60
-    stato = {"dominio": dominio, "esito": "in corso", "articoli": 0, "pagine_sito": 0, "url_provati": 0,
+    stato = {"dominio": dominio, "esito": "in corso", "articoli": 0, "url_provati": 0,
              "fonti": {}, "inizio": ora()}
     file_art = cartella / "articoli" / f"{dominio}.jsonl"
-    file_pag = cartella / "pagine_sito" / f"{dominio}.jsonl"
     archivio = gzip.open(cartella / "html" / f"{dominio}.jsonl.gz", "at")
     archivia = lambda tipo, url, testo_html: archivio.write(
         json.dumps({"tipo": tipo, "url": url, "html": testo_html, "scaricato": ora()}, ensure_ascii=False) + "\n")
@@ -322,40 +293,7 @@ def scarica_testata(dominio, cartella):
         robots_txt = rr.text if rr is not None else ""
         rp.parse(robots_txt.splitlines())
 
-        # 2. pagine del sito (prima, perché sono poche e preziose)
-        viste, tipi_trovati = set(), set()
-        standard = [(urljoin(home, q), "") for q in ("/about", "/about-us", "/contact", "/contact-us", "/corrections",
-                                                     "/masthead", "/staff", "/advertise", "/ethics", "/ownership")]
-        with open(file_pag, "w") as fp:
-            for url, testo_link in link + standard:
-                if stato["pagine_sito"] >= MAX_PAGINE_SITO or time.time() > scadenza:
-                    break
-                tipo = tipo_pagina_sito(url, testo_link)
-                url_pulito = url.split("#")[0]
-                if (url, testo_link) in standard and tipo in tipi_trovati:
-                    continue                                   # indirizzo standard: solo se quel tipo manca
-                if (not tipo or url_pulito in viste or url_pulito.rstrip("/") == home.rstrip("/")
-                        or not any(stesso_sito(url_pulito, x) for x in domini)):
-                    continue
-                viste.add(url_pulito)
-                p = client.get(url_pulito)
-                if p is None:
-                    continue
-                dati = estrai(p.text, url_pulito, recall=True) or {}
-                testo = dati.get("text") or ""
-                if not testo:
-                    try:
-                        testo = re.sub(r"\s+", " ", lxml_html.fromstring(p.text).text_content()).strip()
-                    except Exception:
-                        testo = ""
-                archivia("pagina_sito", url_pulito, p.text)
-                fp.write(json.dumps({"dominio": dominio, "tipo": tipo, "url": url_pulito, "testo_link": testo_link,
-                                     "titolo": dati.get("title"), "testo": testo, "scaricato": ora()},
-                                    ensure_ascii=False) + "\n")
-                stato["pagine_sito"] += 1
-                tipi_trovati.add(tipo)
-
-        # 3. URL degli articoli: feed, sitemap, homepage
+        # 2. URL degli articoli: feed, sitemap, homepage
         for f in ("/feed", "/rss", "/feed/", "/rss.xml", "/index.xml", "/atom.xml"):
             feed.append(urljoin(home, f))
         candidati = []
@@ -376,7 +314,7 @@ def scarica_testata(dominio, cartella):
                 ordinati.append((u, d, fonte))
         stato["fonti"]["candidati"] = len(ordinati)
 
-        # 4. articoli
+        # 3. articoli
         hash_visti = set()
         with open(file_art, "w") as fa:
             for url, data_lista, fonte in ordinati:
@@ -458,7 +396,7 @@ def main():
     args = ap.parse_args()
 
     cartella = Path(args.out)
-    for sotto in ("articoli", "pagine_sito", "stato", "html"):
+    for sotto in ("articoli", "stato", "html"):
         (cartella / sotto).mkdir(parents=True, exist_ok=True)
     log = open(cartella / "scraping.log", "a", buffering=1)
     scrivi = lambda m: (log.write(f"{ora()}  {m}\n"), print(f"{ora()}  {m}", flush=True))
@@ -475,8 +413,7 @@ def main():
         scrivi_json(cartella / "config.json", {
             "avvio": ora(), "testate": len(elenco), "seed": args.seed, "processi": args.processi,
             "parametri": {k: globals()[k] for k in ("MAX_ARTICOLI", "MAX_TENTATIVI", "MIN_PAROLE", "PAUSA", "TIMEOUT",
-                                                     "MAX_BYTE", "TEMPO_TESTATA", "MAX_SITEMAP", "MAX_PAGINE_SITO", "UA")},
-            "pagine_sito": PAROLE_PAGINE_SITO,
+                                                     "MAX_BYTE", "TEMPO_TESTATA", "MAX_SITEMAP", "UA")},
             "versioni": {"python": platform.python_version(),
                          **{m: im.version(m) for m in ("trafilatura", "requests", "feedparser", "lxml", "pandas")}}})
 
@@ -522,7 +459,7 @@ def main():
             ritmo = (time.time() - inizio) / finite_ora
             mancano = (totale - n_fatte) * ritmo / 3600
             scrivi(f"[{n_fatte}/{totale}] {d}: {s.get('esito')}, {s.get('articoli', 0)} articoli, "
-                   f"{s.get('pagine_sito', 0)} pagine sito, {s.get('minuti', '?')} min | totale articoli {tot_art} | "
+                   f"{s.get('minuti', '?')} min | totale articoli {tot_art} | "
                    f"fine stimata tra {mancano:.1f} ore")
             scrivi_json(cartella / "stato_generale.json", {
                 "aggiornato": ora(), "testate_finite": n_fatte, "testate_totali": totale,

@@ -1,15 +1,12 @@
 # Esperimenti preliminari
 
-Il lavoro del 2026-10-13 fatto sul **dataset vecchio** (quello di IrForGood, 439 testate): ricerca delle
-testate parenti, pulizia, classificatore a feature e BERT con i fold per testata e per gruppo.
+I due tentativi fatti prima della linea principale. Restano come riferimento (e come storia delle scelte),
+non fanno parte della pipeline.
 
-Messo da parte quando abbiamo deciso di ripartire da un **nuovo scraping** (cartella `../0-scraping`):
-questi risultati restano come riferimento, non fanno parte della linea principale.
+| | Dataset | Perché è stato messo da parte |
+|---|---|---|
+| `1-PrimoDataset/` | il dataset di IrForGood (439 testate) | una sola rete di siti $l_1$ copre l'81% degli articoli $l_1$; troppo poche testate indipendenti. Si riparte da un nuovo scraping |
+| `2-NuovoScrapingConPagine/` | il nuovo scraping, articoli + pagine del sito (272 testate) | i gruppi trovati dal MinHash sugli articoli non catturano le reti di proprietà (FiveZero Media, Boone Newspapers…), che restano sparse tra i fold; le pagine del sito sono troppo sporche per essere controllate. Si rifà il data cleaning da zero, senza pagine |
 
-| | |
-|---|---|
-| `0-scraping/` | i notebook di scraping di IrForGood (copie), per ricordare come nasceva il dataset vecchio |
-| `1-data-cleaning/` | testate parenti e pulizia; `esplorazioni/` con le prime prove |
-| `2-classificazione/` | classificatore a feature e BERT sulle versioni min0/min10/min20 |
-| `Dataset/` | il dataset vecchio e le sue versioni pulite (fuori da git) |
-| `Results/` | metriche e predizioni |
+Ogni cartella ha il suo README con il dettaglio. I percorsi nel codice puntano ai dati dentro la cartella
+stessa (`Dataset/`, `Results/`) e, per i dati grezzi del nuovo scraping, a `../../Dataset/NuovoScraping/`.
