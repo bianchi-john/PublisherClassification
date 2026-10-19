@@ -1123,40 +1123,67 @@
 \end{frame}
 
 % ---------------------------------------------------------------- esperimenti di John
-\divider{Esperimenti preliminari}{sul primo dataset, in breve}
+% Generato a parte e inserito in preparazione_web_science.tex. Figure: figure/genera_figure_risultati.py
+\divider{Il primo dataset}{funzionava solo in apparenza}
 
 \begin{frame}{Il punto di partenza}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.8em}
-    \item Primo dataset (quello di IrForGood): 439 testate, 19.476 articoli
-    \item Prima di classificare, un controllo: le testate sono davvero \hl{indipendenti}?
-    \item No: molte pubblicano lo \hl{stesso testo} (reti di siti, catene, articoli ripresi)
-    \item[] {\small\itshape Nelle prossime slide vediamo come abbiamo identificato questi insiemi di siti.}
-  \end{itemize}
-  \vfill
+  \begin{columns}[c]
+    \begin{column}{0.52\textwidth}
+      \centering\includegraphics[width=\textwidth]{fig_primo_due_fold.pdf}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{0.7em}
+        \item Classificatore a feature (TF-IDF + regressione logistica) sul dataset di IrForGood: 439 testate, 19.476 articoli
+        \item Testate divise tra training e test \hl{come nel paper}: \hl{0,68} di accuratezza per testata
+        \item Testate divise \hl{per rete} (nel test solo reti mai viste): \hl{0,39}, appena sopra la classe di maggioranza (0,35)
+        \item[] {\small\itshape Il risultato dipendeva da come si dividevano le testate: c'era qualcosa nel dataset.}
+      \end{itemize}
+    \end{column}
+  \end{columns}
 \end{frame}
 
-\begin{frame}{Ripulire il primo dataset non bastava}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.9em}
-    \item \hl{Rimozione dei duplicati e dei gruppi} dal primo dataset, e nuova classificazione
-    \item Valutata su testate \hl{davvero nuove}: risultati \hl{scarsi}
-    \item In pi\`u, $l_1$ quasi tutto \hl{una sola rete}: poche testate indipendenti per livello
-    \item Decisione: \hl{creare un nuovo dataset}, pi\`u grande e vario
-  \end{itemize}
-  \vfill
-\end{frame}
-
-\begin{frame}{Le reti dentro il primo dataset}
+\begin{frame}{Dentro il dataset: reti di siti}
   \centering
   \includegraphics[height=0.70\textheight]{fig_primo_rete.pdf}\\[0.1em]
-  {\footnotesize Una linea = le due testate hanno \hl{almeno 2 articoli quasi uguali} (somiglianza $\geq 0{,}5$; spesso \hl{lo stesso identico articolo}). La distanza nel disegno non misura nulla, serve solo a non sovrapporre i punti.\\
+  {\footnotesize Una linea = le due testate hanno \hl{almeno 2 articoli quasi uguali} (somiglianza $\geq 0{,}5$, spesso lo stesso identico articolo). La distanza nel disegno non misura nulla.\\
   Il grumo rosso: \hl{una rete di 131 siti $l_1$} con lo stesso proprietario.}
 \end{frame}
 
-\begin{frame}{Il primo dataset: prima e dopo la pulizia}
+\begin{frame}{Una sola rete faceva quasi tutto il livello $l_1$}
+  \begin{columns}[c]
+    \begin{column}{0.58\textwidth}
+      \centering\includegraphics[width=\textwidth]{fig_primo_livelli_reti.pdf}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{0.7em}
+        \item 236 testate su 439 stanno in una \hl{rete} (stesso testo, stesso proprietario)
+        \item $l_1$: \hl{131 testate su 152} sono la stessa rete
+        \item $l_3$: soprattutto catene di giornali locali
+        \item[] {\small\itshape Con queste reti nel training e nel test, il modello riconosce la rete, non l'affidabilit\`a.}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Da dove veniva lo 0,68}
+  \begin{columns}[c]
+    \begin{column}{0.56\textwidth}
+      \centering\includegraphics[width=\textwidth]{fig_primo_dentro_fuori.pdf}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{0.7em}
+        \item Testate in una rete: \hl{0,91} --- ma solo perch\'e una \hl{sorella} sta nel training
+        \item Basta mettere la rete tutta dalla stessa parte: \hl{0,36}
+        \item Le testate isolate restano a \hl{0,41--0,43} in tutti e due i casi: \`e il valore vero
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Pulito, il primo dataset era troppo piccolo}
   \begin{columns}[c]
     \begin{column}{0.58\textwidth}
       \centering\includegraphics[width=\textwidth]{fig_primo_prima_dopo.pdf}
@@ -1164,239 +1191,315 @@
     \begin{column}{0.42\textwidth}
       \begin{itemize}[<+->]
         \setlength\itemsep{0.7em}
-        \item Tolte le reti, restano le testate \hl{indipendenti}
-        \item $l_1$ crolla da \hl{152 a 20}: quasi tutto era una sola rete
-        \item Restano \hl{troppe poche} testate indipendenti --- per questo il primo dataset \hl{non basta}
+        \item Tolte copie e reti, $l_1$ crolla da \hl{152 a 20} testate indipendenti
+        \item Troppe poche testate per livello per addestrare e valutare
+        \item Decisione: \hl{raccogliere un dataset nuovo}, pi\`u grande, e pulirlo con un metodo rigoroso
       \end{itemize}
     \end{column}
   \end{columns}
 \end{frame}
 
-\divider{Il nuovo dataset}{come l'abbiamo costruito, passo per passo}
+% ===================================================================================================
+\divider{Il nuovo dataset}{come l'ho costruito, passo per passo}
 
-\begin{frame}{Un nuovo scraping}
+\begin{frame}{Lo scraping}
   \vfill
   \begin{itemize}[<+->]
     \setlength\itemsep{0.8em}
-    \item \hl{Tutte} le testate politiche in inglese di NewsGuard con un punteggio: 1.921
-    \item Scaricate in \hl{ordine casuale} (seme fisso): se lo scraping non finisce, quelle raccolte restano un \hl{campione non sbilanciato} (non le prime in ordine alfabetico, n\'e per livello)
-    \item La selezione \hl{non guarda il livello} di affidabilit\`a: il dataset si costruisce \hl{prima} e \hl{indipendentemente} da ci\`o che vogliamo predire
-    \item[] {\small\itshape Cos\`i la scelta delle testate non pu\`o favorire il risultato.}
-    \item Fino a 200 articoli recenti per testata + le \hl{pagine del sito} (about, contatti, redazione, correzioni, propriet\`a)
+    \item \hl{Tutte} le testate NewsGuard in inglese, con un punteggio, il cui argomento \hl{include} ``Political news or commentary'': \hl{3.128}
+    \item In \hl{ordine casuale} (seme fisso) e \hl{senza guardare il livello}: la scelta delle testate non pu\`o favorire il risultato
+    \item Fino a 200 articoli recenti per testata (feed, sitemap, homepage); si archivia anche l'\hl{HTML grezzo} di ogni articolo
+    \item Raggiunte \hl{1.528} testate; molte bloccano lo scraper (una rete di 1.076 siti $l_1$ quasi tutta, pi\`u 176 altre)
+    \item Un solo strumento, una sola settimana (13--18 ottobre 2026): un dataset \hl{coerente}
   \end{itemize}
   \vfill
 \end{frame}
 
-\begin{frame}{Passo 1 --- trovare gli articoli gemelli}
-  \begin{columns}[c]
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}[<+->]
-        \setlength\itemsep{0.7em}
-        \item Ogni articolo in \hl{pezzetti di 5 parole}, numeri ignorati
-        \item \hl{Gemelli} = almeno met\`a dei pezzetti in comune (MinHash, Jaccard $\geq 0{,}5$)
-        \item Il \hl{24\%} degli articoli ha una copia su un'altra testata
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \visible<3->{%
-      \scriptsize
-      \begin{block}{\scriptsize Testata A}
-        ``There was a single gas station in cities across \textbf{Phillips County} selling regular gas at the price of \$3.09 per gallon in the week ending Mar.~15\dots''
-      \end{block}
-      \begin{block}{\scriptsize Testata B}
-        ``There was a single gas station in cities across \textbf{Escambia County} selling regular gas at the lowest price of \$2.65 per gallon in the week ending Mar.~15\dots''
-      \end{block}}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{Passo 2 --- che cosa intendiamo per ``gruppo''}
-  \begin{columns}[c]
-    \begin{column}{0.46\textwidth}
-      \begin{itemize}[<+->]
-        \setlength\itemsep{0.7em}
-        \item Due testate \hl{collegate} se hanno almeno \hl{2 articoli gemelli} in comune
-        \item Un \hl{gruppo} = testate collegate anche a catena (A--B, B--C $\Rightarrow$ insieme)
-        \item Una testata senza legami \`e un gruppo \hl{da sola} (indipendente)
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.54\textwidth}
-      \visible<2->{%
-      \centering
-      \begin{tikzpicture}[font=\footnotesize, every node/.style={draw, circle, fill=white, minimum size=6mm}]
-        \node (A) at (0,1.5){A}; \node (B) at (1.3,1.5){B}; \node (C) at (2.6,1.5){C};
-        \node (D) at (0,0){D};   \node (E) at (1.3,0){E};   \node (F) at (2.6,0){F};
-        \draw[thick] (A)--(B)--(C); \draw[thick] (D)--(E);
-        \draw<3->[blue!60, rounded corners, thick] (-0.55,0.95) rectangle (3.15,2.05);
-        \draw<3->[blue!60, rounded corners, thick] (-0.55,-0.55) rectangle (1.85,0.55);
-        \draw<4->[wrongred, rounded corners, thick] (2.05,-0.55) rectangle (3.15,0.55);
-      \end{tikzpicture}\\[0.4em]
-      \visible<3->{\footnotesize gruppo \{A,B,C\}\quad gruppo \{D,E\}\quad \visible<4->{\{F\} indipendente}}}
-    \end{column}
-  \end{columns}
-  \vspace{0.4em}
-  \visible<5->{\small Nel nuovo dataset: \hl{15 gruppi} con pi\`u testate (73 testate in rete), \hl{199 indipendenti}.}
-\end{frame}
-
-\begin{frame}{Passo 2 --- la verifica con l'``owner'' di NewsGuard}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.7em}
-    \item Nel dataset NewsGuard c'\`e un campo \hl{``Owner''}: chi possiede ogni sito
-    \item \`E un dato che \hl{non abbiamo usato} per costruire i gruppi (quelli nascono solo dal testo)
-    \item Lo usiamo per \hl{controllarli}, con due misure sulle coppie di testate:
-    \item[] -- \hl{precision}: tra le coppie che mettiamo nello \hl{stesso gruppo}, quante hanno davvero lo stesso owner
-    \item[] -- \hl{recall}: tra le coppie con lo \hl{stesso owner}, quante mettiamo nello stesso gruppo
-    \item Risultato: precision \hl{0,87}, recall \hl{0,76} $\rightarrow$ i gruppi trovati dal testo coincidono quasi sempre con la \hl{propriet\`a reale}
-  \end{itemize}
-  \vfill
-\end{frame}
-
-\begin{frame}{Le reti nel nuovo dataset}
+\begin{frame}{Dalle testate tentate al dataset finale}
   \centering
-  \includegraphics[height=0.68\textheight]{fig_nuovo_rete.pdf}\\[0.1em]
-  {\footnotesize Stesso metodo del primo dataset (una linea = $\geq 2$ articoli quasi uguali in comune). Qui \hl{nessuna rete domina}: il gruppo pi\`u grande \`e una catena di \hl{39 giornali locali $l_3$}, e solo 71 testate su 272 sono in rete.}
+  \includegraphics[width=0.96\textwidth]{fig_nuovo_imbuto.pdf}\\[0.3em]
+  {\footnotesize Ogni passo \`e un notebook che gira da solo sul server; le etichette NewsGuard si usano solo all'ultimo passo.\\
+  Il processo \`e \hl{deterministico}: rieseguito da zero (verifica fatta sulla versione del weekend), ha prodotto file \hl{identici bit per bit}.}
 \end{frame}
 
-\begin{frame}{Passo 3 --- la pulizia degli articoli}
-  \vfill
-  \begin{enumerate}[<+->]
-    \setlength\itemsep{0.6em}
-    \item Una sola copia per articolo \hl{gemello} (somiglianza $\geq 0{,}9$): dei pezzi ripresi se ne tiene uno
-    \item Via le copie che attraversano \hl{gruppi diversi}
-    \item[] {\small\itshape I fold per gruppo non le coprono: le due testate sono in gruppi diversi, finirebbero una in train e una in test.}
-    \item Dal testo si \hl{tolgono i paragrafi condivisi} da pi\`u testate (template, didascalie, appelli)
-    \item[] {\small\itshape L'articolo \hl{resta}, con il resto del suo testo --- non si butta via.}
-    \item Via gli articoli rimasti con \hl{100 parole o meno}
-  \end{enumerate}
-  \vspace{0.5em}
-  \visible<5->{\small\itshape La pulizia tocca solo le testate con testo copiato: le \hl{indipendenti} restano quasi intatte (99,6\%).}
-  \vfill
-\end{frame}
-
-\begin{frame}{Passo 3 --- e come si valuta}
-  \vfill
+\begin{frame}{Passo 1 --- pulire gli articoli (rigoroso, non eccessivo)}
+  \vspace{0.2em}
+  \centering\footnotesize
+  \begin{tabular}{p{0.37\textwidth}p{0.17\textwidth}p{0.38\textwidth}}
+    \toprule
+    \textbf{Cosa si toglie} & \textbf{Quanto} & \textbf{Perch\'e} \\
+    \midrule
+    articoli non in inglese, $\leq 100$ parole, doppioni & 170.213 $\to$ 101.887 & stessi filtri del vecchio scraping \\
+    articoli pubblicati prima del 2025 & $-$22.055 articoli & archivi vecchi: temi d'epoca, non affidabilit\`a \\
+    frasi ripetute in $\geq 3$ articoli della testata & 5,2\% delle parole & firme, promozioni, avvisi: testo della testata, non dell'articolo \\
+    titolo e timbro all'inizio del testo & 22.641 e 3.919 articoli & dipendono dal CMS: riconoscono il sito \\
+    doppioni della stessa testata, testi $< 100$ parole & $-$3.723 articoli & lo stesso pezzo due volte \\
+    \bottomrule
+  \end{tabular}\\[0.6em]
+  \raggedright
   \begin{itemize}[<+->]
-    \setlength\itemsep{0.8em}
-    \item I \hl{gruppi} diventano l'unit\`a con cui si dividono i fold
-    \item \hl{Fold per gruppo}: ogni gruppo tutto in un fold, nessuna testata ha \hl{sorelle} nel training
-    \item Perch\'e pulire \emph{e} dividere per gruppo? Coprono fughe diverse:
-    \item[] -- la \hl{pulizia} toglie il testo copiato \hl{esplicito} (anche tra gruppi diversi)
-    \item[] -- i \hl{fold per gruppo} tolgono la fuga \hl{implicita}: siti fratelli riconoscibili per stile o argomenti
+    \item \hl{Restano} citazioni e paragrafi condivisi con altre testate: fanno parte di come si scrive una notizia
+    \item Le copie tra testate (il 25\% degli articoli) si \hl{trovano} qui e si trattano al passo 3
   \end{itemize}
-  \vfill
 \end{frame}
 
-\begin{frame}{Passo 4 --- anche le pagine vanno ripulite}
-  \vfill
+\begin{frame}{Passo 2 --- trovare le reti, senza guardare NewsGuard}
+  \vspace{0.2em}
+  \centering\footnotesize
+  \begin{tabular}{p{0.2\textwidth}p{0.42\textwidth}p{0.3\textwidth}}
+    \toprule
+    \textbf{Segnale} & \textbf{Prova di parentela} & \textbf{Esempio} \\
+    \midrule
+    copie & articoli in comune, almeno il 10\% della testata pi\`u piccola & catene di giornali locali \\
+    codici di account & stesso ID di AdSense, Analytics, Tag Manager, Facebook\dots{} nell'HTML & FiveZero: 18 siti, un solo AdSense \\
+    titolare legale & la privacy policy \`e la \hl{stessa pagina} su un altro dominio & 36 giornali $\to$ carpentermediagroup.com \\
+    dominio & sottodomini; la homepage reindirizza allo stesso dominio & edizioni di HuffPost \\
+    autori & gli stessi autori firmano almeno il 10\% degli articoli & la rete da 426 siti \\
+    \bottomrule
+  \end{tabular}\\[0.6em]
+  \raggedright
   \begin{itemize}[<+->]
-    \setlength\itemsep{0.8em}
-    \item Problema: anche le pagine (terms, about\dots) sono spesso \hl{condivise} tra testate diverse
-    \item[] {\small\itshape Stessa fuga delle reti: la stessa pagina in train e in test per lo stesso livello.}
-    \item Soluzione: via i tipi solo-boilerplate (terms, advertise) e via i \hl{paragrafi condivisi}
-    \item Dopo: pagine quasi uguali tra gruppi diversi da 625 a \hl{0}
+    \item Una \hl{rete} = testate collegate da almeno un segnale (anche per catena)
+    \item Un pezzo d'agenzia ripreso o un freelance in comune \hl{non bastano}: serve una relazione sistematica
   \end{itemize}
-  \vfill
 \end{frame}
 
-\begin{frame}{Passo 5 --- il dataset definitivo}
+\begin{frame}{Le reti trovate}
   \begin{columns}[c]
-    \begin{column}{0.55\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{fig_nuovo_vs_vecchio.pdf}
+    \begin{column}{0.7\textwidth}
+      \centering\includegraphics[width=\textwidth]{fig_reti_grandi.pdf}
     \end{column}
-    \begin{column}{0.45\textwidth}
+    \begin{column}{0.3\textwidth}
       \begin{itemize}[<+->]
         \setlength\itemsep{0.6em}
-        \item Teniamo le testate con \hl{almeno 20 articoli} (voto di maggioranza affidabile)
-        \item \dots e con una \hl{pagina about} utile
-        \item Risultato: \hl{272 testate}, 44.935 articoli
-        \item $l_1$ ora \`e fatto di testate \hl{indipendenti}, non di una rete
+        \item 725 testate su 1.046 stanno in una rete con altre
+        \item La pi\`u grande: \hl{426 siti $l_1$} con gli stessi autori; per NewsGuard l'owner \`e \hl{sconosciuto}
+        \item I giornali di Boone comprati da \hl{Carpenter Media Group}: NewsGuard non lo sa ancora
       \end{itemize}
     \end{column}
   \end{columns}
 \end{frame}
 
+\begin{frame}{La verifica con l'owner di NewsGuard}
+  \begin{columns}[c]
+    \begin{column}{0.56\textwidth}
+      \centering\includegraphics[width=\textwidth]{fig_reti_verifica.pdf}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{0.6em}
+        \item Ogni segnale da solo \`e \hl{preciso} ($\geq 0{,}96$) ma ne trova poche
+        \item Insieme: precisione \hl{0,91}, recall \hl{0,88}
+        \item Molti ``errori'' sono parentele vere che l'owner non riporta (Courier Newsroom e Good Information, Carpenter e Boone)
+        \item[] {\small\itshape Un contributo a s\'e: le reti si trovano senza i metadati di NewsGuard.}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
 
-\divider{Classificazione sul nuovo dataset}{il disegno}
+\begin{frame}{Passo 3 --- gruppi, copie e fold}
+  \begin{columns}[c]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{0.55em}
+        \item \hl{Gruppo} = rete trovata \hl{oppure} stesso owner NewsGuard: un gruppo sta tutto nel training o tutto nel test
+        \item Copie tra gruppi diversi: si tiene la pi\`u vecchia ($-$461 articoli)
+        \item Testate con almeno \hl{20 articoli} (voto di maggioranza)
+        \item Al massimo \hl{5 testate per gruppo}, scelte a caso: altrimenti la rete da 426 siti riempirebbe $l_1$
+        \item 5 fold per gruppo, \hl{stratificati per livello}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \centering\includegraphics[width=\textwidth]{fig_fold_bilanciati.pdf}\\
+      {\footnotesize Ogni fold di test ha lo stesso numero di testate per livello}
+    \end{column}
+  \end{columns}
+\end{frame}
 
-\begin{frame}{Due input, due letture}
+\begin{frame}{Il dataset finale}
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig_nuovo_composizione.pdf}\\[0.4em]
+  \begin{itemize}[<+->]
+    \item \hl{304 testate}, \hl{44.029 articoli}, \hl{220 gruppi} indipendenti
+    \item Pi\`u del doppio delle testate $l_1$ indipendenti rispetto al primo dataset (56 gruppi contro 20)
+  \end{itemize}
+\end{frame}
+
+% ===================================================================================================
+\divider{La sporcizia \`e andata?}{gli stessi controlli, sul dataset nuovo}
+
+\begin{frame}{Gli stessi controlli, prima e dopo}
+  \centering
+  \includegraphics[height=0.55\textheight]{fig_sporcizia_prima_dopo.pdf}\\[0.1em]
+  \begin{itemize}[<+->]
+    \footnotesize
+    \item Le testate $l_1$ nella rete pi\`u grande: dall'\hl{86\%} al \hl{7\%}
+    \item Articoli copiati con una copia nel training e una nel test: \hl{0} (con i fold per testata sarebbero 6.157)
+    \item Il vantaggio delle testate in una rete: da \hl{+0,50} a \hl{+0,08}; e ora le sorelle sono \hl{nello stesso fold}, quindi non pu\`o venire dal training
+  \end{itemize}
+\end{frame}
+
+% ===================================================================================================
+\divider{Risultati}{TF-IDF contro transformer, sul dataset nuovo}
+
+\begin{frame}{Il protocollo, fissato prima dei risultati}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.6em}
+    \item Valutazione \hl{per testata}, \hl{5 fold per gruppo}; metriche principali: \hl{F1 macro a 5 classi} e \hl{binario} (affidabile = punteggio $\geq 60$)
+    \item \hl{Feature}: TF-IDF + regressione logistica, con il parametro C scelto in una \hl{validazione interna} (solo training)
+    \item \hl{ModernBERT} base e large: fine-tuning di 2 epoche, 20 articoli per testata a ogni epoca, pesi di classe, \hl{3 seed} e il loro ensemble
+    \item \hl{Embedding congelati} (e5-large, bge-large) + la stessa regressione logistica, una riga per testata
+    \item Intervalli al 95\% con un \hl{bootstrap per gruppo}; si riporta \hl{tutto}, non solo il migliore
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{I risultati}
+  \vspace{0.2em}
+  \centering\footnotesize
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{lcccccc}
+    \toprule
+    \textbf{Modello} & \textbf{F1 macro} & \textbf{acc.\ 5 cl.} & \textbf{tol.\ 0,5} & \textbf{tol.\ 1} & \textbf{binario} & \textbf{F1 bin.} \\
+    \midrule
+    \textbf{TF-IDF, C in validazione} (riferimento) & 0,380 & 0,424 & 0,597 & 0,770 & 0,740 & 0,740 \\
+    TF-IDF, C $= 1$ & 0,368 & \textbf{0,454} & \textbf{0,628} & \textbf{0,803} & \textbf{0,776} & \textbf{0,776} \\
+    \midrule
+    ModernBERT-base, 3 seed & 0,366 & 0,398 & 0,589 & 0,780 & 0,717 & 0,717 \\
+    ModernBERT-large, 3 seed & 0,348 & 0,405 & 0,602 & 0,799 & 0,743 & 0,742 \\
+    ModernBERT-base, seed 42 & \textbf{0,383} & 0,424 & 0,599 & 0,773 & 0,720 & 0,720 \\
+    \midrule
+    e5-large congelato & 0,331 & 0,391 & 0,589 & 0,786 & 0,727 & 0,723 \\
+    bge-large congelato & 0,325 & 0,382 & 0,586 & 0,789 & 0,730 & 0,729 \\
+    \midrule
+    classe di maggioranza & 0,096 & 0,316 & 0,434 & 0,553 & 0,553 & 0,356 \\
+    a caso & 0,214 & 0,243 & 0,388 & 0,533 & 0,510 & 0,505 \\
+    \bottomrule
+  \end{tabular}}\\[0.4em]
+  \raggedright{\scriptsize\itshape Per testata, 304 testate, fold per gruppo. ``3 seed'' = media delle probabilit\`a dei tre modelli. Tolerant: un errore di un livello vale mezzo punto (0,5) o un punto (1).}
+\end{frame}
+
+\begin{frame}{Con gli intervalli}
+  \centering
+  \includegraphics[width=\textwidth]{fig_risultati_intervalli.pdf}\\[0.2em]
+  \begin{itemize}[<+->]
+    \footnotesize
+    \item Tutti i modelli stanno \hl{ben sopra} maggioranza e caso: dal solo testo un segnale c'\`e
+    \item \hl{Nessun transformer batte il feature} in modo significativo: le differenze stanno tutte negli intervalli
+    \item Il modello pi\`u grande e gli embedding congelati \hl{non aiutano}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Chi riconosce cosa}
+  \begin{columns}[c]
+    \begin{column}{0.6\textwidth}
+      \centering\includegraphics[width=\textwidth]{fig_recall_livelli.pdf}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{0.6em}
+        \item Il feature riconosce meglio le testate \hl{inaffidabili} ($l_1$)
+        \item ModernBERT-base riconosce meglio le \hl{pi\`u affidabili} ($l_5$); il large le $l_4$
+        \item Gli errori sono \hl{diversi}: i due modelli sono complementari
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{E senza la classe $l_1$?}
+  \vspace{0.1em}
+  \centering\footnotesize
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{lccccccc}
+    \toprule
+    \textbf{Modello} & \textbf{F1 macro} & \textbf{$\Delta$ F1 [IC 95\%]} & \textbf{acc.} & \textbf{tol.\ 0,5} & \textbf{tol.\ 1} & \textbf{binario} & \textbf{F1 bin.} \\
+    \midrule
+    \textbf{TF-IDF, C in validazione} & 0,358 & --- & 0,408 & 0,586 & 0,764 & 0,712 & 0,667 \\
+    TF-IDF, C $= 1$ & 0,364 & $+$0,007 [$-$0,04; $+$0,05] & \textbf{0,451} & 0,616 & 0,781 & \textbf{0,734} & 0,683 \\
+    \textbf{ModernBERT-base, 3 seed} & 0,355 & \textbf{0,000} [$-$0,07; $+$0,07] & 0,395 & 0,607 & 0,820 & 0,717 & 0,673 \\
+    ModernBERT-base, seed 42 & \textbf{0,379} & $+$0,023 [$-$0,05; $+$0,09] & 0,433 & \textbf{0,624} & 0,815 & 0,721 & \textbf{0,688} \\
+    ModernBERT-large, 3 seed & 0,311 & $-$0,044 [$-$0,12; $+$0,02] & 0,369 & 0,590 & 0,811 & 0,704 & 0,637 \\
+    e5-large congelato & 0,304 & $-$0,053 & 0,361 & 0,597 & \textbf{0,833} & 0,717 & 0,634 \\
+    \midrule
+    classe di maggioranza ($l_4$) & 0,146 & & 0,412 & 0,567 & 0,721 & 0,721 & 0,419 \\
+    \bottomrule
+  \end{tabular}}\\[0.4em]
+  \raggedright{\scriptsize\itshape 233 testate ($l_2$--$l_5$); i modelli scelgono tra $l_2$ e $l_5$ (le probabilit\`a salvate, senza riaddestrare). Binario: $l_2$ contro $l_3$--$l_5$.}
+  \begin{itemize}[<+->]
+    \footnotesize
+    \item Senza $l_1$ il vantaggio del feature \hl{sparisce}: ModernBERT-base \`e \hl{pari} (e sulla tolerant 1 meglio)
+    \item {\itshape Analisi esplorativa, decisa dopo aver visto i risultati}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Perch\'e il feature vince su $l_1$}
+  \vspace{0.2em}
+  Le parole che spingono di pi\`u verso $l_1$ nel modello TF-IDF sono di due tipi:\\[0.5em]
+  \begin{columns}[t]
+    \begin{column}{0.5\textwidth}
+      \begin{block}{\footnotesize Contenuto e ideologia}
+        \footnotesize \textit{president trump, abortion, kiev, lifesitenews, epoch times, preborn}, nomi di stati e regioni\\[0.3em]
+        $\to$ segnale vero, ma intrecciato con \hl{temi e orientamento}: un confondente da discutere
+      \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{alertblock}{\footnotesize Residui dell'estrazione}
+        \footnotesize \textit{pic twitter, https, www, com, youtube, utc}, qualche firma rimasta nel testo\\[0.3em]
+        $\to$ resti di tweet, video e link incorporati: i siti $l_1$ ne usano molti di pi\`u, e il TF-IDF li \hl{conta}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+  \vspace{0.6em}
+  \begin{itemize}[<+->]
+    \item Il vantaggio \hl{non viene dalle reti}: il feature indovina le $l_1$ isolate (30/43) e quelle in un gruppo (20/28) allo stesso modo
+    \item I residui di link e contenuti incorporati sono \hl{cornice della pagina}, come titolo e timbro che abbiamo gi\`a tolto
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Perch\'e \`e un risultato valido per il paper}
   \vfill
   \begin{itemize}[<+->]
     \setlength\itemsep{0.7em}
-    \item Due addestramenti:
-    \item[] \hl{A} --- solo testo degli articoli
-    \item[] \hl{C} --- articoli \hl{+ pagine del sito} (attaccate in coda)
-    \item Due letture della stessa predizione:
-    \item[] \hl{per articolo} \quad e \quad \hl{per testata} (voto di maggioranza)
-    \item Fold \hl{per gruppo} (onesto) e per testata (confronto); salviamo \hl{probabilit\`a e loss} di tutto
+    \item \hl{Il problema}: con le testate divise come al solito i numeri sono gonfiati dalle reti (primo dataset: 0,68 $\to$ 0,39)
+    \item \hl{Il metodo}: reti trovate senza NewsGuard, da testo e HTML (precisione 0,91, recall 0,88), e valutazione per gruppo; processo deterministico e replicabile
+    \item \hl{Il risultato}: con una valutazione onesta il testo da solo d\`a un segnale \hl{moderato} (F1 0,38, binario 0,74--0,78); i transformer \hl{non battono} un modello lessicale ben fatto, ma sbagliano in modo \hl{diverso}
+    \item \hl{Il dubbio}: parte del vantaggio del feature su $l_1$ sono residui di link e tweet incorporati
   \end{itemize}
   \vfill
 \end{frame}
 
-\begin{frame}{Le quattro letture}
-  \vspace{0.5em}
-  \centering
-  \begin{tabular}{lcc}
+\begin{frame}{Da decidere insieme}
+  \vfill
+  \begin{enumerate}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Una \hl{regola di pulizia} in pi\`u, uguale per tutti i modelli: togliere i resti di link e contenuti incorporati, poi rifare pulizia e classificazione (circa 7 ore sul server)
+    \item \hl{Combinare} feature e transformer, con la combinazione scelta in validazione interna: sbagliano su testate diverse
+    \item Come presentare il \hl{confondente} tema/orientamento politico
+  \end{enumerate}
+  \vfill
+\end{frame}
+
+% ===================================================================================================
+\divider{In fondo: i tentativi messi da parte}{ognuno ha insegnato qualcosa}
+
+\begin{frame}{I tentativi prima di quello finale}
+  \vspace{0.2em}
+  \centering\footnotesize
+  \begin{tabular}{p{0.3\textwidth}p{0.62\textwidth}}
     \toprule
-    & \textbf{per articolo} & \textbf{per testata (voto)} \\
+    \textbf{Tentativo} & \textbf{Perch\'e \`e stato messo da parte} \\
     \midrule
-    \textbf{A} solo articoli & A-articolo & A-testata \\
-    \textbf{C} articoli + pagine & C-articolo & C-testata \\
+    Primo dataset (IrForGood, 439 testate) & una rete di 131 siti fa l'86\% di $l_1$; pulito resta troppo piccolo \\
+    Nuovo scraping + pagine del sito (272 testate) & il feature con le pagine arrivava a 0,60, ma i gruppi trovati solo dalle copie non separavano le reti di propriet\`a (con l'owner: 0,36); pagine about troppo sporche \\
+    Solo articoli, solo argomento ``Political news'' esatto (193 testate) & tutti i modelli poco sopra la maggioranza: troppe poche testate \\
+    Due scraping uniti (vecchio + nuovo, 269 testate) & l'origine \`e legata all'etichetta (l'89\% degli articoli $l_1$ viene dal nuovo scraping): epoche e strumenti diversi \\
     \bottomrule
-  \end{tabular}
-  \vspace{1em}
+  \end{tabular}\\[0.6em]
+  \raggedright
   \begin{itemize}[<+->]
-    \item Modelli: \hl{classificatore a feature} (TF-IDF), vs. \hl{ModernBERT}
-    \item Domanda: quanto aggiungono le \hl{pagine del sito} rispetto ai soli articoli?
+    \item Tutto archiviato in \texttt{EsperimentiPreliminari/}, con il motivo di ogni scelta
   \end{itemize}
 \end{frame}
-
-\begin{frame}{Risultati per testata (voto di maggioranza)}
-  \vspace{0.3em}
-  \centering\small
-  \begin{tabular}{llcccc}
-    \toprule
-    \textbf{Modello} & \textbf{Input} & \textbf{5 classi} & \textbf{binario} & \textbf{tol.\ 0,5} & \textbf{tol.\ 1} \\
-    \midrule
-    feature & A, articoli & 0,56 & 0,80 & 0,70 & 0,84 \\
-            & \textbf{C, +pagine} & \textbf{0,60} & \textbf{0,84} & \textbf{0,72} & \textbf{0,85} \\
-    \midrule
-    ModernBERT & A, articoli & 0,53 & 0,77 & 0,66 & 0,79 \\
-               & C, +pagine & 0,49 & 0,78 & 0,64 & 0,79 \\
-    \midrule
-    ModernBERT & A, early stop & 0,50 & 0,78 & 0,65 & 0,80 \\
-    (early stop) & C, early stop & 0,50 & 0,78 & 0,65 & 0,80 \\
-    \bottomrule
-  \end{tabular}\\[0.5em]
-  \raggedright {\footnotesize\itshape 5 fold, valutazione per gruppo. Binario = affidabile ($l_3/l_4/l_5$, punteggio $\geq 60$) contro inaffidabile.}
-  \vspace{0.4em}
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.35em}
-    \item Il migliore \`e il \hl{classificatore a feature + pagine}
-    \item Le \hl{pagine aiutano} il classificatore a feature; i \hl{transformer non lo battono}, nemmeno con early stopping
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Risultati per articolo}
-  \vspace{0.3em}
-  \centering\small
-  \begin{tabular}{llcccc}
-    \toprule
-    \textbf{Modello} & \textbf{Input} & \textbf{5 classi} & \textbf{binario} & \textbf{tol.\ 0,5} & \textbf{tol.\ 1} \\
-    \midrule
-    feature & A, articoli & 0,48 & 0,75 & 0,63 & 0,78 \\
-            & \textbf{C, +pagine} & \textbf{0,59} & \textbf{0,83} & \textbf{0,71} & \textbf{0,84} \\
-    \midrule
-    ModernBERT & A, articoli & 0,46 & 0,74 & 0,61 & 0,76 \\
-               & C, +pagine & 0,48 & 0,78 & 0,64 & 0,79 \\
-    \midrule
-    ModernBERT & A, early stop & 0,45 & 0,73 & 0,61 & 0,76 \\
-    (early stop) & C, early stop & 0,49 & 0,78 & 0,65 & 0,80 \\
-    \bottomrule
-  \end{tabular}\\[0.5em]
-  \raggedright {\footnotesize\itshape 5 fold, valutazione per gruppo. Binario = affidabile ($l_3/l_4/l_5$, punteggio $\geq 60$) contro inaffidabile.}
-\end{frame}
-
 
 \end{document}
