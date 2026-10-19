@@ -1,0 +1,54 @@
+{
+ "fasi": {
+  "scraping": {
+   "stato": "fatta",
+   "tentativi": 1,
+   "inizio": "2026-10-18 12:31:27",
+   "minuti": 56.9,
+   "esito": "0",
+   "fine": "2026-10-18 13:28:23"
+  },
+  "costruisci_dataset": {
+   "stato": "fatta",
+   "tentativi": 1,
+   "inizio": "2026-10-18 13:28:24",
+   "minuti": 11.3,
+   "esito": "0",
+   "fine": "2026-10-18 13:39:42"
+  },
+  "01_pulizia_articoli": {
+   "stato": "fatta",
+   "tentativi": 1,
+   "inizio": "2026-10-18 13:39:42",
+   "minuti": 5.0,
+   "esito": "0",
+   "fine": "2026-10-18 13:44:42"
+  },
+  "02_reti": {
+   "stato": "fatta",
+   "tentativi": 1,
+   "inizio": "2026-10-18 13:44:42",
+   "minuti": 0.6,
+   "esito": "0",
+   "fine": "2026-10-18 13:45:21"
+  },
+  "03_dataset_finale": {
+   "stato": "fatta",
+   "tentativi": 1,
+   "inizio": "2026-10-18 13:45:21",
+   "minuti": 0.2,
+   "esito": "0",
+   "fine": "2026-10-18 13:45:35"
+  },
+  "classificazione": {
+   "stato": "fatta",
+   "tentativi": 1,
+   "inizio": "2026-10-18 13:45:35",
+   "minuti": 396.8,
+   "esito": "0",
+   "fine": "2026-10-18 20:22:23"
+  }
+ },
+ "riserva": false,
+ "aggiornato": "2026-10-18 20:22:23"
+}

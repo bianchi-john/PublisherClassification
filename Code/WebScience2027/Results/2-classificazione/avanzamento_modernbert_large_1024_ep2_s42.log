@@ -1,0 +1,23 @@
+2026-10-18 16:31:56  === modernbert_large_1024_ep2_s42: answerdotai/ModernBERT-large, 1024 token, seed 42, su Tesla V100S-PCIE-32GB ===
+2026-10-18 16:32:32  44029 articoli tokenizzati in 33 s; token per articolo: mediana 800, al massimo 1024 nel 35% dei casi
+2026-10-18 16:32:33  fold 1: 208 testate di training, 35 di validazione, 61 di test; pesi di classe [0.8500000238418579, 0.949999988079071, 1.659999966621399, 0.6299999952316284, 1.7300000190734863]
+2026-10-18 16:38:41  fold 1 epoca 1/2: loss 1.4556, val loss 1.5843, val F1 testate 0.343, val acc articoli 0.303 (365 s)
+2026-10-18 16:44:45  fold 1 epoca 2/2: loss 1.0834, val loss 1.5705, val F1 testate 0.367, val acc articoli 0.355 (363 s)
+2026-10-18 16:46:22  fold 1: finito in 14 min, test acc articoli 0.326, F1 testate 0.317, memoria GPU massima 11.8 GB
+2026-10-18 16:46:23  fold 2: 209 testate di training, 34 di validazione, 61 di test; pesi di classe [0.8500000238418579, 0.9300000071525574, 1.6699999570846558, 0.6399999856948853, 1.6699999570846558]
+2026-10-18 16:52:17  fold 2 epoca 1/2: loss 1.4828, val loss 1.6889, val F1 testate 0.197, val acc articoli 0.268 (353 s)
+2026-10-18 16:58:10  fold 2 epoca 2/2: loss 1.1037, val loss 1.6937, val F1 testate 0.460, val acc articoli 0.308 (353 s)
+2026-10-18 17:00:23  fold 2: finito in 14 min, test acc articoli 0.313, F1 testate 0.261, memoria GPU massima 11.8 GB
+2026-10-18 17:00:24  fold 3: 208 testate di training, 35 di validazione, 61 di test; pesi di classe [0.8500000238418579, 0.949999988079071, 1.7300000190734863, 0.6299999952316284, 1.659999966621399]
+2026-10-18 17:06:39  fold 3 epoca 1/2: loss 1.4594, val loss 1.4134, val F1 testate 0.463, val acc articoli 0.414 (374 s)
+2026-10-18 17:12:53  fold 3 epoca 2/2: loss 1.1154, val loss 1.4019, val F1 testate 0.386, val acc articoli 0.416 (374 s)
+2026-10-18 17:15:01  fold 3: finito in 15 min, test acc articoli 0.365, F1 testate 0.372, memoria GPU massima 11.8 GB
+2026-10-18 17:15:02  fold 4: 208 testate di training, 35 di validazione, 61 di test; pesi di classe [0.8700000047683716, 0.949999988079071, 1.659999966621399, 0.6299999952316284, 1.659999966621399]
+2026-10-18 17:21:06  fold 4 epoca 1/2: loss 1.4651, val loss 1.5698, val F1 testate 0.268, val acc articoli 0.293 (363 s)
+2026-10-18 17:27:09  fold 4 epoca 2/2: loss 1.0925, val loss 1.6517, val F1 testate 0.258, val acc articoli 0.311 (363 s)
+2026-10-18 17:29:22  fold 4: finito in 14 min, test acc articoli 0.316, F1 testate 0.356, memoria GPU massima 11.8 GB
+2026-10-18 17:29:23  fold 5: 209 testate di training, 35 di validazione, 60 di test; pesi di classe [0.8500000238418579, 0.9300000071525574, 1.6699999570846558, 0.6299999952316284, 1.7400000095367432]
+2026-10-18 17:35:32  fold 5 epoca 1/2: loss 1.4534, val loss 1.4593, val F1 testate 0.349, val acc articoli 0.375 (368 s)
+2026-10-18 17:41:38  fold 5 epoca 2/2: loss 1.0598, val loss 1.6057, val F1 testate 0.369, val acc articoli 0.364 (366 s)
+2026-10-18 17:43:40  fold 5: finito in 14 min, test acc articoli 0.338, F1 testate 0.344, memoria GPU massima 11.8 GB
+2026-10-18 17:43:42  === modernbert_large_1024_ep2_s42 FINITO: testata (media) F1 0.339, acc 0.391, bin 0.704 ===

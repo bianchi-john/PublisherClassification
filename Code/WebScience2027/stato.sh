@@ -12,9 +12,21 @@ screen -ls | sed -nE 's/^\s+[0-9]+\.(\S+)\s+\(([^)]*)\).*/\1|\2/p' | while IFS='
     printf "  %-18s %s, da %dh %02dm\n" "$nome" "$(TZ=Europe/Rome date -d @$(date -d "$inizio" +%s) '+%d/%m %H:%M')" $((s/3600)) $((s%3600/60))
 done
 
+if [ -f $W/Results/esegui_tutto/stato.json ]; then
+    echo; echo "=== catena (scraping -> dataset -> pulizia -> classificazione)"
+    ~/John/johnVenv/bin/python -c "
+import json; s = json.load(open('$W/Results/esegui_tutto/stato.json'))
+print('  dataset di riserva in uso!' if s.get('riserva') else '  dataset: quello nuovo')
+for n, f in s['fasi'].items(): print(f\"  {n:22s} {f['stato']:20s} {f.get('minuti', '')!s:>7} min\")"
+    tail -3 $W/Results/esegui_tutto/esegui_tutto.log | sed 's/^/  /'
+    if [ -f $W/Dataset/NuovoScraping/stato_generale.json ]; then
+        echo "  scraping: $(~/John/johnVenv/bin/python -c "import json; s=json.load(open('$W/Dataset/NuovoScraping/stato_generale.json')); print(s['testate_finite'], 'su', s['testate_totali'], 'testate tentate; ore mancanti stimate', s.get('ore_mancanti_stimate'))")"
+    fi
+fi
+
 if [ -f $R/coda_stato.json ]; then
     echo; echo "=== coda del weekend"
-    ~/mbvenv/bin/python - <<'EOF'
+    ~/John/johnVenv/bin/python - <<'EOF'
 import json, re, glob, os, time
 from pathlib import Path
 R = Path(os.path.expanduser("~/John/WebScience2027/Results/2-classificazione"))
@@ -44,4 +56,4 @@ echo; echo "=== ultimi passi (log più recente: $(ls -t $R/avanzamento_*.log 2>/
 tail -6 "$(ls -t $R/avanzamento_*.log 2>/dev/null | head -1)" 2>/dev/null | sed 's/^/  /'
 
 echo; echo "=== GPU"
-~/mbvenv/bin/python -c "import torch; f,t = torch.cuda.mem_get_info(); print(f'  memoria libera {f/2**30:.1f} / {t/2**30:.0f} GB')" 2>/dev/null
+~/John/johnVenv/bin/python -c "import torch; f,t = torch.cuda.mem_get_info(); print(f'  memoria libera {f/2**30:.1f} / {t/2**30:.0f} GB')" 2>/dev/null

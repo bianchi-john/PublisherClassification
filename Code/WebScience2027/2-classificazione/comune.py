@@ -26,7 +26,7 @@ def registratore(log):
     def registra(m):
         riga = f"{datetime.now():%Y-%m-%d %H:%M:%S}  {m}"
         print(riga, flush=True)
-        with open(log, "a") as f:
+        with open(log, "a", encoding="utf-8") as f:
             f.write(riga + "\n")
     return registra
 

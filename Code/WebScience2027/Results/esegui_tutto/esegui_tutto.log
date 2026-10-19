@@ -1,0 +1,14 @@
+2026-10-18 12:31:27  === avvio (o ripresa) della catena ===
+2026-10-18 12:31:27  >>> scraping (tentativo 1, al massimo 3 h)
+2026-10-18 13:28:23  <<< scraping: fatta in 56.9 min
+2026-10-18 13:28:24  >>> costruisci_dataset (tentativo 1, al massimo 2 h)
+2026-10-18 13:39:42  <<< costruisci_dataset: fatta in 11.3 min
+2026-10-18 13:39:42  >>> 01_pulizia_articoli (tentativo 1, al massimo 2 h)
+2026-10-18 13:44:42  <<< 01_pulizia_articoli: fatta in 5.0 min
+2026-10-18 13:44:42  >>> 02_reti (tentativo 1, al massimo 1 h)
+2026-10-18 13:45:21  <<< 02_reti: fatta in 0.6 min
+2026-10-18 13:45:21  >>> 03_dataset_finale (tentativo 1, al massimo 1 h)
+2026-10-18 13:45:35  <<< 03_dataset_finale: fatta in 0.2 min
+2026-10-18 13:45:35  >>> classificazione (tentativo 1, al massimo 60 h)
+2026-10-18 20:22:23  <<< classificazione: fatta in 396.8 min
+2026-10-18 20:22:23  === catena finita ===

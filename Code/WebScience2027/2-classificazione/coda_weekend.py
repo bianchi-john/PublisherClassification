@@ -1,7 +1,7 @@
-"""Coda degli esperimenti del weekend: li lancia uno dopo l'altro, riprova, salta, registra.
+"""Coda degli esperimenti: li lancia uno dopo l'altro, riprova, salta, registra.
 
     cd ~/John/WebScience2027/2-classificazione
-    screen -dmS coda bash -c 'until ~/mbvenv/bin/python coda_weekend.py; do sleep 60; done'
+    screen -dmS coda bash -c 'until ~/John/johnVenv/bin/python coda_weekend.py; do sleep 60; done'
 
 - ogni esperimento è un notebook eseguito con papermill in un processo a parte: quando finisce (o muore) la GPU
   torna libera;
@@ -33,24 +33,30 @@ ATTESA_RIPROVA = 300            # secondi tra un tentativo fallito e il successi
 ATTESA_GPU_MAX = 6 * 3600       # dopo tanto tempo si prova comunque
 
 
-def transformer(nome, modello, max_token, batch, gb, ore, seed=42):
+def transformer(nome, modello, max_token, batch, gb, ore, seed=42, **altri):
     return {"nome": f"{nome}_s{seed}", "notebook": "02_transformer.ipynb", "gpu_gb": gb, "ore_max": ore,
             "fatto": RESULTS / "transformer" / f"{nome}_s{seed}" / "FATTO",
-            "parametri": {"NOME": f"{nome}_s{seed}", "MODELLO": modello, "MAX_TOKEN": max_token, "BATCH": batch, "SEED": seed}}
+            "parametri": {"NOME": f"{nome}_s{seed}", "MODELLO": modello, "MAX_TOKEN": max_token, "BATCH": batch, "SEED": seed, **altri}}
 
 
+def embedding(nome, modello, prefisso, pooling):
+    return {"nome": nome, "notebook": "04_embedding.ipynb", "gpu_gb": 8, "ore_max": 3,
+            "fatto": RESULTS / "transformer" / nome / "FATTO",
+            "parametri": {"NOME": nome, "MODELLO_EMB": modello, "PREFISSO": prefisso, "POOLING": pooling}}
+
+
+# l'ordine conta: prima i riferimenti e i sistemi principali, in fondo i più lunghi (se il tempo finisce, mancano quelli)
 ESPERIMENTI = [
-    {"nome": "feature", "notebook": "01_classificatore_feature.ipynb", "gpu_gb": 0, "ore_max": 2,
+    {"nome": "feature", "notebook": "01_classificatore_feature.ipynb", "gpu_gb": 0, "ore_max": 3,
      "fatto": RESULTS / "feature_FATTO", "parametri": {"NOME": "feature"}},
-    {"nome": "feature_1024tok", "notebook": "01_classificatore_feature.ipynb", "gpu_gb": 0, "ore_max": 2,
-     "fatto": RESULTS / "feature_1024tok_FATTO", "parametri": {"NOME": "feature_1024tok", "TAGLIO_TOKEN": 1024}},
-    transformer("modernbert_base_1024", "answerdotai/ModernBERT-base", 1024, 16, 16, 6),
-    transformer("deberta_v3_base_512", "microsoft/deberta-v3-base", 512, 16, 16, 6),
-    transformer("modernbert_base_2048", "answerdotai/ModernBERT-base", 2048, 8, 16, 12),
-    transformer("modernbert_large_1024", "answerdotai/ModernBERT-large", 1024, 4, 20, 14),
-] + [transformer("modernbert_base_1024", "answerdotai/ModernBERT-base", 1024, 16, 16, 6, seed=s) for s in (1, 2)] \
-  + [transformer("modernbert_base_2048", "answerdotai/ModernBERT-base", 2048, 8, 16, 12, seed=s) for s in (1, 2)] \
-  + [transformer("modernbert_large_1024", "answerdotai/ModernBERT-large", 1024, 4, 20, 14, seed=s) for s in (1, 2)]
+    {"nome": "feature_tuned", "notebook": "01_classificatore_feature.ipynb", "gpu_gb": 0, "ore_max": 6,
+     "fatto": RESULTS / "feature_tuned_FATTO", "parametri": {"NOME": "feature_tuned", "C_GRIGLIA": "0.1,1,10,100"}},
+    embedding("e5_large_v2", "intfloat/e5-large-v2", "query: ", "media"),
+    embedding("bge_large_v15", "BAAI/bge-large-en-v1.5", "", "cls"),
+] + [transformer("modernbert_base_1024_ep2", "answerdotai/ModernBERT-base", 1024, 16, 16, 6, seed=s, PATIENCE=0, EPOCHE_MAX=2)
+     for s in (42, 1, 2)] \
+  + [transformer("modernbert_large_1024_ep2", "answerdotai/ModernBERT-large", 1024, 4, 20, 10, seed=s, PATIENCE=0, EPOCHE_MAX=2)
+     for s in (42, 1, 2)]
 
 
 def ora():
@@ -60,7 +66,7 @@ def ora():
 def scrivi_log(m):
     riga = f"{ora()}  {m}"
     print(riga, flush=True)
-    with open(LOG, "a") as f:
+    with open(LOG, "a", encoding="utf-8") as f:
         f.write(riga + "\n")
 
 
@@ -99,12 +105,13 @@ def aspetta_gpu(gb):
 
 def lancia(notebook, uscita, parametri, ore_max, file_out):
     """papermill in un gruppo di processi a parte, così allo scadere si uccidono anche i figli (il kernel)."""
-    cmd = [PY, "-m", "papermill", "-k", "mbvenv", "--cwd", str(QUI), str(QUI / notebook), str(uscita)]
+    cmd = [PY, "-m", "papermill", "-k", "johnvenv", "--cwd", str(QUI), str(QUI / notebook), str(uscita)]
     for k, v in parametri.items():
         cmd += ["-p", k, str(v)]
-    with open(file_out, "a") as f:
+    with open(file_out, "a", encoding="utf-8") as f:
         f.write(f"\n===== {ora()} {' '.join(cmd)}\n"); f.flush()
-        p = subprocess.Popen(cmd, stdout=f, stderr=subprocess.STDOUT, start_new_session=True)
+        ambiente = {**os.environ, "PYTHONUTF8": "1", "PYTHONIOENCODING": "utf-8", "LC_ALL": "C.UTF-8", "LANG": "C.UTF-8"}
+        p = subprocess.Popen(cmd, stdout=f, stderr=subprocess.STDOUT, start_new_session=True, env=ambiente)
         try:
             return p.wait(timeout=ore_max * 3600)
         except subprocess.TimeoutExpired:

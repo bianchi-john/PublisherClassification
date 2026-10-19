@@ -1,0 +1,11 @@
+{
+ "NOME": "e5_large_v2",
+ "MODELLO_EMB": "intfloat/e5-large-v2",
+ "PREFISSO": "query: ",
+ "POOLING": "media",
+ "MAX_TOKEN": 512,
+ "BATCH": 64,
+ "C_GRIGLIA": "0.01,0.1,1,10",
+ "SCHEMA": "fold_gruppo",
+ "PROVA": false
+}

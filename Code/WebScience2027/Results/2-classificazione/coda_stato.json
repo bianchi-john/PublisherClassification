@@ -1,0 +1,76 @@
+{
+ "esperimenti": {
+  "feature": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-18 13:45:35",
+   "minuti": 5.6,
+   "fine": "2026-10-18 13:51:12"
+  },
+  "feature_tuned": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-18 13:52:06",
+   "minuti": 36.2,
+   "fine": "2026-10-18 14:28:16"
+  },
+  "e5_large_v2": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-18 14:29:36",
+   "minuti": 4.9,
+   "fine": "2026-10-18 14:34:30"
+  },
+  "bge_large_v15": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-18 14:36:14",
+   "minuti": 4.9,
+   "fine": "2026-10-18 14:41:07"
+  },
+  "modernbert_base_1024_ep2_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-18 14:43:17",
+   "minuti": 32.9,
+   "fine": "2026-10-18 15:16:12"
+  },
+  "modernbert_base_1024_ep2_s1": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-18 15:18:55",
+   "minuti": 32.6,
+   "fine": "2026-10-18 15:51:34"
+  },
+  "modernbert_base_1024_ep2_s2": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-18 15:55:09",
+   "minuti": 32.9,
+   "fine": "2026-10-18 16:28:01"
+  },
+  "modernbert_large_1024_ep2_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-18 16:31:52",
+   "minuti": 71.9,
+   "fine": "2026-10-18 17:43:46"
+  },
+  "modernbert_large_1024_ep2_s1": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-18 17:48:01",
+   "minuti": 71.5,
+   "fine": "2026-10-18 18:59:29"
+  },
+  "modernbert_large_1024_ep2_s2": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-18 19:04:50",
+   "minuti": 72.1,
+   "fine": "2026-10-18 20:16:53"
+  }
+ },
+ "aggiornato": "2026-10-18 20:16:53",
+ "in_corso": null
+}

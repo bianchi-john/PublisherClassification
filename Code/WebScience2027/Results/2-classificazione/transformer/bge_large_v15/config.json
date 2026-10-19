@@ -1,0 +1,11 @@
+{
+ "NOME": "bge_large_v15",
+ "MODELLO_EMB": "BAAI/bge-large-en-v1.5",
+ "PREFISSO": "",
+ "POOLING": "cls",
+ "MAX_TOKEN": 512,
+ "BATCH": 64,
+ "C_GRIGLIA": "0.01,0.1,1,10",
+ "SCHEMA": "fold_gruppo",
+ "PROVA": false
+}

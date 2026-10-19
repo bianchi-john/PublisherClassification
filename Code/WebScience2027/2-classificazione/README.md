@@ -1,13 +1,18 @@
 # 2 — Classificazione
 
-Sul dataset finale (`../Dataset/versioni/dataset_finale.csv`), solo il testo degli articoli. Fold **per rete**
-(principale) e **per testata** (confronto), stratificati per livello. Lettura per articolo e per testata (voto
-di maggioranza).
+Sul dataset finale (`../Dataset/versioni/dataset_finale.csv`), solo il testo degli articoli. Valutazione **per
+testata**, fold **per gruppo** (principale) e per testata (confronto), stratificati per livello. Metriche
+principali, fissate prima dei risultati: F1 macro a 5 classi e binario (punteggio ≥ 60).
 
-| Notebook | |
+| File | |
 |---|---|
-| `01_classificatore_feature.ipynb` | TF-IDF + regressione logistica, con le baseline maggioranza e a caso |
-| `comune.py` | caricamento dei dati, percorsi e letture (5 classi, F1, binario, tolerant) |
+| `01_classificatore_feature.ipynb` | TF-IDF + regressione logistica (C fisso o scelto in validazione interna), baseline maggioranza e a caso |
+| `02_transformer.ipynb` | fine-tuning (ModernBERT…): k articoli per testata a ogni epoca, pesi di classe, early stopping o epoche fisse |
+| `04_embedding.ipynb` | embedding congelati (e5, bge) + regressione logistica, una riga per testata |
+| `03_confronto.ipynb` | tutte le metriche, ensemble dei seed, intervalli e differenze con il feature (bootstrap per gruppo) |
+| `coda_weekend.py` | la coda degli esperimenti: li lancia uno dopo l'altro con papermill, riprova, salta, registra |
+| `comune.py` | caricamento dei dati, percorsi e metriche (5 classi, F1, binario con TP/TN/FP/FN, tolerant) |
 
-Sul server si lanciano con papermill dentro `screen` (comando nella prima cella); l'eseguito finisce in
-`../Results/2-classificazione/esecuzioni/`. Cosa gira e da quanto: `../stato.sh`.
+Per ogni modello si salvano logit e probabilità di ogni articolo e `metriche.json`: si può ricalcolare qualsiasi
+metrica senza riaddestrare. Risultati in `../Results/2-classificazione/` (le predizioni dei transformer in
+`transformer/<nome>/`).
