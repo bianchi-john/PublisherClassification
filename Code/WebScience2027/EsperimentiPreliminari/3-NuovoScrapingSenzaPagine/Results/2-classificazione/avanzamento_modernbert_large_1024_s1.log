@@ -1,0 +1,40 @@
+2026-10-17 01:39:13  === modernbert_large_1024_s1: answerdotai/ModernBERT-large, 1024 token, seed 1, su Tesla V100S-PCIE-32GB ===
+2026-10-17 01:39:44  29129 articoli tokenizzati in 29 s; token per articolo: mediana 826, al massimo 1024 nel 35% dei casi
+2026-10-17 01:39:44  fold 1: 132 testate di training, 22 di validazione, 39 di test; pesi di classe [1.3899999856948853, 0.7799999713897705, 1.5499999523162842, 0.6100000143051147, 1.3899999856948853]
+2026-10-17 01:43:36  fold 1 epoca 1/8: loss 1.5245, val loss 1.9371, val F1 testate 0.250, val acc articoli 0.170 (229 s)
+2026-10-17 01:47:24  fold 1 epoca 2/8: loss 1.1944, val loss 2.0206, val F1 testate 0.231, val acc articoli 0.217 (226 s)
+2026-10-17 01:51:11  fold 1 epoca 3/8: loss 0.9806, val loss 2.0131, val F1 testate 0.109, val acc articoli 0.268 (228 s)
+2026-10-17 01:51:11  fold 1: stop all'epoca 3, la migliore è la 1
+2026-10-17 01:52:30  fold 1: finito in 13 min, test acc articoli 0.306, F1 testate 0.271, memoria GPU massima 11.8 GB
+2026-10-17 01:52:31  fold 2: 132 testate di training, 22 di validazione, 39 di test; pesi di classe [1.3899999856948853, 0.800000011920929, 1.3200000524520874, 0.6299999952316284, 1.4700000286102295]
+2026-10-17 01:56:22  fold 2 epoca 1/8: loss 1.5209, val loss 1.7759, val F1 testate 0.250, val acc articoli 0.215 (230 s)
+2026-10-17 02:00:13  fold 2 epoca 2/8: loss 1.1004, val loss 2.5689, val F1 testate 0.078, val acc articoli 0.191 (230 s)
+2026-10-17 02:04:04  fold 2 epoca 3/8: loss 0.8334, val loss 2.0850, val F1 testate 0.360, val acc articoli 0.255 (231 s)
+2026-10-17 02:07:55  fold 2 epoca 4/8: loss 0.7505, val loss 2.3713, val F1 testate 0.187, val acc articoli 0.196 (231 s)
+2026-10-17 02:11:46  fold 2 epoca 5/8: loss 0.5728, val loss 2.8289, val F1 testate 0.228, val acc articoli 0.219 (230 s)
+2026-10-17 02:11:46  fold 2: stop all'epoca 5, la migliore è la 3
+2026-10-17 02:13:02  fold 2: finito in 21 min, test acc articoli 0.217, F1 testate 0.179, memoria GPU massima 11.8 GB
+2026-10-17 02:13:02  fold 3: 132 testate di training, 22 di validazione, 39 di test; pesi di classe [1.3899999856948853, 0.800000011920929, 1.3200000524520874, 0.6299999952316284, 1.4700000286102295]
+2026-10-17 02:16:54  fold 3 epoca 1/8: loss 1.5505, val loss 1.4674, val F1 testate 0.218, val acc articoli 0.330 (230 s)
+2026-10-17 02:20:45  fold 3 epoca 2/8: loss 1.2407, val loss 1.5812, val F1 testate 0.217, val acc articoli 0.234 (231 s)
+2026-10-17 02:24:35  fold 3 epoca 3/8: loss 0.9250, val loss 1.7906, val F1 testate 0.197, val acc articoli 0.235 (230 s)
+2026-10-17 02:24:35  fold 3: stop all'epoca 3, la migliore è la 1
+2026-10-17 02:25:59  fold 3: finito in 13 min, test acc articoli 0.324, F1 testate 0.154, memoria GPU massima 11.8 GB
+2026-10-17 02:26:00  fold 4: 133 testate di training, 22 di validazione, 38 di test; pesi di classe [1.4800000190734863, 0.7799999713897705, 1.399999976158142, 0.6200000047683716, 1.399999976158142]
+2026-10-17 02:29:59  fold 4 epoca 1/8: loss 1.5412, val loss 1.5737, val F1 testate 0.080, val acc articoli 0.273 (238 s)
+2026-10-17 02:33:58  fold 4 epoca 2/8: loss 1.2242, val loss 1.7848, val F1 testate 0.221, val acc articoli 0.299 (239 s)
+2026-10-17 02:37:57  fold 4 epoca 3/8: loss 0.9219, val loss 1.8980, val F1 testate 0.196, val acc articoli 0.305 (238 s)
+2026-10-17 02:41:55  fold 4 epoca 4/8: loss 0.7015, val loss 2.4518, val F1 testate 0.193, val acc articoli 0.256 (238 s)
+2026-10-17 02:41:55  fold 4: stop all'epoca 4, la migliore è la 2
+2026-10-17 02:43:26  fold 4: finito in 17 min, test acc articoli 0.363, F1 testate 0.280, memoria GPU massima 11.8 GB
+2026-10-17 02:43:26  fold 5: 133 testate di training, 22 di validazione, 38 di test; pesi di classe [1.399999976158142, 0.8100000023841858, 1.399999976158142, 0.6200000047683716, 1.399999976158142]
+2026-10-17 02:47:24  fold 5 epoca 1/8: loss 1.5199, val loss 1.6996, val F1 testate 0.162, val acc articoli 0.167 (236 s)
+2026-10-17 02:51:21  fold 5 epoca 2/8: loss 1.2316, val loss 2.3037, val F1 testate 0.242, val acc articoli 0.261 (237 s)
+2026-10-17 02:55:17  fold 5 epoca 3/8: loss 0.9699, val loss 2.1022, val F1 testate 0.109, val acc articoli 0.192 (235 s)
+2026-10-17 02:59:13  fold 5 epoca 4/8: loss 0.7464, val loss 1.8466, val F1 testate 0.256, val acc articoli 0.263 (236 s)
+2026-10-17 03:03:10  fold 5 epoca 5/8: loss 0.5801, val loss 2.5277, val F1 testate 0.358, val acc articoli 0.245 (237 s)
+2026-10-17 03:07:08  fold 5 epoca 6/8: loss 0.4370, val loss 2.7171, val F1 testate 0.251, val acc articoli 0.226 (236 s)
+2026-10-17 03:11:04  fold 5 epoca 7/8: loss 0.3949, val loss 2.8061, val F1 testate 0.206, val acc articoli 0.260 (236 s)
+2026-10-17 03:11:04  fold 5: stop all'epoca 7, la migliore è la 5
+2026-10-17 03:12:34  fold 5: finito in 29 min, test acc articoli 0.258, F1 testate 0.247, memoria GPU massima 11.8 GB
+2026-10-17 03:12:35  === modernbert_large_1024_s1 FINITO: testata (media) F1 0.273, acc 0.295, bin 0.627 ===

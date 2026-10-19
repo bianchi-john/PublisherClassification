@@ -1,0 +1,33 @@
+2026-10-16 14:45:53  === dataset finale: 33423 articoli, 235 testate ===
+2026-10-16 14:47:36  fold_rete fold 3: fatto in 100 s (27132 training, 6291 test), acc articoli 0.361
+2026-10-16 14:47:39  fold_rete fold 4: fatto in 102 s (27214 training, 6209 test), acc articoli 0.375
+2026-10-16 14:47:57  fold_rete fold 5: fatto in 120 s (27817 training, 5606 test), acc articoli 0.369
+2026-10-16 14:48:10  fold_rete fold 2: fatto in 134 s (24566 training, 8857 test), acc articoli 0.347
+2026-10-16 14:48:18  fold_rete fold 1: fatto in 143 s (26963 training, 6460 test), acc articoli 0.516
+2026-10-16 14:49:57  fold_testata fold 1: fatto in 97 s (26759 training, 6664 test), acc articoli 0.502
+2026-10-16 14:50:08  fold_testata fold 2: fatto in 108 s (27018 training, 6405 test), acc articoli 0.560
+2026-10-16 14:50:18  fold_testata fold 5: fatto in 116 s (26340 training, 7083 test), acc articoli 0.525
+2026-10-16 14:50:41  fold_testata fold 4: fatto in 140 s (27406 training, 6017 test), acc articoli 0.485
+2026-10-16 14:50:44  fold_testata fold 3: fatto in 143 s (26169 training, 7254 test), acc articoli 0.507
+2026-10-16 15:05:52  === dataset finale: 29129 articoli, 193 testate ===
+2026-10-16 15:07:35  fold_gruppo fold 1: fatto in 101 s (23649 training, 5480 test), acc articoli 0.260
+2026-10-16 15:07:37  fold_gruppo fold 3: fatto in 103 s (23563 training, 5566 test), acc articoli 0.267
+2026-10-16 15:07:38  fold_gruppo fold 4: fatto in 103 s (23063 training, 6066 test), acc articoli 0.345
+2026-10-16 15:07:44  fold_gruppo fold 5: fatto in 108 s (22483 training, 6646 test), acc articoli 0.316
+2026-10-16 15:07:47  fold_gruppo fold 2: fatto in 113 s (23758 training, 5371 test), acc articoli 0.248
+2026-10-16 15:09:30  fold_testata fold 1: fatto in 101 s (23163 training, 5966 test), acc articoli 0.369
+2026-10-16 15:09:30  fold_testata fold 5: fatto in 99 s (23377 training, 5752 test), acc articoli 0.381
+2026-10-16 15:09:33  fold_testata fold 4: fatto in 102 s (23127 training, 6002 test), acc articoli 0.450
+2026-10-16 15:09:35  fold_testata fold 2: fatto in 106 s (23120 training, 6009 test), acc articoli 0.356
+2026-10-16 15:09:39  fold_testata fold 3: fatto in 109 s (23729 training, 5400 test), acc articoli 0.461
+2026-10-16 15:27:58  === feature: 29129 articoli, 193 testate, taglio nessuno ===
+2026-10-16 15:29:41  fold_gruppo fold 3: fatto in 100 s (23563 training, 5566 test)
+2026-10-16 15:29:41  fold_gruppo fold 4: fatto in 100 s (23063 training, 6066 test)
+2026-10-16 15:29:42  fold_gruppo fold 2: fatto in 102 s (23758 training, 5371 test)
+2026-10-16 15:29:42  fold_gruppo fold 5: fatto in 100 s (22483 training, 6646 test)
+2026-10-16 15:29:45  fold_gruppo fold 1: fatto in 104 s (23649 training, 5480 test)
+2026-10-16 15:31:21  fold_testata fold 4: fatto in 93 s (23127 training, 6002 test)
+2026-10-16 15:31:24  fold_testata fold 5: fatto in 96 s (23377 training, 5752 test)
+2026-10-16 15:31:26  fold_testata fold 1: fatto in 100 s (23163 training, 5966 test)
+2026-10-16 15:31:29  fold_testata fold 3: fatto in 102 s (23729 training, 5400 test)
+2026-10-16 15:31:33  fold_testata fold 2: fatto in 106 s (23120 training, 6009 test)

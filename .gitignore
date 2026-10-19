@@ -48,5 +48,10 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-# Progress log written while notebooks run
-Code/WebScience2027/**/avanzamento*.log
+
+# Web Science 2027: cache grandi e rigenerabili dei risultati (embedding, coefficienti) e test di fattibilità.
+# Restano in locale e nel backup ~/Backup/artes4_John_WebScience2027, non su GitHub (file oltre i 100 MB).
+Code/WebScience2027/**/Results/**/*.npy
+Code/WebScience2027/**/Results/**/*.pkl
+Code/WebScience2027/Results/prove/
+Code/WebScience2027/**/Results/**/prova/

@@ -1,8 +1,8 @@
 # 0 — Scraping (Web Science 2027)
 
-Nuovo scraping, punto di partenza di questa linea di lavoro. Raccoglie gli articoli di ogni
-testata NewsGuard con argomento "Political news or commentary", lingua inglese e un punteggio (1.921 domini),
-in ordine casuale (seed 42). **Nessuna scelta dipende dalle etichette di affidabilità NewsGuard.**
+Punto di partenza della linea di lavoro. Raccoglie gli articoli di ogni testata NewsGuard in lingua inglese, con
+un punteggio, il cui argomento (Topics) **contiene** "Political news or commentary" (3.128 domini), in ordine
+casuale (seed 42). **Nessuna scelta dipende dalle etichette di affidabilità NewsGuard.**
 
 | File | |
 |---|---|
@@ -12,20 +12,18 @@ in ordine casuale (seed 42). **Nessuna scelta dipende dalle etichette di affidab
 
 ## Come è stato lanciato
 
-Sul server artes4, 2026-10-13, dentro `screen`:
+Sul server artes4, in due giri, con lo stesso scraper e gli stessi parametri:
 
-```bash
-cd ~/John/WebScience2027/0-scraping
-screen -dmS scraping_ws27 bash avvia.sh ../Dataset/NuovoScraping 64
-```
+1. **13 ottobre 2026**: le 1.921 testate con argomento *esattamente* "Political news or commentary" (1h14);
+2. **18 ottobre 2026**: le testate il cui argomento *contiene* "Political news or commentary" (+1.207), lanciato da
+   `../esegui_tutto.py` (57 minuti). Le testate già tentate si saltano.
 
-Finito in 1h14, senza riavvii: 1.921 testate tentate, 600 raggiunte, ~80.000 articoli grezzi.
-Molte testate (soprattutto una grande rete di cloni $l_1$ con lo stesso proprietario) rifiutano le richieste
-automatiche (HTTP 403) e vengono saltate e annotate.
+In tutto: 3.128 testate tentate, 1.528 raggiunte, 170.213 testi estratti. Molte testate rifiutano le richieste
+automatiche (HTTP 403): una rete di 1.076 siti $l_1$ quasi per intero e altre 176 testate.
 
 ## Output
 
-`../Dataset/NuovoScraping/` (articoli, html, stato, config.json, ...). Il notebook
-`costruisci_dataset.ipynb` ci legge e scrive `../Dataset/NuovoScraping/dataset_articoli.csv`
-(54.532 articoli in inglese, 354 testate). L'HTML grezzo di ogni articolo (`html/`, solo sul server) serve
-al data cleaning per riconoscere le reti di siti.
+`../Dataset/NuovoScraping/`: `articoli/`, `html/` (l'HTML grezzo di ogni articolo, serve a `1-data-cleaning/02_reti`),
+`stato/`, `config.json` (parametri e versioni del primo giro), `elenco_testate.csv`, i log. Il notebook
+`costruisci_dataset.ipynb` ci legge e scrive `../Dataset/NuovoScraping/dataset_articoli.csv` (101.887 articoli in
+inglese, 1.046 testate). Il dataset del solo primo giro è in `dataset_articoli_13ottobre.csv`.

@@ -5,7 +5,7 @@
 cd "$(dirname "$0")"
 OUT="${1:-../../Dataset/NuovoScraping}"
 PROCESSI="${2:-64}"
-PY="${PYTHON:-$HOME/johnVenv/bin/python}"
+PY="${PYTHON:-$HOME/John/johnVenv/bin/python}"
 mkdir -p "$OUT"
 for tentativo in $(seq 1 50); do
     echo "$(date '+%F %T')  avvio numero $tentativo" >> "$OUT/riavvii.log"

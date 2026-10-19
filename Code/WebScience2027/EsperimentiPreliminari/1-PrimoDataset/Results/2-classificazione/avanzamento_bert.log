@@ -1,0 +1,132 @@
+2026-10-13 14:25:03  === avvio su cuda (Tesla V100S-PCIE-32GB) ===
+2026-10-13 14:25:04  PROVA: inizio (242 articoli di training, 58 di test)
+2026-10-13 14:25:10  PROVA: epoca 1/1 finita in 4 s, loss media 1.6004
+2026-10-13 14:25:11  PROVA: fatto, accuratezza per articolo 0.138
+2026-10-13 14:25:11  PROVA riuscita: 58 predizioni. Lo script è pronto.
+2026-10-13 14:25:21  === avvio su cuda (Tesla V100S-PCIE-32GB) ===
+2026-10-13 14:25:22  min0 fold_gruppo fold 1: inizio (12683 articoli di training, 3587 di test)
+2026-10-13 14:26:14  min0 fold_gruppo fold 1: epoca 1/5, passo 100/397, loss 1.3422
+2026-10-13 14:26:57  min0 fold_gruppo fold 1: epoca 1/5, passo 200/397, loss 1.2261
+2026-10-13 14:27:40  min0 fold_gruppo fold 1: epoca 1/5, passo 300/397, loss 1.1391
+2026-10-13 14:28:21  min0 fold_gruppo fold 1: epoca 1/5 finita in 169 s, loss media 1.0962
+2026-10-13 14:29:03  min0 fold_gruppo fold 1: epoca 2/5, passo 100/397, loss 0.7424
+2026-10-13 14:29:46  min0 fold_gruppo fold 1: epoca 2/5, passo 200/397, loss 0.7448
+2026-10-13 14:30:28  min0 fold_gruppo fold 1: epoca 2/5, passo 300/397, loss 0.7207
+2026-10-13 14:31:08  min0 fold_gruppo fold 1: epoca 2/5 finita in 167 s, loss media 0.7085
+2026-10-13 14:31:50  min0 fold_gruppo fold 1: epoca 3/5, passo 100/397, loss 0.4941
+2026-10-13 14:32:32  min0 fold_gruppo fold 1: epoca 3/5, passo 200/397, loss 0.4769
+2026-10-13 14:33:14  min0 fold_gruppo fold 1: epoca 3/5, passo 300/397, loss 0.4728
+2026-10-13 14:33:55  min0 fold_gruppo fold 1: epoca 3/5 finita in 166 s, loss media 0.4733
+2026-10-13 14:34:37  min0 fold_gruppo fold 1: epoca 4/5, passo 100/397, loss 0.2783
+2026-10-13 14:35:19  min0 fold_gruppo fold 1: epoca 4/5, passo 200/397, loss 0.2747
+2026-10-13 14:36:01  min0 fold_gruppo fold 1: epoca 4/5, passo 300/397, loss 0.2798
+2026-10-13 14:36:41  min0 fold_gruppo fold 1: epoca 4/5 finita in 166 s, loss media 0.2822
+2026-10-13 14:37:23  min0 fold_gruppo fold 1: epoca 5/5, passo 100/397, loss 0.1558
+2026-10-13 14:38:05  min0 fold_gruppo fold 1: epoca 5/5, passo 200/397, loss 0.1488
+2026-10-13 14:38:47  min0 fold_gruppo fold 1: epoca 5/5, passo 300/397, loss 0.1519
+2026-10-13 14:39:27  min0 fold_gruppo fold 1: epoca 5/5 finita in 166 s, loss media 0.1571
+2026-10-13 14:39:42  min0 fold_gruppo fold 1: fatto, accuratezza per articolo 0.621
+2026-10-13 14:39:43  min0 fold_gruppo fold 2: inizio (13169 articoli di training, 3101 di test)
+2026-10-13 14:40:33  min0 fold_gruppo fold 2: epoca 1/5, passo 100/412, loss 1.2113
+2026-10-13 14:41:15  min0 fold_gruppo fold 2: epoca 1/5, passo 200/412, loss 1.0404
+2026-10-13 14:41:57  min0 fold_gruppo fold 2: epoca 1/5, passo 300/412, loss 0.9461
+2026-10-13 14:42:39  min0 fold_gruppo fold 2: epoca 1/5, passo 400/412, loss 0.8811
+2026-10-13 14:42:43  min0 fold_gruppo fold 2: epoca 1/5 finita in 172 s, loss media 0.8740
+2026-10-13 14:43:25  min0 fold_gruppo fold 2: epoca 2/5, passo 100/412, loss 0.5439
+2026-10-13 14:44:07  min0 fold_gruppo fold 2: epoca 2/5, passo 200/412, loss 0.5294
+2026-10-13 14:44:49  min0 fold_gruppo fold 2: epoca 2/5, passo 300/412, loss 0.5177
+2026-10-13 14:45:31  min0 fold_gruppo fold 2: epoca 2/5, passo 400/412, loss 0.4959
+2026-10-13 14:45:36  min0 fold_gruppo fold 2: epoca 2/5 finita in 172 s, loss media 0.4948
+2026-10-13 14:46:18  min0 fold_gruppo fold 2: epoca 3/5, passo 100/412, loss 0.2947
+2026-10-13 14:47:00  min0 fold_gruppo fold 2: epoca 3/5, passo 200/412, loss 0.3047
+2026-10-13 14:47:41  min0 fold_gruppo fold 2: epoca 3/5, passo 300/412, loss 0.3054
+2026-10-13 14:48:23  min0 fold_gruppo fold 2: epoca 3/5, passo 400/412, loss 0.3038
+2026-10-13 14:48:28  min0 fold_gruppo fold 2: epoca 3/5 finita in 172 s, loss media 0.3038
+2026-10-13 14:49:10  min0 fold_gruppo fold 2: epoca 4/5, passo 100/412, loss 0.1809
+2026-10-13 14:49:52  min0 fold_gruppo fold 2: epoca 4/5, passo 200/412, loss 0.1685
+2026-10-13 14:50:34  min0 fold_gruppo fold 2: epoca 4/5, passo 300/412, loss 0.1680
+2026-10-13 14:51:16  min0 fold_gruppo fold 2: epoca 4/5, passo 400/412, loss 0.1712
+2026-10-13 14:51:21  min0 fold_gruppo fold 2: epoca 4/5 finita in 172 s, loss media 0.1727
+2026-10-13 14:52:02  min0 fold_gruppo fold 2: epoca 5/5, passo 100/412, loss 0.0749
+2026-10-13 14:52:44  min0 fold_gruppo fold 2: epoca 5/5, passo 200/412, loss 0.0795
+2026-10-13 14:53:26  min0 fold_gruppo fold 2: epoca 5/5, passo 300/412, loss 0.0840
+2026-10-13 14:54:08  min0 fold_gruppo fold 2: epoca 5/5, passo 400/412, loss 0.0946
+2026-10-13 14:54:13  min0 fold_gruppo fold 2: epoca 5/5 finita in 172 s, loss media 0.0949
+2026-10-13 14:54:26  min0 fold_gruppo fold 2: fatto, accuratezza per articolo 0.236
+2026-10-13 14:54:26  min0 fold_gruppo fold 3: inizio (11432 articoli di training, 4838 di test)
+2026-10-13 14:55:17  min0 fold_gruppo fold 3: epoca 1/5, passo 100/358, loss 1.3502
+2026-10-13 14:55:58  min0 fold_gruppo fold 3: epoca 1/5, passo 200/358, loss 1.2416
+2026-10-13 14:56:40  min0 fold_gruppo fold 3: epoca 1/5, passo 300/358, loss 1.1831
+2026-10-13 14:57:04  min0 fold_gruppo fold 3: epoca 1/5 finita in 149 s, loss media 1.1527
+2026-10-13 14:57:46  min0 fold_gruppo fold 3: epoca 2/5, passo 100/358, loss 0.8549
+2026-10-13 14:58:28  min0 fold_gruppo fold 3: epoca 2/5, passo 200/358, loss 0.8295
+2026-10-13 14:59:10  min0 fold_gruppo fold 3: epoca 2/5, passo 300/358, loss 0.8067
+2026-10-13 14:59:34  min0 fold_gruppo fold 3: epoca 2/5 finita in 150 s, loss media 0.7962
+2026-10-13 15:00:16  min0 fold_gruppo fold 3: epoca 3/5, passo 100/358, loss 0.5547
+2026-10-13 15:00:58  min0 fold_gruppo fold 3: epoca 3/5, passo 200/358, loss 0.5479
+2026-10-13 15:01:40  min0 fold_gruppo fold 3: epoca 3/5, passo 300/358, loss 0.5360
+2026-10-13 15:02:04  min0 fold_gruppo fold 3: epoca 3/5 finita in 150 s, loss media 0.5332
+2026-10-13 15:02:45  min0 fold_gruppo fold 3: epoca 4/5, passo 100/358, loss 0.3404
+2026-10-13 15:03:27  min0 fold_gruppo fold 3: epoca 4/5, passo 200/358, loss 0.3311
+2026-10-13 15:04:09  min0 fold_gruppo fold 3: epoca 4/5, passo 300/358, loss 0.3342
+2026-10-13 15:04:33  min0 fold_gruppo fold 3: epoca 4/5 finita in 150 s, loss media 0.3327
+2026-10-13 15:05:15  min0 fold_gruppo fold 3: epoca 5/5, passo 100/358, loss 0.1735
+2026-10-13 15:05:57  min0 fold_gruppo fold 3: epoca 5/5, passo 200/358, loss 0.1729
+2026-10-13 15:06:39  min0 fold_gruppo fold 3: epoca 5/5, passo 300/358, loss 0.1807
+2026-10-13 15:07:03  min0 fold_gruppo fold 3: epoca 5/5 finita in 150 s, loss media 0.1846
+2026-10-13 15:07:23  min0 fold_gruppo fold 3: fatto, accuratezza per articolo 0.229
+2026-10-13 15:07:23  min0 fold_gruppo fold 4: inizio (13823 articoli di training, 2447 di test)
+2026-10-13 15:08:13  min0 fold_gruppo fold 4: epoca 1/5, passo 100/432, loss 1.2751
+2026-10-13 15:08:55  min0 fold_gruppo fold 4: epoca 1/5, passo 200/432, loss 1.1488
+2026-10-13 15:09:37  min0 fold_gruppo fold 4: epoca 1/5, passo 300/432, loss 1.0672
+2026-10-13 15:10:19  min0 fold_gruppo fold 4: epoca 1/5, passo 400/432, loss 1.0093
+2026-10-13 15:10:32  min0 fold_gruppo fold 4: epoca 1/5 finita in 180 s, loss media 0.9911
+2026-10-13 15:11:14  min0 fold_gruppo fold 4: epoca 2/5, passo 100/432, loss 0.6727
+2026-10-13 15:11:56  min0 fold_gruppo fold 4: epoca 2/5, passo 200/432, loss 0.6592
+2026-10-13 15:12:38  min0 fold_gruppo fold 4: epoca 2/5, passo 300/432, loss 0.6436
+2026-10-13 15:13:20  min0 fold_gruppo fold 4: epoca 2/5, passo 400/432, loss 0.6372
+2026-10-13 15:13:33  min0 fold_gruppo fold 4: epoca 2/5 finita in 181 s, loss media 0.6348
+2026-10-13 15:14:15  min0 fold_gruppo fold 4: epoca 3/5, passo 100/432, loss 0.4456
+2026-10-13 15:14:57  min0 fold_gruppo fold 4: epoca 3/5, passo 200/432, loss 0.4228
+2026-10-13 15:15:39  min0 fold_gruppo fold 4: epoca 3/5, passo 300/432, loss 0.4255
+2026-10-13 15:16:21  min0 fold_gruppo fold 4: epoca 3/5, passo 400/432, loss 0.4238
+2026-10-13 15:16:34  min0 fold_gruppo fold 4: epoca 3/5 finita in 181 s, loss media 0.4227
+2026-10-13 15:17:16  min0 fold_gruppo fold 4: epoca 4/5, passo 100/432, loss 0.2556
+2026-10-13 15:17:58  min0 fold_gruppo fold 4: epoca 4/5, passo 200/432, loss 0.2472
+2026-10-13 15:18:40  min0 fold_gruppo fold 4: epoca 4/5, passo 300/432, loss 0.2458
+2026-10-13 15:19:22  min0 fold_gruppo fold 4: epoca 4/5, passo 400/432, loss 0.2468
+2026-10-13 15:19:35  min0 fold_gruppo fold 4: epoca 4/5 finita in 181 s, loss media 0.2476
+2026-10-13 15:20:17  min0 fold_gruppo fold 4: epoca 5/5, passo 100/432, loss 0.1403
+2026-10-13 15:20:59  min0 fold_gruppo fold 4: epoca 5/5, passo 200/432, loss 0.1385
+2026-10-13 15:21:41  min0 fold_gruppo fold 4: epoca 5/5, passo 300/432, loss 0.1364
+2026-10-13 15:22:23  min0 fold_gruppo fold 4: epoca 5/5, passo 400/432, loss 0.1327
+2026-10-13 15:22:36  min0 fold_gruppo fold 4: epoca 5/5 finita in 181 s, loss media 0.1315
+2026-10-13 15:22:47  min0 fold_gruppo fold 4: fatto, accuratezza per articolo 0.385
+2026-10-13 15:22:47  min0 fold_gruppo fold 5: inizio (13973 articoli di training, 2297 di test)
+2026-10-13 15:23:37  min0 fold_gruppo fold 5: epoca 1/5, passo 100/437, loss 1.3121
+2026-10-13 15:24:19  min0 fold_gruppo fold 5: epoca 1/5, passo 200/437, loss 1.1786
+2026-10-13 15:25:01  min0 fold_gruppo fold 5: epoca 1/5, passo 300/437, loss 1.0982
+2026-10-13 15:25:42  min0 fold_gruppo fold 5: epoca 1/5, passo 400/437, loss 1.0372
+2026-10-13 15:25:58  min0 fold_gruppo fold 5: epoca 1/5 finita in 182 s, loss media 1.0213
+2026-10-13 15:26:40  min0 fold_gruppo fold 5: epoca 2/5, passo 100/437, loss 0.6935
+2026-10-13 15:27:21  min0 fold_gruppo fold 5: epoca 2/5, passo 200/437, loss 0.6809
+2026-10-13 15:28:03  min0 fold_gruppo fold 5: epoca 2/5, passo 300/437, loss 0.6737
+2026-10-13 15:28:45  min0 fold_gruppo fold 5: epoca 2/5, passo 400/437, loss 0.6613
+2026-10-13 15:29:00  min0 fold_gruppo fold 5: epoca 2/5 finita in 183 s, loss media 0.6584
+2026-10-13 15:29:42  min0 fold_gruppo fold 5: epoca 3/5, passo 100/437, loss 0.4543
+2026-10-13 15:30:24  min0 fold_gruppo fold 5: epoca 3/5, passo 200/437, loss 0.4562
+2026-10-13 15:31:06  min0 fold_gruppo fold 5: epoca 3/5, passo 300/437, loss 0.4489
+2026-10-13 15:31:48  min0 fold_gruppo fold 5: epoca 3/5, passo 400/437, loss 0.4446
+2026-10-13 15:32:03  min0 fold_gruppo fold 5: epoca 3/5 finita in 183 s, loss media 0.4432
+2026-10-13 15:32:45  min0 fold_gruppo fold 5: epoca 4/5, passo 100/437, loss 0.2659
+2026-10-13 15:33:27  min0 fold_gruppo fold 5: epoca 4/5, passo 200/437, loss 0.2609
+2026-10-13 15:34:09  min0 fold_gruppo fold 5: epoca 4/5, passo 300/437, loss 0.2642
+2026-10-13 15:34:51  min0 fold_gruppo fold 5: epoca 4/5, passo 400/437, loss 0.2704
+2026-10-13 15:35:06  min0 fold_gruppo fold 5: epoca 4/5 finita in 183 s, loss media 0.2693
+2026-10-13 15:35:48  min0 fold_gruppo fold 5: epoca 5/5, passo 100/437, loss 0.1407
+2026-10-13 15:36:30  min0 fold_gruppo fold 5: epoca 5/5, passo 200/437, loss 0.1450
+2026-10-13 15:37:12  min0 fold_gruppo fold 5: epoca 5/5, passo 300/437, loss 0.1453
+2026-10-13 15:37:53  min0 fold_gruppo fold 5: epoca 5/5, passo 400/437, loss 0.1475
+2026-10-13 15:38:09  min0 fold_gruppo fold 5: epoca 5/5 finita in 183 s, loss media 0.1487
+2026-10-13 15:38:19  min0 fold_gruppo fold 5: fatto, accuratezza per articolo 0.330
+2026-10-13 15:38:19  === min0 fold_gruppo: tutti i fold pronti ===

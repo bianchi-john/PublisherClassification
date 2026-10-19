@@ -1,7 +1,9 @@
 """Nuovo scraping per Web Science 2027: più testate, più articoli.
 
-Testate: tutte quelle di NewsGuard con argomento "Political news or commentary", lingua inglese e un
-punteggio, in ordine casuale (seed 42). Nessuna scelta dipende dai livelli NewsGuard.
+Testate: tutte quelle di NewsGuard il cui argomento (Topics) contiene "Political news or commentary", in lingua
+inglese e con un punteggio, in ordine casuale (seed 42). Nessuna scelta dipende dai livelli NewsGuard.
+(Il primo giro, 13 ottobre 2026, prendeva solo l'argomento esatto "Political news or commentary"; il secondo
+giro, 18 ottobre, aggiunge quelle con più argomenti. Le testate già tentate si saltano.)
 
 Per ogni testata (dominio):
   1. scarica la homepage;
@@ -375,7 +377,8 @@ def processo_testata(dominio, cartella):
 
 def scegli_testate(newsguard, seed):
     ng = pd.read_csv(newsguard, low_memory=False)
-    ng = ng[(ng.Topics == "Political news or commentary") & (ng.Language == "en")].drop_duplicates("Domain")
+    politica = ng.Topics.fillna("").str.contains("Political news or commentary", regex=False)
+    ng = ng[politica & (ng.Language == "en")].drop_duplicates("Domain")
     ng = ng[~ng.Domain.str.contains("/", na=True) & ng.Score.notna()]          # solo testate con un punteggio
     ng = ng.sample(frac=1, random_state=seed)                          # ordine casuale, riproducibile
     return ng[["Domain"]].rename(columns={"Domain": "dominio"})

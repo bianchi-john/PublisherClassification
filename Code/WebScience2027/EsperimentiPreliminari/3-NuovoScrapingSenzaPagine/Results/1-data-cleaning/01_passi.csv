@@ -1,0 +1,6 @@
+passo,articoli,testate
+dataset dello scraping,54532,354
+1. senza copie esatte nella stessa testata,54519,354
+3. pubblicati dal 2025-01-01,43823,329
+5. senza doppioni nella stessa testata,43473,329
+6. almeno 100 parole,41184,327

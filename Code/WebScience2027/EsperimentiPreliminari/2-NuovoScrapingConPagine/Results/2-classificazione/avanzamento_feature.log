@@ -1,0 +1,57 @@
+2026-10-14 14:14:09  === dataset definitivo: 44935 articoli, 272 testate ===
+2026-10-14 14:14:09  A fold_gruppo fold 1: inizio (34429 training, 10506 test)
+2026-10-14 14:16:48  A fold_gruppo fold 1: fatto in 159 s, acc articoli 0.619
+2026-10-14 14:16:48  A fold_gruppo fold 2: inizio (36580 training, 8355 test)
+2026-10-14 14:19:13  A fold_gruppo fold 2: fatto in 146 s, acc articoli 0.494
+2026-10-14 14:19:13  A fold_gruppo fold 3: inizio (36038 training, 8897 test)
+2026-10-14 14:21:14  A fold_gruppo fold 3: fatto in 121 s, acc articoli 0.370
+2026-10-14 14:21:14  A fold_gruppo fold 4: inizio (36714 training, 8221 test)
+2026-10-14 14:23:29  A fold_gruppo fold 4: fatto in 135 s, acc articoli 0.476
+2026-10-14 14:23:29  A fold_gruppo fold 5: inizio (35979 training, 8956 test)
+2026-10-14 14:25:22  A fold_gruppo fold 5: fatto in 112 s, acc articoli 0.402
+2026-10-14 14:25:22  === A fold_gruppo: salvato (44935 righe con probabilità) ===
+2026-10-14 14:25:22  A fold_testata fold 1: inizio (36081 training, 8854 test)
+2026-10-14 14:27:43  A fold_testata fold 1: fatto in 141 s, acc articoli 0.517
+2026-10-14 14:27:43  A fold_testata fold 2: inizio (35992 training, 8943 test)
+2026-10-14 14:30:17  A fold_testata fold 2: fatto in 154 s, acc articoli 0.443
+2026-10-14 14:30:17  A fold_testata fold 3: inizio (35867 training, 9068 test)
+2026-10-14 14:32:57  A fold_testata fold 3: fatto in 160 s, acc articoli 0.502
+2026-10-14 14:32:57  A fold_testata fold 4: inizio (36171 training, 8764 test)
+2026-10-14 14:35:34  A fold_testata fold 4: fatto in 157 s, acc articoli 0.493
+2026-10-14 14:35:34  A fold_testata fold 5: inizio (35629 training, 9306 test)
+2026-10-14 14:38:10  A fold_testata fold 5: fatto in 156 s, acc articoli 0.468
+2026-10-14 14:38:10  === A fold_testata: salvato (44935 righe con probabilità) ===
+2026-10-14 14:38:10  C fold_gruppo fold 1: inizio (34429 training, 10506 test)
+2026-10-14 14:42:37  C fold_gruppo fold 1: fatto in 266 s, acc articoli 0.732
+2026-10-14 14:42:37  C fold_gruppo fold 2: inizio (36580 training, 8355 test)
+2026-10-14 14:47:08  C fold_gruppo fold 2: fatto in 272 s, acc articoli 0.585
+2026-10-14 14:47:08  C fold_gruppo fold 3: inizio (36038 training, 8897 test)
+2026-10-14 14:51:26  C fold_gruppo fold 3: fatto in 258 s, acc articoli 0.516
+2026-10-14 14:51:26  C fold_gruppo fold 4: inizio (36714 training, 8221 test)
+2026-10-14 14:55:48  C fold_gruppo fold 4: fatto in 262 s, acc articoli 0.606
+2026-10-14 14:55:48  C fold_gruppo fold 5: inizio (35979 training, 8956 test)
+2026-10-14 15:00:10  C fold_gruppo fold 5: fatto in 262 s, acc articoli 0.468
+2026-10-14 15:00:10  === C fold_gruppo: salvato (44935 righe con probabilità) ===
+2026-10-14 15:00:10  C fold_testata fold 1: inizio (36081 training, 8854 test)
+2026-10-14 15:04:35  C fold_testata fold 1: fatto in 264 s, acc articoli 0.561
+2026-10-14 15:04:35  C fold_testata fold 2: inizio (35992 training, 8943 test)
+2026-10-14 15:08:53  C fold_testata fold 2: fatto in 258 s, acc articoli 0.547
+2026-10-14 15:08:53  C fold_testata fold 3: inizio (35867 training, 9068 test)
+2026-10-14 15:13:05  C fold_testata fold 3: fatto in 252 s, acc articoli 0.611
+2026-10-14 15:13:05  C fold_testata fold 4: inizio (36171 training, 8764 test)
+2026-10-14 15:17:27  C fold_testata fold 4: fatto in 262 s, acc articoli 0.605
+2026-10-14 15:17:28  C fold_testata fold 5: inizio (35629 training, 9306 test)
+2026-10-14 15:21:47  C fold_testata fold 5: fatto in 259 s, acc articoli 0.649
+2026-10-14 15:21:47  === C fold_testata: salvato (44935 righe con probabilità) ===
+2026-10-14 15:21:47  === FINITO ===
+                    articolo 5cl  articolo F1  articolo bin  articolo tol1  testata 5cl  testata F1  testata bin  testata tol1
+config fold                                                                                                                   
+A      per gruppo          0.477        0.465         0.746          0.776        0.555       0.515        0.798         0.835
+       per testata         0.484        0.469         0.749          0.782        0.544       0.501        0.790         0.835
+C      per gruppo          0.586        0.526         0.825          0.843        0.596       0.526        0.835         0.846
+       per testata         0.595        0.530         0.820          0.844        0.607       0.532        0.827         0.846
+2026-10-16 12:32:34  === dataset definitivo: 44935 articoli, 272 testate ===
+2026-10-16 12:32:34  A fold_gruppo: già fatto, carico feature_A_fold_gruppo_articoli.csv
+2026-10-16 12:32:34  A fold_testata: già fatto, carico feature_A_fold_testata_articoli.csv
+2026-10-16 12:32:34  C fold_gruppo: già fatto, carico feature_C_fold_gruppo_articoli.csv
+2026-10-16 12:32:34  C fold_testata: già fatto, carico feature_C_fold_testata_articoli.csv

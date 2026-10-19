@@ -1,0 +1,1001 @@
+,,coef,fold
+l1,art: com,1.3,5
+l1,pag: international reporters,1.04,4
+l1,pag: by replying,0.87,5
+l1,pag: replying,0.87,5
+l1,pag: replying to,0.87,5
+l1,pag: informative,0.81,5
+l1,pag: platform that,0.8,4
+l1,pag: to any,0.79,5
+l1,pag: our editorial,0.74,5
+l1,pag: newsletter,0.7,5
+l1,pag: consistency,0.69,5
+l1,pag: appreciate,0.68,5
+l1,pag: spectacle podcast,0.68,4
+l1,pag: our team,0.68,5
+l1,pag: bloomberg,0.68,4
+l1,pag: angle,0.68,4
+l1,pag: experience plus,0.66,4
+l1,pag: features get,0.66,4
+l1,pag: for spam,0.66,4
+l1,pag: message,0.66,4
+l1,pag: our content,0.66,4
+l1,pag: process,0.64,5
+l1,pag: claims,0.64,3
+l1,pag: and publication,0.64,4
+l1,pag: elder,0.64,4
+l1,pag: our coverage,0.64,5
+l1,pag: correction requests,0.63,4
+l1,pag: the spectacle,0.63,4
+l1,pag: our audience,0.63,5
+l1,pag: reply,0.62,4
+l1,pag: alleged,0.62,4
+l1,pag: every new,0.62,4
+l1,pag: communication,0.61,5
+l1,pag: helps,0.61,4
+l1,pag: donbass,0.6,4
+l1,pag: substack com,0.6,4
+l1,pag: black sphere,0.6,4
+l1,pag: larry elder,0.6,4
+l1,pag: we appreciate,0.6,4
+l1,pag: free ad,0.6,4
+l1,pag: insider,0.6,4
+l1,pag: hear,0.59,4
+l1,pag: audio and,0.59,4
+l1,pag: www youtube,0.59,4
+l1,pag: accurate,0.59,3
+l1,pag: coverage,0.59,4
+l1,pag: youtube com,0.59,4
+l1,pag: trump,0.58,3
+l1,pag: never miss,0.58,4
+l1,pag: the newsletter,0.58,4
+l1,pag: editorial team,0.58,4
+l1,pag: team reviews,0.57,4
+l1,pag: email inbox,0.57,4
+l1,pag: to hear,0.57,4
+l1,pag: twitter com,0.56,3
+l1,pag: accuracy,0.56,3
+l1,pag: hated,0.56,4
+l1,pag: topics,0.56,2
+l1,pag: https twitter,0.56,4
+l1,pag: for future,0.56,4
+l1,pag: free reading,0.55,4
+l1,pag: spectacle,0.54,4
+l1,pag: constitutional,0.54,3
+l1,pag: the substack,0.54,4
+l1,pag: deaf,0.53,4
+l1,pag: 2nd,0.53,3
+l1,pag: correction,0.53,2
+l1,pag: larry,0.52,4
+l1,pag: read bio,0.52,4
+l1,pag: suggestions,0.52,3
+l1,pag: with our,0.52,2
+l1,pag: our publication,0.52,1
+l1,pag: court,0.52,2
+l1,pag: suggestions and,0.52,2
+l1,pag: app to,0.52,4
+l1,pag: platform,0.52,2
+l1,art: why,0.5,1
+l1,pag: sharaa,0.5,4
+l1,pag: plus audio,0.5,3
+l1,pag: cdn,0.5,4
+l1,pag: this publication,0.5,3
+l1,pag: syria,0.5,3
+l1,pag: accountability,0.5,1
+l1,pag: theory,0.5,3
+l1,pag: proof,0.5,3
+l1,pag: clear,0.5,1
+l1,pag: encourage,0.5,3
+l1,pag: post is,0.49,4
+l1,pag: we review,0.49,2
+l1,pag: reviews,0.49,0
+l1,pag: coverage across,0.49,1
+l1,pag: miss,0.48,3
+l1,pag: record,0.48,1
+l1,pag: wynn,0.48,4
+l1,pag: wynn williams,0.48,4
+l1,pag: get full,0.48,3
+l1,art: pattern,0.48,1
+l1,pag: article,0.48,2
+l1,pag: maintain,0.48,1
+l1,pag: publication,0.48,3
+l1,pag: bio,0.47,4
+l1,pag: thoughts,0.47,2
+l1,pag: bloombergbusiness,0.47,4
+l1,pag: com bloombergbusiness,0.47,4
+l1,pag: an update,0.47,4
+l1,pag: is identified,0.47,1
+l1,pag: miss an,0.47,3
+l1,pag: team,0.47,0
+l1,pag: informative and,0.47,0
+l1,pag: exchange,0.47,2
+l1,pag: in syria,0.47,2
+l1,pag: was arrested,0.47,2
+l1,pag: it with,0.47,1
+l1,pag: ad free,0.47,2
+l1,pag: consistency and,0.46,0
+l1,pag: coverage that,0.46,0
+l1,pag: whatfinger,0.46,3
+l1,pag: deaf missions,0.46,3
+l1,pag: proxy,0.46,2
+l1,pag: ingraham,0.46,4
+l1,pag: al sharaa,0.45,4
+l1,pag: team is,0.45,1
+l1,pag: substack,0.45,4
+l1,pag: provide information,0.45,1
+l1,art: youtube,0.45,1
+l1,pag: or provide,0.45,1
+l1,pag: details,0.45,1
+l1,pag: editorial process,0.44,0
+l1,pag: relevance,0.44,0
+l1,pag: 0shares,0.44,4
+l1,pag: 2nd charge,0.44,3
+l1,pag: board files,0.44,3
+l1,pag: charge vs,0.44,2
+l1,pag: files 2nd,0.44,2
+l1,pag: hidden cost,0.44,1
+l1,pag: innovation it,0.44,1
+l1,pag: marionneaux,0.44,1
+l1,pag: never creates,0.44,1
+l1,pag: socialism the,0.44,1
+l1,pag: the innovation,0.44,0
+l1,pag: twitter 0shares,0.44,0
+l1,pag: vs marionneaux,0.44,0
+l1,pag: inbox for,0.44,3
+l1,pag: continue improving,0.44,0
+l1,pag: accurate informative,0.44,0
+l1,pag: and correction,0.44,0
+l1,pag: americans,0.44,0
+l1,pag: https www,0.44,3
+l1,pag: is by,0.44,0
+l1,pag: reply to,0.43,0
+l1,pag: useful,0.43,0
+l1,pag: before publication,0.43,0
+l1,pag: reading experience,0.43,3
+l1,pag: clarity,0.43,0
+l1,pag: powers,0.43,2
+l1,pag: spam,0.43,3
+l1,pag: together to,0.43,0
+l1,pag: arrested,0.43,1
+l1,pag: and responsible,0.43,0
+l1,pag: wait for,0.43,2
+l1,pag: stakes,0.43,0
+l1,pag: the administration,0.43,1
+l1,pag: share feedback,0.43,0
+l1,pag: rangel,0.42,2
+l1,pag: legal,0.42,1
+l1,pag: urgency,0.42,0
+l1,pag: of subjects,0.42,0
+l1,pag: deaf people,0.42,1
+l1,pag: please reply,0.42,0
+l1,pag: an important,0.42,0
+l1,pag: and killing,0.42,1
+l1,pag: arrested 40,0.42,1
+l1,pag: before stabbing,0.42,1
+l1,pag: iryna zarutska,0.42,1
+l1,pag: zarutska,0.42,1
+l1,pag: us continue,0.42,0
+l1,pag: syndicated,0.42,0
+l1,pag: important,0.42,0
+l1,pag: process helps,0.42,0
+l1,pag: clerk,0.42,1
+l1,pag: community features,0.42,3
+l1,pag: appreciate hearing,0.42,0
+l1,pag: editorial,0.42,1
+l1,pag: identified,0.42,1
+l1,pag: easiest,0.42,0
+l1,pag: easiest way,0.42,0
+l1,pag: the easiest,0.42,0
+l1,pag: tech,0.41,1
+l1,pag: of socialism,0.41,0
+l1,pag: maintain consistency,0.41,0
+l1,pag: informative coverage,0.41,0
+l1,pag: decisions,0.41,0
+l1,pag: rather,0.41,0
+l1,pag: better,0.41,0
+l1,pag: we welcome,0.41,0
+l1,pag: responsibility,0.41,1
+l1,pag: share,0.41,1
+l1,pag: your thoughts,0.41,0
+l1,pag: why this,0.41,0
+l1,pag: consistent,0.41,1
+l2,pag: password,1.2,4
+l2,pag: trump,1.06,5
+l2,pag: star,0.97,4
+l2,pag: forgot your,0.93,4
+l2,pag: bernie,0.92,4
+l2,pag: bernie post,0.91,4
+l2,pag: the bernie,0.91,4
+l2,pag: gingrich,0.85,4
+l2,pag: be mailed,0.85,4
+l2,pag: get help,0.84,4
+l2,pag: campaign,0.83,5
+l2,pag: forgot,0.81,4
+l2,pag: star news,0.8,4
+l2,pag: your password,0.8,4
+l2,pag: into your,0.76,4
+l2,pag: money,0.76,5
+l2,pag: log,0.75,4
+l2,pag: news digital,0.75,4
+l2,pag: to you,0.75,4
+l2,pag: tennessee star,0.75,4
+l2,pag: mailed to,0.72,4
+l2,pag: this site,0.72,4
+l2,pag: mailed,0.71,4
+l2,pag: admitted,0.71,5
+l2,pag: biden,0.71,4
+l2,pag: used in,0.71,4
+l2,pag: password get,0.71,3
+l2,pag: china daily,0.68,4
+l2,pag: password will,0.68,3
+l2,pag: welcomes feedback,0.68,4
+l2,pag: featuring the,0.67,3
+l2,pag: multimedia,0.66,3
+l2,pag: newt,0.66,4
+l2,pag: prageru,0.66,4
+l2,pag: gingrich 360,0.65,4
+l2,pag: to china,0.64,4
+l2,pag: donald trump,0.63,4
+l2,pag: money in,0.62,5
+l2,pag: have published,0.62,3
+l2,pag: for this,0.61,4
+l2,pag: https co,0.61,3
+l2,pag: straight to,0.61,5
+l2,pag: your account,0.61,4
+l2,pag: shall not,0.6,4
+l2,pag: virginia,0.59,3
+l2,pag: the star,0.59,3
+l2,pag: log into,0.58,3
+l2,pag: north star,0.58,4
+l2,art: trump,0.57,3
+l2,pag: your,0.57,4
+l2,pag: during his,0.57,3
+l2,pag: minneapolis,0.57,3
+l2,pag: fort,0.57,1
+l2,pag: belongs to,0.57,4
+l2,pag: earlier version,0.57,3
+l2,pag: donald,0.56,4
+l2,pag: fox,0.56,3
+l2,pag: newt gingrich,0.55,4
+l2,pag: speaker newt,0.55,4
+l2,pag: authorization,0.55,4
+l2,pag: minnesota,0.55,3
+l2,pag: or used,0.54,3
+l2,pag: feedback from,0.54,3
+l2,pag: used,0.54,3
+l2,art: sanders,0.54,4
+l2,art: fox,0.54,2
+l2,art: fox news,0.53,2
+l2,pag: million,0.53,2
+l2,pag: informed,0.53,1
+l2,pag: year months,0.53,4
+l2,pag: such content,0.53,3
+l2,pag: presidential campaign,0.52,4
+l2,pag: 360 is,0.52,4
+l2,pag: company based,0.52,4
+l2,pag: is multimedia,0.52,4
+l2,pag: of speaker,0.52,4
+l2,pag: production company,0.52,4
+l2,pag: virginia featuring,0.52,4
+l2,pag: platner,0.52,4
+l2,pag: october 2026,0.52,3
+l2,pag: rogan,0.52,4
+l2,pag: ally,0.51,2
+l2,pag: our publisher,0.51,4
+l2,pag: to text,0.51,3
+l2,pag: woke,0.51,3
+l2,pag: at fort,0.51,2
+l2,pag: launching,0.5,2
+l2,pag: cnn,0.5,2
+l2,pag: the tennessee,0.5,4
+l2,pag: belongs,0.5,4
+l2,pag: launched in,0.5,2
+l2,pag: arlington,0.49,3
+l2,pag: patriots,0.49,2
+l2,pag: to reporting,0.49,4
+l2,pag: october,0.49,1
+l2,pag: the shared,0.49,0
+l2,pag: trump just,0.48,2
+l2,pag: zelensky,0.48,3
+l2,pag: bernie sanders,0.48,3
+l2,pag: putin,0.48,2
+l2,pag: florida,0.48,1
+l2,pag: of times,0.48,4
+l2,pag: including but,0.48,3
+l2,pag: browsers,0.48,3
+l2,pag: conservative,0.48,0
+l2,pag: combined,0.47,1
+l2,pag: news network,0.47,2
+l2,pag: soldiers,0.47,3
+l2,pag: billion,0.47,0
+l2,pag: living wage,0.47,0
+l2,pag: show,0.47,0
+l2,pag: telling,0.47,1
+l2,pag: arlington virginia,0.47,4
+l2,pag: hasan,0.47,2
+l2,pag: his,0.46,3
+l2,pag: multimedia production,0.46,4
+l2,pag: china,0.46,2
+l2,pag: health care,0.46,1
+l2,pag: by star,0.46,4
+l2,pag: leahy,0.46,4
+l2,pag: https,0.46,2
+l2,pag: lawyers,0.46,1
+l2,pag: in arlington,0.46,3
+l2,pag: not,0.46,1
+l2,pag: based journalism,0.46,0
+l2,pag: 2025,0.46,1
+l2,pag: any form,0.46,3
+l2,pag: quality education,0.46,0
+l2,pag: prageru com,0.46,4
+l2,pag: one million,0.46,3
+l2,pag: dedicated to,0.45,1
+l2,pag: waiting,0.45,1
+l2,pag: welcome log,0.45,2
+l2,pag: senator reid,0.45,3
+l2,pag: mccormick,0.45,3
+l2,pag: engage in,0.45,0
+l2,pag: just,0.45,1
+l2,pag: an earlier,0.44,2
+l2,pag: why we,0.44,1
+l2,pag: straight,0.44,0
+l2,pag: episodes,0.44,2
+l2,pag: kennedy,0.44,3
+l2,pag: published more,0.44,2
+l2,pag: 13,0.44,1
+l2,pag: stories to,0.44,3
+l2,pag: kids,0.44,1
+l2,pag: president trump,0.44,0
+l2,pag: misinformation,0.43,0
+l2,pag: more informed,0.43,0
+l2,pag: suggested,0.43,4
+l2,pag: presidential,0.43,0
+l2,pag: 000,0.43,0
+l2,pag: spacex,0.43,1
+l2,art: 2026,0.43,0
+l2,pag: over,0.43,0
+l2,pag: out of,0.43,1
+l2,pag: home and,0.43,0
+l2,pag: believe independent,0.43,0
+l2,pag: quietly,0.43,0
+l2,pag: to donate,0.43,2
+l2,pag: inquiries please,0.43,0
+l2,pag: speaker,0.42,1
+l2,pag: fort hood,0.42,0
+l2,pag: senator,0.42,1
+l2,pag: strong,0.42,0
+l2,pag: than 600,0.42,0
+l2,pag: daily,0.42,1
+l2,pag: allowed to,0.42,0
+l2,pag: trial,0.42,0
+l2,art: he,0.42,0
+l2,pag: left,0.42,1
+l2,pag: 2026,0.42,1
+l2,pag: vancouver,0.42,0
+l2,pag: energy,0.42,1
+l2,pag: content including,0.41,3
+l2,pag: fox news,0.41,2
+l2,pag: comment policy,0.41,1
+l2,pag: and newsletters,0.41,0
+l2,pag: the campaign,0.41,0
+l2,pag: douglass,0.41,0
+l2,pag: everyday people,0.41,0
+l2,pag: frederick douglass,0.41,0
+l2,pag: shaun king,0.41,0
+l2,pag: execution,0.41,1
+l2,pag: here to,0.41,0
+l2,pag: him,0.41,0
+l2,pag: the kennedy,0.41,0
+l2,pag: 2015 the,0.41,3
+l2,pag: the fox,0.4,0
+l2,pag: mar,0.4,0
+l2,pag: with over,0.4,0
+l2,pag: trahan,0.4,1
+l2,pag: burned,0.4,0
+l2,pag: frederick,0.4,0
+l2,pag: christopher,0.4,0
+l2,pag: desantis,0.4,0
+l2,pag: relevant news,0.4,0
+l2,pag: fact based,0.4,0
+l2,pag: gopusa,0.4,0
+l2,pag: place our,0.4,0
+l3,pag: county,2.16,5
+l3,pag: alabama,1.29,5
+l3,pag: school,1.01,5
+l3,art: county,0.98,5
+l3,pag: board,0.9,5
+l3,pag: com,0.83,5
+l3,pag: friday,0.83,5
+l3,pag: high school,0.82,5
+l3,pag: 24,0.82,5
+l3,pag: oct,0.81,4
+l3,pag: community,0.79,4
+l3,pag: area,0.79,5
+l3,pag: said,0.78,5
+l3,pag: twitchy,0.77,4
+l3,pag: sept,0.76,4
+l3,pag: employees,0.76,5
+l3,pag: sports,0.71,4
+l3,pag: jackson,0.7,4
+l3,pag: newspaper,0.7,4
+l3,pag: boone,0.7,4
+l3,pag: news sports,0.69,4
+l3,pag: wednesday,0.69,5
+l3,pag: the board,0.69,5
+l3,pag: tuesday,0.68,4
+l3,pag: stanly,0.68,4
+l3,pag: week,0.66,5
+l3,pag: mississippi,0.66,4
+l3,pag: the county,0.66,4
+l3,pag: of the,0.65,5
+l3,pag: classifieds,0.64,4
+l3,pag: named,0.63,3
+l3,pag: homecoming,0.62,4
+l3,pag: 19,0.62,4
+l3,pag: notices,0.61,4
+l3,pag: customers,0.6,3
+l3,pag: located,0.6,4
+l3,pag: water,0.6,3
+l3,pag: main street,0.59,3
+l3,pag: clantonadvertiser,0.59,4
+l3,pag: stu,0.58,4
+l3,pag: the community,0.58,4
+l3,pag: hurricane,0.58,4
+l3,pag: edition,0.58,4
+l3,pag: street,0.58,3
+l3,pag: saturday,0.57,3
+l3,pag: funeral,0.57,3
+l3,pag: be news,0.57,4
+l3,pag: re ahead,0.57,4
+l3,pag: twitchy is,0.57,4
+l3,pag: the newspaper,0.57,4
+l3,pag: construction,0.57,4
+l3,pag: public notices,0.56,3
+l3,pag: easterneye,0.56,4
+l3,pag: the alabama,0.56,3
+l3,pag: our office,0.56,4
+l3,pag: boone newspapers,0.56,4
+l3,pag: clantonadvertiser com,0.55,4
+l3,pag: newspapers,0.55,2
+l3,art: sept,0.55,4
+l3,pag: love,0.55,2
+l3,pag: commissioners,0.55,3
+l3,pag: located at,0.54,3
+l3,pag: tested positive,0.54,4
+l3,pag: residential,0.54,2
+l3,pag: biz,0.53,4
+l3,pag: easterneye biz,0.53,4
+l3,pag: claiborne,0.53,4
+l3,pag: inc,0.53,3
+l3,pag: ahead of,0.53,3
+l3,pag: stanly county,0.53,4
+l3,pag: stanly news,0.53,4
+l3,pag: 27,0.52,2
+l3,pag: died,0.52,4
+l3,pag: meeting,0.51,3
+l3,pag: st,0.51,3
+l3,pag: vehicle,0.51,2
+l3,art: community,0.51,1
+l3,pag: jan,0.51,2
+l3,art: mississippi,0.51,4
+l3,pag: possession,0.51,3
+l3,pag: west,0.51,2
+l3,pag: positive for,0.51,4
+l3,pag: newspapers inc,0.51,4
+l3,pag: main,0.5,1
+l3,pag: she said,0.5,3
+l3,pag: eastern eye,0.5,4
+l3,pag: thursday,0.5,0
+l3,pag: elementary,0.5,1
+l3,pag: and video,0.5,3
+l3,pag: madison record,0.49,4
+l3,pag: hurricane isaias,0.49,3
+l3,pag: isaias,0.49,3
+l3,pag: town,0.49,3
+l3,pag: season,0.49,1
+l3,pag: to be,0.49,1
+l3,pag: for america,0.49,3
+l3,pag: smith,0.49,1
+l3,pag: re on,0.49,4
+l3,pag: parish,0.49,0
+l3,pag: the state,0.48,2
+l3,pag: valiant,0.48,4
+l3,pag: valiant news,0.48,4
+l3,pag: weekly,0.48,1
+l3,pag: 21,0.48,1
+l3,pag: facilities,0.48,2
+l3,pag: news journal,0.47,3
+l3,pag: look,0.47,0
+l3,pag: board of,0.47,1
+l3,pag: annual,0.47,2
+l3,pag: monday,0.47,2
+l3,pag: the madison,0.47,3
+l3,pag: burguiere,0.47,4
+l3,pag: stu burguiere,0.47,4
+l3,pag: office,0.47,2
+l3,pag: inmates,0.47,1
+l3,pag: stafford,0.47,1
+l3,pag: residents,0.46,2
+l3,pag: news we,0.46,3
+l3,pag: location,0.46,2
+l3,pag: staff,0.46,1
+l3,pag: the gop,0.46,3
+l3,pag: national memo,0.46,4
+l3,pag: will be,0.46,0
+l3,pag: the claiborne,0.46,3
+l3,pag: basketball,0.46,1
+l3,pag: host,0.46,1
+l3,pag: our community,0.45,2
+l3,pag: john,0.45,1
+l3,art: season,0.45,0
+l3,pag: seniors,0.45,0
+l3,pag: upcoming,0.45,1
+l3,pag: awards,0.45,1
+l3,pag: justthenews,0.45,4
+l3,pag: justthenews com,0.45,4
+l3,pag: road,0.45,2
+l3,pag: will have,0.45,0
+l3,pag: at the,0.44,1
+l3,pag: us on,0.44,1
+l3,pag: huntsville,0.44,2
+l3,pag: received,0.44,0
+l3,pag: vision,0.44,2
+l3,pag: church,0.44,1
+l3,pag: davis,0.44,2
+l3,pag: malkin,0.44,1
+l3,pag: madison county,0.44,2
+l3,pag: it news,0.44,2
+l3,pag: prediction,0.44,3
+l3,pag: the year,0.44,0
+l3,pag: covid 19,0.43,2
+l3,pag: month,0.43,1
+l3,pag: passed away,0.43,2
+l3,pag: events in,0.43,1
+l3,pag: building,0.43,0
+l3,pag: was,0.43,0
+l3,pag: sister,0.43,1
+l3,pag: to monday,0.43,0
+l3,pag: conason,0.43,1
+l3,pag: first,0.43,0
+l3,pag: news in,0.43,1
+l3,pag: shopping,0.43,0
+l3,pag: will host,0.42,0
+l3,pag: proposed,0.42,0
+l3,pag: county the,0.42,2
+l3,pag: shondaland,0.42,1
+l3,pag: council,0.42,1
+l3,pag: area the,0.42,0
+l3,pag: corrections,0.42,1
+l3,pag: lead to,0.42,0
+l3,pag: davie,0.42,1
+l3,pag: 20 years,0.42,0
+l3,pag: countdown,0.42,1
+l3,pag: gas,0.42,1
+l3,pag: regional,0.42,0
+l3,pag: jeff,0.42,0
+l3,pag: vision for,0.42,0
+l3,pag: candidate countdown,0.42,1
+l3,pag: of predictable,0.42,1
+l3,pag: predictable stu,0.42,1
+l3,pag: stu stu,0.42,1
+l3,pag: as we,0.42,0
+l3,pag: city,0.42,1
+l3,pag: 38,0.42,0
+l3,pag: last week,0.42,0
+l3,pag: this website,0.42,1
+l3,pag: it if,0.41,1
+l3,pag: the town,0.41,0
+l3,pag: sections,0.41,0
+l3,pag: be,0.41,0
+l3,pag: southern,0.41,1
+l3,pag: service,0.41,1
+l3,pag: difficult,0.41,0
+l3,pag: day,0.41,1
+l3,pag: to host,0.41,1
+l3,art: school,0.41,0
+l3,pag: submit,0.41,1
+l3,pag: passed,0.41,0
+l3,pag: delivered,0.41,0
+l3,pag: as,0.41,1
+l3,pag: three,0.41,0
+l3,pag: open,0.41,1
+l4,pag: editor,0.88,4
+l4,pag: membership,0.77,5
+l4,pag: ltd,0.75,4
+l4,pag: organization,0.73,5
+l4,pag: politicususa,0.72,4
+l4,pag: 2022,0.72,5
+l4,pag: culture,0.7,5
+l4,pag: rights,0.68,4
+l4,pag: we do,0.68,5
+l4,pag: media,0.66,4
+l4,pag: advertising,0.66,4
+l4,pag: affairs channel,0.65,4
+l4,pag: and encourages,0.65,4
+l4,pag: cable public,0.65,4
+l4,pag: channel welcomes,0.65,4
+l4,pag: encourages your,0.65,4
+l4,pag: feedback comments,0.65,4
+l4,pag: the cable,0.65,4
+l4,pag: il,0.64,4
+l4,pag: politicususa is,0.64,4
+l4,pag: detroit,0.62,4
+l4,pag: newsbusters,0.61,4
+l4,pag: thought,0.61,3
+l4,pag: mrc,0.61,4
+l4,pag: religious,0.6,4
+l4,pag: brent,0.6,4
+l4,pag: pitches,0.59,3
+l4,pag: enquiries,0.58,3
+l4,pag: about advertising,0.57,3
+l4,pag: you can,0.57,3
+l4,pag: pleaded,0.56,4
+l4,pag: cable,0.56,4
+l4,pag: led,0.55,3
+l4,pag: civil rights,0.55,2
+l4,pag: original,0.55,3
+l4,pag: generation of,0.55,3
+l4,pag: email protected,0.55,3
+l4,pag: going to,0.54,4
+l4,pag: for stories,0.54,4
+l4,pag: protected,0.54,3
+l4,pag: pleaded guilty,0.53,4
+l4,pag: public affairs,0.53,4
+l4,pag: original content,0.53,4
+l4,pag: canary,0.53,4
+l4,pag: responsible for,0.53,4
+l4,pag: israel,0.53,4
+l4,pag: yang,0.53,4
+l4,pag: contributing,0.53,4
+l4,pag: quebec,0.53,4
+l4,pag: interview requests,0.52,4
+l4,pag: young,0.52,4
+l4,pag: publisher,0.52,1
+l4,pag: canary media,0.52,4
+l4,pag: anger gets,0.51,4
+l4,pag: media ltd,0.51,4
+l4,pag: contributors,0.51,3
+l4,pag: hotair,0.51,4
+l4,pag: conservativebrief,0.51,4
+l4,pag: conservativebrief com,0.51,4
+l4,pag: business enquiries,0.51,4
+l4,pag: enquiries email,0.51,4
+l4,pag: for interview,0.51,4
+l4,pag: requests speaking,0.51,4
+l4,pag: generation,0.5,2
+l4,pag: public health,0.5,3
+l4,pag: 2025,0.5,2
+l4,pag: provides,0.5,2
+l4,pag: affairs,0.5,2
+l4,pag: gb,0.49,4
+l4,pag: encourages,0.49,4
+l4,pag: member only,0.49,3
+l4,pag: byline,0.49,2
+l4,pag: are no,0.49,1
+l4,pag: rights and,0.49,3
+l4,pag: please select,0.49,3
+l4,pag: welcomes and,0.49,4
+l4,pag: bulwark,0.48,4
+l4,pag: cheddar,0.48,4
+l4,pag: the founders,0.48,3
+l4,pag: ai,0.48,2
+l4,pag: guilty to,0.47,4
+l4,pag: solutions,0.47,3
+l4,pag: deadline detroit,0.47,4
+l4,pag: newsaegis,0.47,4
+l4,pag: newsaegis com,0.47,4
+l4,pag: willett,0.47,4
+l4,pag: subscribers,0.47,3
+l4,pag: democracy,0.47,2
+l4,pag: of its,0.47,2
+l4,pag: print,0.46,1
+l4,pag: llc,0.46,3
+l4,pag: the site,0.46,3
+l4,pag: protected for,0.46,3
+l4,pag: select,0.46,2
+l4,pag: kassab,0.46,4
+l4,pag: guilty,0.46,3
+l4,pag: of war,0.46,3
+l4,pag: latino,0.46,1
+l4,pag: pos4d,0.45,4
+l4,pag: toto,0.45,4
+l4,pag: marijuana,0.45,2
+l4,pag: the mrc,0.45,4
+l4,pag: generated,0.45,1
+l4,pag: gb news,0.45,4
+l4,pag: for guest,0.45,4
+l4,pag: discourse,0.45,2
+l4,pag: outlets,0.45,3
+l4,pag: section,0.45,3
+l4,pag: anger,0.45,4
+l4,pag: your feedback,0.44,3
+l4,pag: solely,0.44,1
+l4,pag: com is,0.44,2
+l4,pag: treat,0.44,2
+l4,pag: we also,0.44,1
+l4,pag: aren,0.44,3
+l4,pag: page,0.43,1
+l4,pag: email us,0.43,1
+l4,pag: and coverage,0.43,3
+l4,pag: provides news,0.43,2
+l4,pag: genocide,0.43,0
+l4,pag: la,0.43,1
+l4,pag: newser,0.43,4
+l4,pag: channel,0.43,3
+l4,pag: and suggestions,0.43,3
+l4,pag: liberty,0.43,1
+l4,pag: permanent,0.43,0
+l4,pag: opportunities,0.42,0
+l4,pag: free and,0.42,2
+l4,pag: government,0.42,1
+l4,pag: to that,0.42,1
+l4,pag: our newsroom,0.42,1
+l4,pag: milledgeville,0.42,3
+l4,pag: detroit is,0.42,3
+l4,pag: march 31,0.42,0
+l4,pag: gbnews,0.41,4
+l4,pag: the gb,0.41,4
+l4,pag: journalism and,0.41,1
+l4,pag: art,0.41,0
+l4,pag: us and,0.41,0
+l4,pag: media bias,0.41,2
+l4,pag: on our,0.41,1
+l4,pag: clicks,0.41,1
+l4,pag: works as,0.41,2
+l4,pag: you what,0.41,0
+l4,pag: union,0.41,3
+l4,pag: friends and,0.41,0
+l4,pag: tifton,0.41,1
+l4,pag: blood,0.41,0
+l4,pag: proud,0.41,2
+l4,pag: petersen,0.41,1
+l4,pag: image,0.41,2
+l4,pag: below,0.41,1
+l4,pag: breeze,0.41,2
+l4,pag: patients,0.4,1
+l4,pag: health director,0.4,0
+l4,pag: opinion,0.4,0
+l4,pag: and thought,0.4,0
+l4,pag: government is,0.4,0
+l4,pag: england,0.4,1
+l4,pag: magazine,0.4,1
+l4,pag: we are,0.4,1
+l4,pag: recorder,0.4,3
+l4,pag: back the,0.4,0
+l4,pag: absolutely,0.4,0
+l4,pag: sponsorships,0.4,0
+l4,pag: ad,0.4,2
+l4,pag: joined,0.4,1
+l4,pag: contributing editor,0.39,0
+l4,pag: wrap,0.39,0
+l4,pag: uk,0.39,0
+l4,pag: founders,0.39,1
+l4,pag: editors,0.39,1
+l4,pag: cheddar is,0.39,0
+l4,pag: the club,0.39,0
+l4,pag: and member,0.39,1
+l4,pag: co il,0.39,1
+l4,pag: haaretz co,0.39,1
+l4,pag: specific,0.39,0
+l4,pag: claim,0.39,0
+l4,pag: mainstream,0.39,0
+l4,pag: the biggest,0.39,0
+l4,pag: do not,0.39,1
+l4,pag: society,0.39,0
+l4,pag: tiftongazette,0.39,0
+l4,pag: tiftongazette com,0.39,0
+l4,pag: stars,0.39,0
+l4,pag: formed,0.39,0
+l4,pag: haaretz,0.39,1
+l4,pag: founder,0.39,1
+l4,pag: engagements and,0.39,0
+l4,pag: ep,0.38,0
+l4,pag: ad solutions,0.38,0
+l4,pag: conservatives llc,0.38,0
+l4,pag: llc vip,0.38,0
+l4,pag: solutions llc,0.38,0
+l4,pag: vip ad,0.38,0
+l4,pag: young conservatives,0.38,0
+l4,pag: hutchinson,0.38,0
+l4,pag: war on,0.38,1
+l4,pag: starnes,0.38,1
+l5,pag: claimed national,0.95,4
+l5,pag: national titles,0.94,4
+l5,pag: opendemocracy,0.81,4
+l5,pag: popular information,0.8,4
+l5,pag: senior,0.77,5
+l5,pag: zero claimed,0.76,4
+l5,pag: syndication,0.76,4
+l5,pag: please contact,0.75,4
+l5,pag: program lists,0.73,4
+l5,pag: editors,0.73,5
+l5,pag: director,0.73,5
+l5,pag: guidelines,0.72,4
+l5,pag: editor,0.72,5
+l5,pag: jta,0.7,4
+l5,pag: irishcentral,0.69,4
+l5,pag: titles,0.68,4
+l5,pag: program has,0.67,4
+l5,pag: brexit,0.66,4
+l5,pag: means,0.66,4
+l5,pag: opendemocracy net,0.66,4
+l5,pag: print,0.66,5
+l5,pag: raw story,0.65,4
+l5,pag: the sec,0.65,4
+l5,pag: betting,0.65,4
+l5,pag: global,0.64,4
+l5,pag: sec with,0.64,4
+l5,pag: officer,0.63,4
+l5,pag: policy and,0.61,4
+l5,pag: subscription,0.6,3
+l5,pag: magazine,0.6,4
+l5,pag: the uk,0.59,3
+l5,pag: copyright,0.58,3
+l5,pag: york,0.58,3
+l5,pag: should not,0.58,4
+l5,pag: we produce,0.57,4
+l5,pag: relations,0.56,4
+l5,pag: reason foundation,0.56,4
+l5,pag: platforms,0.56,4
+l5,pag: has zero,0.56,4
+l5,pag: journalism,0.56,3
+l5,pag: london,0.55,4
+l5,pag: counterpunch,0.55,4
+l5,pag: national championships,0.55,4
+l5,pag: jta org,0.54,4
+l5,pag: won the,0.54,3
+l5,pag: irish,0.54,4
+l5,pag: produce,0.53,3
+l5,pag: guardian,0.53,4
+l5,pag: here if,0.53,3
+l5,pag: address,0.53,3
+l5,pag: source of,0.53,2
+l5,pag: new york,0.53,2
+l5,pag: security,0.52,3
+l5,pag: director of,0.52,2
+l5,pag: academics,0.52,3
+l5,pag: the week,0.52,3
+l5,pag: won,0.52,3
+l5,pag: canada,0.52,3
+l5,pag: holds,0.51,2
+l5,pag: defense one,0.51,4
+l5,pag: the globe,0.51,2
+l5,pag: uk,0.51,3
+l5,pag: our privacy,0.51,2
+l5,pag: please,0.51,3
+l5,pag: partnerships,0.5,3
+l5,pag: the big,0.5,3
+l5,art: our privacy,0.5,3
+l5,pag: authors,0.5,2
+l5,pag: critical,0.49,2
+l5,pag: the warrior,0.49,4
+l5,pag: privacy policy,0.49,2
+l5,pag: technical,0.49,1
+l5,pag: journalists,0.49,2
+l5,pag: sent to,0.49,3
+l5,pag: raw,0.49,4
+l5,pag: roll call,0.49,4
+l5,pag: technology,0.49,2
+l5,pag: editorial content,0.48,1
+l5,pag: servant,0.48,3
+l5,pag: pac 12,0.48,4
+l5,pag: program claims,0.48,4
+l5,pag: ten with,0.48,4
+l5,pag: the acc,0.48,4
+l5,pag: the pac,0.48,4
+l5,pag: three claimed,0.48,4
+l5,pag: in new,0.48,2
+l5,pag: the program,0.48,4
+l5,pag: digital,0.47,1
+l5,pag: reason,0.47,3
+l5,pag: 10 in,0.47,3
+l5,pag: we can,0.47,2
+l5,pag: for more,0.47,2
+l5,pag: risk,0.47,3
+l5,pag: the website,0.47,2
+l5,pag: ave nw,0.47,4
+l5,pag: the irish,0.47,4
+l5,pag: organisation,0.46,2
+l5,pag: it needs,0.46,3
+l5,pag: hung,0.46,4
+l5,pag: hung parliament,0.46,4
+l5,pag: infacts,0.46,4
+l5,pag: leading,0.46,1
+l5,pag: globe,0.46,2
+l5,pag: theguardian,0.46,4
+l5,pag: theguardian com,0.46,4
+l5,pag: claimed,0.46,4
+l5,pag: the servant,0.46,4
+l5,pag: op ed,0.46,2
+l5,art: privacy policy,0.46,3
+l5,pag: queries,0.46,2
+l5,pag: debates,0.46,3
+l5,pag: fiscalnote,0.45,4
+l5,pag: news and,0.45,2
+l5,pag: the sun,0.45,3
+l5,pag: independent,0.45,1
+l5,pag: senior director,0.45,3
+l5,pag: trusted,0.45,1
+l5,pag: the guardian,0.45,4
+l5,pag: reputation,0.45,1
+l5,pag: be sent,0.45,3
+l5,pag: national security,0.45,2
+l5,pag: more information,0.44,1
+l5,pag: may be,0.44,1
+l5,pag: webmaster,0.44,2
+l5,pag: online,0.44,1
+l5,pag: policy,0.44,1
+l5,pag: warrior,0.44,4
+l5,pag: op,0.44,1
+l5,pag: source,0.44,1
+l5,pag: odds,0.44,2
+l5,pag: guarantee,0.44,1
+l5,pag: information,0.44,1
+l5,pag: olivia,0.43,3
+l5,pag: deputy editor,0.43,1
+l5,pag: do this,0.43,2
+l5,pag: 613,0.43,2
+l5,pag: is part,0.43,2
+l5,pag: at raw,0.43,4
+l5,pag: rawstory,0.43,4
+l5,pag: rawstory com,0.43,4
+l5,pag: managing,0.43,2
+l5,art: jewish,0.43,2
+l5,pag: academic,0.43,0
+l5,pag: investigations,0.43,1
+l5,pag: shines,0.42,1
+l5,pag: apps,0.42,1
+l5,pag: media,0.42,2
+l5,pag: the irishcentral,0.42,3
+l5,pag: email,0.42,2
+l5,pag: reason com,0.42,1
+l5,pag: sec,0.42,1
+l5,pag: chief operating,0.41,0
+l5,pag: operating officer,0.41,0
+l5,pag: nw,0.41,0
+l5,pag: finished in,0.41,1
+l5,pag: reprint,0.41,1
+l5,pag: the editor,0.41,1
+l5,pag: debate,0.41,1
+l5,pag: editorial,0.41,1
+l5,pag: judd,0.41,2
+l5,pag: judd legum,0.41,2
+l5,pag: legum,0.41,1
+l5,pag: lobby,0.41,1
+l5,pag: the london,0.41,2
+l5,pag: perspectives,0.41,0
+l5,pag: magazine subscription,0.41,1
+l5,pag: theweek,0.41,1
+l5,pag: enquiries,0.41,1
+l5,pag: social,0.41,1
+l5,pag: big ten,0.41,2
+l5,pag: lists,0.41,2
+l5,pag: corbyn,0.41,1
+l5,pag: people vote,0.41,1
+l5,pag: york sun,0.41,1
+l5,pag: customer care,0.4,0
+l5,art: irish,0.4,0
+l5,pag: analysis,0.4,0
+l5,pag: must be,0.4,1
+l5,pag: britain,0.4,0
+l5,pag: an independent,0.4,0
+l5,pag: chief,0.4,0
+l5,pag: subscriptions,0.4,1
+l5,pag: donation,0.4,1
+l5,pag: keep,0.4,0
+l5,pag: and reached,0.4,0
+l5,pag: means that,0.4,0
+l5,pag: newsguard,0.4,0
+l5,pag: acc,0.4,1
+l5,pag: defining the,0.4,0
+l5,pag: need help,0.4,0
+l5,pag: read,0.39,0
+l5,pag: profit,0.39,1
+l5,pag: spiked,0.39,1
+l5,pag: your support,0.39,0
+l5,pag: black market,0.39,0
+l5,pag: gambling,0.39,0
+l5,pag: london economic,0.39,0
+l5,pag: endeavour,0.39,0
+l5,pag: warrior is,0.39,0
+l5,pag: cq and,0.39,0

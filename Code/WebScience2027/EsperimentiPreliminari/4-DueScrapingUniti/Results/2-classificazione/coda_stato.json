@@ -1,0 +1,41 @@
+{
+ "esperimenti": {
+  "feature": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-18 09:43:29",
+   "minuti": 5.4,
+   "fine": "2026-10-18 09:48:54"
+  },
+  "modernbert_base_1024_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-18 09:49:48",
+   "minuti": 79.1,
+   "fine": "2026-10-18 11:08:54"
+  },
+  "modernbert_large_1024_s42": {
+   "stato": "in corso",
+   "tentativi": 1,
+   "inizio": "2026-10-18 11:10:14"
+  },
+  "modernbert_base_1024_s1": {
+   "stato": "in attesa",
+   "tentativi": 0
+  },
+  "modernbert_large_1024_s1": {
+   "stato": "in attesa",
+   "tentativi": 0
+  },
+  "modernbert_base_1024_s2": {
+   "stato": "in attesa",
+   "tentativi": 0
+  },
+  "modernbert_large_1024_s2": {
+   "stato": "in attesa",
+   "tentativi": 0
+  }
+ },
+ "aggiornato": "2026-10-18 11:10:14",
+ "in_corso": "modernbert_large_1024_s42"
+}

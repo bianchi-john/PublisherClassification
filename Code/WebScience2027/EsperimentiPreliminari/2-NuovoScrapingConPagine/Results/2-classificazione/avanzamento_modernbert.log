@@ -1,0 +1,68 @@
+2026-10-14 11:26:15  === answerdotai/ModernBERT-base (max 1024 token) su cuda ===
+2026-10-14 11:26:23  A fold_gruppo fold 1: inizio (34429 training, 10506 test)
+2026-10-14 11:43:50  A fold_gruppo fold 1: epoca 1/3 in 1007 s, loss 0.8098
+2026-10-14 12:00:25  A fold_gruppo fold 1: epoca 2/3 in 994 s, loss 0.3510
+2026-10-14 12:16:58  A fold_gruppo fold 1: epoca 3/3 in 993 s, loss 0.1549
+2026-10-14 12:18:34  A fold_gruppo fold 1: fatto, acc articoli 0.595
+2026-10-14 12:18:38  === A fold_gruppo: tutti i fold pronti ===
+2026-10-14 12:18:38  C fold_gruppo fold 1: inizio (34429 training, 10506 test)
+2026-10-14 12:35:58  C fold_gruppo fold 1: epoca 1/3 in 998 s, loss 0.1054
+2026-10-14 12:50:49  === answerdotai/ModernBERT-base (max 1024 token) su cuda ===
+2026-10-14 12:50:55  A fold_gruppo fold 1: già fatto, salto
+2026-10-14 12:50:55  === A fold_gruppo: tutti i fold pronti ===
+2026-10-14 12:50:55  C fold_gruppo fold 1: inizio (34429 training, 10506 test)
+2026-10-14 13:09:08  C fold_gruppo fold 1: epoca 1/3 in 1047 s, loss 0.1036
+2026-10-14 13:26:25  C fold_gruppo fold 1: epoca 2/3 in 1037 s, loss 0.0004
+2026-10-14 13:43:41  C fold_gruppo fold 1: epoca 3/3 in 1036 s, loss 0.0044
+2026-10-14 13:45:21  C fold_gruppo fold 1: fatto, acc articoli 0.603
+2026-10-14 13:45:25  === C fold_gruppo: tutti i fold pronti ===
+2026-10-14 13:45:25  === FINITO ===
+2026-10-14 14:14:06  === answerdotai/ModernBERT-base (max 1024 token) su cuda ===
+2026-10-14 14:14:12  A fold_gruppo fold 1: già fatto, salto
+2026-10-14 14:14:12  A fold_gruppo fold 2: inizio (36580 training, 8355 test)
+2026-10-14 14:27:25  === answerdotai/ModernBERT-base (max 1024 token) su cuda ===
+2026-10-14 14:27:31  A fold_gruppo fold 1: già fatto, salto
+2026-10-14 14:27:31  A fold_gruppo fold 2: inizio (36580 training, 8355 test)
+2026-10-14 14:46:37  A fold_gruppo fold 2: epoca 1/3 in 1109 s, loss 0.7140
+2026-10-14 15:05:02  A fold_gruppo fold 2: epoca 2/3 in 1106 s, loss 0.2865
+2026-10-14 15:23:25  A fold_gruppo fold 2: epoca 3/3 in 1103 s, loss 0.2127
+2026-10-14 15:24:44  A fold_gruppo fold 2: fatto, acc articoli 0.462
+2026-10-14 15:24:44  A fold_gruppo fold 3: inizio (36038 training, 8897 test)
+2026-10-14 15:43:22  A fold_gruppo fold 3: epoca 1/3 in 1084 s, loss 0.6964
+2026-10-14 16:01:24  A fold_gruppo fold 3: epoca 2/3 in 1082 s, loss 0.2671
+2026-10-14 16:19:24  A fold_gruppo fold 3: epoca 3/3 in 1081 s, loss 0.1056
+2026-10-14 16:20:46  A fold_gruppo fold 3: fatto, acc articoli 0.374
+2026-10-14 16:20:47  A fold_gruppo fold 4: inizio (36714 training, 8221 test)
+2026-10-14 16:39:44  A fold_gruppo fold 4: epoca 1/3 in 1104 s, loss 0.7475
+2026-10-14 16:58:07  A fold_gruppo fold 4: epoca 2/3 in 1103 s, loss 0.3185
+2026-10-14 17:16:29  A fold_gruppo fold 4: epoca 3/3 in 1102 s, loss 0.1496
+2026-10-14 17:17:45  A fold_gruppo fold 4: fatto, acc articoli 0.492
+2026-10-14 17:17:45  A fold_gruppo fold 5: inizio (35979 training, 8956 test)
+2026-10-14 17:36:20  A fold_gruppo fold 5: epoca 1/3 in 1082 s, loss 0.7097
+2026-10-14 17:54:21  A fold_gruppo fold 5: epoca 2/3 in 1080 s, loss 0.2910
+2026-10-14 18:12:19  A fold_gruppo fold 5: epoca 3/3 in 1079 s, loss 0.1394
+2026-10-14 18:13:42  A fold_gruppo fold 5: fatto, acc articoli 0.372
+2026-10-14 18:13:43  === A fold_gruppo: tutti i fold pronti ===
+2026-10-14 18:13:43  C fold_gruppo fold 1: già fatto, salto
+2026-10-14 18:13:43  C fold_gruppo fold 2: inizio (36580 training, 8355 test)
+2026-10-14 18:32:58  C fold_gruppo fold 2: epoca 1/3 in 1108 s, loss 0.0850
+2026-10-14 18:51:19  C fold_gruppo fold 2: epoca 2/3 in 1102 s, loss 0.0052
+2026-10-14 19:09:39  C fold_gruppo fold 2: epoca 3/3 in 1100 s, loss 0.0000
+2026-10-14 19:10:57  C fold_gruppo fold 2: fatto, acc articoli 0.452
+2026-10-14 19:10:57  C fold_gruppo fold 3: inizio (36038 training, 8897 test)
+2026-10-14 19:29:56  C fold_gruppo fold 3: epoca 1/3 in 1093 s, loss 0.0902
+2026-10-14 19:47:59  C fold_gruppo fold 3: epoca 2/3 in 1083 s, loss 0.0001
+2026-10-14 20:06:00  C fold_gruppo fold 3: epoca 3/3 in 1081 s, loss 0.0000
+2026-10-14 20:07:22  C fold_gruppo fold 3: fatto, acc articoli 0.416
+2026-10-14 20:07:22  C fold_gruppo fold 4: inizio (36714 training, 8221 test)
+2026-10-14 20:26:39  C fold_gruppo fold 4: epoca 1/3 in 1111 s, loss 0.0887
+2026-10-14 20:45:00  C fold_gruppo fold 4: epoca 2/3 in 1101 s, loss 0.0000
+2026-10-14 21:03:20  C fold_gruppo fold 4: epoca 3/3 in 1100 s, loss 0.0000
+2026-10-14 21:04:36  C fold_gruppo fold 4: fatto, acc articoli 0.476
+2026-10-14 21:04:36  C fold_gruppo fold 5: inizio (35979 training, 8956 test)
+2026-10-14 21:23:36  C fold_gruppo fold 5: epoca 1/3 in 1091 s, loss 0.0876
+2026-10-14 21:41:38  C fold_gruppo fold 5: epoca 2/3 in 1082 s, loss 0.0000
+2026-10-14 21:59:39  C fold_gruppo fold 5: epoca 3/3 in 1081 s, loss 0.0000
+2026-10-14 22:01:02  C fold_gruppo fold 5: fatto, acc articoli 0.450
+2026-10-14 22:01:02  === C fold_gruppo: tutti i fold pronti ===
+2026-10-14 22:01:02  === FINITO ===

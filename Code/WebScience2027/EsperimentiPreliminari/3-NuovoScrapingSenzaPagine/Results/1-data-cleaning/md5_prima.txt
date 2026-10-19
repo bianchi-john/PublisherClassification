@@ -1,0 +1,7 @@
+1df332fdf9a703bb5067cf336006ad2f  Dataset/NuovoScraping/dataset_articoli.csv
+422d6fa9f9a4e77a10ea95b7717861be  Dataset/derived/01_articoli_puliti.csv
+dba86916a5cb043ca3c0f6dbd388301b  Dataset/derived/01_copie_tra_testate.csv
+70457e62036f7663394c1bb326deb207  Results/1-data-cleaning/02_reti.csv
+791ab9327bbd0aca06f5e8449c38745b  Results/1-data-cleaning/02_collegamenti.csv
+3762921996e9f0999977b2015e08b745  Dataset/versioni/dataset_finale.csv
+f1b17da290b89b15a9280689bab4983a  Dataset/versioni/fold_finale.csv

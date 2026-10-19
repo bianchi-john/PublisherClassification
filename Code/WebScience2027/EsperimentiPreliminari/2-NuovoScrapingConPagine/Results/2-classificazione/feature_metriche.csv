@@ -1,0 +1,5 @@
+config,fold,articolo 5cl,articolo F1,articolo bin,articolo tol0.5,articolo tol1,testata 5cl,testata F1,testata bin,testata tol0.5,testata tol1
+A,per gruppo,0.477,0.465,0.746,0.627,0.776,0.555,0.515,0.798,0.695,0.835
+A,per testata,0.484,0.469,0.749,0.633,0.782,0.544,0.501,0.79,0.689,0.835
+C,per gruppo,0.586,0.526,0.825,0.714,0.843,0.596,0.526,0.835,0.721,0.846
+C,per testata,0.595,0.53,0.82,0.719,0.844,0.607,0.532,0.827,0.726,0.846

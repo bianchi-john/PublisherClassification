@@ -1,0 +1,26 @@
+2026-10-16 12:32:43  === analisi: 44935 articoli, 272 testate, schema fold_gruppo ===
+2026-10-16 12:32:53  due blocchi: inizio
+2026-10-16 12:41:58  due blocchi fold 1: fatto in 541 s (100000 feature articolo, 100000 pagine)
+2026-10-16 12:45:11  due blocchi fold 3: fatto in 732 s (100000 feature articolo, 100000 pagine)
+2026-10-16 12:45:25  due blocchi fold 2: fatto in 748 s (100000 feature articolo, 100000 pagine)
+2026-10-16 12:45:52  due blocchi fold 4: fatto in 772 s (100000 feature articolo, 100000 pagine)
+2026-10-16 12:45:52  due blocchi fold 5: fatto in 772 s (100000 feature articolo, 100000 pagine)
+2026-10-16 12:45:55  due blocchi: fatto in 13 min
+2026-10-16 12:45:55  tagli: inizio
+2026-10-16 12:55:34  tagli: fatto in 10 min
+2026-10-16 12:55:34  etichette: inizio
+2026-10-16 13:08:17  etichette fold 2: fatto in 760 s
+2026-10-16 13:08:17  etichette fold 3: fatto in 759 s
+2026-10-16 13:09:32  etichette fold 5: fatto in 832 s
+2026-10-16 13:09:46  etichette fold 1: fatto in 850 s
+2026-10-16 13:09:55  etichette fold 4: fatto in 856 s
+2026-10-16 13:09:57  etichette: fatto in 14 min
+2026-10-16 13:09:58  una riga per testata: inizio
+2026-10-16 13:12:00  una riga per testata: fatto in 2 min
+2026-10-16 13:14:34  criteri fold 1: fatto
+2026-10-16 13:16:15  criteri fold 2: fatto
+2026-10-16 13:17:52  criteri fold 3: fatto
+2026-10-16 13:19:30  criteri fold 4: fatto
+2026-10-16 13:21:09  criteri fold 5: fatto
+2026-10-16 13:26:50  embedding A: salvati
+2026-10-16 13:37:29  embedding C: salvati

@@ -1,0 +1,11 @@
+2026-10-18 09:43:29  === coda avviata: 7 esperimenti ===
+2026-10-18 09:43:29  >>> feature: tentativo 1/3
+2026-10-18 09:48:54  <<< feature: fatto in 5 min
+2026-10-18 09:49:46  confronto aggiornato (esito 0)
+2026-10-18 09:49:48  GPU: 31.4 GB liberi (servono 16)
+2026-10-18 09:49:48  >>> modernbert_base_1024_s42: tentativo 1/3
+2026-10-18 11:08:54  <<< modernbert_base_1024_s42: fatto in 79 min
+2026-10-18 11:10:12  confronto aggiornato (esito 0)
+2026-10-18 11:10:14  GPU: 31.4 GB liberi (servono 20)
+2026-10-18 11:10:14  >>> modernbert_large_1024_s42: tentativo 1/3
+--- fermata a mano Sun Oct 18 11:57:27 AM UTC 2026

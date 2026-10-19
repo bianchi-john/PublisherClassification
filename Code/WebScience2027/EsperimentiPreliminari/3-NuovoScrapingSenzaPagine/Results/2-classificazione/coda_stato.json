@@ -1,0 +1,90 @@
+{
+ "esperimenti": {
+  "feature": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-16 15:27:54",
+   "minuti": 3.7,
+   "fine": "2026-10-16 15:31:38"
+  },
+  "feature_1024tok": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-16 15:32:31",
+   "minuti": 3.5,
+   "fine": "2026-10-16 15:36:03"
+  },
+  "modernbert_base_1024_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-16 15:42:11",
+   "minuti": 43.9,
+   "fine": "2026-10-16 16:26:06"
+  },
+  "deberta_v3_base_512_s42": {
+   "stato": "fallito",
+   "tentativi": 3,
+   "inizio": "2026-10-16 16:47:34",
+   "minuti": 14.4,
+   "ultimo_errore": "1"
+  },
+  "modernbert_base_2048_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-16 16:54:04",
+   "minuti": 84.2,
+   "fine": "2026-10-16 18:18:13"
+  },
+  "modernbert_large_1024_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-16 18:20:22",
+   "minuti": 128.4,
+   "fine": "2026-10-16 20:28:43"
+  },
+  "modernbert_base_1024_s1": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-16 20:31:17",
+   "minuti": 42.1,
+   "fine": "2026-10-16 21:13:23"
+  },
+  "modernbert_base_1024_s2": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-16 21:16:23",
+   "minuti": 60.4,
+   "fine": "2026-10-16 22:16:50"
+  },
+  "modernbert_base_2048_s1": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-16 22:20:14",
+   "minuti": 81.2,
+   "fine": "2026-10-16 23:41:26"
+  },
+  "modernbert_base_2048_s2": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-16 23:45:18",
+   "minuti": 109.6,
+   "fine": "2026-10-17 01:34:55"
+  },
+  "modernbert_large_1024_s1": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-17 01:39:09",
+   "minuti": 93.5,
+   "fine": "2026-10-17 03:12:39"
+  },
+  "modernbert_large_1024_s2": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-17 03:17:19",
+   "minuti": 80.6,
+   "fine": "2026-10-17 04:37:55"
+  }
+ },
+ "aggiornato": "2026-10-17 04:37:55",
+ "in_corso": null
+}
