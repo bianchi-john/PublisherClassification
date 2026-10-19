@@ -1,7 +1,7 @@
-"""Le figure delle slide sui risultati (riunione dopo il weekend del 17-18 ottobre 2026).
+"""Le figure della presentazione Stato dei lavori (Web Science 2027).
 
-    cd "Riunioni/Riunione dopo IrForGood/figure"
-    ~/.cache/irgood-venv/bin/python genera_figure_risultati.py
+    cd "Riunioni/Stato dei lavori/figure"
+    ~/.cache/irgood-venv/bin/python genera_figure.py
 
 Legge i risultati salvati in Code/WebScience2027 (primo dataset: EsperimentiPreliminari/1-PrimoDataset;
 dataset nuovo: Results/ e Dataset/ scaricati dal server) e scrive i PDF qui accanto.

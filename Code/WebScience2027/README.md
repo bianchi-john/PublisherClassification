@@ -53,4 +53,4 @@ con tempi massimi, tentativi e ripresa da dove si era fermato. Dal PC: `./contro
 | classe di maggioranza | 0,096 | 0,553 |
 
 Nessuna differenza significativa tra feature e transformer (bootstrap per gruppo). Dettagli in
-`Results/2-classificazione/03_confronto_*.csv` e nelle slide `Riunioni/Riunione dopo IrForGood/`.
+`Results/2-classificazione/03_confronto_*.csv` e nella presentazione `Riunioni/Stato dei lavori/`.
