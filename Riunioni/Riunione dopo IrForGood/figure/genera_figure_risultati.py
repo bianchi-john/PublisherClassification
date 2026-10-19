@@ -92,10 +92,10 @@ fold = pd.read_csv(W / "Dataset/versioni/fold_finale.csv")
 fold["liv"] = fold.label.map(dict(enumerate(LIV)))
 
 # 4. l'imbuto: dalle testate tentate al dataset finale
-fasi = [("testate NewsGuard tentate", 3128, None), ("raggiunte dallo scraper", 1528, 170213),
-        ("articoli in inglese, >100 parole", 1046, 101887), ("dopo la pulizia degli articoli", 963, 76091),
-        ("senza copie tra gruppi diversi", 963, 75630), ("con almeno 20 articoli", 702, 73308),
-        ("al massimo 5 testate per gruppo", 304, 44029)]
+fasi = [("scraping: testate tentate", 3128, None), ("scraping: testate raggiunte", 1528, 170213),
+        ("scraping: in inglese, >100 parole, senza doppioni", 1046, 101887), ("passo 1: pulizia degli articoli", 963, 76091),
+        ("passo 3: senza copie tra gruppi diversi", 963, 75630), ("passo 3: almeno 20 articoli", 702, 73308),
+        ("passo 3: al massimo 5 testate per gruppo", 304, 44029)]
 fig, (a1, a2) = plt.subplots(1, 2, figsize=(10.5, 3.6), sharey=True)
 y = np.arange(len(fasi))[::-1]
 a1.barh(y, [f[1] for f in fasi], color=BLU, height=0.6)
@@ -194,7 +194,7 @@ print(f"(numeri: l1 nella rete più grande {l1_rete_primo:.2f} -> {l1_rete_nuovo
 # 10. i risultati con gli intervalli
 iv = pd.read_csv(R2 / "03_confronto_intervalli.csv", index_col=0)
 tm = pd.read_csv(R2 / "03_confronto_tutte_le_metriche.csv", index_col=[0, 1])
-scelti = [("TF-IDF (C in validazione)", "feature_tuned (voto)", BLU), ("TF-IDF (C = 1)", "feature (media)", BLU),
+scelti = [("TF-IDF (riferimento)", "feature_tuned (voto)", BLU), ("TF-IDF (default)", "feature (media)", BLU),
           ("ModernBERT-base, 3 seed", "modernbert_base_1024_ep2_ensemble3 (media)", ARANCIO),
           ("ModernBERT-large, 3 seed", "modernbert_large_1024_ep2_ensemble3 (media)", ARANCIO),
           ("e5-large congelato", "e5_large_v2 (media)", ACQUA), ("bge-large congelato", "bge_large_v15 (media)", ACQUA)]
@@ -217,7 +217,7 @@ assi[0].set_yticks(range(len(scelti)), [s[0] for s in scelti[::-1]]); assi[0].se
 salva(fig, "fig_risultati_intervalli")
 
 # 11. recall per livello: chi riconosce cosa
-modelli = [("TF-IDF (C in validazione)", ("feature_tuned", "voto"), BLU), ("ModernBERT-base, 3 seed", ("modernbert_base_1024_ep2_ensemble3", "media"), ARANCIO),
+modelli = [("TF-IDF (riferimento)", ("feature_tuned", "voto"), BLU), ("ModernBERT-base, 3 seed", ("modernbert_base_1024_ep2_ensemble3", "media"), ARANCIO),
            ("ModernBERT-large, 3 seed", ("modernbert_large_1024_ep2_ensemble3", "media"), "#f2a07c")]
 fig, ax = plt.subplots(figsize=(7.4, 3.5))
 x = np.arange(5); w = 0.26
@@ -229,3 +229,137 @@ for j, (n, k, c) in enumerate(modelli):
 ax.set_xticks(x, [f"${l[0]}_{l[1]}$" for l in LIV]); ax.set_ylabel("recall per testata"); ax.set_ylim(0, 0.9)
 ax.legend(fontsize=9, ncol=3, loc="upper center", bbox_to_anchor=(0.5, 1.15))
 salva(fig, "fig_recall_livelli")
+
+
+# =============================================================================================== a pallini: primo dataset e dataset nuovo
+# un pallino = una testata; un colore per rete (o gruppo), grigio per le testate isolate
+ISOLATA = "#d3d2cb"
+ALTRE_RETI = ["#1baf7a", "#eda100", "#e87ba4", "#008300", "#7d4bc4", "#8c5a2b", "#0e8a8a", "#b0213f", "#6b6a00", "#2a78d6"]
+MOLTI = [c for m in ["tab20", "tab20b", "tab20c"] for c in plt.get_cmap(m).colors]
+MOLTI = [c for k, c in enumerate(MOLTI) if not (abs(c[0] - c[1]) < 0.05 and abs(c[1] - c[2]) < 0.05)]   # niente grigi
+
+
+def prepara(df, col_gruppo, dim, grande=None):
+    """Colore e ordine di ogni testata: le reti dalla più grande, poi le isolate."""
+    df = df.copy()
+    multi = df[df[dim] > 1][col_gruppo].value_counts()
+    ordine_gruppi = list(multi.index)
+    if grande is not None:
+        pal = {grande: ARANCIO}
+        pal.update({g: ALTRE_RETI[k % len(ALTRE_RETI)] for k, g in enumerate([g for g in ordine_gruppi if g != grande])})
+    else:
+        pal = {g: MOLTI[k % len(MOLTI)] for k, g in enumerate(ordine_gruppi)}
+    df["colore"] = df[col_gruppo].map(pal).fillna(ISOLATA)
+    df.loc[df[dim] <= 1, "colore"] = ISOLATA
+    rango = {g: k for k, g in enumerate(ordine_gruppi)}
+    df["ordine"] = df[col_gruppo].map(rango).fillna(10_000)
+    df.loc[df[dim] <= 1, "ordine"] = 10_000
+    return df
+
+
+def pallini(ax, df, colonne, x0=0.0, dim=34):
+    df = df.sort_values(["ordine"])
+    for k, c in enumerate(df.colore):
+        ax.scatter(x0 + k % colonne, k // colonne, s=dim, color=c, edgecolor="white", linewidth=0.6)
+
+
+def pulisci_assi(ax):
+    ax.set_xticks([]); ax.set_yticks([]); ax.grid(False)
+    for s_ in ax.spines.values():
+        s_.set_visible(False)
+
+
+def legenda_pallini(fig, voci, y):
+    ax0 = fig.axes[0]
+    for col, nome in voci:
+        ax0.scatter([], [], s=50, color=col, label=nome)
+    fig.legend(loc="upper center", ncol=len(voci), bbox_to_anchor=(0.5, y), fontsize=9.5, frameon=False)
+
+
+def per_livello(df, nome, titolo_n, voci):
+    fig, assi = plt.subplots(1, 5, figsize=(11, 3.6), sharey=True)
+    righe = max(int(np.ceil((df.liv == l).sum() / 10)) for l in LIV)
+    for ax, l in zip(assi, LIV):
+        pallini(ax, df[df.liv == l], 10)
+        ax.set_title(f"${l[0]}_{l[1]}$  ({(df.liv == l).sum()} {titolo_n})", fontsize=10.5, pad=8)
+        pulisci_assi(ax); ax.set_xlim(-1, 10); ax.set_ylim(-1, righe + 0.5)
+    legenda_pallini(fig, voci, 1.10)
+    salva(fig, nome)
+
+
+def per_fold(df, colonna, nome, titolo, voci, col_gruppo, dim):
+    righe = max(int(np.ceil((df[colonna] == f).sum() / 9)) for f in range(1, 6))
+    fig, ax = plt.subplots(figsize=(10.5, 1.6 + 0.2 * righe))
+    for f in range(1, 6):
+        d = df[df[colonna] == f]
+        pallini(ax, d, 9, x0=(f - 1) * 11)
+        ax.text((f - 1) * 11 + 4, -2.2, f"fold {f}", ha="center", fontsize=10.5)
+        ax.text((f - 1) * 11 + 4, -3.6, f"{len(d)} testate", ha="center", fontsize=8.5, color=MUTO)
+    pulisci_assi(ax); ax.set_xlim(-1.5, 54); ax.set_ylim(-4.5, righe + 0.5)
+    legenda_pallini(fig, voci, 1.04)
+    fig.suptitle(titolo, y=1.11, fontsize=11)
+    salva(fig, nome)
+    multi = df[df[dim] > 1]
+    print(f"  {nome}: una rete sta in media in {multi.groupby(col_gruppo)[colonna].nunique().mean():.1f} fold "
+          f"(reti con almeno 2 testate: {multi[col_gruppo].nunique()})")
+
+
+# primo dataset
+val["dim_rete"] = val.dim.fillna(1)
+p1 = prepara(val, "gruppo", "dim_rete", grande=0)
+VOCI_1 = [(ARANCIO, "la rete più grande (Metric Media, 131 siti)"), (ALTRE_RETI[0], "altre reti: un colore per rete"), (ISOLATA, "testate isolate")]
+per_livello(p1, "fig_primo_puntini_livelli", "testate", VOCI_1)
+per_fold(p1, "fold", "fig_primo_fold_testata", "Fold per testata: ogni testata finisce in un fold a caso", VOCI_1, "gruppo", "dim_rete")
+per_fold(p1, "fold_gruppo", "fig_primo_fold_gruppo", "Fold per gruppo: tutte le testate di una rete nello stesso fold", VOCI_1, "gruppo", "dim_rete")
+
+# dataset nuovo
+p2 = prepara(fold, "gruppo", "testate_nel_gruppo")
+VOCI_2 = [(MOLTI[0], "gruppi: un colore per gruppo (al massimo 5 testate)"), (ISOLATA, "testate isolate")]
+per_livello(p2, "fig_nuovo_puntini_livelli", "testate", VOCI_2)
+per_fold(p2, "fold_testata", "fig_nuovo_fold_testata", "Dataset nuovo, se dividessimo per testata", VOCI_2, "gruppo", "testate_nel_gruppo")
+per_fold(p2, "fold_gruppo", "fig_nuovo_fold_gruppo", "Dataset nuovo, fold per gruppo (quelli usati)", VOCI_2, "gruppo", "testate_nel_gruppo")
+
+
+# dataset nuovo PRIMA del tetto di 5 testate per gruppo: le testate con almeno 20 articoli (come in 03_dataset_finale)
+import sys
+import networkx as nx
+sys.path.insert(0, str(W / "1-data-cleaning"))
+from comune import normalizza_owner
+
+art = pd.read_csv(W / "Dataset/derived/01_articoli_puliti.csv", usecols=["article_id", "domain", "data"], parse_dates=["data"])
+reti_n = pd.read_csv(R1 / "02_reti.csv").set_index("domain")
+own = pd.Series({d: normalizza_owner(ng.Owner.get(d, "")) for d in reti_n.index})
+G = nx.Graph(); G.add_nodes_from(reti_n.index)
+for _, g in reti_n.groupby("rete"):
+    G.add_edges_from(zip(g.index, g.index[1:]))
+for _, g in own[own != ""].groupby(own[own != ""]):
+    G.add_edges_from(zip(g.index, g.index[1:]))
+gr = {d: i for i, c in enumerate(sorted(nx.connected_components(G), key=len, reverse=True)) for d in c}
+art["gruppo"] = art.domain.map(gr)
+cp = pd.read_csv(W / "Dataset/derived/01_copie_tra_testate.csv")
+pres = set(art.article_id); cp = cp[cp.articolo_a.isin(pres) & cp.articolo_b.isin(pres)]
+C = nx.Graph(); C.add_edges_from(zip(cp.articolo_a, cp.articolo_b)); info = art.set_index("article_id")
+via = set()
+for fam in nx.connected_components(C):
+    fam = sorted(fam, key=lambda x: (info.data[x], x))
+    if len({info.gruppo[x] for x in fam}) > 1:
+        via |= {x for x in fam if info.gruppo[x] != info.gruppo[fam[0]]}
+art = art[~art.article_id.isin(via)]
+n_art = art.groupby("domain").size()
+pt = pd.DataFrame({"domain": n_art[n_art >= 20].index})
+pt["gruppo"] = pt.domain.map(gr)
+pt["liv"] = pd.cut(pt.domain.map(ng.Score), [-1, 39, 59, 74, 99, 100], labels=LIV).astype(str)
+pt["dim"] = pt.groupby("gruppo").domain.transform("size")
+grande = pt.groupby("gruppo").size().idxmax()
+print(f"prima del tetto: {len(pt)} testate; gruppo più grande {pt.dim.max()} testate,",
+      pt[pt.gruppo == grande].liv.value_counts().to_dict(), "; in gruppi:", (pt.dim > 1).sum(), "; per livello", pt.liv.value_counts().to_dict())
+p0 = prepara(pt, "gruppo", "dim", grande=grande)
+fig, assi = plt.subplots(1, 5, figsize=(11, 4.2), sharey=True)
+righe = max(int(np.ceil((pt.liv == l).sum() / 16)) for l in LIV)
+for ax, l in zip(assi, LIV):
+    pallini(ax, p0[p0.liv == l], 16, dim=16)
+    ax.set_title(f"${l[0]}_{l[1]}$  ({(pt.liv == l).sum()} testate)", fontsize=10.5, pad=8)
+    pulisci_assi(ax); ax.set_xlim(-1, 16); ax.set_ylim(-1, righe + 0.5)
+legenda_pallini(fig, [(ARANCIO, f"la rete più grande (Natural News, {pt.dim.max()} siti)"), (ALTRE_RETI[0], "altri gruppi: un colore per gruppo"),
+                      (ISOLATA, "testate isolate")], 1.10)
+salva(fig, "fig_nuovo_prima_tetto")
