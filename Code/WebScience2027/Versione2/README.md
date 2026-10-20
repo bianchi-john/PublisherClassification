@@ -49,3 +49,24 @@ screen -dmS v2 bash -c 'until ~/John/johnVenv/bin/python esegui_tutto.py; do sle
 Il server è condiviso: i batch dei transformer sono piccoli (4 per il base, 2 per il large, con lo stesso batch
 effettivo 32 grazie all'accumulo del gradiente); se la memoria non basta, il notebook dimezza il batch da solo e
 riparte dal fold. La coda aspetta fino a 2 ore che si liberi la memoria indicata, poi prova comunque.
+
+## Risultati (19–20 ottobre 2026; per testata, le stesse 304 testate della prima versione, fold per gruppo)
+
+| | F1 macro v2 | v1 | binario v2 | v1 |
+|---|---|---|---|---|
+| TF-IDF, C in validazione (riferimento, voto) | 0,370 | 0,380 | 0,773 | 0,740 |
+| TF-IDF, C = 1 | 0,389 | 0,368 | 0,770 | 0,776 |
+| TF-IDF, training solo sulle 304 (controllo) | 0,388 | — | 0,770 | — |
+| ModernBERT-base, ensemble di 3 seed | 0,341 | 0,366 | 0,707 | 0,717 |
+| ModernBERT-base s42, training solo sulle 304 (controllo) | 0,341 | — | 0,694 | — |
+| e5 / bge congelati | 0,322 / 0,347 | 0,331 / 0,325 | 0,724 / 0,707 | 0,727 / 0,730 |
+| combinazione TF-IDF + ModernBERT (0,5/0,5) | 0,355 | — | 0,753 | — |
+
+- La regola nuova non penalizza il TF-IDF; allargare il training non aiuta in modo chiaro né il TF-IDF né
+  ModernBERT; la combinazione non batte il TF-IDF. Nessuna differenza con il TF-IDF è significativa (bootstrap per
+  gruppo); tra un seed e l'altro ModernBERT-base varia di circa 4 punti di F1.
+- ModernBERT-large non è girato: sul server condiviso c'erano solo circa 7 GB di GPU liberi (pesi, gradienti e
+  stati dell'ottimizzatore del large da soli ne occupano circa 6,5). Dopo quel fallimento il notebook 02 riconosce
+  anche gli errori di memoria che CUDA segnala in altre forme.
+- Coda fermata il 20 ottobre. Dettagli in `Results/2-classificazione/03_confronto_*.csv` e nella presentazione
+  `Riunioni/Stato dei lavori/`.

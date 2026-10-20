@@ -584,12 +584,82 @@
   \vfill
 \end{frame}
 
+% ===================================================================================================
+\divider{Versione 2}{pi\`u pulizia e pi\`u testate nel training (19--20 ottobre)}
+
+\begin{frame}{Versione 2: cosa ho cambiato}
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.6em}
+    \item Tutto \hl{deciso prima} di vedere i risultati, stesso scraping, stesse regole di prima pi\`u tre cose:
+    \item[] \hl{1. Una regola di pulizia in pi\`u}: via i resti dei contenuti incorporati (link, \texttt{pic.twitter.com}, firme dei tweet, ``View this post on Instagram''). Espressioni regolari fisse, nessun LLM; il testo dei tweet citati resta
+    \item[] \hl{2. Pi\`u testate nel training}: il test resta \hl{identico} (le stesse 304 testate, gli stessi fold); nel training entrano anche le altre testate dei gruppi, \hl{863} invece di 304. Un gruppo non pesa mai pi\`u di 5 testate (pesi per TF-IDF ed embedding; per i transformer 5 testate a caso per gruppo, diverse a ogni epoca)
+    \item[] \hl{3. Una combinazione fissata a priori}: media 0,5/0,5 delle probabilit\`a di TF-IDF e ModernBERT-base
+    \item Due \hl{controlli}: TF-IDF e ModernBERT addestrati solo sulle 304 testate, per misurare l'effetto del training pi\`u grande
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Versione 2: la pulizia nuova}
+  \vfill
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.8em}
+    \item Tolti circa \hl{20.000 link} e \hl{16.000 firme} o scritte di contenuti incorporati: lo 0,3\% delle parole
+    \item Tocca il \hl{24\%} degli articoli $l_1$ e solo il \hl{3\%} degli $l_5$: era proprio il residuo che il TF-IDF usava per $l_1$
+    \item Il test non cambia: \hl{le stesse 304 testate}, 44.012 articoli (17 in meno), gli stessi fold
+    \item Ogni passo resta una regola nel codice; pulizia ed esperimenti sono girati da soli sul server, in una notte
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Versione 2: i risultati}
+  \vspace{0.2em}
+  \centering\footnotesize
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{lcccc}
+    \toprule
+    & \multicolumn{2}{c}{\textbf{F1 macro}} & \multicolumn{2}{c}{\textbf{binario}} \\
+    \cmidrule(lr){2-3}\cmidrule(lr){4-5}
+    \textbf{Modello} & \textbf{v2} & v1 & \textbf{v2} & v1 \\
+    \midrule
+    \textbf{TF-IDF, parametri in validazione} (riferimento) & 0,370 & 0,380 & \textbf{0,773} & 0,740 \\
+    TF-IDF, parametri di default & \textbf{0,389} & 0,368 & 0,770 & 0,776 \\
+    TF-IDF, training solo sulle 304 testate (controllo) & 0,388 & --- & 0,770 & --- \\
+    \midrule
+    ModernBERT-base, 3 seed & 0,341 & 0,366 & 0,707 & 0,717 \\
+    ModernBERT-base, i singoli seed & 0,32 / 0,36 / 0,36 & 0,35 / 0,33 / 0,38 & & \\
+    ModernBERT-base s42, training solo sulle 304 (controllo) & 0,341 & --- & 0,694 & --- \\
+    \midrule
+    e5-large congelato & 0,322 & 0,331 & 0,724 & 0,727 \\
+    bge-large congelato & 0,347 & 0,325 & 0,707 & 0,730 \\
+    \midrule
+    combinazione TF-IDF + ModernBERT (0,5/0,5) & 0,355 & --- & 0,753 & --- \\
+    \midrule
+    classe di maggioranza & 0,096 & 0,096 & 0,553 & 0,553 \\
+    \bottomrule
+  \end{tabular}}\\[0.4em]
+  \raggedright{\scriptsize\itshape Per testata, le stesse 304 testate, fold per gruppo. ModernBERT-large non \`e girato: la GPU condivisa aveva solo 7 GB liberi, e il large non ci sta.}
+\end{frame}
+
+\begin{frame}{Versione 2: cosa ci dice}
+  \vfill
+  \begin{enumerate}[<+->]
+    \setlength\itemsep{0.7em}
+    \item La pulizia nuova \hl{non ha messo in difficolt\`a} il TF-IDF (0,37--0,39): i resti di link e tweet non erano il motivo per cui vinceva
+    \item Pi\`u testate nel training \hl{non aiutano} in modo chiaro: per il TF-IDF niente, per ModernBERT +0,02 su un solo seed, mentre l'ensemble scende
+    \item La combinazione \hl{non batte} il TF-IDF (0,355 contro 0,370)
+    \item Tra un seed e l'altro ModernBERT varia di \hl{4 punti}: quanto tutti gli effetti che cerchiamo. Nessuna differenza con il TF-IDF \`e significativa
+  \end{enumerate}
+  \vspace{0.6em}
+  \visible<5->{\small\itshape Due esperimenti fatti bene, lo stesso risultato: sul solo testo, valutato senza le reti, transformer e TF-IDF sono alla pari, con il TF-IDF un po' avanti.}
+  \vfill
+\end{frame}
+
 \begin{frame}{Prossimi passi}
   \vfill
   \begin{enumerate}[<+->]
     \setlength\itemsep{0.8em}
-    \item Una \hl{regola di pulizia} in pi\`u, uguale per tutti i modelli: togliere i resti di link e contenuti incorporati, poi rifare pulizia e classificazione (circa 7 ore sul server)
-    \item \hl{Combinare} feature e transformer, con la combinazione scelta in validazione interna: sbagliano su testate diverse
+    \item Decidere come raccontare la \hl{parit\`a}: con una valutazione che tiene conto delle reti, i transformer non aggiungono nulla a un modello lessicale. \`E un risultato, e il protocollo \`e il contributo
+    \item Provare l'unica leva con informazione davvero \hl{diversa}: la prova pilota con i segnali di Claude (proposta di Fabio, qui sotto)
+    \item ModernBERT-large quando la \hl{GPU} del server \`e libera
     \item Come presentare il \hl{confondente} tema/orientamento politico
   \end{enumerate}
   \vfill
