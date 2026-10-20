@@ -1,0 +1,34 @@
+{
+ "fasi": {
+  "01_pulizia_articoli": {
+   "stato": "fatta",
+   "tentativi": 1,
+   "inizio": "2026-10-19 14:27:00",
+   "minuti": 5.9,
+   "esito": "0",
+   "fine": "2026-10-19 14:32:54"
+  },
+  "02_reti": {
+   "stato": "fatta",
+   "tentativi": 1,
+   "inizio": "2026-10-19 14:32:54",
+   "minuti": 0.6,
+   "esito": "0",
+   "fine": "2026-10-19 14:33:33"
+  },
+  "03_dataset_finale": {
+   "stato": "fatta",
+   "tentativi": 1,
+   "inizio": "2026-10-19 14:33:33",
+   "minuti": 0.3,
+   "esito": "0",
+   "fine": "2026-10-19 14:33:48"
+  },
+  "classificazione": {
+   "stato": "in corso",
+   "tentativi": 1,
+   "inizio": "2026-10-19 14:33:48"
+  }
+ },
+ "aggiornato": "2026-10-19 14:33:48"
+}

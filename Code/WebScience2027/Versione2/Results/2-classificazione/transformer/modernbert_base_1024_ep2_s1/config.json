@@ -1,0 +1,23 @@
+{
+ "NOME": "modernbert_base_1024_ep2_s1",
+ "MODELLO": "answerdotai/ModernBERT-base",
+ "MAX_TOKEN": 1024,
+ "BATCH": 4,
+ "BATCH_EFFETTIVO": 32,
+ "BATCH_EVAL": 32,
+ "ARTICOLI_PER_TESTATA": 20,
+ "MAX_TESTATE_PER_GRUPPO": 5,
+ "SOLO_VALUTAZIONE": false,
+ "EPOCHE_MAX": 2,
+ "PATIENCE": 0,
+ "LR": 2e-05,
+ "WARMUP": 0.1,
+ "WEIGHT_DECAY": 0.01,
+ "SEED": 1,
+ "SCHEMA": "fold_gruppo",
+ "FP16": true,
+ "PROVA": false,
+ "torch": "2.5.1+cu121",
+ "transformers": "4.51.3",
+ "gpu": "Tesla V100S-PCIE-32GB"
+}

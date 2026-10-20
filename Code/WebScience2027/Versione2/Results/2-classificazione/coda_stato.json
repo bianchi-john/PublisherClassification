@@ -1,0 +1,87 @@
+{
+ "esperimenti": {
+  "feature": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-19 14:33:49",
+   "minuti": 9.8,
+   "fine": "2026-10-19 14:43:36"
+  },
+  "feature_tuned": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-19 14:44:46",
+   "minuti": 46.3,
+   "fine": "2026-10-19 15:31:06"
+  },
+  "feature_tuned_tetto5": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-19 15:32:26",
+   "minuti": 35.2,
+   "fine": "2026-10-19 16:07:39"
+  },
+  "e5_large_v2": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-19 16:09:27",
+   "minuti": 16.3,
+   "fine": "2026-10-19 16:25:44"
+  },
+  "bge_large_v15": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-19 16:27:57",
+   "minuti": 16.3,
+   "fine": "2026-10-19 16:44:12"
+  },
+  "modernbert_base_1024_ep2_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-19 16:46:52",
+   "minuti": 84.3,
+   "fine": "2026-10-19 18:11:11"
+  },
+  "modernbert_base_1024_ep2_s1": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-19 18:14:18",
+   "minuti": 84.0,
+   "fine": "2026-10-19 19:38:21"
+  },
+  "modernbert_base_1024_ep2_s2": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-19 19:42:17",
+   "minuti": 84.1,
+   "fine": "2026-10-19 21:06:22"
+  },
+  "modernbert_base_1024_ep2_tetto5_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-19 21:11:07",
+   "minuti": 80.5,
+   "fine": "2026-10-19 22:31:38"
+  },
+  "modernbert_large_1024_ep2_s42": {
+   "stato": "fallito",
+   "tentativi": 3,
+   "inizio": "2026-10-20 04:51:41",
+   "minuti": 3.7,
+   "ultimo_errore": "1"
+  },
+  "modernbert_large_1024_ep2_s1": {
+   "stato": "da riprovare",
+   "tentativi": 2,
+   "inizio": "2026-10-20 09:05:58",
+   "minuti": 2.6,
+   "ultimo_errore": "1"
+  },
+  "modernbert_large_1024_ep2_s2": {
+   "stato": "in attesa",
+   "tentativi": 0
+  }
+ },
+ "aggiornato": "2026-10-20 09:12:19",
+ "in_corso": null
+}

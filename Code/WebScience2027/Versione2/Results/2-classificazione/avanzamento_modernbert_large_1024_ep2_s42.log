@@ -1,0 +1,9 @@
+2026-10-20 00:37:42  === modernbert_large_1024_ep2_s42: answerdotai/ModernBERT-large, 1024 token, seed 42, su Tesla V100S-PCIE-32GB ===
+2026-10-20 00:38:42  75389 articoli tokenizzati in 55 s; token per articolo: mediana 782, al massimo 1024 nel 31% dei casi
+2026-10-20 00:38:42  fold 1: 336 testate di training (217 valutate) in 192 gruppi, 114 di validazione, 61 di test; 4721 articoli per epoca; pesi di classe [0.8399999737739563, 1.0099999904632568, 1.809999942779541, 0.5899999737739563, 1.7400000095367432]; batch 2
+2026-10-20 02:44:47  === modernbert_large_1024_ep2_s42: answerdotai/ModernBERT-large, 1024 token, seed 42, su Tesla V100S-PCIE-32GB ===
+2026-10-20 02:45:40  75389 articoli tokenizzati in 49 s; token per articolo: mediana 782, al massimo 1024 nel 31% dei casi
+2026-10-20 02:45:40  fold 1: 336 testate di training (217 valutate) in 192 gruppi, 114 di validazione, 61 di test; 4721 articoli per epoca; pesi di classe [0.8399999737739563, 1.0099999904632568, 1.809999942779541, 0.5899999737739563, 1.7400000095367432]; batch 2
+2026-10-20 04:51:45  === modernbert_large_1024_ep2_s42: answerdotai/ModernBERT-large, 1024 token, seed 42, su Tesla V100S-PCIE-32GB ===
+2026-10-20 04:52:38  75389 articoli tokenizzati in 49 s; token per articolo: mediana 782, al massimo 1024 nel 31% dei casi
+2026-10-20 04:52:39  fold 1: 336 testate di training (217 valutate) in 192 gruppi, 114 di validazione, 61 di test; 4721 articoli per epoca; pesi di classe [0.8399999737739563, 1.0099999904632568, 1.809999942779541, 0.5899999737739563, 1.7400000095367432]; batch 2

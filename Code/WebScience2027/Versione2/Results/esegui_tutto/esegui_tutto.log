@@ -1,0 +1,9 @@
+2026-10-19 14:27:00  === avvio (o ripresa) della catena della Versione 2 ===
+2026-10-19 14:27:00  >>> 01_pulizia_articoli (tentativo 1, al massimo 2 h)
+2026-10-19 14:32:54  <<< 01_pulizia_articoli: fatta in 5.9 min
+2026-10-19 14:32:54  >>> 02_reti (tentativo 1, al massimo 1 h)
+2026-10-19 14:33:33  <<< 02_reti: fatta in 0.6 min
+2026-10-19 14:33:33  >>> 03_dataset_finale (tentativo 1, al massimo 1 h)
+2026-10-19 14:33:48  <<< 03_dataset_finale: fatta in 0.3 min
+2026-10-19 14:33:48  >>> classificazione (tentativo 1, al massimo 40 h)
+2026-10-20 10:48:28  === coda fermata a mano (richiesta di John): ModernBERT-large non può girare con 7 GB di GPU liberi ===

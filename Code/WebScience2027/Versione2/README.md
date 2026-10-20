@@ -66,7 +66,9 @@ riparte dal fold. La coda aspetta fino a 2 ore che si liberi la memoria indicata
   ModernBERT; la combinazione non batte il TF-IDF. Nessuna differenza con il TF-IDF è significativa (bootstrap per
   gruppo); tra un seed e l'altro ModernBERT-base varia di circa 4 punti di F1.
 - ModernBERT-large non è girato: sul server condiviso c'erano solo circa 7 GB di GPU liberi (pesi, gradienti e
-  stati dell'ottimizzatore del large da soli ne occupano circa 6,5). Dopo quel fallimento il notebook 02 riconosce
-  anche gli errori di memoria che CUDA segnala in altre forme.
+  stati dell'ottimizzatore del large da soli ne occupano circa 6,5). Il fallimento non è passato dal batch dimezzato
+  perché su artes4 NVML è rotto (driver/library mismatch): a memoria finita PyTorch, invece di `OutOfMemoryError`,
+  dà `RuntimeError: NVML_SUCCESS == ... INTERNAL ASSERT FAILED ... CUDACachingAllocator`. Ora il notebook 02 riconosce
+  anche questo errore (e gli altri modi in cui CUDA segnala la memoria finita).
 - Coda fermata il 20 ottobre. Dettagli in `Results/2-classificazione/03_confronto_*.csv` e nella presentazione
   `Riunioni/Stato dei lavori/`.

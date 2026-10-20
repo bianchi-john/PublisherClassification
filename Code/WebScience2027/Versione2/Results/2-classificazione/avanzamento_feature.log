@@ -1,0 +1,11 @@
+2026-10-19 14:33:54  === feature: 75389 articoli, 863 testate (304 valutate), taglio nessuno, solo valutate False ===
+2026-10-19 14:37:24  fold_gruppo fold 4: fatto in 203 s (63380 training, 9300 test)
+2026-10-19 14:38:01  fold_gruppo fold 2: fatto in 243 s (56076 training, 9159 test)
+2026-10-19 14:38:05  fold_gruppo fold 1: fatto in 247 s (59084 training, 7755 test)
+2026-10-19 14:38:11  fold_gruppo fold 5: fatto in 249 s (66211 training, 8257 test)
+2026-10-19 14:39:00  fold_gruppo fold 3: fatto in 301 s (56805 training, 9541 test)
+2026-10-19 14:42:56  fold_testata fold 1: fatto in 233 s (60669 training, 7767 test)
+2026-10-19 14:43:00  fold_testata fold 3: fatto in 235 s (59608 training, 9149 test)
+2026-10-19 14:43:03  fold_testata fold 5: fatto in 235 s (59688 training, 9013 test)
+2026-10-19 14:43:05  fold_testata fold 4: fatto in 239 s (60290 training, 9236 test)
+2026-10-19 14:43:28  fold_testata fold 2: fatto in 264 s (61301 training, 8847 test)
