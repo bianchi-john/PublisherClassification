@@ -1,49 +1,135 @@
-# Web Science 2027
+# Web Science 2027 — affidabilità delle testate dal solo testo
 
-Predire l'affidabilità NewsGuard di una testata **dal solo testo dei suoi articoli**, valutando su testate di **reti
-mai viste** in addestramento. La domanda di fondo: un transformer fa meglio di un classificatore a feature (TF-IDF +
-regressione logistica)?
+Questa cartella contiene tutto il lavoro sperimentale verso Web Science 2027. È organizzata in **tentativi**
+(`Tentativi/01…08`), in ordine di tempo: ognuno è una catena completa e autonoma, dallo scraping ai risultati.
+Questo README spiega il problema, come lo valutiamo, che cosa ha detto ogni tentativo e come si rilancia tutto.
 
-Il lavoro è diviso in **tentativi**, in ordine di tempo, in `Tentativi/`. Ogni tentativo è **autonomo**: contiene
-tutta la catena, dallo scraping ai risultati, come se si ripartisse da zero, e legge e scrive solo dentro la sua
-cartella. Nella realtà i tentativi successivi hanno riusato lo scraping e la pulizia dei precedenti; il README di ogni
-tentativo dice che cosa è stato davvero rieseguito e che cosa è stato copiato.
+---
 
-## I tentativi
+## 1. Il problema
 
-| | Tentativo | La domanda | Il risultato |
+**Obiettivo.** Data una testata giornalistica online (un dominio, per esempio `breitbart.com`), predire quanto è
+affidabile secondo **NewsGuard** usando **solo il testo dei suoi articoli**: niente URL, niente metadati, niente
+reputazione esterna.
+
+**Le etichette.** NewsGuard dà a ogni testata un punteggio da 0 a 100. Lo dividiamo in 5 livelli:
+
+| livello | punteggio | | 
+|---|---|---|
+| $l_1$ | 0–39 | inaffidabile |
+| $l_2$ | 40–59 | |
+| $l_3$ | 60–74 | |
+| $l_4$ | 75–99 | |
+| $l_5$ | 100 | massima affidabilità |
+
+Il compito **binario** è "affidabile" = punteggio ≥ 60 (livelli $l_3$–$l_5$). NewsGuard dà anche 9 criteri sì/no per
+testata (contenuti falsi, informazione responsabile, rettifiche, titoli ingannevoli…), l'orientamento politico e il
+proprietario (*Owner*).
+
+**La domanda di ricerca.** Un transformer (ModernBERT, addestrato sugli articoli) fa meglio di un classificatore a
+feature (TF-IDF + regressione logistica)? Il paper precedente (IrForGood) diceva che i transformer arrivavano a 0,69 di
+accuratezza per testata; il punto di partenza di questo lavoro è stato scoprire che un TF-IDF faceva lo stesso, e
+capire perché.
+
+## 2. Come valutiamo (e perché così)
+
+- **Per testata.** Il modello giudica ogni articolo; la testata prende la **media delle probabilità** dei suoi
+  articoli (o il voto di maggioranza). L'etichetta vera esiste solo per la testata.
+- **Le reti di siti.** Molte testate non sono indipendenti: reti di decine o centinaia di siti con articoli quasi
+  uguali o lo stesso proprietario (Metric Media, Natural News, catene di giornali locali…). Se una testata sta nel test
+  e le sue "sorelle" nel training, il modello riconosce la rete invece di giudicare l'affidabilità. Nel tentativo 01
+  questo da solo portava l'accuratezza da 0,39 a 0,68.
+- **Fold per gruppo.** Per questo le testate vengono raggruppate: un **gruppo** = una rete trovata dal testo e
+  dall'HTML (copie di articoli, stessi codici AdSense/Analytics, stessa privacy policy, stesso dominio, stessi autori)
+  **oppure** lo stesso proprietario NewsGuard. Un gruppo sta tutto nel training o tutto nel test (5 fold, stratificati
+  per livello). Il rilevatore di reti, che non guarda NewsGuard, coincide con l'Owner con precisione 0,91 e recall 0,88.
+- **Al più 5 testate per gruppo nel test**, almeno 20 articoli per testata: una rete enorme non può riempire un
+  livello. Dal tentativo 06 il training usa anche le altre testate dei gruppi, con un peso (un gruppo vale al più 5).
+- **Metriche.** Principali: **F1 macro a 5 livelli** e **accuratezza binaria**, per testata. Anche accuratezza a 5
+  livelli, *tolerant* (un errore di un livello vale 0,5 o 1) e il dettaglio per livello. Intervalli al 95% con un
+  **bootstrap per gruppo** (2000 ricampionamenti dei gruppi, perché le testate di un gruppo sbagliano insieme).
+- **Regole del gioco.** Ogni scelta (pulizia, metriche, configurazioni) è scritta **prima** di vedere i risultati e
+  vale uguale per tutti i modelli. La pulizia è fatta solo di regole nel codice, deterministiche (random state
+  fissati): niente modifiche a mano né fatte da un LLM. Si riporta tutto, non solo il migliore.
+
+## 3. I tentativi, uno per uno
+
+| | Tentativo | La domanda | Che cosa è venuto fuori |
 |---|---|---|---|
-| 01 | `01_PrimoDataset` (13 ottobre) | perché il TF-IDF va come i transformer del paper IrForGood? | le **reti** di siti gonfiano i numeri: 0,68 → 0,39 con i fold per gruppo; una rete di 131 siti fa l'86% di $l_1$ |
-| 02 | `02_ScrapingConPagine` (14–16 ottobre) | un nuovo scraping, con articoli e pagine del sito | i gruppi trovati dalle copie non separano le reti di proprietà; pagine troppo sporche |
-| 03 | `03_SoloArticoli193Testate` (16–17 ottobre) | solo articoli, pulizia moderata, reti da 5 segnali | tutti poco sopra la maggioranza: troppe poche testate (193) |
-| 04 | `04_DueScrapingUniti` (18 ottobre) | il vecchio scraping unito al nuovo | l'origine è legata all'etichetta (89% delle $l_1$ dal nuovo): scartato |
-| 05 | `05_Versione1_Pipeline304Testate` (18 ottobre) | scraping allargato (due giri), pulizia, reti, fold per gruppo: chi vince? | **pari**: TF-IDF F1 0,38, ModernBERT 0,35–0,37 |
-| 06 | `06_Versione2_PiuPuliziaPiuTraining` (19–20 ottobre) | più pulizia e più testate nel training aiutano i transformer? | **no**; l'analisi del TF-IDF mostra che legge il **genere** della testata (orientamento, tipo di sito, paese) |
-| 07 | `07_Versione3_PariGenere` (20–21 ottobre) | a parità di orientamento politico, il testo dice l'affidabilità? | sì, ma poco (0,6 contro 0,5) ed è **stile**; il TF-IDF resta davanti |
-| 08 | `08_Versione4_TitoloCriteri` (21 ottobre, **in corso**) | il titolo letto insieme all'articolo e i criteri NewsGuard come etichette in più aiutano i transformer? | in corso |
+| 01 | `01_PrimoDataset` (13 ott.) | Perché il TF-IDF va come i transformer del paper IrForGood (439 testate)? | Le **reti** gonfiano i numeri: TF-IDF 0,68 con i fold per testata, **0,39** con i fold per gruppo (BERT 0,40). Una rete di 131 siti fa l'86% di $l_1$: troppo poche testate indipendenti → serve un dataset nuovo |
+| 02 | `02_ScrapingConPagine` (14–16 ott.) | Nuovo scraping, articoli + pagine del sito (about, proprietà…), 272 testate | Il TF-IDF con le pagine sembra forte (0,60), ma i gruppi trovati solo dalle copie non vedono le reti di proprietà (FiveZero Media, giornali Boone); con l'Owner nei gruppi scende a 0,36. Le pagine del sito sono troppo sporche → le reti vanno cercate anche nell'HTML, niente pagine |
+| 03 | `03_SoloArticoli193Testate` (16–17 ott.) | Solo articoli, pulizia moderata, reti da 5 segnali + Owner | Tutti poco sopra la maggioranza (TF-IDF F1 0,274, ModernBERT ~0,25): con 193 testate non si distingue nulla → servono più testate |
+| 04 | `04_DueScrapingUniti` (18 ott.) | Unire il vecchio scraping di IrForGood al nuovo (269 testate) | **Scartato**: l'origine è legata all'etichetta (l'89% degli articoli $l_1$ viene dal nuovo scraping, epoche e strumenti diversi) → un solo scraping, ma allargato |
+| 05 | `05_Versione1_Pipeline304Testate` (18 ott.) | **Versione 1**: scraping in due giri (3.128 testate tentate), pulizia, reti, fold per gruppo, 304 testate | **Pari**: TF-IDF F1 0,380 / binario 0,740; ModernBERT-base 0,366 / 0,717; large 0,348; nessuna differenza significativa |
+| 06 | `06_Versione2_PiuPuliziaPiuTraining` (19–20 ott.) | **Versione 2**: una regola di pulizia in più (resti di link e tweet), 863 testate nel training, combinazione TF-IDF + ModernBERT | **Nessun guadagno** (TF-IDF 0,370–0,389, ModernBERT 0,341). L'analisi del TF-IDF (`05_analisi_feature`) spiega perché: il segnale è sparso e segue il **genere** della testata (orientamento politico, tipo di sito, paese); bastano le sole parole funzione (0,364), i soli metadati NewsGuard fanno 0,339 |
+| 07 | `07_Versione3_PariGenere` (20–21 ott.) | **Versione 3**: affidabile sì/no **dentro** ogni orientamento politico, con pesi che tolgono l'aiuto dell'orientamento | Un segnale oltre il genere c'è ma è modesto (0,55–0,62 di accuratezza bilanciata contro 0,50) ed è **stile**; il TF-IDF resta davanti (0,593–0,618 contro 0,551 di ModernBERT). Unico indizio pro transformer: l'orientamento "Slightly Right" |
+| 08 | `08_Versione4_TitoloCriteri` (21 ott., **in corso**) | **Versione 4**: ModernBERT legge *titolo + articolo* (può confrontarli) e impara anche i 5 criteri NewsGuard visibili nel testo | In corso. Primo dato: il TF-IDF con il titolo fa F1 0,375 / binario 0,737, come senza titolo |
 
-La storia completa, con i grafici, è nella presentazione `Riunioni/Stato dei lavori/stato_dei_lavori.pdf`.
+**In sintesi, finora.** Con una valutazione che tiene conto delle reti, il solo testo dà un segnale moderato (F1
+≈ 0,38, binario ≈ 0,74–0,78) e i transformer non battono un TF-IDF fatto bene. Il TF-IDF va bene perché i livelli
+NewsGuard vanno di pari passo con il genere della testata, che si legge ovunque nel testo. La presentazione con tutti i
+grafici è `Riunioni/Stato dei lavori/stato_dei_lavori.pdf`.
 
-## Com'è fatto un tentativo
+## 4. Com'è fatto un tentativo
+
+Ogni tentativo è **autonomo**: contiene la catena completa e legge e scrive solo dentro la sua cartella, come se si
+ripartisse da zero.
 
 ```
-0-scraping/          scraper e costruzione del dataset grezzo di articoli  ->  Dataset/NuovoScraping/
-1-data-cleaning/     pulizia, reti di testate parenti, dataset finale e fold  ->  Dataset/derived/, Dataset/versioni/
-2-classificazione/   TF-IDF, transformer, embedding, confronto  ->  Results/2-classificazione/
-Dataset/             i dati (fuori da git: dati NewsGuard non redistribuibili, e troppo grandi)
-Results/             notebook eseguiti, log, predizioni, metriche (in git, tranne embedding .npy e modelli)
-README.md            la domanda, il disegno fissato prima dei risultati, i risultati, come rilanciarlo
-stato.sh, controlla_server.sh, esegui_tutto.py / coda.py   per farlo girare sul server senza nessuno davanti
+Tentativi/NN_nome/
+  README.md            la domanda, il disegno fissato prima dei risultati, i risultati, come rilanciarlo
+  0-scraping/          scraper + costruisci_dataset.ipynb            ->  Dataset/NuovoScraping/
+  1-data-cleaning/     01 pulizia, 02 reti di testate, 03 dataset finale e fold
+                                                                        ->  Dataset/derived/, Dataset/versioni/
+  2-classificazione/   01 TF-IDF, 02 transformer, 03 confronto, (04 embedding…), coda degli esperimenti
+                                                                        ->  Results/2-classificazione/
+  Dataset/             i dati: fuori da git (le etichette NewsGuard non sono redistribuibili, e lo scraping pesa ~9 GB)
+  Results/             notebook eseguiti, log, predizioni per articolo, metriche (in git, tranne embedding e modelli)
+  stato.sh, controlla_server.sh, esegui_tutto.py / coda.py   per far girare tutto sul server senza nessuno davanti
 ```
 
-I notebook si eseguono dalla loro cartella (`papermill --cwd`), con percorsi relativi: `../Dataset`, `../Results`.
-`Dataset/newsguard.csv` (l'export NewsGuard) va messo a mano; il resto lo produce la catena. Ogni scelta di pulizia
-è una regola nel codice, deterministica (random state fissati): nessuna modifica a mano né fatta da un LLM.
+Nella realtà i tentativi hanno riusato il lavoro dei precedenti: lo scraping è stato fatto davvero solo due volte (il
+primo giro, usato da 02–04, e quello completo del 05, copiato in 06–08), e 07–08 usano il dataset pulito del 06. Ogni
+README dice in apertura che cosa è stato rieseguito e che cosa è copiato. Rieseguendo una catena si riottiene lo
+stesso dataset, perché tutti i passi sono deterministici.
 
-## Sul server
+**Per aggiungere un esperimento** si crea `Tentativi/09_nome/` copiando dentro la catena del tentativo da cui si
+parte, si scrive nel README la domanda e il disegno prima di lanciare, e non si usano mai percorsi verso altri
+tentativi.
 
-Server condiviso `artes4` (Tesla V100S 32 GB, ma di solito solo circa 7 GB liberi), venv `~/John/johnVenv` con il
-kernel Jupyter `johnvenv`. Un tentativo va copiato in `~/John/WebScience2027/Tentativi/<tentativo>` e lanciato
-dalla sua cartella in uno `screen` (vedi il README del tentativo). I transformer girano con batch piccoli e accumulo
-del gradiente; su artes4 NVML è rotto, e la memoria GPU finita arriva come `RuntimeError ... NVML ...
-CUDACachingAllocator`: i notebook dal tentativo 06 in poi la riconoscono e dimezzano il batch.
+## 5. Rilanciare
+
+**I dati.** `Dataset/newsguard.csv` (l'export NewsGuard, dati proprietari) va messo a mano in ogni tentativo; tutto
+il resto lo produce la catena (`0-scraping` scarica gli articoli e l'HTML grezzo, che serve a `02_reti`).
+
+**Il server.** Si lavora sul server condiviso `artes4` (GPU Tesla V100S da 32 GB, di solito solo ~7 GB liberi
+perché la usano anche altri), con il venv `~/John/johnVenv` e il kernel Jupyter `johnvenv`. Un tentativo va copiato
+in `~/John/WebScience2027/Tentativi/<tentativo>` e lanciato dalla sua cartella in uno `screen`, come scritto nel suo
+README; per esempio, per l'intera catena del tentativo 05:
+
+```bash
+cd ~/John/WebScience2027/Tentativi/05_Versione1_Pipeline304Testate
+screen -dmS tutto bash -c 'until ~/John/johnVenv/bin/python esegui_tutto.py; do sleep 120; done'
+./stato.sh                     # sul server: a che punto è
+./controlla_server.sh          # dal PC: la stessa cosa via ssh
+```
+
+Le code (`esegui_tutto.py`, `coda.py`) eseguono i notebook con papermill in processi separati, con tempi massimi,
+fino a 3 tentativi per esperimento e ripresa da dove si erano fermate; i log stanno in `Results/`.
+
+**Note pratiche sulla GPU.** I transformer girano con batch piccoli (4) e accumulo del gradiente fino a 32, così
+entrano in ~5 GB; ModernBERT-large non entra nei ~7 GB liberi. Su artes4 NVML è rotto (driver/library mismatch):
+`nvidia-smi` non funziona e la memoria GPU finita arriva come `RuntimeError ... NVML ... CUDACachingAllocator`
+invece di `OutOfMemoryError`; i notebook dal tentativo 06 in poi la riconoscono e ripartono con il batch dimezzato.
+
+## 6. Glossario
+
+- **Testata**: un sito di notizie (un dominio), con un punteggio NewsGuard.
+- **Rete**: testate parenti trovate senza NewsGuard (articoli copiati, stessi codici di account nell'HTML, stessa
+  privacy policy, stesso dominio, stessi autori).
+- **Gruppo**: rete trovata **oppure** stesso proprietario NewsGuard; l'unità dei fold.
+- **Testate valutate / di solo training**: quelle nel test (almeno 20 articoli, al più 5 per gruppo) e le altre, usate
+  solo per addestrare (dal tentativo 06).
+- **Fold per gruppo / per testata**: un gruppo tutto da una parte / ogni testata a caso (il secondo solo per confronto).
+- **Ensemble**: media delle probabilità dello stesso modello addestrato con seed diversi.
+- **Genere** di una testata: orientamento politico, tipo di sito, paese; è ciò che il TF-IDF legge di più.
