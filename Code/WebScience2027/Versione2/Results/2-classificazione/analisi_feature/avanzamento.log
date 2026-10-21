@@ -1,0 +1,32 @@
+2026-10-20 11:01:49  === analisi del feature: 44012 articoli, 304 testate, fold [np.int64(1), np.int64(2), np.int64(3), np.int64(4), np.int64(5)] ===
+2026-10-20 11:01:52  --- 1. dataset a vista
+2026-10-20 11:01:52      fatta in 0.0 min
+2026-10-20 11:01:58  testi preparati per le ablazioni
+2026-10-20 11:06:32  40 addestramenti (varianti x fold) in 4.6 min
+2026-10-20 11:06:32  ablazioni:
+                         F1 macro  accuratezza  binario
+riferimento                 0.387        0.461    0.776
+senza nomi propri           0.383        0.441    0.760
+solo parole funzione        0.364        0.398    0.717
+senza parole funzione       0.370        0.444    0.753
+primi 100 parole            0.344        0.447    0.730
+primi 300 parole            0.367        0.454    0.757
+senza le 1000 più forti     0.377        0.444    0.753
+solo unigrammi              0.387        0.457    0.773
+2026-10-20 11:06:33  --- 3. parole più forti
+2026-10-20 11:14:18      fatta in 7.7 min
+2026-10-20 11:14:18  --- 4. contributi per testata
+2026-10-20 11:15:22      fatta in 1.1 min
+2026-10-20 11:15:22  --- 5. altri segnali
+2026-10-20 11:15:22      solo stile: F1 0.296, binario 0.635
+2026-10-20 11:15:22      solo date: F1 0.150, binario 0.543
+2026-10-20 11:15:22      solo metadati: F1 0.339, binario 0.688
+2026-10-20 11:15:22      fatta in 0.0 min
+2026-10-20 11:15:22  --- 6. orientamento
+2026-10-20 11:17:27      TF-IDF -> orientamento: {'testate': 222, 'accuratezza orientamento': 0.5765765765765766, 'F1 macro orientamento': 0.4498815586036682, 'classe più frequente': np.float64(0.3783783783783784)}
+2026-10-20 11:17:27      fatta in 2.1 min
+2026-10-20 11:17:27  --- 7. quanti articoli
+2026-10-20 11:17:28      fatta in 0.0 min
+2026-10-20 11:17:28  --- 8. errori
+2026-10-20 11:17:29  === analisi finita in 15.7 min ===
+2026-10-20 11:17:29      fatta in 0.0 min

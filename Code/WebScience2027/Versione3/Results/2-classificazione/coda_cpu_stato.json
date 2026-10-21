@@ -1,0 +1,47 @@
+{
+ "esperimenti": {
+  "feature_genere": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-20 12:24:02",
+   "minuti": 3.4,
+   "fine": "2026-10-20 12:27:27"
+  },
+  "feature_genere_tuned": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-20 12:28:12",
+   "minuti": 25.1,
+   "fine": "2026-10-20 12:53:17"
+  },
+  "feature_genere_solo_funzione": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-20 15:11:09",
+   "minuti": 1.0,
+   "fine": "2026-10-20 15:12:10"
+  },
+  "feature_genere_senza_nomi": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-20 15:15:04",
+   "minuti": 3.2,
+   "fine": "2026-10-20 15:18:13"
+  },
+  "e5_genere": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-20 15:24:18",
+   "minuti": 0.2,
+   "fine": "2026-10-20 15:24:30"
+  },
+  "bge_genere": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-20 15:30:38",
+   "minuti": 0.2,
+   "fine": "2026-10-20 15:30:51"
+  }
+ },
+ "aggiornato": "2026-10-20 15:30:51"
+}

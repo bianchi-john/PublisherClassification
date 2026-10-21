@@ -72,3 +72,11 @@ riparte dal fold. La coda aspetta fino a 2 ore che si liberi la memoria indicata
   anche questo errore (e gli altri modi in cui CUDA segnala la memoria finita).
 - Coda fermata il 20 ottobre. Dettagli in `Results/2-classificazione/03_confronto_*.csv` e nella presentazione
   `Riunioni/Stato dei lavori/`.
+
+## Perché il TF-IDF va così bene (`2-classificazione/05_analisi_feature.ipynb`, 20 ottobre)
+
+Ablazioni, parole più forti e decisive, altri segnali (stile, date, metadati NewsGuard), orientamento politico, numero
+di articoli, errori; risultati in `Results/2-classificazione/analisi_feature/`. In breve: il segnale è sparso (con
+solo le parole funzione F1 0,364; senza nomi propri 0,383) e segue il "genere" della testata. Il TF-IDF riconosce
+l'orientamento (0,58 contro 0,38), i soli metadati NewsGuard fanno 0,339, e dentro un orientamento il modello quasi
+non batte il livello più comune. Da qui la Versione 3 (`../Versione3`, a parità di genere).

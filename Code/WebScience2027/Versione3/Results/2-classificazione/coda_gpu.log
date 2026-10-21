@@ -1,0 +1,22 @@
+2026-10-20 12:24:02  === corsia gpu: 3 esperimenti ===
+2026-10-20 12:24:02  >>> modernbert_base_genere_s42: tentativo 1/3
+2026-10-20 13:50:18  <<< modernbert_base_genere_s42: fatto in 86 min
+2026-10-20 13:52:25  confronto aggiornato (esito 0)
+2026-10-20 13:52:25  >>> modernbert_base_genere_s1: tentativo 1/3
+2026-10-20 15:17:58  <<< modernbert_base_genere_s1: fatto in 86 min
+2026-10-20 15:22:50  confronto aggiornato (esito 0)
+2026-10-20 15:22:50  >>> modernbert_base_genere_s2: tentativo 1/3
+2026-10-20 16:48:47  <<< modernbert_base_genere_s2: fatto in 86 min
+2026-10-20 16:56:26  confronto aggiornato (esito 0)
+2026-10-20 16:56:26  === corsia gpu finita ===
+2026-10-20 16:57:00  === corsia gpu: 5 esperimenti ===
+2026-10-20 17:04:39  confronto aggiornato (esito 0)
+2026-10-20 17:12:14  confronto aggiornato (esito 0)
+2026-10-20 17:20:03  confronto aggiornato (esito 0)
+2026-10-20 17:20:03  >>> modernbert_base_genere_s3: tentativo 1/3
+2026-10-20 18:47:46  <<< modernbert_base_genere_s3: fatto in 88 min
+2026-10-20 18:55:59  confronto aggiornato (esito 0)
+2026-10-20 18:55:59  >>> modernbert_base_genere_s4: tentativo 1/3
+2026-10-20 20:22:03  <<< modernbert_base_genere_s4: fatto in 86 min
+2026-10-20 20:30:57  confronto aggiornato (esito 0)
+2026-10-20 20:30:57  === corsia gpu finita ===

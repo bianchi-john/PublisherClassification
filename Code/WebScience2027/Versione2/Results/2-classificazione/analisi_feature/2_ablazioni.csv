@@ -1,0 +1,9 @@
+,F1 macro,accuratezza,binario
+riferimento,0.387,0.461,0.776
+senza nomi propri,0.383,0.441,0.76
+solo parole funzione,0.364,0.398,0.717
+senza parole funzione,0.37,0.444,0.753
+primi 100 parole,0.344,0.447,0.73
+primi 300 parole,0.367,0.454,0.757
+senza le 1000 più forti,0.377,0.444,0.753
+solo unigrammi,0.387,0.457,0.773

@@ -653,14 +653,139 @@
   \vfill
 \end{frame}
 
+% ===================================================================================================
+\divider{Perch\'e il TF-IDF va cos\`i bene}{l'analisi del 20 ottobre (Versione 2, \texttt{05\_analisi\_feature})}
+
+\begin{frame}{Il segnale \`e sparso: regge a quasi tutto}
+  \begin{columns}[c]
+    \begin{column}{0.52\textwidth}
+      \centering\small
+      \begin{tabular}{lcc}
+        \toprule
+        \textbf{Il TF-IDF su\dots} & \textbf{F1} & \textbf{binario} \\
+        \midrule
+        il testo intero & 0,387 & 0,776 \\
+        senza nomi propri & 0,383 & 0,760 \\
+        senza le 1000 parole pi\`u forti & 0,377 & 0,753 \\
+        senza parole funzione & 0,370 & 0,753 \\
+        \textbf{solo parole funzione} & \textbf{0,364} & 0,717 \\
+        solo le prime 100 parole & 0,344 & 0,730 \\
+        \bottomrule
+      \end{tabular}\\[0.3em]
+      {\scriptsize Stesse 304 testate, fold per gruppo; ogni riga riaddestrata.}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{0.6em}
+        \small
+        \item Non sono i nomi, n\'e poche parole memorizzate
+        \item Con \hl{solo le parole funzione} (the, of, which\dots), cio\`e lo stile senza contenuto, si arriva a 0,364
+        \item C'\`e in ogni articolo: con \hl{1 articolo} per testata 0,325, con 5 gi\`a 0,372, con 20 il massimo
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{I livelli sono generi diversi di testata}
+  \vspace{0.2em}
+  \centering\footnotesize
+  \begin{tabular}{lccccc}
+    \toprule
+    \textbf{Metadati NewsGuard} (quota di testate) & $l_1$ & $l_2$ & $l_3$ & $l_4$ & $l_5$ \\
+    \midrule
+    orientamento Far Right & 0,69 & 0,32 & 0,25 & 0,05 & 0,00 \\
+    argomento ``Conspiracy theories'' & 0,56 & 0,08 & 0,11 & 0,01 & 0,00 \\
+    opinione o advocacy & 0,90 & 0,89 & 0,75 & 0,53 & 0,33 \\
+    testate fuori dagli Stati Uniti & 0,08 & 0,06 & 0,17 & 0,35 & 0,28 \\
+    \bottomrule
+  \end{tabular}\\[0.5em]
+  \raggedright
+  \begin{itemize}[<+->]
+    \footnotesize
+    \item $l_1$: estrema destra e complotti, siti che riprendono contenuti; \textit{president trump, abortion, media, kiev}; citano le fonti per dominio (\textit{youtube.com, foxnews.com})
+    \item $l_2$: notizie conservatrici di parte; \textit{according to, said, fox news, breitbart}
+    \item $l_3$: giornali locali; parole forti = nomi di contee e citt\`a, firme di una testata sola: indovina l'11\%
+    \item $l_4$ e $l_5$: testate internazionali e d'inchiesta; \textit{per cent, defence, kyiv, Ireland, ProPublica}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{L'orientamento politico}
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.55em}
+    \small
+    \item Il TF-IDF \hl{riconosce l'orientamento} dal testo: accuratezza 0,58, contro 0,38 della classe pi\`u frequente
+    \item Dentro un orientamento quasi \hl{non batte} il livello pi\`u comune di quell'orientamento: Far Right 0,55 contro 0,58, Slightly Left 0,36 contro 0,52
+    \item Senza nessuna parola, i soli \hl{metadati NewsGuard} (orientamento, opinione, argomenti, paese) fanno F1 \hl{0,339}; dodici misure di stile 0,296; le date 0,150 (niente)
+    \item[] {\small\itshape Il TF-IDF va bene perch\'e il livello va di pari passo con il genere della testata, che si legge ovunque nel testo. \`E il confondente da scrivere nel paper.}
+    \item Ma un segnale \hl{oltre il genere} c'\`e: affidabile s\`i/no \hl{dentro} ogni orientamento, il TF-IDF fa 0,66 di accuratezza bilanciata (il caso fa 0,50); ModernBERT-base 0,54 {\footnotesize (a posteriori, su modelli non addestrati per questo)}
+  \end{itemize}
+\end{frame}
+
+% ===================================================================================================
+\divider{Versione 3: a parit\`a di genere}{il testo distingue l'affidabilit\`a dentro lo stesso orientamento? (lanciata il 20 ottobre)}
+
+\begin{frame}{Versione 3: il disegno, fissato prima dei risultati}
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.6em}
+    \item Lo \hl{stesso dataset} della Versione 2: stessa pulizia, stesse 304 testate di test, stessi fold per gruppo
+    \item Compito \hl{binario}: affidabile = punteggio $\geq 60$
+    \item \hl{Pesi a parit\`a di genere}: dentro ogni orientamento NewsGuard (Far Right, Slightly Right, Slightly Left, Far Left, nessuno) affidabili e inaffidabili pesano uguale nel training. Sapere l'orientamento non serve pi\`u
+    \item Metrica: \hl{accuratezza bilanciata dentro ogni orientamento}, poi la media. I soli metadati fanno \hl{0,50} per costruzione: tutto quello che sta sopra viene dal testo
+    \item TF-IDF (C = 1 e C in validazione interna) e ModernBERT-base con 3 seed e il loro ensemble; nei log, fold per fold, i due modelli sugli stessi fold
+    \item[] {\small\itshape Il limite: l'unico orientamento bilanciato \`e Slightly Right (40 testate affidabili, 38 no); Far Right 14 contro 70. Intervalli larghi.}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Versione 3: i risultati}
+  \vspace{0.1em}
+  \centering\footnotesize
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{lccccccc}
+    \toprule
+    & \textbf{media sugli} & \textbf{IC 95\%} & \textbf{AUC} & \textbf{Slightly} & \textbf{Far} & \textbf{Slightly} & \textbf{nessun} \\
+    \textbf{Modello} & \textbf{orientamenti} & & \textbf{media} & \textbf{Right} & \textbf{Right} & \textbf{Left} & \textbf{orient.} \\
+    \midrule
+    \textbf{TF-IDF, C in validazione} (riferimento) & 0,593 & 0,53--0,67 & \textbf{0,735} & 0,51 & 0,60 & 0,46 & \textbf{0,77} \\
+    TF-IDF, C = 1 & \textbf{0,618} & 0,55--0,74 & 0,671 & 0,56 & \textbf{0,65} & \textbf{0,54} & 0,71 \\
+    TF-IDF, solo parole funzione & \textbf{0,618} & 0,55--0,74 & 0,610 & 0,60 & 0,64 & 0,53 & 0,70 \\
+    TF-IDF, senza nomi propri & 0,589 & 0,53--0,67 & 0,656 & 0,52 & \textbf{0,65} & 0,45 & 0,70 \\
+    \midrule
+    ModernBERT-base, i 5 seed & 0,53--0,60 & & 0,62--0,65 & \textbf{0,57--0,71} & 0,52--0,58 & 0,38--0,48 & 0,59--0,73 \\
+    ModernBERT-base, ensemble di 5 & 0,551 & 0,49--0,63 & 0,639 & 0,63 & 0,57 & 0,41 & 0,60 \\
+    \midrule
+    e5-large congelato & 0,569 & 0,49--0,66 & 0,611 & 0,60 & 0,59 & 0,39 & 0,76 \\
+    bge-large congelato & 0,502 & 0,44--0,56 & 0,593 & 0,58 & 0,43 & 0,39 & 0,74 \\
+    \midrule
+    combinazione TF-IDF + ModernBERT (0,5/0,5) & 0,597 & 0,54--0,68 & 0,693 & 0,60 & 0,56 & 0,46 & 0,74 \\
+    \midrule
+    solo i metadati (per costruzione) & 0,50 & & 0,50 & 0,50 & 0,50 & 0,50 & 0,50 \\
+    \bottomrule
+  \end{tabular}}\\[0.3em]
+  \raggedright{\scriptsize\itshape Accuratezza bilanciata per testata (affidabile s\`i/no) dentro ogni orientamento; 304 testate, fold per gruppo; intervalli con un bootstrap per gruppo. Far Left (16 testate) non \`e in tabella.}
+\end{frame}
+
+\begin{frame}{Versione 3: cosa ci dice}
+  \begin{enumerate}[<+->]
+    \setlength\itemsep{0.55em}
+    \small
+    \item Un segnale di affidabilit\`a \hl{oltre il genere} c'\`e, ma \`e \hl{modesto}: 0,55--0,62 contro 0,50 del caso (AUC fino a 0,74)
+    \item \hl{Nessun modello batte il TF-IDF} in modo significativo: tutte le differenze con il riferimento stanno negli intervalli (l'ensemble di ModernBERT $-0{,}04$, da $-0{,}10$ a $+0{,}02$); bge fa peggio
+    \item Il TF-IDF sulle \hl{sole parole funzione} fa quanto quello sul testo intero (0,618): dentro lo stesso orientamento il segnale \`e \hl{stile}, non contenuto
+    \item L'unica regolarit\`a a favore dei transformer: in \hl{Slightly Right}, l'orientamento bilanciato (40 contro 38), \hl{tutti e 5} i seed di ModernBERT fanno meglio del TF-IDF di riferimento (0,57--0,71 contro 0,51). In Far Right il contrario
+    \item L'ensemble va peggio dei singoli seed sulla soglia 0,5 ma non sull'AUC: mediando le probabilit\`a si sposta la calibrazione
+  \end{enumerate}
+  \vspace{0.3em}
+  \visible<6->{\small\itshape Lettura a posteriori per orientamento, su 78 testate: un indizio da verificare, non un risultato.}
+\end{frame}
+
 \begin{frame}{Prossimi passi}
   \vfill
   \begin{enumerate}[<+->]
     \setlength\itemsep{0.8em}
-    \item Decidere come raccontare la \hl{parit\`a}: con una valutazione che tiene conto delle reti, i transformer non aggiungono nulla a un modello lessicale. \`E un risultato, e il protocollo \`e il contributo
-    \item Provare l'unica leva con informazione davvero \hl{diversa}: la prova pilota con i segnali di Claude (proposta di Fabio, qui sotto)
+    \item Versione 3: il segnale oltre il genere c'\`e, \`e stile, e il TF-IDF lo coglie quanto o meglio dei transformer. Da verificare l'indizio di \hl{Slightly Right}
+    \item Scrivere il \hl{confondente} orientamento/genere come risultato: i livelli NewsGuard e l'ideologia vanno di pari passo, e il testo dice soprattutto l'ideologia
+    \item La prova pilota con i \hl{segnali di Claude} proprio a parit\`a di genere (Slightly Right e Far Right)
     \item ModernBERT-large quando la \hl{GPU} del server \`e libera
-    \item Come presentare il \hl{confondente} tema/orientamento politico
   \end{enumerate}
   \vfill
 \end{frame}

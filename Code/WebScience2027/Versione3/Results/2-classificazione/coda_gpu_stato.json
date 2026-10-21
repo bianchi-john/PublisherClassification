@@ -1,0 +1,40 @@
+{
+ "esperimenti": {
+  "modernbert_base_genere_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-20 12:24:02",
+   "minuti": 86.3,
+   "fine": "2026-10-20 13:50:18"
+  },
+  "modernbert_base_genere_s1": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-20 13:52:25",
+   "minuti": 85.6,
+   "fine": "2026-10-20 15:17:58"
+  },
+  "modernbert_base_genere_s2": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-20 15:22:50",
+   "minuti": 86.0,
+   "fine": "2026-10-20 16:48:47"
+  },
+  "modernbert_base_genere_s3": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-20 17:20:03",
+   "minuti": 87.7,
+   "fine": "2026-10-20 18:47:46"
+  },
+  "modernbert_base_genere_s4": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-20 18:55:59",
+   "minuti": 86.1,
+   "fine": "2026-10-20 20:22:03"
+  }
+ },
+ "aggiornato": "2026-10-20 20:22:03"
+}

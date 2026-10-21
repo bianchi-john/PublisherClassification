@@ -1,0 +1,13 @@
+,l1,l2,l3,l4,l5
+parole,572.5,572.0,602.0,572.0,743.5
+parole per frase,21.0,20.1,20.6,22.5,22.5
+maiuscole %,3.8,4.3,3.9,3.7,3.8
+! ogni 1000 parole,0.0,0.0,0.0,0.0,0.0
+? ogni 1000 parole,0.0,0.0,0.0,0.0,0.0
+virgolette ogni 1000 parole,13.7,18.9,14.1,15.6,18.2
+numeri ogni 1000 parole,14.1,16.4,12.7,13.7,14.5
+io/noi ogni 1000 parole,4.2,4.9,8.2,6.0,5.0
+tu/voi ogni 1000 parole,0.0,0.0,1.5,0.0,0.0
+parole lunghe %,20.0,19.3,17.2,18.9,18.8
+parole diverse % (prime 300),61.3,61.0,60.3,61.0,60.4
+parentesi ogni 1000 parole,0.0,0.0,0.0,0.0,0.5

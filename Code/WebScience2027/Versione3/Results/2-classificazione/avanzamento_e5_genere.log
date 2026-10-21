@@ -1,0 +1,7 @@
+2026-10-20 15:24:24  === e5_genere: e5_large_v2, 75389 articoli, 863 testate (304 valutate) ===
+2026-10-20 15:24:25  fold 1: C 10.0 (interne 0.01: 0.562, 0.1: 0.542, 1.0: 0.554, 10.0: 0.570); media sugli orientamenti 0.565
+2026-10-20 15:24:26  fold 2: C 0.01 (interne 0.01: 0.561, 0.1: 0.542, 1.0: 0.546, 10.0: 0.529); media sugli orientamenti 0.748
+2026-10-20 15:24:27  fold 3: C 0.01 (interne 0.01: 0.608, 0.1: 0.601, 1.0: 0.577, 10.0: 0.540); media sugli orientamenti 0.575
+2026-10-20 15:24:28  fold 4: C 1.0 (interne 0.01: 0.574, 0.1: 0.584, 1.0: 0.596, 10.0: 0.573); media sugli orientamenti 0.568
+2026-10-20 15:24:29  fold 5: C 0.1 (interne 0.01: 0.599, 0.1: 0.631, 1.0: 0.608, 10.0: 0.579); media sugli orientamenti 0.570
+2026-10-20 15:24:30  === e5_genere FINITO: media sugli orientamenti 0.569, AUC 0.611 ===

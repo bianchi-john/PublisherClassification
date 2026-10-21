@@ -1,0 +1,7 @@
+2026-10-20 15:30:44  === bge_genere: bge_large_v15, 75389 articoli, 863 testate (304 valutate) ===
+2026-10-20 15:30:45  fold 1: C 0.1 (interne 0.01: 0.564, 0.1: 0.571, 1.0: 0.547, 10.0: 0.548); media sugli orientamenti 0.433
+2026-10-20 15:30:47  fold 2: C 0.1 (interne 0.01: 0.486, 0.1: 0.548, 1.0: 0.537, 10.0: 0.526); media sugli orientamenti 0.637
+2026-10-20 15:30:48  fold 3: C 0.1 (interne 0.01: 0.552, 0.1: 0.565, 1.0: 0.541, 10.0: 0.551); media sugli orientamenti 0.615
+2026-10-20 15:30:49  fold 4: C 0.01 (interne 0.01: 0.547, 0.1: 0.487, 1.0: 0.517, 10.0: 0.499); media sugli orientamenti 0.560
+2026-10-20 15:30:50  fold 5: C 0.01 (interne 0.01: 0.648, 0.1: 0.581, 1.0: 0.591, 10.0: 0.550); media sugli orientamenti 0.485
+2026-10-20 15:30:51  === bge_genere FINITO: media sugli orientamenti 0.502, AUC 0.593 ===

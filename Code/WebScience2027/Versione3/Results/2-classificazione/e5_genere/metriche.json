@@ -1,0 +1,13 @@
+{
+ "testate": 304,
+ "media sugli orientamenti": 0.5688236215538847,
+ "AUC media sugli orientamenti": 0.610514940625373,
+ "bilanciata (nessuno)": 0.7552083333333333,
+ "bilanciata Far Left": 0.5,
+ "bilanciata Far Right": 0.5928571428571429,
+ "bilanciata Slightly Left": 0.39473684210526316,
+ "bilanciata Slightly Right": 0.6013157894736842,
+ "bilanciata su tutto": 0.6918767507002801,
+ "accuratezza": 0.6973684210526315,
+ "F1 macro": 0.6925647451963242
+}

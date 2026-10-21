@@ -10,6 +10,8 @@ suoi articoli**, valutando su testate di **reti mai viste** in addestramento.
 Dataset/                 dati (fuori da git)
 Results/                 risultati e notebook eseguiti
 EsperimentiPreliminari/  i tentativi precedenti (dataset di IrForGood; nuovo scraping con le pagine del sito)
+Versione2/               più pulizia (resti di contenuti incorporati) e training allargato; analisi del TF-IDF
+Versione3/               a parità di genere: affidabile sì/no dentro ogni orientamento politico
 stato.sh                 cosa gira sul server e da quanto
 ```
 
@@ -54,3 +56,12 @@ con tempi massimi, tentativi e ripresa da dove si era fermato. Dal PC: `./contro
 
 Nessuna differenza significativa tra feature e transformer (bootstrap per gruppo). Dettagli in
 `Results/2-classificazione/03_confronto_*.csv` e nella presentazione `Riunioni/Stato dei lavori/`.
+
+## Le versioni successive
+
+- **Versione 2** (`Versione2/`, 19–20 ottobre): una regola di pulizia in più, testate di solo training con il tetto a
+  rotazione, una combinazione fissata a priori. Nessun guadagno per i transformer; l'analisi del TF-IDF mostra che il
+  suo segnale segue il genere (orientamento politico, tipo di sito, paese) della testata.
+- **Versione 3** (`Versione3/`, dal 20 ottobre): compito binario a parità di genere, valutato dentro ogni orientamento.
+
+Ogni cartella ha il suo README con il disegno, i risultati e come rilanciarla.

@@ -1,0 +1,24 @@
+2026-10-20 12:24:02  === corsia cpu: 2 esperimenti ===
+2026-10-20 12:24:02  >>> feature_genere: tentativo 1/3
+2026-10-20 12:27:27  <<< feature_genere: fatto in 3 min
+2026-10-20 12:28:12  confronto aggiornato (esito 0)
+2026-10-20 12:28:12  >>> feature_genere_tuned: tentativo 1/3
+2026-10-20 12:53:17  <<< feature_genere_tuned: fatto in 25 min
+2026-10-20 12:54:46  confronto aggiornato (esito 0)
+2026-10-20 12:54:46  === corsia cpu finita ===
+2026-10-20 15:06:59  === corsia cpu: 6 esperimenti ===
+2026-10-20 15:09:04  confronto aggiornato (esito 0)
+2026-10-20 15:11:09  confronto aggiornato (esito 0)
+2026-10-20 15:11:09  >>> feature_genere_solo_funzione: tentativo 1/3
+2026-10-20 15:12:10  <<< feature_genere_solo_funzione: fatto in 1 min
+2026-10-20 15:15:04  confronto aggiornato (esito 0)
+2026-10-20 15:15:04  >>> feature_genere_senza_nomi: tentativo 1/3
+2026-10-20 15:18:13  <<< feature_genere_senza_nomi: fatto in 3 min
+2026-10-20 15:24:18  confronto aggiornato (esito 0)
+2026-10-20 15:24:18  >>> e5_genere: tentativo 1/3
+2026-10-20 15:24:30  <<< e5_genere: fatto in 0 min
+2026-10-20 15:30:38  confronto aggiornato (esito 0)
+2026-10-20 15:30:38  >>> bge_genere: tentativo 1/3
+2026-10-20 15:30:51  <<< bge_genere: fatto in 0 min
+2026-10-20 15:37:41  confronto aggiornato (esito 0)
+2026-10-20 15:37:41  === corsia cpu finita ===

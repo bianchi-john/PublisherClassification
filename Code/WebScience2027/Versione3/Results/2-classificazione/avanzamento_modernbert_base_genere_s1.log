@@ -1,0 +1,23 @@
+2026-10-20 13:52:29  === modernbert_base_genere_s1: answerdotai/ModernBERT-base, seed 1, su Tesla V100S-PCIE-32GB ===
+2026-10-20 13:53:33  75389 articoli tokenizzati, 863 testate
+2026-10-20 13:53:34  fold 1: 336 testate di training, 114 di validazione, 61 di test; 4622 articoli per epoca; batch 4
+2026-10-20 14:01:07  fold 1 epoca 1/2: loss 0.6498, validazione: media sugli orientamenti 0.600 (451 s)
+2026-10-20 14:08:38  fold 1 epoca 2/2: loss 0.5518, validazione: media sugli orientamenti 0.700 (450 s)
+2026-10-20 14:10:25  fold 1: finito in 17 min; media sugli orientamenti 0.485 (AUC 0.616) | TF-IDF sullo stesso fold: 0.653 (AUC 0.687); memoria GPU massima 5.1 GB
+2026-10-20 14:10:27  fold 2: 342 testate di training, 375 di validazione, 61 di test; 4712 articoli per epoca; batch 4
+2026-10-20 14:17:43  fold 2 epoca 1/2: loss 0.6688, validazione: media sugli orientamenti 0.812 (436 s)
+2026-10-20 14:24:57  fold 2 epoca 2/2: loss 0.5682, validazione: media sugli orientamenti 0.562 (434 s)
+2026-10-20 14:27:23  fold 2: finito in 17 min; media sugli orientamenti 0.609 (AUC 0.809) | TF-IDF sullo stesso fold: 0.615 (AUC 0.764); memoria GPU massima 5.1 GB
+2026-10-20 14:27:25  fold 3: 349 testate di training, 373 di validazione, 61 di test; 4665 articoli per epoca; batch 4
+2026-10-20 14:34:37  fold 3 epoca 1/2: loss 0.6499, validazione: media sugli orientamenti 0.708 (432 s)
+2026-10-20 14:41:53  fold 3 epoca 2/2: loss 0.5585, validazione: media sugli orientamenti 0.667 (436 s)
+2026-10-20 14:44:14  fold 3: finito in 17 min; media sugli orientamenti 0.641 (AUC 0.809) | TF-IDF sullo stesso fold: 0.564 (AUC 0.725); memoria GPU massima 5.1 GB
+2026-10-20 14:44:15  fold 4: 401 testate di training, 376 di validazione, 61 di test; 4649 articoli per epoca; batch 4
+2026-10-20 14:51:26  fold 4 epoca 1/2: loss 0.6458, validazione: media sugli orientamenti 0.577 (431 s)
+2026-10-20 14:58:32  fold 4 epoca 2/2: loss 0.5591, validazione: media sugli orientamenti 0.768 (426 s)
+2026-10-20 15:00:59  fold 4: finito in 17 min; media sugli orientamenti 0.578 (AUC 0.691) | TF-IDF sullo stesso fold: 0.705 (AUC 0.735); memoria GPU massima 5.1 GB
+2026-10-20 15:01:00  fold 5: 410 testate di training, 376 di validazione, 60 di test; 4597 articoli per epoca; batch 4
+2026-10-20 15:08:17  fold 5 epoca 1/2: loss 0.6636, validazione: media sugli orientamenti 0.850 (436 s)
+2026-10-20 15:15:39  fold 5 epoca 2/2: loss 0.5546, validazione: media sugli orientamenti 0.672 (442 s)
+2026-10-20 15:17:53  fold 5: finito in 17 min; media sugli orientamenti 0.588 (AUC 0.617) | TF-IDF sullo stesso fold: 0.580 (AUC 0.642); memoria GPU massima 5.1 GB
+2026-10-20 15:17:54  === modernbert_base_genere_s1 FINITO: media sugli orientamenti 0.533, AUC 0.639, bilanciata su tutto 0.691 ===
