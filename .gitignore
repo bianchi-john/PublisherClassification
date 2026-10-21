@@ -53,5 +53,5 @@ Thumbs.db
 # Restano in locale e nel backup ~/Backup/artes4_John_WebScience2027, non su GitHub (file oltre i 100 MB).
 Code/WebScience2027/**/Results/**/*.npy
 Code/WebScience2027/**/Results/**/*.pkl
-Code/WebScience2027/Results/prove/
+Code/WebScience2027/Tentativi/*/Results/prove/
 Code/WebScience2027/**/Results/**/prova/
