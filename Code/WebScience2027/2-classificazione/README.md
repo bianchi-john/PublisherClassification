@@ -1,5 +1,7 @@
 # 2 — Classificazione
 
+> **Versione 1** (18 ottobre). Le versioni successive sono in `../Versione2` e `../Versione3`; il percorso completo è nel README principale.
+
 Sul dataset finale (`../Dataset/versioni/dataset_finale.csv`), solo il testo degli articoli. Valutazione **per
 testata**, fold **per gruppo** (principale) e per testata (confronto), stratificati per livello. Metriche
 principali, fissate prima dei risultati: F1 macro a 5 classi e binario (punteggio ≥ 60).

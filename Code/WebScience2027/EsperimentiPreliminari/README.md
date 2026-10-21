@@ -12,3 +12,6 @@ non fanno parte della pipeline.
 
 Ogni cartella ha il suo README con il dettaglio. I percorsi nel codice puntano ai dati dentro la cartella
 stessa (`Dataset/`, `Results/`) e, per i dati grezzi del nuovo scraping, a `../../Dataset/NuovoScraping/`.
+
+Dopo il quarto tentativo si riparte da un solo scraping, allargato: è la **Versione 1** (cartelle principali di
+`WebScience2027`), seguita dalle Versioni 2 e 3. Il percorso completo è nel README principale.

@@ -27,8 +27,10 @@ TF-IDF fa 0,66, ModernBERT-base (ensemble) 0,54.
 2-classificazione/01_feature_genere.ipynb   TF-IDF + regressione logistica (C = 1, o C in validazione interna)
 2-classificazione/02_transformer_genere.ipynb  ModernBERT-base, binario, loss pesata per genere; a ogni fold il log
                                             scrive anche il TF-IDF sullo stesso fold
-2-classificazione/03_confronto_genere.ipynb tutti i modelli, ensemble dei seed, bootstrap per gruppo
-2-classificazione/coda.py                   due corsie in parallelo: cpu (TF-IDF) e gpu (ModernBERT, seed 42, 1, 2)
+2-classificazione/03_confronto_genere.ipynb tutti i modelli, ensemble dei seed, combinazione, bootstrap per gruppo
+2-classificazione/04_embedding_genere.ipynb e5 e bge congelati (gli embedding della Versione 2) + LR a parità di genere
+2-classificazione/coda.py                   due corsie in parallelo: cpu (TF-IDF, varianti, embedding) e gpu (ModernBERT,
+                                            seed 42, 1, 2, 3, 4)
 stato.sh / controlla_server.sh              a che punto è (sul server / dal PC)
 ```
 
@@ -41,31 +43,12 @@ screen -dmS v3_gpu bash -c 'until ~/John/johnVenv/bin/python coda.py gpu; do sle
 ../stato.sh
 ```
 
-## Stato al 20 ottobre, sera
+## Risultati (20–21 ottobre; tutti gli esperimenti finiti, nessuno fallito)
 
-Risultati per testata (304 testate, metrica principale = media sugli orientamenti dell'accuratezza bilanciata):
-
-| | media sugli orientamenti | AUC media | Slightly Right | Far Right | su tutto |
-|---|---|---|---|---|---|
-| TF-IDF, C = 1 | 0,618 | 0,671 | 0,56 | 0,65 | 0,703 |
-| TF-IDF, C in validazione (riferimento) | 0,593 | 0,735 | | | 0,707 |
-| ModernBERT-base, seed 42 | 0,579 | 0,632 | 0,71 | 0,52 | 0,709 |
-
-Tutti sopra il caso (0,50): un segnale di affidabilità oltre il genere c'è. Sulla metrica principale il TF-IDF resta
-un po' avanti; ModernBERT va meglio in Slightly Right (l'unico orientamento bilanciato), peggio in Far Right. Un
-seed solo: si aspetta l'ensemble.
-
-Lanciati per la notte (decisi dopo il seed 42):
-
-- corsia gpu: ModernBERT-base seed 1 e 2 (verso le 18:45), poi seed 3 e 4 (screen `v3_gpu_seed34`, verso le 22) →
-  ensemble di 5 seed;
-- corsia cpu: TF-IDF **solo parole funzione** e **senza nomi propri** a parità di genere (stile o contenuto?),
-  embedding congelati **e5** e **bge** a parità di genere (`04_embedding_genere`);
-- in `03_confronto_genere`: la **combinazione** 0,5/0,5 del TF-IDF di riferimento e dell'ensemble di ModernBERT.
-
-Domattina: `./controlla_server.sh` (stato, fold per fold) e `./controlla_server.sh risultati` (intervalli bootstrap).
-
-## Risultati finali (21 ottobre; tutti gli esperimenti finiti, nessuno fallito)
+Prima tornata (fissata prima dei risultati): TF-IDF con C = 1 e con C in validazione, ModernBERT-base seed 42, 1, 2.
+Aggiunti la sera del 20, dopo aver visto il seed 42: ModernBERT seed 3 e 4 (ensemble di 5), TF-IDF solo parole
+funzione e senza nomi propri, embedding congelati e5 e bge (`04_embedding_genere`), la combinazione 0,5/0,5 di TF-IDF
+di riferimento ed ensemble di ModernBERT.
 
 | | media sugli orientamenti [IC 95%] | AUC media | Slightly Right | Far Right |
 |---|---|---|---|---|

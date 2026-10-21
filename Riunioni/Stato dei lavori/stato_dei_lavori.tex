@@ -11,6 +11,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage{array}
 \usepackage{xcolor}
 \usepackage{tikz}
 \graphicspath{{./figure/}{./}}
@@ -44,6 +45,27 @@
 
 \begin{frame}
   \titlepage
+\end{frame}
+
+\begin{frame}{Il percorso in breve}
+  \vspace{0.2em}
+  \centering\footnotesize
+  \begin{tabular}{>{\raggedright\arraybackslash}p{0.2\textwidth}>{\raggedright\arraybackslash}p{0.33\textwidth}>{\raggedright\arraybackslash}p{0.38\textwidth}}
+    \toprule
+    \textbf{Fase} & \textbf{La domanda} & \textbf{Il risultato} \\
+    \midrule
+    Primo dataset (IrForGood, 439 testate) & perch\'e il TF-IDF va come i transformer del paper? & le \hl{reti} di siti gonfiano i numeri: 0,68 $\to$ 0,39 con i fold per gruppo \\
+    \addlinespace
+    Versione 1 (nuovo dataset, 304 testate) & con pulizia, reti e fold per gruppo, chi vince? & \hl{pari}: TF-IDF F1 0,38, transformer 0,35--0,37 \\
+    \addlinespace
+    Versione 2 & pi\`u pulizia e pi\`u testate nel training aiutano i transformer? & \hl{no}: niente cambia \\
+    \addlinespace
+    Analisi del TF-IDF & come fa ad andare cos\`i bene? & legge il \hl{genere} della testata (orientamento, tipo di sito, paese) \\
+    \addlinespace
+    Versione 3 & a parit\`a di genere, il testo dice l'affidabilit\`a? & s\`i, ma poco (0,6 contro 0,5), ed \`e \hl{stile}; il TF-IDF resta davanti \\
+    \bottomrule
+  \end{tabular}\\[0.6em]
+  \raggedright{\small\itshape Sotto, ogni fase con i dettagli; in fondo, la proposta di Fabio.}
 \end{frame}
 
 % ===================================================================================================
@@ -419,7 +441,7 @@
 \end{frame}
 
 % ===================================================================================================
-\divider{Risultati}{TF-IDF contro transformer, sul dataset nuovo}
+\divider{Versione 1: i risultati}{TF-IDF contro transformer, sul dataset nuovo (18 ottobre)}
 
 \begin{frame}{Come sono arrivato alla ricetta dei transformer}
     \centering\scriptsize
@@ -569,20 +591,10 @@
   \begin{itemize}[<+->]
     \item Il vantaggio \hl{non viene dalle reti}: il feature indovina le $l_1$ isolate (30/43) e quelle in un gruppo (20/28) allo stesso modo
     \item I residui di link e contenuti incorporati sono \hl{cornice della pagina}, come titolo e timbro che abbiamo gi\`a tolto
+    \item[] {\small\itshape Verificato nella Versione 2: togliendo i residui il TF-IDF non cambia. Non erano loro.}
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Perch\'e \`e un risultato valido per il paper}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.7em}
-    \item \hl{Il problema}: con le testate divise come al solito i numeri sono gonfiati dalle reti (primo dataset: 0,68 $\to$ 0,39)
-    \item \hl{Il metodo}: reti trovate senza NewsGuard, da testo e HTML (precisione 0,91, recall 0,88), e valutazione per gruppo; processo deterministico e replicabile
-    \item \hl{Il risultato}: con una valutazione onesta il testo da solo d\`a un segnale \hl{moderato} (F1 0,38, binario 0,74--0,78); i transformer \hl{non battono} un modello lessicale ben fatto, ma sbagliano in modo \hl{diverso}
-    \item \hl{Il dubbio}: parte del vantaggio del feature su $l_1$ sono residui di link e tweet incorporati
-  \end{itemize}
-  \vfill
-\end{frame}
 
 % ===================================================================================================
 \divider{Versione 2}{pi\`u pulizia e pi\`u testate nel training (19--20 ottobre)}
@@ -778,13 +790,25 @@
   \visible<6->{\small\itshape Lettura a posteriori per orientamento, su 78 testate: un indizio da verificare, non un risultato.}
 \end{frame}
 
+\begin{frame}{Cosa possiamo dire nel paper}
+  \begin{itemize}[<+->]
+    \setlength\itemsep{0.55em}
+    \small
+    \item \hl{Il problema}: con le testate divise come al solito i numeri sono gonfiati dalle reti di siti (primo dataset: 0,68 $\to$ 0,39)
+    \item \hl{Il metodo}: reti trovate senza NewsGuard, da testo e HTML (precisione 0,91, recall 0,88), valutazione per gruppo, processo deterministico e replicabile
+    \item \hl{Il risultato}: con una valutazione onesta il testo d\`a un segnale \hl{moderato} (F1 0,38, binario 0,74--0,78) e i transformer \hl{non battono} un TF-IDF ben fatto, in tre versioni diverse dell'esperimento
+    \item \hl{Il perch\'e}: i livelli NewsGuard vanno di pari passo con il \hl{genere} della testata (orientamento, tipo di sito, paese), che si legge ovunque nel testo, anche nelle parole funzione
+    \item \hl{Oltre il genere}: a parit\`a di orientamento resta un segnale modesto (0,6 contro 0,5) ed \`e soprattutto \hl{stile}; il TF-IDF lo coglie quanto o meglio dei transformer
+  \end{itemize}
+\end{frame}
+
 \begin{frame}{Prossimi passi}
   \vfill
   \begin{enumerate}[<+->]
     \setlength\itemsep{0.8em}
-    \item Versione 3: il segnale oltre il genere c'\`e, \`e stile, e il TF-IDF lo coglie quanto o meglio dei transformer. Da verificare l'indizio di \hl{Slightly Right}
+    \item Decidere con il gruppo la \hl{storia del paper} (la slide prima) e cominciare a scriverla
     \item Scrivere il \hl{confondente} orientamento/genere come risultato: i livelli NewsGuard e l'ideologia vanno di pari passo, e il testo dice soprattutto l'ideologia
-    \item La prova pilota con i \hl{segnali di Claude} proprio a parit\`a di genere (Slightly Right e Far Right)
+    \item La prova pilota con i \hl{segnali di Claude} proprio a parit\`a di genere, anche per verificare l'indizio di \hl{Slightly Right}
     \item ModernBERT-large quando la \hl{GPU} del server \`e libera
   \end{enumerate}
   \vfill

@@ -1,5 +1,7 @@
 # 1 — Data cleaning
 
+> **Versione 1** (18 ottobre). Le versioni successive sono in `../Versione2` e `../Versione3`; il percorso completo è nel README principale.
+
 Dal dataset dello scraping al dataset finale. Pulizia **rigorosa ma non eccessiva**: si toglie ciò che non è testo
 dell'articolo o che metterebbe lo stesso testo nel training e nel test; ciò che c'è in uno scenario reale
 (citazioni, pezzi ripresi dentro la stessa rete) resta. Cieco alle etichette NewsGuard: tornano solo in `03`; il
