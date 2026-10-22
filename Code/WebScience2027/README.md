@@ -63,10 +63,11 @@ capire perché.
 | 05 | `05_Versione1_Pipeline304Testate` (18 ott.) | **Versione 1**: scraping in due giri (3.128 testate tentate), pulizia, reti, fold per gruppo, 304 testate | **Pari**: TF-IDF F1 0,380 / binario 0,740; ModernBERT-base 0,366 / 0,717; large 0,348; nessuna differenza significativa |
 | 06 | `06_Versione2_PiuPuliziaPiuTraining` (19–20 ott.) | **Versione 2**: una regola di pulizia in più (resti di link e tweet), 863 testate nel training, combinazione TF-IDF + ModernBERT | **Nessun guadagno** (TF-IDF 0,370–0,389, ModernBERT 0,341). L'analisi del TF-IDF (`05_analisi_feature`) spiega perché: il segnale è sparso e segue il **genere** della testata (orientamento politico, tipo di sito, paese); bastano le sole parole funzione (0,364), i soli metadati NewsGuard fanno 0,339 |
 | 07 | `07_Versione3_PariGenere` (20–21 ott.) | **Versione 3**: affidabile sì/no **dentro** ogni orientamento politico, con pesi che tolgono l'aiuto dell'orientamento | Un segnale oltre il genere c'è ma è modesto (0,55–0,62 di accuratezza bilanciata contro 0,50) ed è **stile**; il TF-IDF resta davanti (0,593–0,618 contro 0,551 di ModernBERT). Unico indizio pro transformer: l'orientamento "Slightly Right" |
-| 08 | `08_Versione4_TitoloCriteri` (21 ott., **in corso**) | **Versione 4**: ModernBERT legge *titolo + articolo* (può confrontarli) e impara anche i 5 criteri NewsGuard visibili nel testo | In corso. Primo dato: il TF-IDF con il titolo fa F1 0,375 / binario 0,737, come senza titolo |
+| 08 | `08_Versione4_TitoloCriteri` (21 ott.) | **Versione 4**: ModernBERT legge *titolo + articolo* (può confrontarli) e impara anche i 5 criteri NewsGuard visibili nel testo | Il titolo aiuta ModernBERT (ensemble 0,341 → 0,356; con i criteri 0,360) ma aiuta **anche** il TF-IDF (0,370 → 0,390): il distacco resta, non significativo |
 
 **In sintesi, finora.** Con una valutazione che tiene conto delle reti, il solo testo dà un segnale moderato (F1
-≈ 0,38, binario ≈ 0,74–0,78) e i transformer non battono un TF-IDF fatto bene. Il TF-IDF va bene perché i livelli
+≈ 0,38–0,39, binario ≈ 0,74–0,78) e i transformer non battono un TF-IDF fatto bene, in quattro versioni
+dell'esperimento (05–08), nemmeno dando loro il titolo e i criteri NewsGuard. Il TF-IDF va bene perché i livelli
 NewsGuard vanno di pari passo con il genere della testata, che si legge ovunque nel testo. La presentazione con tutti i
 grafici è `Riunioni/Stato dei lavori/stato_dei_lavori.pdf`.
 

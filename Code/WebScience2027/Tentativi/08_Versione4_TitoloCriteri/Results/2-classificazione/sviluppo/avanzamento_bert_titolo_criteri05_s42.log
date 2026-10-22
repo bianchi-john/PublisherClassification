@@ -1,0 +1,7 @@
+2026-10-21 09:46:54  === bert_titolo_criteri05_s42: answerdotai/ModernBERT-base, 1024 token, seed 42, su Tesla V100S-PCIE-32GB ===
+2026-10-21 09:47:58  75389 articoli tokenizzati in 60 s; token per articolo: mediana 802, al massimo 1024 nel 33% dei casi
+2026-10-21 09:47:58  fold 1: 336 testate di training (217 valutate) in 192 gruppi, 26 di validazione, 26 di test; 4721 articoli per epoca; pesi di classe [0.8399999737739563, 1.0099999904632568, 1.809999942779541, 0.5899999737739563, 1.7400000095367432]; batch 4
+2026-10-21 09:55:37  fold 1 epoca 1/2: loss 1.8134, val loss 1.6728, val F1 testate 0.176, val acc articoli 0.247 (456 s)
+2026-10-21 10:03:12  fold 1 epoca 2/2: loss 1.5755, val loss 1.5944, val F1 testate 0.142, val acc articoli 0.287 (455 s)
+2026-10-21 10:04:11  fold 1: finito in 16 min, test acc articoli 0.287, F1 testate 0.142, memoria GPU massima 5.1 GB
+2026-10-21 10:04:13  === bert_titolo_criteri05_s42 (SVILUPPO, 26 testate di validazione) FINITO: F1 0.142, acc 0.154, bin 0.615 ===

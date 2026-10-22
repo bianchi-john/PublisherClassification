@@ -1,0 +1,19 @@
+{
+ "esperimenti": {
+  "feature_solo_articolo": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-21 09:12:51",
+   "minuti": 3.4,
+   "fine": "2026-10-21 09:16:14"
+  },
+  "feature_titolo": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-21 09:16:14",
+   "minuti": 2.7,
+   "fine": "2026-10-21 09:18:57"
+  }
+ },
+ "aggiornato": "2026-10-21 09:18:57"
+}

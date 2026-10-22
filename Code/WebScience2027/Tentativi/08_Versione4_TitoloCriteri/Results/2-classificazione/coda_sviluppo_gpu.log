@@ -1,0 +1,18 @@
+2026-10-21 09:12:51  === corsia sviluppo_gpu: 8 esperimenti ===
+2026-10-21 09:12:51  >>> bert_solo_articolo_s42: tentativo 1/3
+2026-10-21 09:29:54  <<< bert_solo_articolo_s42: fatto in 17 min
+2026-10-21 09:29:54  >>> bert_titolo_s42: tentativo 1/3
+2026-10-21 09:46:50  <<< bert_titolo_s42: fatto in 17 min
+2026-10-21 09:46:50  >>> bert_titolo_criteri05_s42: tentativo 1/3
+2026-10-21 10:04:17  <<< bert_titolo_criteri05_s42: fatto in 17 min
+2026-10-21 10:04:17  >>> bert_titolo_criteri10_s42: tentativo 1/3
+2026-10-21 10:21:29  <<< bert_titolo_criteri10_s42: fatto in 17 min
+2026-10-21 10:21:29  >>> bert_solo_articolo_s1: tentativo 1/3
+2026-10-21 10:38:15  <<< bert_solo_articolo_s1: fatto in 17 min
+2026-10-21 10:38:15  >>> bert_titolo_s1: tentativo 1/3
+2026-10-21 10:55:08  <<< bert_titolo_s1: fatto in 17 min
+2026-10-21 10:55:08  >>> bert_titolo_criteri05_s1: tentativo 1/3
+2026-10-21 11:12:35  <<< bert_titolo_criteri05_s1: fatto in 17 min
+2026-10-21 11:12:35  >>> bert_titolo_criteri10_s1: tentativo 1/3
+2026-10-21 11:30:03  <<< bert_titolo_criteri10_s1: fatto in 17 min
+2026-10-21 11:30:03  === corsia sviluppo_gpu finita ===

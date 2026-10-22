@@ -63,6 +63,8 @@
     Analisi del TF-IDF & come fa ad andare cos\`i bene? & legge il \hl{genere} della testata (orientamento, tipo di sito, paese) \\
     \addlinespace
     Versione 3 & a parit\`a di genere, il testo dice l'affidabilit\`a? & s\`i, ma poco (0,6 contro 0,5), ed \`e \hl{stile}; il TF-IDF resta davanti \\
+    \addlinespace
+    Versione 4 & il titolo letto con l'articolo e i criteri NewsGuard aiutano i transformer? & un po', ma il titolo aiuta \hl{anche} il TF-IDF: il distacco resta \\
     \bottomrule
   \end{tabular}\\[0.6em]
   \raggedright{\small\itshape Sotto, ogni fase con i dettagli; in fondo, la proposta di Fabio.}
@@ -443,85 +445,48 @@
 % ===================================================================================================
 \divider{Versione 1: i risultati}{TF-IDF contro transformer, sul dataset nuovo (18 ottobre)}
 
-\begin{frame}{Come sono arrivato alla ricetta dei transformer}
-    \centering\scriptsize
-  \begin{tabular}{p{0.56\textwidth}p{0.36\textwidth}}
-    \toprule
-    \textbf{Cosa \`e successo nei tentativi precedenti} & \textbf{Cosa ho cambiato} \\
-    \midrule
-    Con le pagine del sito ModernBERT \hl{imparava a memoria} le testate: le pagine erano uguali in tutti i loro articoli, e la loss di training andava a zero gi\`a nella prima epoca & solo il testo degli articoli, pulito \\
-    \addlinespace
-    Le testate con tanti articoli pesavano di pi\`u nell'addestramento, e i livelli con poche testate rischiavano di essere ignorati; l'analisi diceva che 5--20 articoli per testata bastano quasi del tutto & \hl{20 articoli a caso per testata} a ogni epoca; \hl{pesi di classe} \\
-    \addlinespace
-    L'early stopping sceglieva l'epoca su una validazione di circa 22 testate: la F1 saltava da un'epoca all'altra (0,17 $\to$ 0,37 $\to$ 0,42 $\to$ 0,39) e la scelta era quasi a caso. E dopo 1--2 epoche il modello cominciava a imparare a memoria & \hl{2 epoche fisse}, niente early stopping \\
-    \addlinespace
-    2048 token non andavano meglio di 1024 (F1 0,242 contro 0,255) & \hl{1024 token} \\
-    \addlinespace
-    Cambiando solo il seed, la F1 cambiava quanto tra un modello e l'altro & \hl{3 seed} e la loro media \\
-    \addlinespace
-    Un ModernBERT \hl{congelato}, senza addestramento, andava quasi come quello addestrato & provare gli \hl{embedding congelati} \\
-    \addlinespace
-    Large e base erano pari, ma su 193 testate & riprovare il \hl{large} sul dataset pi\`u grande \\
-    \bottomrule
-  \end{tabular}
-\end{frame}
-
-\begin{frame}{La ricetta finale dei transformer}
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.7em}
-    \item \hl{Fine-tuning}: si prende ModernBERT gi\`a pre-addestrato e lo si addestra ancora, sul nostro compito: leggere \hl{un articolo} e dire il livello della sua testata
-    \item Per giudicare una \hl{testata} si fa la \hl{media delle probabilit\`a} di tutti i suoi articoli
-    \item Due taglie, \hl{base} (150 milioni di parametri) e \hl{large} (400 milioni), per vedere se un modello pi\`u grande aiuta
-    \item La stessa ricetta per tutti, quella della slide prima: primi \hl{1024 token} di ogni articolo, \hl{2 epoche}, a ogni epoca \hl{20 articoli a caso per testata}, \hl{pesi di classe}
-    \item Il TF-IDF in due versioni: con i parametri scelti in una validazione sul solo training (\hl{riferimento}, fissato prima) e con quelli di default
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Seed, ensemble ed embedding congelati}
+\begin{frame}{I modelli a confronto, in breve}
   \begin{itemize}[<+->]
     \setlength\itemsep{0.6em}
-    \item Il \hl{seed} \`e il numero che fissa il caso nell'addestramento: da dove parte il modello, quali 20 articoli si pescano, in che ordine. Con lo stesso dataset e la stessa ricetta, seed diversi danno modelli diversi
-    \item Quanto diversi? Qui ModernBERT-base fa F1 da \hl{0,33 a 0,38} a seconda del seed: tanto quanto la differenza tra due modelli
-    \item Per questo ogni ModernBERT gira con \hl{3 seed} (42, 1, 2), e il risultato principale \`e l'\hl{ensemble}: la media delle probabilit\`a dei tre modelli, che dipende meno dal caso. Il ``seed 42'' da solo lo riporto solo per far vedere quanto varia, non si sceglie il migliore
-    \item \hl{Embedding congelati} (e5-large, bge-large): il modello \hl{non si addestra}. Trasforma ogni articolo in 1024 numeri, si fa la media per testata e sopra si mette la stessa regressione logistica del TF-IDF
-    \item[] Costano poco e \hl{non possono imparare a memoria} le testate: dicono se basta una rappresentazione generica del testo
+    \small
+    \item \hl{TF-IDF + regressione logistica}: parole e coppie di parole pesate per rarit\`a; il parametro di regolarizzazione scelto in una validazione sul solo training (\hl{riferimento}, fissato prima)
+    \item \hl{ModernBERT} (base 150M e large 400M parametri), \hl{fine-tuning}: impara a dire il livello di ogni articolo; la testata \`e la media delle probabilit\`a dei suoi articoli
+    \item[] La ricetta, uguale per tutti e nata dai tentativi precedenti: primi 1024 token, 2 epoche fisse (l'early stopping su poche testate sceglieva quasi a caso), 20 articoli a caso per testata a ogni epoca, pesi di classe
+    \item[] Ogni ModernBERT con \hl{3 seed}: tra un seed e l'altro la F1 cambia di 3--5 punti, quindi il risultato principale \`e l'\hl{ensemble} (media delle probabilit\`a dei 3 modelli)
+    \item \hl{Embedding congelati} (e5-large, bge-large): nessun addestramento, un vettore per articolo, media per testata e la stessa regressione logistica del TF-IDF
   \end{itemize}
 \end{frame}
 
-\begin{frame}{I risultati}
+\begin{frame}{I risultati della Versione 1}
   \vspace{0.2em}
   \centering\footnotesize
-  \resizebox{\textwidth}{!}{%
-  \begin{tabular}{lcccccc}
+  \begin{tabular}{lcccc}
     \toprule
-    \textbf{Modello} & \textbf{F1 macro} & \textbf{acc.\ 5 cl.} & \textbf{tol.\ 0,5} & \textbf{tol.\ 1} & \textbf{binario} & \textbf{F1 bin.} \\
+    \textbf{Modello} & \textbf{F1 macro} & \textbf{accuratezza} & \textbf{tolerant 1} & \textbf{binario} \\
     \midrule
-    \textbf{TF-IDF, parametri in validazione} (riferimento) & 0,380 & 0,424 & 0,597 & 0,770 & 0,740 & 0,740 \\
-    TF-IDF, parametri di default & 0,368 & \textbf{0,454} & \textbf{0,628} & \textbf{0,803} & \textbf{0,776} & \textbf{0,776} \\
+    \textbf{TF-IDF} (riferimento) & \textbf{0,380} & 0,424 & 0,770 & 0,740 \\
+    TF-IDF, parametri di default & 0,368 & \textbf{0,454} & \textbf{0,803} & \textbf{0,776} \\
     \midrule
-    ModernBERT-base, 3 seed & 0,366 & 0,398 & 0,589 & 0,780 & 0,717 & 0,717 \\
-    ModernBERT-large, 3 seed & 0,348 & 0,405 & 0,602 & 0,799 & 0,743 & 0,742 \\
-    ModernBERT-base, seed 42 & \textbf{0,383} & 0,424 & 0,599 & 0,773 & 0,720 & 0,720 \\
+    ModernBERT-base, ensemble di 3 seed & 0,366 & 0,398 & 0,780 & 0,717 \\
+    ModernBERT-large, ensemble di 3 seed & 0,348 & 0,405 & 0,799 & 0,743 \\
     \midrule
-    e5-large congelato & 0,331 & 0,391 & 0,589 & 0,786 & 0,727 & 0,723 \\
-    bge-large congelato & 0,325 & 0,382 & 0,586 & 0,789 & 0,730 & 0,729 \\
+    e5-large / bge-large congelati & 0,331 / 0,325 & 0,391 / 0,382 & 0,786 / 0,789 & 0,727 / 0,730 \\
     \midrule
-    classe di maggioranza & 0,096 & 0,316 & 0,434 & 0,553 & 0,553 & 0,356 \\
-    a caso & 0,214 & 0,243 & 0,388 & 0,533 & 0,510 & 0,505 \\
+    classe di maggioranza / a caso & 0,096 / 0,214 & 0,316 / 0,243 & 0,553 / 0,533 & 0,553 / 0,510 \\
     \bottomrule
-  \end{tabular}}\\[0.4em]
-  \raggedright{\scriptsize\itshape Per testata, 304 testate, fold per gruppo. Tolerant: un errore di un livello vale mezzo punto (0,5) o un punto (1).}
+  \end{tabular}\\[0.4em]
+  \raggedright{\scriptsize\itshape Per testata, 304 testate, fold per gruppo. Tolerant 1: un errore di un livello vale un punto.}
+  \begin{itemize}[<+->]
+    \footnotesize
+    \item Tutti \hl{ben sopra} maggioranza e caso: dal solo testo un segnale c'\`e
+    \item \hl{Nessun transformer batte il TF-IDF} in modo significativo; il modello pi\`u grande e gli embedding congelati non aiutano
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Con gli intervalli}
   \centering
   \includegraphics[width=\textwidth]{fig_risultati_intervalli.pdf}\\[0.2em]
-  \begin{itemize}[<+->]
-    \footnotesize
-    \item Tutti i modelli stanno \hl{ben sopra} maggioranza e caso: dal solo testo un segnale c'\`e
-    \item \hl{Nessun transformer batte il feature} in modo significativo: le differenze stanno tutte negli intervalli
-    \item Il modello pi\`u grande e gli embedding congelati \hl{non aiutano}
-  \end{itemize}
+  {\footnotesize Intervalli al 95\% con un bootstrap per gruppo: le differenze tra i modelli stanno tutte dentro.}
 \end{frame}
 
 \begin{frame}{Chi riconosce cosa}
@@ -532,167 +497,84 @@
     \begin{column}{0.4\textwidth}
       \begin{itemize}[<+->]
         \setlength\itemsep{0.6em}
-        \item Il feature riconosce meglio le testate \hl{inaffidabili} ($l_1$)
-        \item ModernBERT-base riconosce meglio le \hl{pi\`u affidabili} ($l_5$); il large le $l_4$
-        \item Gli errori sono \hl{diversi}: i due modelli sono complementari
+        \small
+        \item Il TF-IDF riconosce meglio le testate \hl{inaffidabili} ($l_1$), ModernBERT le \hl{pi\`u affidabili} ($l_4$, $l_5$): sbagliano in modo \hl{diverso}
+        \item Il vantaggio del TF-IDF su $l_1$ \hl{non viene dalle reti}: indovina le $l_1$ isolate (30/43) e quelle in un gruppo (20/28) allo stesso modo
+        \item Il perch\'e lo spiega l'analisi pi\`u avanti: il TF-IDF legge il \hl{genere} della testata
       \end{itemize}
     \end{column}
   \end{columns}
 \end{frame}
 
-\begin{frame}{E senza la classe $l_1$?}
+% ===================================================================================================
+\divider{Come ho provato a battere il TF-IDF}{quattro versioni dell'esperimento, 18--22 ottobre}
+
+\begin{frame}{Quattro tentativi, lo stesso risultato}
   \vspace{0.1em}
   \centering\footnotesize
   \resizebox{\textwidth}{!}{%
-  \begin{tabular}{lcccccc}
+  \begin{tabular}{llccc}
     \toprule
-    \textbf{Modello} & \textbf{F1 macro} & \textbf{acc.\ 4 cl.} & \textbf{tol.\ 0,5} & \textbf{tol.\ 1} & \textbf{binario} & \textbf{F1 bin.} \\
+    & \textbf{L'idea} & \textbf{TF-IDF} & \textbf{ModernBERT} & \textbf{$\Delta$ [IC 95\%]} \\
+    & & & \textbf{(ensemble di 3 seed)} & \\
     \midrule
-    \textbf{TF-IDF, parametri in validazione} (riferimento) & 0,358 & 0,408 & 0,586 & 0,764 & 0,712 & 0,667 \\
-    TF-IDF, parametri di default & 0,364 & \textbf{0,451} & 0,616 & 0,781 & \textbf{0,734} & 0,683 \\
-    \midrule
-    ModernBERT-base, 3 seed & 0,355 & 0,395 & 0,607 & 0,820 & 0,717 & 0,673 \\
-    ModernBERT-large, 3 seed & 0,311 & 0,369 & 0,590 & 0,811 & 0,704 & 0,637 \\
-    ModernBERT-base, seed 42 & \textbf{0,379} & 0,433 & \textbf{0,624} & 0,815 & 0,721 & \textbf{0,688} \\
-    \midrule
-    e5-large congelato & 0,304 & 0,361 & 0,597 & \textbf{0,833} & 0,717 & 0,634 \\
-    bge-large congelato & 0,297 & 0,352 & 0,579 & 0,807 & 0,700 & 0,627 \\
-    \midrule
-    classe di maggioranza ($l_4$) & 0,146 & 0,412 & 0,567 & 0,721 & 0,721 & 0,419 \\
-    a caso & 0,251 & 0,300 & 0,479 & 0,657 & 0,584 & 0,485 \\
+    \textbf{V1} & la pipeline pulita: reti, gruppi, fold per gruppo & 0,380 & 0,366 & $-0{,}01$ [$-0{,}07$; $+0{,}04$] \\
+    \addlinespace
+    \textbf{V2} & pi\`u pulizia (resti di link e tweet) e 863 testate nel training & 0,370 & 0,341 & $-0{,}03$ [$-0{,}10$; $+0{,}04$] \\
+    \addlinespace
+    \textbf{V3} & a parit\`a di genere: affidabile s\`i/no dentro ogni orientamento$^{*}$ & 0,593 & 0,551 & $-0{,}04$ [$-0{,}10$; $+0{,}02$] \\
+    \addlinespace
+    \textbf{V4} & il titolo letto insieme all'articolo & 0,390 & 0,356 & $-0{,}03$ [$-0{,}11$; $+0{,}04$] \\
+    & \quad + i 5 criteri NewsGuard come etichette in pi\`u & & 0,360 & $-0{,}03$ [$-0{,}10$; $+0{,}04$] \\
     \bottomrule
   \end{tabular}}\\[0.4em]
-  \raggedright{\scriptsize\itshape 233 testate ($l_2$--$l_5$); i modelli scelgono tra $l_2$ e $l_5$ (le probabilit\`a salvate, senza riaddestrare). Binario: $l_2$ contro $l_3$--$l_5$.}
+  \raggedright{\scriptsize\itshape F1 macro per testata, 304 testate, fold per gruppo, TF-IDF con C scelto in validazione; $\Delta$ = ModernBERT meno TF-IDF, bootstrap per gruppo. $^{*}$V3: accuratezza bilanciata media sugli orientamenti (il caso fa 0,50).}
   \begin{itemize}[<+->]
     \footnotesize
-    \item Senza $l_1$ il vantaggio del feature \hl{sparisce}: ModernBERT-base, 3 seed, \`e \hl{pari} (differenza di F1 0,000 [$-$0,07; $+$0,07]) e sulla tolerant 1 meglio
-    \item {\itshape Analisi esplorativa, decisa dopo aver visto i risultati}
+    \item In tutte e quattro il TF-IDF resta \hl{un po' avanti}; nessuna differenza \`e significativa
+    \item Tra un seed e l'altro ModernBERT varia di \hl{3--4 punti}: quanto tutti gli effetti che cerchiamo
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Perch\'e il feature vince su $l_1$}
-  \vspace{0.2em}
-  Le parole che spingono di pi\`u verso $l_1$ nel modello TF-IDF sono di due tipi:\\[0.5em]
-  \begin{columns}[t]
-    \begin{column}{0.5\textwidth}
-      \begin{block}{\footnotesize Contenuto e ideologia}
-        \footnotesize \textit{president trump, abortion, kiev, lifesitenews, epoch times, preborn}, nomi di stati e regioni\\[0.3em]
-        $\to$ segnale vero, ma intrecciato con \hl{temi e orientamento}: un confondente da discutere
-      \end{block}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \begin{alertblock}{\footnotesize Residui dell'estrazione}
-        \footnotesize \textit{pic twitter, https, www, com, youtube, utc}, qualche firma rimasta nel testo\\[0.3em]
-        $\to$ resti di tweet, video e link incorporati: i siti $l_1$ ne usano molti di pi\`u, e il TF-IDF li \hl{conta}
-      \end{alertblock}
-    \end{column}
-  \end{columns}
-  \vspace{0.6em}
+\begin{frame}{Che cosa ho provato, in breve}
   \begin{itemize}[<+->]
-    \item Il vantaggio \hl{non viene dalle reti}: il feature indovina le $l_1$ isolate (30/43) e quelle in un gruppo (20/28) allo stesso modo
-    \item I residui di link e contenuti incorporati sono \hl{cornice della pagina}, come titolo e timbro che abbiamo gi\`a tolto
-    \item[] {\small\itshape Verificato nella Versione 2: togliendo i residui il TF-IDF non cambia. Non erano loro.}
+    \setlength\itemsep{0.55em}
+    \small
+    \item \hl{V2 --- pi\`u pulizia e pi\`u dati}: via i resti di link e tweet incorporati (lo 0,3\% delle parole, il 24\% degli articoli $l_1$), e nel training anche le testate escluse dal tetto (863 invece di 304). Niente cambia, n\'e per il TF-IDF n\'e per ModernBERT; anche la combinazione dei due non aiuta
+    \item \hl{V3 --- togliere il genere}: pesi che rendono l'orientamento politico inutile per indovinare, e valutazione dentro ogni orientamento. Resta un segnale modesto ed \`e \hl{stile}: il TF-IDF con le sole parole funzione fa quanto con il testo intero
+    \item \hl{V4 --- quello che un TF-IDF non vede}: ModernBERT legge \hl{titolo [SEP] articolo} e pu\`o confrontarli; e impara anche i criteri NewsGuard visibili nel testo. Il titolo aiuta ModernBERT di 1,5 punti, ma aiuta il TF-IDF di 2: il distacco resta
+    \item In pi\`u: ModernBERT-large (V1, non meglio del base), embedding congelati e5 e bge (sempre sotto), 2048 token (non meglio di 1024)
   \end{itemize}
 \end{frame}
 
-
-% ===================================================================================================
-\divider{Versione 2}{pi\`u pulizia e pi\`u testate nel training (19--20 ottobre)}
-
-\begin{frame}{Versione 2: cosa ho cambiato}
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.6em}
-    \item Tutto \hl{deciso prima} di vedere i risultati, stesso scraping, stesse regole di prima pi\`u tre cose:
-    \item[] \hl{1. Una regola di pulizia in pi\`u}: via i resti dei contenuti incorporati (link, \texttt{pic.twitter.com}, firme dei tweet, ``View this post on Instagram''). Espressioni regolari fisse, nessun LLM; il testo dei tweet citati resta
-    \item[] \hl{2. Pi\`u testate nel training}: il test resta \hl{identico} (le stesse 304 testate, gli stessi fold); nel training entrano anche le altre testate dei gruppi, \hl{863} invece di 304. Un gruppo non pesa mai pi\`u di 5 testate (pesi per TF-IDF ed embedding; per i transformer 5 testate a caso per gruppo, diverse a ogni epoca)
-    \item[] \hl{3. Una combinazione fissata a priori}: media 0,5/0,5 delle probabilit\`a di TF-IDF e ModernBERT-base
-    \item Due \hl{controlli}: TF-IDF e ModernBERT addestrati solo sulle 304 testate, per misurare l'effetto del training pi\`u grande
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Versione 2: la pulizia nuova}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.8em}
-    \item Tolti circa \hl{20.000 link} e \hl{16.000 firme} o scritte di contenuti incorporati: lo 0,3\% delle parole
-    \item Tocca il \hl{24\%} degli articoli $l_1$ e solo il \hl{3\%} degli $l_5$: era proprio il residuo che il TF-IDF usava per $l_1$
-    \item Il test non cambia: \hl{le stesse 304 testate}, 44.012 articoli (17 in meno), gli stessi fold
-    \item Ogni passo resta una regola nel codice; pulizia ed esperimenti sono girati da soli sul server, in una notte
-  \end{itemize}
-  \vfill
-\end{frame}
-
-\begin{frame}{Versione 2: i risultati}
-  \vspace{0.2em}
-  \centering\footnotesize
-  \resizebox{\textwidth}{!}{%
-  \begin{tabular}{lcccc}
-    \toprule
-    & \multicolumn{2}{c}{\textbf{F1 macro}} & \multicolumn{2}{c}{\textbf{binario}} \\
-    \cmidrule(lr){2-3}\cmidrule(lr){4-5}
-    \textbf{Modello} & \textbf{v2} & v1 & \textbf{v2} & v1 \\
-    \midrule
-    \textbf{TF-IDF, parametri in validazione} (riferimento) & 0,370 & 0,380 & \textbf{0,773} & 0,740 \\
-    TF-IDF, parametri di default & \textbf{0,389} & 0,368 & 0,770 & 0,776 \\
-    TF-IDF, training solo sulle 304 testate (controllo) & 0,388 & --- & 0,770 & --- \\
-    \midrule
-    ModernBERT-base, 3 seed & 0,341 & 0,366 & 0,707 & 0,717 \\
-    ModernBERT-base, i singoli seed & 0,32 / 0,36 / 0,36 & 0,35 / 0,33 / 0,38 & & \\
-    ModernBERT-base s42, training solo sulle 304 (controllo) & 0,341 & --- & 0,694 & --- \\
-    \midrule
-    e5-large congelato & 0,322 & 0,331 & 0,724 & 0,727 \\
-    bge-large congelato & 0,347 & 0,325 & 0,707 & 0,730 \\
-    \midrule
-    combinazione TF-IDF + ModernBERT (0,5/0,5) & 0,355 & --- & 0,753 & --- \\
-    \midrule
-    classe di maggioranza & 0,096 & 0,096 & 0,553 & 0,553 \\
-    \bottomrule
-  \end{tabular}}\\[0.4em]
-  \raggedright{\scriptsize\itshape Per testata, le stesse 304 testate, fold per gruppo. ModernBERT-large non \`e girato: la GPU condivisa aveva solo 7 GB liberi, e il large non ci sta.}
-\end{frame}
-
-\begin{frame}{Versione 2: cosa ci dice}
-  \vfill
-  \begin{enumerate}[<+->]
-    \setlength\itemsep{0.7em}
-    \item La pulizia nuova \hl{non ha messo in difficolt\`a} il TF-IDF (0,37--0,39): i resti di link e tweet non erano il motivo per cui vinceva
-    \item Pi\`u testate nel training \hl{non aiutano} in modo chiaro: per il TF-IDF niente, per ModernBERT +0,02 su un solo seed, mentre l'ensemble scende
-    \item La combinazione \hl{non batte} il TF-IDF (0,355 contro 0,370)
-    \item Tra un seed e l'altro ModernBERT varia di \hl{4 punti}: quanto tutti gli effetti che cerchiamo. Nessuna differenza con il TF-IDF \`e significativa
-  \end{enumerate}
-  \vspace{0.6em}
-  \visible<5->{\small\itshape Due esperimenti fatti bene, lo stesso risultato: sul solo testo, valutato senza le reti, transformer e TF-IDF sono alla pari, con il TF-IDF un po' avanti.}
-  \vfill
-\end{frame}
-
-% ===================================================================================================
-\divider{Perch\'e il TF-IDF va cos\`i bene}{l'analisi del 20 ottobre (Versione 2, \texttt{05\_analisi\_feature})}
-
-\begin{frame}{Il segnale \`e sparso: regge a quasi tutto}
+\begin{frame}{Perch\'e il TF-IDF resta davanti}
   \begin{columns}[c]
-    \begin{column}{0.52\textwidth}
-      \centering\small
-      \begin{tabular}{lcc}
+    \begin{column}{0.48\textwidth}
+      \centering\footnotesize
+      \begin{tabular}{lc}
         \toprule
-        \textbf{Il TF-IDF su\dots} & \textbf{F1} & \textbf{binario} \\
+        \textbf{Il TF-IDF su\dots} & \textbf{F1} \\
         \midrule
-        il testo intero & 0,387 & 0,776 \\
-        senza nomi propri & 0,383 & 0,760 \\
-        senza le 1000 parole pi\`u forti & 0,377 & 0,753 \\
-        senza parole funzione & 0,370 & 0,753 \\
-        \textbf{solo parole funzione} & \textbf{0,364} & 0,717 \\
-        solo le prime 100 parole & 0,344 & 0,730 \\
+        il testo intero & 0,387 \\
+        senza nomi propri & 0,383 \\
+        senza le 1000 parole pi\`u forti & 0,377 \\
+        \textbf{solo parole funzione} & \textbf{0,364} \\
+        solo le prime 100 parole & 0,344 \\
+        \midrule
+        \textbf{solo metadati NewsGuard} (non testo) & \textbf{0,339} \\
+        12 misure di stile & 0,296 \\
         \bottomrule
       \end{tabular}\\[0.3em]
-      {\scriptsize Stesse 304 testate, fold per gruppo; ogni riga riaddestrata.}
+      {\scriptsize V2, 304 testate, fold per gruppo}
     \end{column}
-    \begin{column}{0.48\textwidth}
+    \begin{column}{0.52\textwidth}
       \begin{itemize}[<+->]
-        \setlength\itemsep{0.6em}
-        \small
-        \item Non sono i nomi, n\'e poche parole memorizzate
-        \item Con \hl{solo le parole funzione} (the, of, which\dots), cio\`e lo stile senza contenuto, si arriva a 0,364
-        \item C'\`e in ogni articolo: con \hl{1 articolo} per testata 0,325, con 5 gi\`a 0,372, con 20 il massimo
+        \setlength\itemsep{0.5em}
+        \footnotesize
+        \item Il segnale \`e \hl{sparso}: non sono nomi n\'e poche parole; c'\`e in ogni articolo (1 articolo per testata: 0,325)
+        \item Segue il \hl{genere} della testata: il TF-IDF riconosce l'orientamento politico (0,58 contro 0,38), e dentro un orientamento quasi non batte il livello pi\`u comune
+        \item I soli metadati, senza testo, fanno quasi quanto lui
+        \item[] {\itshape \`E un segnale lessicale e diffuso: un modello che conta le parole lo prende tutto, e a un transformer resta poco da aggiungere.}
       \end{itemize}
     \end{column}
   \end{columns}
@@ -721,73 +603,26 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{L'orientamento politico}
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.55em}
-    \small
-    \item Il TF-IDF \hl{riconosce l'orientamento} dal testo: accuratezza 0,58, contro 0,38 della classe pi\`u frequente
-    \item Dentro un orientamento quasi \hl{non batte} il livello pi\`u comune di quell'orientamento: Far Right 0,55 contro 0,58, Slightly Left 0,36 contro 0,52
-    \item Senza nessuna parola, i soli \hl{metadati NewsGuard} (orientamento, opinione, argomenti, paese) fanno F1 \hl{0,339}; dodici misure di stile 0,296; le date 0,150 (niente)
-    \item[] {\small\itshape Il TF-IDF va bene perch\'e il livello va di pari passo con il genere della testata, che si legge ovunque nel testo. \`E il confondente da scrivere nel paper.}
-    \item Ma un segnale \hl{oltre il genere} c'\`e: affidabile s\`i/no \hl{dentro} ogni orientamento, il TF-IDF fa 0,66 di accuratezza bilanciata (il caso fa 0,50); ModernBERT-base 0,54 {\footnotesize (a posteriori, su modelli non addestrati per questo)}
-  \end{itemize}
-\end{frame}
-
-% ===================================================================================================
-\divider{Versione 3: a parit\`a di genere}{il testo distingue l'affidabilit\`a dentro lo stesso orientamento? (lanciata il 20 ottobre)}
-
-\begin{frame}{Versione 3: il disegno, fissato prima dei risultati}
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.6em}
-    \item Lo \hl{stesso dataset} della Versione 2: stessa pulizia, stesse 304 testate di test, stessi fold per gruppo
-    \item Compito \hl{binario}: affidabile = punteggio $\geq 60$
-    \item \hl{Pesi a parit\`a di genere}: dentro ogni orientamento NewsGuard (Far Right, Slightly Right, Slightly Left, Far Left, nessuno) affidabili e inaffidabili pesano uguale nel training. Sapere l'orientamento non serve pi\`u
-    \item Metrica: \hl{accuratezza bilanciata dentro ogni orientamento}, poi la media. I soli metadati fanno \hl{0,50} per costruzione: tutto quello che sta sopra viene dal testo
-    \item TF-IDF (C = 1 e C in validazione interna) e ModernBERT-base con 3 seed e il loro ensemble; nei log, fold per fold, i due modelli sugli stessi fold
-    \item[] {\small\itshape Il limite: l'unico orientamento bilanciato \`e Slightly Right (40 testate affidabili, 38 no); Far Right 14 contro 70. Intervalli larghi.}
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Versione 3: i risultati}
+\begin{frame}{A parit\`a di genere (V3)}
   \vspace{0.1em}
   \centering\footnotesize
-  \resizebox{\textwidth}{!}{%
-  \begin{tabular}{lccccccc}
+  \begin{tabular}{lcccc}
     \toprule
-    & \textbf{media sugli} & \textbf{IC 95\%} & \textbf{AUC} & \textbf{Slightly} & \textbf{Far} & \textbf{Slightly} & \textbf{nessun} \\
-    \textbf{Modello} & \textbf{orientamenti} & & \textbf{media} & \textbf{Right} & \textbf{Right} & \textbf{Left} & \textbf{orient.} \\
+    \textbf{affidabile s\`i/no, dentro ogni orientamento} & \textbf{media} & \textbf{AUC} & \textbf{Slightly Right} & \textbf{Far Right} \\
     \midrule
-    \textbf{TF-IDF, C in validazione} (riferimento) & 0,593 & 0,53--0,67 & \textbf{0,735} & 0,51 & 0,60 & 0,46 & \textbf{0,77} \\
-    TF-IDF, C = 1 & \textbf{0,618} & 0,55--0,74 & 0,671 & 0,56 & \textbf{0,65} & \textbf{0,54} & 0,71 \\
-    TF-IDF, solo parole funzione & \textbf{0,618} & 0,55--0,74 & 0,610 & 0,60 & 0,64 & 0,53 & 0,70 \\
-    TF-IDF, senza nomi propri & 0,589 & 0,53--0,67 & 0,656 & 0,52 & \textbf{0,65} & 0,45 & 0,70 \\
-    \midrule
-    ModernBERT-base, i 5 seed & 0,53--0,60 & & 0,62--0,65 & \textbf{0,57--0,71} & 0,52--0,58 & 0,38--0,48 & 0,59--0,73 \\
-    ModernBERT-base, ensemble di 5 & 0,551 & 0,49--0,63 & 0,639 & 0,63 & 0,57 & 0,41 & 0,60 \\
-    \midrule
-    e5-large congelato & 0,569 & 0,49--0,66 & 0,611 & 0,60 & 0,59 & 0,39 & 0,76 \\
-    bge-large congelato & 0,502 & 0,44--0,56 & 0,593 & 0,58 & 0,43 & 0,39 & 0,74 \\
-    \midrule
-    combinazione TF-IDF + ModernBERT (0,5/0,5) & 0,597 & 0,54--0,68 & 0,693 & 0,60 & 0,56 & 0,46 & 0,74 \\
-    \midrule
-    solo i metadati (per costruzione) & 0,50 & & 0,50 & 0,50 & 0,50 & 0,50 & 0,50 \\
+    TF-IDF, C in validazione (riferimento) & 0,593 & \textbf{0,735} & 0,51 & 0,60 \\
+    TF-IDF, C = 1 & \textbf{0,618} & 0,671 & 0,56 & \textbf{0,65} \\
+    TF-IDF, solo parole funzione & \textbf{0,618} & 0,610 & 0,60 & 0,64 \\
+    ModernBERT-base, ensemble di 5 seed & 0,551 & 0,639 & \textbf{0,63} & 0,57 \\
+    solo i metadati (per costruzione) & 0,50 & 0,50 & 0,50 & 0,50 \\
     \bottomrule
-  \end{tabular}}\\[0.3em]
-  \raggedright{\scriptsize\itshape Accuratezza bilanciata per testata (affidabile s\`i/no) dentro ogni orientamento; 304 testate, fold per gruppo; intervalli con un bootstrap per gruppo. Far Left (16 testate) non \`e in tabella.}
-\end{frame}
-
-\begin{frame}{Versione 3: cosa ci dice}
-  \begin{enumerate}[<+->]
-    \setlength\itemsep{0.55em}
-    \small
-    \item Un segnale di affidabilit\`a \hl{oltre il genere} c'\`e, ma \`e \hl{modesto}: 0,55--0,62 contro 0,50 del caso (AUC fino a 0,74)
-    \item \hl{Nessun modello batte il TF-IDF} in modo significativo: tutte le differenze con il riferimento stanno negli intervalli (l'ensemble di ModernBERT $-0{,}04$, da $-0{,}10$ a $+0{,}02$); bge fa peggio
-    \item Il TF-IDF sulle \hl{sole parole funzione} fa quanto quello sul testo intero (0,618): dentro lo stesso orientamento il segnale \`e \hl{stile}, non contenuto
-    \item L'unica regolarit\`a a favore dei transformer: in \hl{Slightly Right}, l'orientamento bilanciato (40 contro 38), \hl{tutti e 5} i seed di ModernBERT fanno meglio del TF-IDF di riferimento (0,57--0,71 contro 0,51). In Far Right il contrario
-    \item L'ensemble va peggio dei singoli seed sulla soglia 0,5 ma non sull'AUC: mediando le probabilit\`a si sposta la calibrazione
-  \end{enumerate}
-  \vspace{0.3em}
-  \visible<6->{\small\itshape Lettura a posteriori per orientamento, su 78 testate: un indizio da verificare, non un risultato.}
+  \end{tabular}\\[0.4em]
+  \raggedright{\scriptsize\itshape Accuratezza bilanciata per testata; Slightly Right \`e l'unico orientamento bilanciato (40 testate affidabili, 38 no).}
+  \begin{itemize}[<+->]
+    \footnotesize
+    \item Oltre il genere resta un segnale \hl{modesto} (0,55--0,62 contro 0,50), ed \`e \hl{stile}
+    \item Unico indizio a favore dei transformer: in Slightly Right tutti e 5 i seed di ModernBERT battono il TF-IDF di riferimento (0,57--0,71 contro 0,51). A posteriori, su 78 testate: da verificare
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Cosa possiamo dire nel paper}
@@ -796,9 +631,9 @@
     \small
     \item \hl{Il problema}: con le testate divise come al solito i numeri sono gonfiati dalle reti di siti (primo dataset: 0,68 $\to$ 0,39)
     \item \hl{Il metodo}: reti trovate senza NewsGuard, da testo e HTML (precisione 0,91, recall 0,88), valutazione per gruppo, processo deterministico e replicabile
-    \item \hl{Il risultato}: con una valutazione onesta il testo d\`a un segnale \hl{moderato} (F1 0,38, binario 0,74--0,78) e i transformer \hl{non battono} un TF-IDF ben fatto, in tre versioni diverse dell'esperimento
+    \item \hl{Il risultato}: con una valutazione onesta il testo d\`a un segnale \hl{moderato} (F1 0,38--0,39, binario 0,74--0,76) e i transformer \hl{non battono} un TF-IDF ben fatto, in quattro versioni diverse dell'esperimento, anche dando loro il titolo e i criteri NewsGuard
     \item \hl{Il perch\'e}: i livelli NewsGuard vanno di pari passo con il \hl{genere} della testata (orientamento, tipo di sito, paese), che si legge ovunque nel testo, anche nelle parole funzione
-    \item \hl{Oltre il genere}: a parit\`a di orientamento resta un segnale modesto (0,6 contro 0,5) ed \`e soprattutto \hl{stile}; il TF-IDF lo coglie quanto o meglio dei transformer
+    \item \hl{Oltre il genere}: a parit\`a di orientamento resta un segnale modesto (0,6 contro 0,5) ed \`e soprattutto \hl{stile}
   \end{itemize}
 \end{frame}
 
@@ -809,7 +644,7 @@
     \item Decidere con il gruppo la \hl{storia del paper} (la slide prima) e cominciare a scriverla
     \item Scrivere il \hl{confondente} orientamento/genere come risultato: i livelli NewsGuard e l'ideologia vanno di pari passo, e il testo dice soprattutto l'ideologia
     \item La prova pilota con i \hl{segnali di Claude} proprio a parit\`a di genere, anche per verificare l'indizio di \hl{Slightly Right}
-    \item ModernBERT-large quando la \hl{GPU} del server \`e libera
+    \item ModernBERT-large quando la \hl{GPU} del server \`e libera (con 7 GB non entra)
   \end{enumerate}
   \vfill
 \end{frame}

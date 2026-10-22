@@ -1,0 +1,47 @@
+{
+ "esperimenti": {
+  "bert_titolo_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-21 12:43:19",
+   "minuti": 83.8,
+   "fine": "2026-10-21 14:07:10"
+  },
+  "bert_titolo_s1": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-21 14:12:13",
+   "minuti": 78.1,
+   "fine": "2026-10-21 15:30:17"
+  },
+  "bert_titolo_s2": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-21 15:35:50",
+   "minuti": 77.6,
+   "fine": "2026-10-21 16:53:23"
+  },
+  "bert_titolo_criteri05_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-21 16:59:23",
+   "minuti": 79.0,
+   "fine": "2026-10-21 18:18:21"
+  },
+  "bert_titolo_criteri05_s1": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-21 18:24:46",
+   "minuti": 78.9,
+   "fine": "2026-10-21 19:43:42"
+  },
+  "bert_titolo_criteri05_s2": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-21 19:50:57",
+   "minuti": 78.8,
+   "fine": "2026-10-21 21:09:46"
+  }
+ },
+ "aggiornato": "2026-10-21 21:09:46"
+}

@@ -1,0 +1,20 @@
+2026-10-21 12:43:19  === corsia notte_gpu: 6 esperimenti ===
+2026-10-21 12:43:19  >>> bert_titolo_s42: tentativo 1/3
+2026-10-21 14:07:10  <<< bert_titolo_s42: fatto in 84 min
+2026-10-21 14:12:13  confronto aggiornato (esito 0)
+2026-10-21 14:12:13  >>> bert_titolo_s1: tentativo 1/3
+2026-10-21 15:30:17  <<< bert_titolo_s1: fatto in 78 min
+2026-10-21 15:35:50  confronto aggiornato (esito 0)
+2026-10-21 15:35:50  >>> bert_titolo_s2: tentativo 1/3
+2026-10-21 16:53:23  <<< bert_titolo_s2: fatto in 78 min
+2026-10-21 16:59:23  confronto aggiornato (esito 0)
+2026-10-21 16:59:23  >>> bert_titolo_criteri05_s42: tentativo 1/3
+2026-10-21 18:18:21  <<< bert_titolo_criteri05_s42: fatto in 79 min
+2026-10-21 18:24:46  confronto aggiornato (esito 0)
+2026-10-21 18:24:46  >>> bert_titolo_criteri05_s1: tentativo 1/3
+2026-10-21 19:43:42  <<< bert_titolo_criteri05_s1: fatto in 79 min
+2026-10-21 19:50:57  confronto aggiornato (esito 0)
+2026-10-21 19:50:57  >>> bert_titolo_criteri05_s2: tentativo 1/3
+2026-10-21 21:09:46  <<< bert_titolo_criteri05_s2: fatto in 79 min
+2026-10-21 21:17:30  confronto aggiornato (esito 0)
+2026-10-21 21:17:30  === corsia notte_gpu finita ===

@@ -1,0 +1,7 @@
+2026-10-21 12:43:25  === feature_titolo: 75389 articoli, 863 testate, titolo True, C 1, sviluppo False ===
+2026-10-21 12:48:24  fold 1: C 1.0; F1 0.373, acc 0.459, bin 0.738 (4 min)
+2026-10-21 12:48:25  fold 2: C 1.0; F1 0.378, acc 0.426, bin 0.754 (4 min)
+2026-10-21 12:48:25  fold 3: C 1.0; F1 0.386, acc 0.475, bin 0.754 (4 min)
+2026-10-21 12:48:25  fold 4: C 1.0; F1 0.370, acc 0.443, bin 0.705 (4 min)
+2026-10-21 12:48:25  fold 5: C 1.0; F1 0.332, acc 0.417, bin 0.733 (5 min)
+2026-10-21 12:48:26  === feature_titolo FINITO: F1 0.375, acc 0.444, bin 0.737 ===

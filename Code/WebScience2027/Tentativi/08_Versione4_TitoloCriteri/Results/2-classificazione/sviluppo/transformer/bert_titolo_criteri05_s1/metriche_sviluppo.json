@@ -1,0 +1,230 @@
+{
+ "articolo": {
+  "n": 4229,
+  "accuratezza": 0.3074012768976117,
+  "f1_macro": 0.3021106083913915,
+  "f1_pesata": 0.3080069225263711,
+  "tolerant_0.5": 0.5249467959328447,
+  "tolerant_1": 0.7424923149680775,
+  "errore_medio_livelli": 1.0948214707968786,
+  "confusione": [
+   [
+    282,
+    235,
+    52,
+    294,
+    75
+   ],
+   [
+    128,
+    444,
+    157,
+    96,
+    48
+   ],
+   [
+    302,
+    271,
+    81,
+    162,
+    12
+   ],
+   [
+    54,
+    58,
+    623,
+    390,
+    45
+   ],
+   [
+    19,
+    28,
+    51,
+    219,
+    103
+   ]
+  ],
+  "l1_precisione": 0.3592356687898089,
+  "l1_recall": 0.3006396588486141,
+  "l1_f1": 0.3273360417875798,
+  "l1_supporto": 938,
+  "l2_precisione": 0.42857142857142855,
+  "l2_recall": 0.5085910652920962,
+  "l2_f1": 0.465165007857517,
+  "l2_supporto": 873,
+  "l3_precisione": 0.08402489626556017,
+  "l3_recall": 0.09782608695652174,
+  "l3_f1": 0.09040178571428571,
+  "l3_supporto": 828,
+  "l4_precisione": 0.3359173126614987,
+  "l4_recall": 0.3333333333333333,
+  "l4_f1": 0.33462033462033464,
+  "l4_supporto": 1170,
+  "l5_precisione": 0.36395759717314485,
+  "l5_recall": 0.24523809523809523,
+  "l5_f1": 0.2930298719772404,
+  "l5_supporto": 420,
+  "bin_accuratezza": 0.6561834949160558,
+  "bin_tp": 1686,
+  "bin_tn": 1089,
+  "bin_fp": 722,
+  "bin_fn": 732,
+  "bin_precisione_affidabile": 0.7001661129568106,
+  "bin_recall_affidabile": 0.6972704714640199,
+  "bin_f1_affidabile": 0.6987152921674264,
+  "bin_f1_inaffidabile": 0.599669603524229,
+  "bin_f1_macro": 0.6491924478458277
+ },
+ "testata_voto": {
+  "n": 26,
+  "accuratezza": 0.2692307692307692,
+  "f1_macro": 0.26974358974358975,
+  "f1_pesata": 0.2542406311637081,
+  "tolerant_0.5": 0.5192307692307693,
+  "tolerant_1": 0.7692307692307693,
+  "errore_medio_livelli": 1.1538461538461537,
+  "confusione": [
+   [
+    2,
+    2,
+    0,
+    2,
+    1
+   ],
+   [
+    0,
+    4,
+    1,
+    0,
+    0
+   ],
+   [
+    2,
+    2,
+    0,
+    1,
+    0
+   ],
+   [
+    1,
+    0,
+    5,
+    0,
+    0
+   ],
+   [
+    0,
+    0,
+    0,
+    2,
+    1
+   ]
+  ],
+  "l1_precisione": 0.4,
+  "l1_recall": 0.2857142857142857,
+  "l1_f1": 0.3333333333333333,
+  "l1_supporto": 7,
+  "l2_precisione": 0.5,
+  "l2_recall": 0.8,
+  "l2_f1": 0.6153846153846154,
+  "l2_supporto": 5,
+  "l3_precisione": 0.0,
+  "l3_recall": 0.0,
+  "l3_f1": 0.0,
+  "l3_supporto": 5,
+  "l4_precisione": 0.0,
+  "l4_recall": 0.0,
+  "l4_f1": 0.0,
+  "l4_supporto": 6,
+  "l5_precisione": 0.5,
+  "l5_recall": 0.3333333333333333,
+  "l5_f1": 0.4,
+  "l5_supporto": 3,
+  "bin_accuratezza": 0.6538461538461539,
+  "bin_tp": 9,
+  "bin_tn": 8,
+  "bin_fp": 4,
+  "bin_fn": 5,
+  "bin_precisione_affidabile": 0.6923076923076923,
+  "bin_recall_affidabile": 0.6428571428571429,
+  "bin_f1_affidabile": 0.6666666666666666,
+  "bin_f1_inaffidabile": 0.64,
+  "bin_f1_macro": 0.6533333333333333
+ },
+ "testata_media": {
+  "n": 26,
+  "accuratezza": 0.23076923076923078,
+  "f1_macro": 0.24153846153846156,
+  "f1_pesata": 0.22514792899408287,
+  "tolerant_0.5": 0.5,
+  "tolerant_1": 0.7692307692307693,
+  "errore_medio_livelli": 1.1923076923076923,
+  "confusione": [
+   [
+    2,
+    2,
+    0,
+    2,
+    1
+   ],
+   [
+    1,
+    3,
+    1,
+    0,
+    0
+   ],
+   [
+    2,
+    2,
+    0,
+    1,
+    0
+   ],
+   [
+    1,
+    0,
+    5,
+    0,
+    0
+   ],
+   [
+    0,
+    0,
+    0,
+    2,
+    1
+   ]
+  ],
+  "l1_precisione": 0.3333333333333333,
+  "l1_recall": 0.2857142857142857,
+  "l1_f1": 0.3076923076923077,
+  "l1_supporto": 7,
+  "l2_precisione": 0.42857142857142855,
+  "l2_recall": 0.6,
+  "l2_f1": 0.5,
+  "l2_supporto": 5,
+  "l3_precisione": 0.0,
+  "l3_recall": 0.0,
+  "l3_f1": 0.0,
+  "l3_supporto": 5,
+  "l4_precisione": 0.0,
+  "l4_recall": 0.0,
+  "l4_f1": 0.0,
+  "l4_supporto": 6,
+  "l5_precisione": 0.5,
+  "l5_recall": 0.3333333333333333,
+  "l5_f1": 0.4,
+  "l5_supporto": 3,
+  "bin_accuratezza": 0.6538461538461539,
+  "bin_tp": 9,
+  "bin_tn": 8,
+  "bin_fp": 4,
+  "bin_fn": 5,
+  "bin_precisione_affidabile": 0.6923076923076923,
+  "bin_recall_affidabile": 0.6428571428571429,
+  "bin_f1_affidabile": 0.6666666666666666,
+  "bin_f1_inaffidabile": 0.64,
+  "bin_f1_macro": 0.6533333333333333
+ }
+}

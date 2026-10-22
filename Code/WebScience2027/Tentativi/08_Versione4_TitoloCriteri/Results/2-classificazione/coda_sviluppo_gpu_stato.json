@@ -1,0 +1,61 @@
+{
+ "esperimenti": {
+  "bert_solo_articolo_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-21 09:12:51",
+   "minuti": 17.0,
+   "fine": "2026-10-21 09:29:54"
+  },
+  "bert_titolo_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-21 09:29:54",
+   "minuti": 16.9,
+   "fine": "2026-10-21 09:46:50"
+  },
+  "bert_titolo_criteri05_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-21 09:46:50",
+   "minuti": 17.4,
+   "fine": "2026-10-21 10:04:17"
+  },
+  "bert_titolo_criteri10_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-21 10:04:17",
+   "minuti": 17.2,
+   "fine": "2026-10-21 10:21:29"
+  },
+  "bert_solo_articolo_s1": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-21 10:21:29",
+   "minuti": 16.8,
+   "fine": "2026-10-21 10:38:15"
+  },
+  "bert_titolo_s1": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-21 10:38:15",
+   "minuti": 16.9,
+   "fine": "2026-10-21 10:55:08"
+  },
+  "bert_titolo_criteri05_s1": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-21 10:55:08",
+   "minuti": 17.5,
+   "fine": "2026-10-21 11:12:35"
+  },
+  "bert_titolo_criteri10_s1": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-21 11:12:35",
+   "minuti": 17.5,
+   "fine": "2026-10-21 11:30:03"
+  }
+ },
+ "aggiornato": "2026-10-21 11:30:03"
+}

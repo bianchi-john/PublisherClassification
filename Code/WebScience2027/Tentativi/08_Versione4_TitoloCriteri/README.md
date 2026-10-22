@@ -1,6 +1,6 @@
 # Tentativo 08 — Versione 4: il titolo e i criteri NewsGuard
 
-> **Tentativo autonomo**: `0-scraping` → `1-data-cleaning` → `2-classificazione`, dati in `Dataset/` (fuori da git), risultati in `Results/`. Tutta la catena è qui: `0-scraping/` (lo scraper finale) e `1-data-cleaning/` sono **copie** di quelli del tentativo 06. Nella realtà non sono stati rieseguiti: il dataset in `Dataset/versioni/` è quello del tentativo 06 (rieseguendo `1-data-cleaning` si ottiene lo stesso). **In corso** (21 ottobre): la corsa della notte gira sul server nella vecchia posizione `~/John/WebScience2027/Versione4`; `stato.sh` e `controlla_server.sh` la trovano lì finché non sarà spostata. Il percorso di tutti i tentativi è nel README di `Code/WebScience2027`.
+> **Tentativo autonomo**: `0-scraping` → `1-data-cleaning` → `2-classificazione`, dati in `Dataset/` (fuori da git), risultati in `Results/`. Tutta la catena è qui: `0-scraping/` (lo scraper finale) e `1-data-cleaning/` sono **copie** di quelli del tentativo 06. Nella realtà non sono stati rieseguiti: il dataset in `Dataset/versioni/` è quello del tentativo 06 (rieseguendo `1-data-cleaning` si ottiene lo stesso). La corsa del 21 ottobre è girata sul server nella vecchia posizione `~/John/WebScience2027/Versione4`; i risultati sono stati scaricati qui in `Results/` (`stato.sh` e `controlla_server.sh` cercano ancora anche quella posizione). Il percorso di tutti i tentativi è nel README di `Code/WebScience2027`.
 
 **La domanda.** Dalle Versioni 1–3: sul solo testo dell'articolo i transformer non battono il TF-IDF, perché il segnale
 è sparso e lessicale (il genere della testata, lo stile). Che cosa potrebbe vedere un transformer e non un TF-IDF?
@@ -68,6 +68,27 @@ priori: titolo + articolo, con e senza criteri (peso 0,5; il peso 1,0 non dà se
 
 Riferimento fold per fold, ModernBERT solo articolo (Versione 2), F1 per testata: s42 0,436 0,291 0,363 0,347 0,326;
 s1 0,308 0,268 0,270 0,412 0,335; s2 0,446 0,318 0,325 0,315 0,358.
+
+## Risultati (21 ottobre; tutti gli esperimenti finiti, nessuno fallito)
+
+Per testata, 304 testate, fold per gruppo; riferimento = TF-IDF con il titolo e C scelto in validazione (voto).
+
+| | F1 macro | binario | Δ F1 dal riferimento [IC 95%] |
+|---|---|---|---|
+| **TF-IDF con titolo, C in validazione** (riferimento) | **0,390** | **0,757** | — |
+| TF-IDF con titolo, C = 1 | 0,393 | 0,734 | +0,00 [−0,05; +0,05] |
+| TF-IDF senza titolo (Versione 2) | 0,370 | 0,773 | −0,02 [−0,07; +0,03] |
+| ModernBERT solo articolo, ensemble di 3 (Versione 2) | 0,341 | 0,707 | −0,05 [−0,12; +0,02] |
+| **ModernBERT titolo + articolo**, ensemble di 3 | 0,356 | 0,714 | −0,03 [−0,11; +0,04] |
+| seed 42 / 1 / 2 | 0,382 / 0,347 / 0,337 | 0,750 / 0,707 / 0,707 | |
+| **ModernBERT titolo + articolo + criteri** (peso 0,5), ensemble di 3 | 0,360 | 0,704 | −0,03 [−0,10; +0,04] |
+| seed 42 / 1 / 2 | 0,377 / 0,363 / 0,338 | 0,740 / 0,711 / 0,704 | |
+
+- Il titolo aiuta ModernBERT (+1,5 punti di F1 sull'ensemble), ma aiuta altrettanto il TF-IDF (+2 punti): il distacco
+  resta circa 3 punti, non significativo. I criteri come etichette in più aggiungono pochissimo (+0,4 punti).
+- Il seed 42 è il migliore in tutte e due le varianti (quasi alla pari con il TF-IDF); tra un seed e l'altro ModernBERT
+  varia di 3–4 punti, quanto gli effetti che cerchiamo.
+- Dettagli in `Results/2-classificazione/03_confronto_*.csv`; per fold nei log `avanzamento_*.log`.
 
 ## Sul server
 
