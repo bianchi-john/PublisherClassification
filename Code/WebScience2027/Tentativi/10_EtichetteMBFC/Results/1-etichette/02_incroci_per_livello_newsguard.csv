@@ -1,0 +1,53 @@
+valore,l1,l2,l3,l4,l5,tutte,insieme,campo
+Very High,0,0,0,1,2,3,dataset finale,factual
+High,0,1,45,95,29,170,dataset finale,factual
+Mostly Factual,1,1,5,22,3,32,dataset finale,factual
+Mixed,20,44,18,18,2,102,dataset finale,factual
+Low,33,11,1,1,0,46,dataset finale,factual
+Very Low,78,0,0,0,0,78,dataset finale,factual
+(vuoto),0,0,0,0,1,1,dataset finale,factual
+High,0,2,47,113,34,196,dataset finale,credibilita
+Medium,4,11,16,20,2,53,dataset finale,credibilita
+Low,128,44,6,4,0,182,dataset finale,credibilita
+(vuoto),0,0,0,0,1,1,dataset finale,credibilita
+Extreme Left,0,3,0,0,1,4,dataset finale,orientamento
+Left,1,3,4,15,5,28,dataset finale,orientamento
+Left-Center,0,6,3,32,13,54,dataset finale,orientamento
+Least Biased,0,0,12,56,11,79,dataset finale,orientamento
+Right-Center,6,1,35,15,3,60,dataset finale,orientamento
+Right,10,13,12,15,3,53,dataset finale,orientamento
+Extreme Right,115,31,3,3,0,152,dataset finale,orientamento
+(vuoto),0,0,0,1,1,2,dataset finale,orientamento
+Left,0,3,4,16,5,28,dataset finale,categoria
+Left-Center,0,1,3,32,14,50,dataset finale,categoria
+Least Biased,0,0,12,55,11,78,dataset finale,categoria
+Right-Center,2,0,36,14,3,55,dataset finale,categoria
+Right,2,9,8,14,3,36,dataset finale,categoria
+Pro-Science,0,0,0,1,0,1,dataset finale,categoria
+Conspiracy-Pseudoscience,86,0,0,0,0,86,dataset finale,categoria
+Questionable,42,44,6,4,0,96,dataset finale,categoria
+(vuoto),0,0,0,1,1,2,dataset finale,categoria
+Very High,0,0,0,1,1,2,valutate,factual
+High,0,1,7,29,24,61,valutate,factual
+Mostly Factual,1,1,5,19,2,28,valutate,factual
+Mixed,12,36,15,15,2,80,valutate,factual
+Low,23,8,1,1,0,33,valutate,factual
+Very Low,7,0,0,0,0,7,valutate,factual
+High,0,2,9,44,27,82,valutate,credibilita
+Medium,4,9,13,17,2,45,valutate,credibilita
+Low,39,35,6,4,0,84,valutate,credibilita
+Extreme Left,0,2,0,0,1,3,valutate,orientamento
+Left,0,3,4,12,5,24,valutate,orientamento
+Left-Center,0,5,2,19,9,35,valutate,orientamento
+Least Biased,0,0,4,7,9,20,valutate,orientamento
+Right-Center,5,1,4,12,3,25,valutate,orientamento
+Right,6,11,11,12,2,42,valutate,orientamento
+Extreme Right,32,24,3,3,0,62,valutate,orientamento
+Left,0,3,4,13,5,25,valutate,categoria
+Left-Center,0,1,2,19,10,32,valutate,categoria
+Least Biased,0,0,4,6,9,19,valutate,categoria
+Right-Center,2,0,5,11,3,21,valutate,categoria
+Right,2,7,7,11,2,29,valutate,categoria
+Pro-Science,0,0,0,1,0,1,valutate,categoria
+Conspiracy-Pseudoscience,11,0,0,0,0,11,valutate,categoria
+Questionable,28,35,6,4,0,73,valutate,categoria

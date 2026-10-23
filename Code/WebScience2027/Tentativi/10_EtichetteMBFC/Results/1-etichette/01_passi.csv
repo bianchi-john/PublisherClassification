@@ -1,0 +1,12 @@
+passo,schede
+siti morti (DEAD/Offline),1091
+schede di una sezione (dominio + percorso),935
+"domini diversi (schede vive, senza percorso)",9006
+"domini con più schede (vive, senza percorso)",98
+credibilità 'Medum' corretta in 'Medium',2
+"credibilità non High/Medium/Low → vuota (N/A 172, DEAD 1, Mixed 1)",174
+factual reporting non valido → vuoto (N/A 172),172
+factual score letto come data da Excel → numero (1900-01-05T07:24:00.000Z → [5.3]),1
+"factual score vuoto (#N/A, N/A)",200
+"factual score fuori dalla fascia del factual reporting (segnalati, non toccati)",6
+schede con una nota nella colonna senza nome,10

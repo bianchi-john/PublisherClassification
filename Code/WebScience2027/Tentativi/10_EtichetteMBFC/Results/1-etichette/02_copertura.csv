@@ -1,0 +1,5 @@
+insieme,testate,in MBFC,quota,dominio esatto,dominio registrato,l1 (in MBFC/tutte),l2 (in MBFC/tutte),l3 (in MBFC/tutte),l4 (in MBFC/tutte),l5 (in MBFC/tutte)
+tentate nello scraping,3127,1634,0.5225455708346658,1609,25,1112/2111,92/201,93/164,259/501,78/150
+con articoli scaricati,1046,473,0.4521988527724665,460,13,151/566,61/99,73/98,145/232,43/51
+dataset finale,863,432,0.5005793742757821,424,8,132/442,57/80,69/92,137/205,37/44
+valutate,301,211,0.7009966777408638,206,5,43/68,46/64,28/38,65/95,29/36

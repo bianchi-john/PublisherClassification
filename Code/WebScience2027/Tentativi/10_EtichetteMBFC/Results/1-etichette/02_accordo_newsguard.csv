@@ -1,0 +1,13 @@
+insieme,MBFC,testate,accordo,"NG sì, MBFC no","NG no, MBFC sì"
+dataset finale,credibilità alta/media,431,0.9373549883990719,9.0,18.0
+dataset finale,factual almeno Mostly Factual,431,0.9048723897911833,38.0,3.0
+dataset finale,Spearman punteggio NG ~ factual score,431,-0.8432121653514795,,
+valutate,credibilità alta/media,211,0.8815165876777251,9.0,16.0
+valutate,factual almeno Mostly Factual,211,0.8341232227488151,32.0,3.0
+valutate,Spearman punteggio NG ~ factual score,211,-0.8164941876965275,,
+"valutate, una per gruppo",credibilità alta/media,167,0.8802395209580839,7.0,13.0
+"valutate, una per gruppo",factual almeno Mostly Factual,167,0.8383233532934131,25.0,2.0
+"valutate, una per gruppo",Spearman punteggio NG ~ factual score,167,-0.8311705303771371,,
+tentate con punteggio NewsGuard,credibilità alta/media,1632,0.9626225490196079,17.0,44.0
+tentate con punteggio NewsGuard,factual almeno Mostly Factual,1632,0.9442401960784313,70.0,21.0
+tentate con punteggio NewsGuard,Spearman punteggio NG ~ factual score,1618,-0.8692023224725102,,
