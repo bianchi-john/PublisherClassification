@@ -1,0 +1,39 @@
+2026-10-22 19:44:45  === 863 testate (301 valutate), 75394 articoli, 167885 citazioni; famiglie ['testo', 'link', 'pagina']; C [0.01, 0.1, 1.0, 10.0] ===
+2026-10-22 19:44:45  ModernBERT: semi [42]
+2026-10-22 19:57:35  fold 1 (12.8 min), F1/binario: ModernBERT 0.295/0.705, combinato (ModernBERT+link+pagina) 0.235/0.754, combinato (testo+ModernBERT) 0.345/0.787, combinato (tutte + ModernBERT) 0.286/0.754
+2026-10-22 20:09:50  fold 2 (12.3 min), F1/binario: ModernBERT 0.246/0.656, combinato (ModernBERT+link+pagina) 0.202/0.705, combinato (testo+ModernBERT) 0.180/0.689, combinato (tutte + ModernBERT) 0.174/0.689
+2026-10-22 20:21:50  fold 3 (12.0 min), F1/binario: ModernBERT 0.399/0.767, combinato (ModernBERT+link+pagina) 0.260/0.750, combinato (testo+ModernBERT) 0.352/0.800, combinato (tutte + ModernBERT) 0.290/0.783
+2026-10-22 20:34:03  fold 4 (12.2 min), F1/binario: ModernBERT 0.370/0.683, combinato (ModernBERT+link+pagina) 0.328/0.617, combinato (testo+ModernBERT) 0.275/0.667, combinato (tutte + ModernBERT) 0.301/0.617
+2026-10-22 20:46:58  fold 5 (12.9 min), F1/binario: ModernBERT 0.326/0.576, combinato (ModernBERT+link+pagina) 0.237/0.627, combinato (testo+ModernBERT) 0.276/0.644, combinato (tutte + ModernBERT) 0.299/0.661
+2026-10-22 20:46:58  === finito in 62.3 min, semi [42] ===
+                                        n  f1_macro  accuratezza  tolerant_1  bin_accuratezza  bin_f1_macro
+ModernBERT                          301.0     0.335        0.419       0.744            0.678         0.678
+combinato (ModernBERT+link+pagina)  301.0     0.267        0.296       0.724            0.691         0.690
+combinato (testo+ModernBERT)        301.0     0.289        0.316       0.771            0.718         0.715
+combinato (tutte + ModernBERT)      301.0     0.290        0.309       0.718            0.701         0.696
+2026-10-22 23:38:11  === 863 testate (301 valutate), 75394 articoli, 167885 citazioni; famiglie ['testo', 'link', 'pagina']; C [0.01, 0.1, 1.0, 10.0] ===
+2026-10-22 23:38:11  ModernBERT: semi [1, 42]
+2026-10-22 23:51:04  fold 1 (12.9 min), F1/binario: ModernBERT 0.357/0.721, combinato (ModernBERT+link+pagina) 0.313/0.705, combinato (testo+ModernBERT) 0.462/0.820, combinato (tutte + ModernBERT) 0.333/0.770
+2026-10-23 00:03:14  fold 2 (12.2 min), F1/binario: ModernBERT 0.215/0.705, combinato (ModernBERT+link+pagina) 0.243/0.721, combinato (testo+ModernBERT) 0.216/0.705, combinato (tutte + ModernBERT) 0.192/0.639
+2026-10-23 00:15:13  fold 3 (12.0 min), F1/binario: ModernBERT 0.338/0.750, combinato (ModernBERT+link+pagina) 0.267/0.800, combinato (testo+ModernBERT) 0.359/0.800, combinato (tutte + ModernBERT) 0.322/0.800
+2026-10-23 00:27:25  fold 4 (12.2 min), F1/binario: ModernBERT 0.361/0.750, combinato (ModernBERT+link+pagina) 0.384/0.667, combinato (testo+ModernBERT) 0.317/0.683, combinato (tutte + ModernBERT) 0.309/0.583
+2026-10-23 00:40:20  fold 5 (12.9 min), F1/binario: ModernBERT 0.367/0.627, combinato (ModernBERT+link+pagina) 0.238/0.610, combinato (testo+ModernBERT) 0.259/0.644, combinato (tutte + ModernBERT) 0.296/0.644
+2026-10-23 00:40:20  === finito in 62.2 min, semi [1, 42] ===
+                                        n  f1_macro  accuratezza  tolerant_1  bin_accuratezza  bin_f1_macro
+ModernBERT                          301.0     0.326        0.422       0.771            0.711         0.711
+combinato (ModernBERT+link+pagina)  301.0     0.302        0.329       0.728            0.701         0.698
+combinato (testo+ModernBERT)        301.0     0.330        0.359       0.741            0.731         0.729
+combinato (tutte + ModernBERT)      301.0     0.305        0.329       0.721            0.688         0.682
+2026-10-23 03:40:10  === 863 testate (301 valutate), 75394 articoli, 167885 citazioni; famiglie ['testo', 'link', 'pagina']; C [0.01, 0.1, 1.0, 10.0] ===
+2026-10-23 03:40:10  ModernBERT: semi [1, 2, 42]
+2026-10-23 03:52:22  fold 1 (12.2 min), F1/binario: ModernBERT 0.352/0.738, combinato (ModernBERT+link+pagina) 0.261/0.721, combinato (testo+ModernBERT) 0.458/0.836, combinato (tutte + ModernBERT) 0.390/0.803
+2026-10-23 04:04:25  fold 2 (12.1 min), F1/binario: ModernBERT 0.221/0.672, combinato (ModernBERT+link+pagina) 0.264/0.689, combinato (testo+ModernBERT) 0.245/0.672, combinato (tutte + ModernBERT) 0.237/0.672
+2026-10-23 04:16:19  fold 3 (11.9 min), F1/binario: ModernBERT 0.397/0.767, combinato (ModernBERT+link+pagina) 0.258/0.817, combinato (testo+ModernBERT) 0.347/0.783, combinato (tutte + ModernBERT) 0.247/0.800
+2026-10-23 04:28:25  fold 4 (12.1 min), F1/binario: ModernBERT 0.339/0.750, combinato (ModernBERT+link+pagina) 0.401/0.700, combinato (testo+ModernBERT) 0.283/0.667, combinato (tutte + ModernBERT) 0.331/0.633
+2026-10-23 04:41:13  fold 5 (12.8 min), F1/binario: ModernBERT 0.311/0.610, combinato (ModernBERT+link+pagina) 0.269/0.593, combinato (testo+ModernBERT) 0.259/0.627, combinato (tutte + ModernBERT) 0.280/0.661
+2026-10-23 04:41:13  === finito in 61.1 min, semi [1, 2, 42] ===
+                                        n  f1_macro  accuratezza  tolerant_1  bin_accuratezza  bin_f1_macro
+ModernBERT                          301.0     0.325        0.409       0.774            0.708         0.708
+combinato (ModernBERT+link+pagina)  301.0     0.304        0.336       0.734            0.704         0.702
+combinato (testo+ModernBERT)        301.0     0.328        0.355       0.738            0.718         0.716
+combinato (tutte + ModernBERT)      301.0     0.318        0.339       0.748            0.714         0.709

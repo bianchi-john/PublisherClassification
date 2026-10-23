@@ -1,0 +1,751 @@
+fold,famiglia,livello,segnale,peso
+1,link,l1,link: quota video alternativi,0.8737862699972875
+1,link,l1,t.co,0.859204127562729
+1,link,l1,rt-english.com,0.8115546334762028
+1,link,l1,dedicatedissues.com,0.6055658736886402
+1,link,l1,nbcnews.com,0.5188541922813593
+1,link,l1,brightlearn.ai,0.4942215958589614
+1,link,l1,atmeta.com,0.4374313339675761
+1,link,l1,statista.com,0.4364598980382517
+1,link,l1,t.me,0.4356088888273552
+1,link,l1,thegatewaypundit.com,0.4191386358921767
+1,link,l1,techcrunch.com,0.3970506688950996
+1,link,l1,tinyurl.com,0.3939656445622985
+1,link,l1,cbc.ca,0.38669818006249934
+1,link,l1,ynet.co.il,0.37611030152225905
+1,link,l1,brightanswers.ai,0.3530236696755324
+1,link,l2,people.com.cn,0.7371517731644157
+1,link,l2,dawn.com,0.6186062534683254
+1,link,l2,twitter.com,0.5864630080845714
+1,link,l2,thelancet.com,0.5668702849153321
+1,link,l2,rasmussenreports.com,0.5482827394387354
+1,link,l2,dailycaller.com,0.5463210726448058
+1,link,l2,paypal.com,0.5031329726563106
+1,link,l2,sendgrid.net,0.4961840354825071
+1,link,l2,breitbart.com,0.49101741646722064
+1,link,l2,creativecommons.org,0.4727784904101511
+1,link,l2,thepostmillennial.com,0.46609325531821594
+1,link,l2,redstate.com,0.4656828187281715
+1,link,l2,westernjournal.com,0.446903621732113
+1,link,l2,nypost.com,0.43543703490180785
+1,link,l2,fanaticsbettingpartners.com,0.4049732545917312
+1,link,l3,pxf.io,1.0420482719953832
+1,link,l3,proofpoint.com,0.8100046962094662
+1,link,l3,link.amazon,0.8060824782146133
+1,link,l3,hellomagazine.com,0.7084570976966803
+1,link,l3,pagesix.com,0.7002877401246522
+1,link,l3,www.nhs.uk,0.6498590672451287
+1,link,l3,twitter.com,0.6150727078858279
+1,link,l3,people.com,0.5931358103965672
+1,link,l3,ew.com,0.5659947738718013
+1,link,l3,amzn.to,0.5476284039205559
+1,link,l3,link citati per articolo,0.5397325156124915
+1,link,l3,fox59.com,0.5386546869421982
+1,link,l3,netflix.com,0.5331519163542133
+1,link,l3,history.com,0.5329189318701462
+1,link,l3,amazon.com,0.4903596445551512
+1,link,l4,punteggio medio dei siti citati,0.6596202317813439
+1,link,l4,news.com.au,0.638201995230154
+1,link,l4,facebook.com,0.5198724668467765
+1,link,l4,urldefense.com,0.5040515221165817
+1,link,l4,cnn.com,0.48225518052890026
+1,link,l4,instagram.com,0.48180226262847825
+1,link,l4,quota citazioni verso inaffidabili,0.4010843821616694
+1,link,l4,nytimes.com,0.3480239857363952
+1,link,l4,publicnoticeportal.uk,0.32259048569470855
+1,link,l4,europa.eu,0.3194301774760509
+1,link,l4,1819news.com,0.3035085589220713
+1,link,l4,stellantis.com,0.29776094515690527
+1,link,l4,honestreporting.com,0.2918485141163472
+1,link,l4,sciencedirect.com,0.29113796270626907
+1,link,l4,franceinfo.fr,0.2865607790259942
+1,link,l5,politico.eu,0.8455776439314622
+1,link,l5,army.mil,0.657197067130418
+1,link,l5,canada.ca,0.6436672711723166
+1,link,l5,lawenforcementtoday.com,0.6400754420105673
+1,link,l5,deathpenaltyinfo.org,0.5409460143884044
+1,link,l5,wbez.org,0.4915471320375043
+1,link,l5,lawandcrime.com,0.47201431066474425
+1,link,l5,mod.uk,0.44490227491607515
+1,link,l5,guns.com,0.4347828987031346
+1,link,l5,apple.news,0.43066884950567824
+1,link,l5,anedot.com,0.4182134771126798
+1,link,l5,bbc.com,0.41801866849437697
+1,link,l5,nessuna citazione di testate note,0.4141351293536165
+1,link,l5,nato.int,0.40770674775822374
+1,link,l5,military.com,0.40399209515959633
+1,pagina,l1,sezione commenti,0.0973397725588328
+1,pagina,l1,incorporati: video alternativi,0.08889863135652262
+1,pagina,l1,link nella pagina,0.06508068666926145
+1,pagina,l1,incorporati: video mainstream,0.052596994166657265
+1,pagina,l1,terze parti: contenuti,0.037464060136419654
+1,pagina,l1,immagini,0.03455855458861381
+1,pagina,l1,terze parti: social,0.02475380143882821
+1,pagina,l1,pagina: etica e standard,0.01829139744270582
+1,pagina,l1,terze parti,0.00696616859040828
+1,pagina,l1,terze parti: fingerprinting,0.002795173397371708
+1,pagina,l1,pagina: chi siamo,-0.00483250090582048
+1,pagina,l1,reti pubblicitarie nel codice,-0.015939993165731654
+1,pagina,l1,banner dei cookie,-0.016389323867420473
+1,pagina,l1,pagina: rettifiche,-0.016814519151230625
+1,pagina,l1,script,-0.030053718475156855
+1,pagina,l2,reti pubblicitarie nel codice,0.1058902435265112
+1,pagina,l2,terze parti: social,0.08358511559254896
+1,pagina,l2,pagina: contatti,0.040084861427851455
+1,pagina,l2,banner dei cookie,0.03822876606745396
+1,pagina,l2,pagina: etica e standard,0.031989958800211445
+1,pagina,l2,dichiarato come opinione,0.03188532711402448
+1,pagina,l2,pagina: proprieta e finanziamento,0.030568777104561396
+1,pagina,l2,dati strutturati NewsArticle,0.028936681337775494
+1,pagina,l2,terze parti: fingerprinting,0.02619202459130242
+1,pagina,l2,terze parti: contenuti,0.023233417334827384
+1,pagina,l2,terze parti: pubblicita,0.019740817595896853
+1,pagina,l2,incorporati: video mainstream,0.018041414809515835
+1,pagina,l2,sezione commenti,0.01703861603646374
+1,pagina,l2,firma dell'autore,0.010108208550234905
+1,pagina,l2,data di pubblicazione,-0.0015017010518550995
+1,pagina,l3,pagina: donazioni,0.09023064343255342
+1,pagina,l3,immagini,0.08339044139844073
+1,pagina,l3,pagina: chi siamo,0.0706040783949642
+1,pagina,l3,incorporati: social,0.062041422216795906
+1,pagina,l3,pagina: proprieta e finanziamento,0.06194185198834283
+1,pagina,l3,terze parti: pubblicita,0.054643660557593884
+1,pagina,l3,KB pagina,0.05178731909899331
+1,pagina,l3,pagina: contatti,0.05015692370966429
+1,pagina,l3,pagina: redazione,0.046812079525477654
+1,pagina,l3,pagina: newsletter,0.04597906424421304
+1,pagina,l3,reti pubblicitarie nel codice,0.045408214249040735
+1,pagina,l3,paywall dichiarato,0.03835556407728575
+1,pagina,l3,dichiarato come opinione,0.032691754776909866
+1,pagina,l3,data di pubblicazione,0.026861911241232005
+1,pagina,l3,script,0.016769855544962648
+1,pagina,l4,paywall dichiarato,0.09583293666328431
+1,pagina,l4,pagina: pubblicita (inserzionisti),0.07871399821718607
+1,pagina,l4,dati strutturati NewsArticle,0.06339899035262893
+1,pagina,l4,pagina: redazione,0.04567465001369149
+1,pagina,l4,incorporati: video mainstream,0.04481630268796003
+1,pagina,l4,dichiarato come opinione,0.042466152182924356
+1,pagina,l4,terze parti: fingerprinting,0.038842169420734034
+1,pagina,l4,pagina: newsletter,0.025730271271922456
+1,pagina,l4,pagina: donazioni,0.013452139755289399
+1,pagina,l4,script,0.012353677859741074
+1,pagina,l4,reti pubblicitarie nel codice,0.011732791456946107
+1,pagina,l4,terze parti: contenuti,0.00317098427323779
+1,pagina,l4,KB pagina,0.002970869477056764
+1,pagina,l4,incorporati: video alternativi,-0.0038093314371008317
+1,pagina,l4,incorporati: social,-0.007026567801598077
+1,pagina,l5,terze parti: analytics,0.1367187480544924
+1,pagina,l5,firma dell'autore,0.11292797958796429
+1,pagina,l5,KB pagina,0.08795220034443087
+1,pagina,l5,pagina: newsletter,0.07841441901616436
+1,pagina,l5,pagina: redazione,0.07697849208931523
+1,pagina,l5,pagina: rettifiche,0.05994439476214491
+1,pagina,l5,banner dei cookie,0.051149657101696624
+1,pagina,l5,script,0.050680918655816365
+1,pagina,l5,pagina: contatti,0.0448281040771256
+1,pagina,l5,incorporati: social,0.04390921448388421
+1,pagina,l5,data di pubblicazione,0.04308703539599717
+1,pagina,l5,pagina: proprieta e finanziamento,0.038663453162640644
+1,pagina,l5,pagina: pubblicita (inserzionisti),0.03329120965650422
+1,pagina,l5,pagina: chi siamo,0.032437485416092274
+1,pagina,l5,terze parti,0.03175579503340282
+2,link,l1,rt-english.com,0.8340122928457416
+2,link,l1,t.me,0.8287426342454796
+2,link,l1,thegatewaypundit.com,0.7079381673294382
+2,link,l1,dedicatedissues.com,0.6014215397093085
+2,link,l1,t.co,0.5283681516637564
+2,link,l1,brightlearn.ai,0.5025187397127278
+2,link,l1,gab.com,0.5015824282724781
+2,link,l1,msn.com,0.49923790799690565
+2,link,l1,atmeta.com,0.4705305582719522
+2,link,l1,link: quota video alternativi,0.44482868875974435
+2,link,l1,nbcnews.com,0.4246878510776084
+2,link,l1,techcrunch.com,0.3929895944783091
+2,link,l1,statista.com,0.3886397235658879
+2,link,l1,pravda.ru,0.3651463702933228
+2,link,l1,rumble.com,0.35445163637849497
+2,link,l2,dailywire.com,0.9967080687415392
+2,link,l2,people.com.cn,0.7498712790169332
+2,link,l2,westernjournal.com,0.7487008034845851
+2,link,l2,dailycaller.com,0.6589017065408597
+2,link,l2,sendgrid.net,0.6478462366049172
+2,link,l2,dawn.com,0.6111733547637038
+2,link,l2,nypost.com,0.610364749262003
+2,link,l2,texastribune.org,0.6052751185278885
+2,link,l2,substack.com,0.602045098244262
+2,link,l2,foxnews.com,0.5740940246021333
+2,link,l2,rasmussenreports.com,0.5145133861747071
+2,link,l2,redstate.com,0.4497754312065977
+2,link,l2,twc.health,0.42881046549506985
+2,link,l2,irs.gov,0.4266804404987601
+2,link,l2,creativecommons.org,0.4051512877317949
+2,link,l3,twitter.com,0.9771813293324083
+2,link,l3,www.nhs.uk,0.70679797019869
+2,link,l3,proofpoint.com,0.6798604869902735
+2,link,l3,fox59.com,0.5700519652861827
+2,link,l3,link.amazon,0.5494121115609797
+2,link,l3,hellomagazine.com,0.5112389591104397
+2,link,l3,history.com,0.49901038317789
+2,link,l3,pagesix.com,0.4830145252065908
+2,link,l3,merriam-webster.com,0.46850347602819803
+2,link,l3,notthebee.com,0.435813653255446
+2,link,l3,google.com,0.4287467076217753
+2,link,l3,netflix.com,0.42110210549663085
+2,link,l3,people.com,0.40129655017888843
+2,link,l3,amzn.to,0.3974704014564198
+2,link,l3,youtu.be,0.3946474460525134
+2,link,l4,news.com.au,0.8249303180586323
+2,link,l4,instagram.com,0.5896341306702011
+2,link,l4,urldefense.com,0.519019651887073
+2,link,l4,patreon.com,0.4718561468427782
+2,link,l4,deadline.com,0.4343634410730053
+2,link,l4,linksynergy.com,0.40455419023743505
+2,link,l4,cnn.com,0.3949555132195728
+2,link,l4,nytimes.com,0.3835329754971728
+2,link,l4,punteggio medio dei siti citati,0.38003250554592033
+2,link,l4,t.me,0.3417219088789829
+2,link,l4,stellantis.com,0.3370796246064878
+2,link,l4,skimresources.com,0.324664895477614
+2,link,l4,theatlantic.com,0.31994195516802626
+2,link,l4,thenightly.com.au,0.31736491973466024
+2,link,l4,domain.com.au,0.31117253324023486
+2,link,l5,punteggio medio dei siti citati,1.0828559974762935
+2,link,l5,canada.ca,0.9607339166535157
+2,link,l5,politico.eu,0.7835732399165195
+2,link,l5,wbez.org,0.5985513527908438
+2,link,l5,apple.com,0.574164146056748
+2,link,l5,nine.com.au,0.5071599779714616
+2,link,l5,nessuna citazione di testate note,0.45975589162083436
+2,link,l5,courtlistener.com,0.45574310867799706
+2,link,l5,apnews.com,0.43555695984074994
+2,link,l5,deathpenaltyinfo.org,0.42748382197799406
+2,link,l5,nih.gov,0.40623330566180693
+2,link,l5,gov.bc.ca,0.395333838237379
+2,link,l5,link: quota testate NewsGuard,0.39521582618268375
+2,link,l5,cdc.gov,0.37764278130756274
+2,link,l5,congress.gov,0.37711422058398114
+2,pagina,l1,incorporati: video alternativi,1.2879831512170952
+2,pagina,l1,link nella pagina,0.39613203201529534
+2,pagina,l1,incorporati: video mainstream,0.36277866487691807
+2,pagina,l1,terze parti: contenuti,0.2553870901590114
+2,pagina,l1,immagini,0.19161815765622509
+2,pagina,l1,sezione commenti,0.19065890328850257
+2,pagina,l1,terze parti: pubblicita,0.1405772186374147
+2,pagina,l1,terze parti: social,0.04701918714642501
+2,pagina,l1,pagina: etica e standard,0.03310995551818688
+2,pagina,l1,firma dell'autore,0.02825638162344547
+2,pagina,l1,reti pubblicitarie nel codice,0.022053181075705624
+2,pagina,l1,terze parti: fingerprinting,-0.0003324807372852255
+2,pagina,l1,script,-0.029520774783637387
+2,pagina,l1,pagina: rettifiche,-0.05306565309609455
+2,pagina,l1,banner dei cookie,-0.05389219867697143
+2,pagina,l2,pagina: contatti,0.45784612990137125
+2,pagina,l2,reti pubblicitarie nel codice,0.41343302703135637
+2,pagina,l2,incorporati: video alternativi,0.3228994228234422
+2,pagina,l2,incorporati: video mainstream,0.3111759595688407
+2,pagina,l2,sezione commenti,0.22464660733045808
+2,pagina,l2,terze parti: fingerprinting,0.202824758933252
+2,pagina,l2,dichiarato come opinione,0.11979149910236454
+2,pagina,l2,terze parti: social,0.11924113301585934
+2,pagina,l2,link nella pagina,0.11806929315537756
+2,pagina,l2,terze parti: contenuti,0.11292722339462263
+2,pagina,l2,dati strutturati NewsArticle,0.10335905849690592
+2,pagina,l2,pagina: donazioni,0.09835026390740322
+2,pagina,l2,script,0.07626451161109629
+2,pagina,l2,banner dei cookie,0.06831709679073085
+2,pagina,l2,pagina: proprieta e finanziamento,0.05763926686864137
+2,pagina,l3,paywall dichiarato,0.806847836815457
+2,pagina,l3,pagina: chi siamo,0.38528125139635494
+2,pagina,l3,incorporati: social,0.358967057070357
+2,pagina,l3,data di pubblicazione,0.30057724639463335
+2,pagina,l3,pagina: contatti,0.20270165865887332
+2,pagina,l3,terze parti,0.17275328861695932
+2,pagina,l3,incorporati: video mainstream,0.162801908481633
+2,pagina,l3,terze parti: social,0.1384010283779208
+2,pagina,l3,pagina: rettifiche,0.11738560638535749
+2,pagina,l3,pagina: proprieta e finanziamento,0.10231276646955247
+2,pagina,l3,terze parti: pubblicita,0.06248863973839596
+2,pagina,l3,script,0.055662332515284976
+2,pagina,l3,dichiarato come opinione,0.006542670986974383
+2,pagina,l3,pagina: etica e standard,0.0014691882460033789
+2,pagina,l3,banner dei cookie,-0.005230143866397417
+2,pagina,l4,paywall dichiarato,0.8030457006169102
+2,pagina,l4,incorporati: video alternativi,0.7726097485464657
+2,pagina,l4,incorporati: video mainstream,0.36230149432765907
+2,pagina,l4,pagina: pubblicita (inserzionisti),0.32176337866227345
+2,pagina,l4,reti pubblicitarie nel codice,0.270902752844119
+2,pagina,l4,dati strutturati NewsArticle,0.26396354622827206
+2,pagina,l4,dichiarato come opinione,0.25091238650579534
+2,pagina,l4,terze parti: fingerprinting,0.2153008429480974
+2,pagina,l4,incorporati: social,0.18656536189069012
+2,pagina,l4,KB pagina,0.17749102371456663
+2,pagina,l4,pagina: redazione,0.1611659064341717
+2,pagina,l4,terze parti: analytics,0.1405154789216576
+2,pagina,l4,pagina: donazioni,0.11715588760973279
+2,pagina,l4,pagina: newsletter,0.0718834062303526
+2,pagina,l4,immagini,0.025922790908412534
+2,pagina,l5,paywall dichiarato,0.6361474830992526
+2,pagina,l5,pagina: chi siamo,0.5571878059864268
+2,pagina,l5,incorporati: social,0.4462662993760452
+2,pagina,l5,pagina: redazione,0.43525881176503955
+2,pagina,l5,pagina: newsletter,0.33877209168360417
+2,pagina,l5,terze parti: analytics,0.30489925238997045
+2,pagina,l5,KB pagina,0.26887101080156794
+2,pagina,l5,terze parti,0.25213195033327035
+2,pagina,l5,pagina: rettifiche,0.24455232134312016
+2,pagina,l5,pagina: proprieta e finanziamento,0.19926161712240978
+2,pagina,l5,data di pubblicazione,0.173386028688949
+2,pagina,l5,pagina: pubblicita (inserzionisti),0.13344685942229303
+2,pagina,l5,banner dei cookie,0.07338011077297121
+2,pagina,l5,firma dell'autore,0.06891561961579373
+2,pagina,l5,terze parti: pubblicita,0.06850493338927363
+3,link,l1,t.me,3.0518255740439786
+3,link,l1,rt-english.com,2.5322824095791705
+3,link,l1,nbcnews.com,2.296082769559393
+3,link,l1,dedicatedissues.com,1.950067399713781
+3,link,l1,techcrunch.com,1.9435345670746091
+3,link,l1,gab.com,1.9080117555824188
+3,link,l1,statista.com,1.7924665375656206
+3,link,l1,tinyurl.com,1.641684767919206
+3,link,l1,spreaker.com,1.48785487276614
+3,link,l1,t.co,1.4666975063767302
+3,link,l1,pravda.ru,1.3459998455896254
+3,link,l1,cbc.ca,1.3134045825337683
+3,link,l1,foxnews.com,1.236541104303297
+3,link,l1,justice.gov,1.2350303067786637
+3,link,l1,csis.org,1.1999573595109725
+3,link,l2,twitter.com,3.205529264262548
+3,link,l2,people.com.cn,2.2141196958701754
+3,link,l2,dailywire.com,2.1800470128220484
+3,link,l2,dawn.com,2.128751335881576
+3,link,l2,rasmussenreports.com,2.0351155346942575
+3,link,l2,twc.health,1.857676372209515
+3,link,l2,thelancet.com,1.717806901819456
+3,link,l2,lnkd.in,1.6869969669451728
+3,link,l2,foxweather.com,1.6771326821046544
+3,link,l2,paypal.com,1.6706949291664517
+3,link,l2,sendgrid.net,1.569800533745763
+3,link,l2,bank.in,1.5618361243732595
+3,link,l2,creativecommons.org,1.465310550371442
+3,link,l2,westernjournal.com,1.4447284265232863
+3,link,l2,amazon.com,1.4178910750030964
+3,link,l3,pxf.io,2.6585805334168495
+3,link,l3,pagesix.com,2.2761308729417005
+3,link,l3,facebook.com,2.1335854490887725
+3,link,l3,fox59.com,1.907487762337595
+3,link,l3,proofpoint.com,1.7083965475191274
+3,link,l3,twitter.com,1.6460598628625684
+3,link,l3,history.com,1.6108367769956202
+3,link,l3,hellomagazine.com,1.605564973860778
+3,link,l3,idaho.gov,1.4490753704247117
+3,link,l3,vulture.com,1.3736010239688146
+3,link,l3,wjhg.com,1.3406058956348443
+3,link,l3,dailykos.com,1.3298745587892093
+3,link,l3,fanduel.com,1.284935065623292
+3,link,l3,www.nhs.uk,1.1850669739333328
+3,link,l3,merriam-webster.com,1.1799554896482913
+3,link,l4,news.com.au,2.322022099594738
+3,link,l4,patreon.com,1.9130645725785869
+3,link,l4,link.amazon,1.68697946520136
+3,link,l4,instagram.com,1.6303309797246979
+3,link,l4,publicnoticeportal.uk,1.4262531206391054
+3,link,l4,checkpoint.com,1.3156426297611503
+3,link,l4,linksynergy.com,1.2925261968893411
+3,link,l4,thehill.com,1.2777367637901786
+3,link,l4,sciencedirect.com,1.2629037656337339
+3,link,l4,leparisien.fr,1.2562849005394305
+3,link,l4,t.co,1.2341744299831248
+3,link,l4,cnn.com,1.2017576166491013
+3,link,l4,edp24.co.uk,1.1918677103162525
+3,link,l4,link citati per articolo,1.177835968696271
+3,link,l4,junonews.com,1.0834509624437811
+3,link,l5,politico.eu,2.017770611802592
+3,link,l5,apple.com,1.9396918574479656
+3,link,l5,canada.ca,1.7598696652900305
+3,link,l5,nine.com.au,1.7144914858076008
+3,link,l5,army.mil,1.6746038719116614
+3,link,l5,apple.news,1.5822048979716552
+3,link,l5,bbc.com,1.5194059610357749
+3,link,l5,mod.uk,1.41789407073433
+3,link,l5,anedot.com,1.411748993948001
+3,link,l5,www.gov.uk,1.3489070645918086
+3,link,l5,nato.int,1.2321566879482229
+3,link,l5,nssf.org,1.1336084530592252
+3,link,l5,lawandcrime.com,1.1115954197151487
+3,link,l5,irishtimes.com,1.0900987647174334
+3,link,l5,counterterrorism.police.uk,1.0874411239585244
+3,pagina,l1,incorporati: video alternativi,0.09479956021844677
+3,pagina,l1,sezione commenti,0.09319029359168494
+3,pagina,l1,incorporati: video mainstream,0.06391548436504628
+3,pagina,l1,link nella pagina,0.05574595957666195
+3,pagina,l1,immagini,0.05049047716656554
+3,pagina,l1,terze parti: fingerprinting,0.048200472675992194
+3,pagina,l1,terze parti: contenuti,0.04366837940206024
+3,pagina,l1,pagina: etica e standard,0.0162868159525619
+3,pagina,l1,terze parti: social,0.013723941061222784
+3,pagina,l1,pagina: chi siamo,0.012344388249099452
+3,pagina,l1,reti pubblicitarie nel codice,0.01101105518735659
+3,pagina,l1,incorporati: social,0.008460513300077957
+3,pagina,l1,terze parti: pubblicita,-0.010447334583789544
+3,pagina,l1,banner dei cookie,-0.01355770893729144
+3,pagina,l1,pagina: donazioni,-0.01777172668595228
+3,pagina,l2,reti pubblicitarie nel codice,0.11414647354813409
+3,pagina,l2,terze parti: social,0.07645583718265471
+3,pagina,l2,pagina: rettifiche,0.07519357479659991
+3,pagina,l2,dichiarato come opinione,0.0638412030188818
+3,pagina,l2,terze parti: contenuti,0.06303051007507136
+3,pagina,l2,pagina: proprieta e finanziamento,0.03701442333762927
+3,pagina,l2,pagina: donazioni,0.029143622925664327
+3,pagina,l2,pagina: etica e standard,0.027238749960485194
+3,pagina,l2,pagina: contatti,0.022043514613287084
+3,pagina,l2,script,0.012972389071975381
+3,pagina,l2,link nella pagina,0.006752356037073342
+3,pagina,l2,dati strutturati NewsArticle,0.001130161689544174
+3,pagina,l2,pagina: newsletter,-0.0006055427373664679
+3,pagina,l2,sezione commenti,-0.010201553579079576
+3,pagina,l2,incorporati: video mainstream,-0.014519907718251183
+3,pagina,l3,dichiarato come opinione,0.09320025184110309
+3,pagina,l3,KB pagina,0.08506819089356171
+3,pagina,l3,immagini,0.07742104147702167
+3,pagina,l3,terze parti: pubblicita,0.07296820444912547
+3,pagina,l3,paywall dichiarato,0.057264360808231295
+3,pagina,l3,pagina: contatti,0.055144458920433154
+3,pagina,l3,pagina: chi siamo,0.04988305173066806
+3,pagina,l3,pagina: donazioni,0.04784782583515321
+3,pagina,l3,pagina: redazione,0.04306384344625283
+3,pagina,l3,incorporati: social,0.030397930616326323
+3,pagina,l3,pagina: newsletter,0.021744851182882968
+3,pagina,l3,sezione commenti,0.019727466527624506
+3,pagina,l3,pagina: etica e standard,0.015043295636560752
+3,pagina,l3,terze parti: social,0.01202545956164853
+3,pagina,l3,data di pubblicazione,0.009353313318389744
+3,pagina,l4,pagina: pubblicita (inserzionisti),0.0944516603934675
+3,pagina,l4,paywall dichiarato,0.06210292497804794
+3,pagina,l4,dati strutturati NewsArticle,0.05760942946267466
+3,pagina,l4,incorporati: video mainstream,0.04182896990637424
+3,pagina,l4,data di pubblicazione,0.03562689777821702
+3,pagina,l4,firma dell'autore,0.029902292587192653
+3,pagina,l4,pagina: redazione,0.025662515908945995
+3,pagina,l4,pagina: newsletter,0.02535601297923109
+3,pagina,l4,terze parti,0.016755039648636588
+3,pagina,l4,KB pagina,0.01484188903005503
+3,pagina,l4,pagina: etica e standard,0.011546493168441141
+3,pagina,l4,terze parti: pubblicita,0.006111424695147976
+3,pagina,l4,banner dei cookie,0.002556439240086161
+3,pagina,l4,terze parti: analytics,0.0007279717719103046
+3,pagina,l4,reti pubblicitarie nel codice,-0.002601603657647914
+3,pagina,l5,terze parti: analytics,0.17527499257697343
+3,pagina,l5,pagina: redazione,0.12502753740221836
+3,pagina,l5,pagina: contatti,0.11428047244500454
+3,pagina,l5,pagina: newsletter,0.08072953727416247
+3,pagina,l5,dati strutturati NewsArticle,0.07676108552089221
+3,pagina,l5,pagina: pubblicita (inserzionisti),0.05932166598694552
+3,pagina,l5,pagina: rettifiche,0.05564913400700017
+3,pagina,l5,pagina: proprieta e finanziamento,0.053535132949834974
+3,pagina,l5,incorporati: social,0.035143341959428906
+3,pagina,l5,script,0.03258717126565516
+3,pagina,l5,banner dei cookie,0.031350848076319805
+3,pagina,l5,paywall dichiarato,0.028485449349506538
+3,pagina,l5,pagina: chi siamo,0.028421170623734525
+3,pagina,l5,data di pubblicazione,0.026767329699285098
+3,pagina,l5,firma dell'autore,0.021936864293341532
+4,link,l1,quota citazioni verso inaffidabili,0.40234924561478264
+4,link,l1,link: quota video alternativi,0.1857414907659603
+4,link,l1,t.me,0.16834023894837166
+4,link,l1,rt-english.com,0.09891474705366003
+4,link,l1,dedicatedissues.com,0.07690810491002617
+4,link,l1,brightlearn.ai,0.07111422825617121
+4,link,l1,link citati per articolo,0.06850017415710725
+4,link,l1,link: quota social,0.06790217275669043
+4,link,l1,link: quota wikipedia,0.06389929982211694
+4,link,l1,gab.com,0.06232186092878358
+4,link,l1,t.co,0.06150488114561969
+4,link,l1,rumble.com,0.05952733930553511
+4,link,l1,link: quota testate NewsGuard,0.0593101135836147
+4,link,l1,atmeta.com,0.057649892595325006
+4,link,l1,pravda.ru,0.0523235097567969
+4,link,l2,link: quota social,0.21359903898633414
+4,link,l2,dailywire.com,0.19670844588493688
+4,link,l2,citazioni di testate note (log),0.1676787228562042
+4,link,l2,twitter.com,0.13648118366842527
+4,link,l2,link: quota video,0.12280833134450916
+4,link,l2,quota citazioni verso inaffidabili,0.11591843893840392
+4,link,l2,dailycaller.com,0.11262469427149012
+4,link,l2,westernjournal.com,0.10691696123372083
+4,link,l2,foxnews.com,0.10211983450519677
+4,link,l2,thepostmillennial.com,0.10043754189791432
+4,link,l2,nypost.com,0.0951608307456695
+4,link,l2,breitbart.com,0.09196278430815419
+4,link,l2,link: quota video alternativi,0.091755638813244
+4,link,l2,people.com.cn,0.08664619471546463
+4,link,l2,dailysignal.com,0.08304281533716726
+4,link,l3,pxf.io,0.16822803281226942
+4,link,l3,link citati per articolo,0.14644142148667333
+4,link,l3,link: quota video,0.1388928754690469
+4,link,l3,proofpoint.com,0.11630373912132985
+4,link,l3,x.com,0.11116802428355692
+4,link,l3,pagesix.com,0.09405828483557938
+4,link,l3,netflix.com,0.0938903486458802
+4,link,l3,people.com,0.09359130375816521
+4,link,l3,hellomagazine.com,0.08743123599039092
+4,link,l3,tmz.com,0.08364927287638971
+4,link,l3,link.amazon,0.07485281752746713
+4,link,l3,newsnationnow.com,0.07469681626853981
+4,link,l3,ew.com,0.07426117001574495
+4,link,l3,facebook.com,0.06646500639045619
+4,link,l3,idaho.gov,0.06297580548350028
+4,link,l4,punteggio medio dei siti citati,0.18755646021924
+4,link,l4,news.com.au,0.11553075317332435
+4,link,l4,link: quota istituzionali,0.08867207497280723
+4,link,l4,europa.eu,0.08110264142991999
+4,link,l4,urldefense.com,0.07565938136804773
+4,link,l4,link: quota wikipedia,0.06569689932392539
+4,link,l4,nessuna citazione di testate note,0.06053520788556096
+4,link,l4,linksynergy.com,0.05683481018452064
+4,link,l4,theatlantic.com,0.0517497251575372
+4,link,l4,domain.com.au,0.051200187827837224
+4,link,l4,huffpost.com,0.04972906299539592
+4,link,l4,reddit.com,0.04599158356600837
+4,link,l4,ft.com,0.04520755402586148
+4,link,l4,cnn.com,0.044914575697823964
+4,link,l4,sciencedirect.com,0.04395206091512929
+4,link,l5,punteggio medio dei siti citati,0.19164801578940255
+4,link,l5,link: quota istituzionali,0.12819246300611936
+4,link,l5,army.mil,0.11606211645467229
+4,link,l5,politico.eu,0.1153420852559647
+4,link,l5,deathpenaltyinfo.org,0.10642975880251158
+4,link,l5,apple.com,0.10338405950193685
+4,link,l5,wbez.org,0.09825810703762311
+4,link,l5,nessuna citazione di testate note,0.08266504824049041
+4,link,l5,nine.com.au,0.08252277095179783
+4,link,l5,bsky.app,0.07280595770702199
+4,link,l5,nytimes.com,0.06989437116324176
+4,link,l5,canada.ca,0.06824105958750645
+4,link,l5,guns.com,0.06714007503656466
+4,link,l5,mod.uk,0.06525565459451955
+4,link,l5,apnews.com,0.06481061088129558
+4,pagina,l1,incorporati: video alternativi,0.4081526691673519
+4,pagina,l1,sezione commenti,0.3018615759479944
+4,pagina,l1,link nella pagina,0.28242058566633743
+4,pagina,l1,incorporati: social,0.16551610233996408
+4,pagina,l1,incorporati: video mainstream,0.1415665388940466
+4,pagina,l1,immagini,0.13262646499944336
+4,pagina,l1,terze parti: social,0.09074361111760369
+4,pagina,l1,terze parti: contenuti,0.07576977839115762
+4,pagina,l1,reti pubblicitarie nel codice,0.04365239258956854
+4,pagina,l1,firma dell'autore,0.020696751540742537
+4,pagina,l1,pagina: donazioni,-0.018480162804367206
+4,pagina,l1,terze parti,-0.03394553129815984
+4,pagina,l1,pagina: pubblicita (inserzionisti),-0.041374290707277474
+4,pagina,l1,pagina: chi siamo,-0.042024431654757013
+4,pagina,l1,script,-0.052782449556097295
+4,pagina,l2,reti pubblicitarie nel codice,0.482136806836639
+4,pagina,l2,terze parti: social,0.24336274416418488
+4,pagina,l2,dichiarato come opinione,0.1639765883223402
+4,pagina,l2,pagina: rettifiche,0.12295368705026995
+4,pagina,l2,incorporati: video mainstream,0.11843254102477152
+4,pagina,l2,sezione commenti,0.10576350489284422
+4,pagina,l2,terze parti: fingerprinting,0.10132559781135927
+4,pagina,l2,pagina: contatti,0.09527280851906023
+4,pagina,l2,terze parti: contenuti,0.07942175795914715
+4,pagina,l2,pagina: etica e standard,0.0755789222117461
+4,pagina,l2,terze parti: analytics,0.0746110209379413
+4,pagina,l2,banner dei cookie,0.07224459663912805
+4,pagina,l2,pagina: donazioni,0.06097739710821142
+4,pagina,l2,script,0.02436011942708945
+4,pagina,l2,link nella pagina,0.01322082538141687
+4,pagina,l3,pagina: chi siamo,0.2810809820040675
+4,pagina,l3,terze parti: pubblicita,0.18622380507050312
+4,pagina,l3,pagina: newsletter,0.13892605740171235
+4,pagina,l3,immagini,0.12829148662262524
+4,pagina,l3,pagina: proprieta e finanziamento,0.11483224212127224
+4,pagina,l3,dichiarato come opinione,0.09885860809290195
+4,pagina,l3,pagina: redazione,0.096043993823278
+4,pagina,l3,KB pagina,0.09595510223237588
+4,pagina,l3,pagina: pubblicita (inserzionisti),0.0876434068007382
+4,pagina,l3,paywall dichiarato,0.08516605054100097
+4,pagina,l3,script,0.08102708925417237
+4,pagina,l3,pagina: contatti,0.07512462966388489
+4,pagina,l3,data di pubblicazione,0.07305531354167179
+4,pagina,l3,terze parti,0.055706480353787585
+4,pagina,l3,pagina: etica e standard,0.05044019965027371
+4,pagina,l4,pagina: pubblicita (inserzionisti),0.23540667361063858
+4,pagina,l4,paywall dichiarato,0.22906985803304483
+4,pagina,l4,dichiarato come opinione,0.16085939318204137
+4,pagina,l4,terze parti: pubblicita,0.127608745441419
+4,pagina,l4,dati strutturati NewsArticle,0.10910697950374548
+4,pagina,l4,terze parti: fingerprinting,0.10585680871425827
+4,pagina,l4,reti pubblicitarie nel codice,0.10526578688082552
+4,pagina,l4,incorporati: video mainstream,0.10204820140253419
+4,pagina,l4,firma dell'autore,0.07936678551557995
+4,pagina,l4,pagina: newsletter,0.07339031913355462
+4,pagina,l4,pagina: redazione,0.07003374812488217
+4,pagina,l4,pagina: etica e standard,0.04802397977973917
+4,pagina,l4,KB pagina,0.03780986805105502
+4,pagina,l4,terze parti: contenuti,0.017313233111137465
+4,pagina,l4,incorporati: social,0.014780344677879054
+4,pagina,l5,pagina: redazione,0.4123906434334215
+4,pagina,l5,pagina: rettifiche,0.3564169686556503
+4,pagina,l5,terze parti: analytics,0.211857455976253
+4,pagina,l5,pagina: contatti,0.20461466176990503
+4,pagina,l5,KB pagina,0.20299435190870974
+4,pagina,l5,data di pubblicazione,0.1986984648287014
+4,pagina,l5,terze parti,0.19686490749795757
+4,pagina,l5,dati strutturati NewsArticle,0.17795641979138369
+4,pagina,l5,banner dei cookie,0.14667995639846557
+4,pagina,l5,incorporati: social,0.12900697688992763
+4,pagina,l5,paywall dichiarato,0.10808138530452188
+4,pagina,l5,firma dell'autore,0.08498374435982395
+4,pagina,l5,pagina: chi siamo,0.08138824473271326
+4,pagina,l5,link nella pagina,0.0676164457091842
+4,pagina,l5,pagina: proprieta e finanziamento,0.06300100220394296
+5,link,l1,t.me,2.899930176062556
+5,link,l1,nbcnews.com,2.455324316127297
+5,link,l1,gab.com,2.290326651180246
+5,link,l1,brightlearn.ai,1.838954834384416
+5,link,l1,atmeta.com,1.7976991669091056
+5,link,l1,statista.com,1.748748113943147
+5,link,l1,wikipedia.org,1.7452137825509
+5,link,l1,foxnews.com,1.7371529075909506
+5,link,l1,pravda.ru,1.6556723945189222
+5,link,l1,mercola.com,1.6548888885197781
+5,link,l1,creators.com,1.5913906798103847
+5,link,l1,tinyurl.com,1.556677534833806
+5,link,l1,x.com,1.4493225321612146
+5,link,l1,brightanswers.ai,1.3514123026309695
+5,link,l1,change.org,1.3254060251996478
+5,link,l2,substack.com,2.5060043726522263
+5,link,l2,twitter.com,2.3426942863776343
+5,link,l2,westernjournal.com,2.1724876674847735
+5,link,l2,dailywire.com,2.158384672966187
+5,link,l2,thelancet.com,2.040795874276302
+5,link,l2,nypost.com,2.019087753019478
+5,link,l2,foxweather.com,1.9020889395625258
+5,link,l2,paypal.com,1.8773764477909014
+5,link,l2,dailycaller.com,1.7898421265714872
+5,link,l2,sendgrid.net,1.763182689357726
+5,link,l2,texastribune.org,1.7279691294793595
+5,link,l2,lnkd.in,1.6946799415827005
+5,link,l2,amazon.com,1.690376214949948
+5,link,l2,twc.health,1.5703906136233692
+5,link,l2,amzn.to,1.5688307486386228
+5,link,l3,pxf.io,2.6008505740829575
+5,link,l3,pagesix.com,2.366750089530604
+5,link,l3,facebook.com,2.0551642030723993
+5,link,l3,fox59.com,2.019928677826958
+5,link,l3,history.com,1.7878524216755076
+5,link,l3,ew.com,1.7191410448906341
+5,link,l3,vulture.com,1.63808218900262
+5,link,l3,link.amazon,1.6084209084053223
+5,link,l3,cato.org,1.5947876614618894
+5,link,l3,netflix.com,1.4650868872410507
+5,link,l3,www.nhs.uk,1.4292501440959826
+5,link,l3,aaa.com,1.3918570682030735
+5,link,l3,fanduel.com,1.3675499154228428
+5,link,l3,dailykos.com,1.2506495748915722
+5,link,l3,nps.gov,1.1733060943538243
+5,link,l4,urldefense.com,1.8506913130504794
+5,link,l4,patreon.com,1.7645209836400468
+5,link,l4,instagram.com,1.743035166074881
+5,link,l4,sciencedirect.com,1.6350013497520555
+5,link,l4,forbes.com,1.583494724402008
+5,link,l4,cnn.com,1.5594473995031577
+5,link,l4,skimresources.com,1.4820540594172216
+5,link,l4,publicnoticeportal.uk,1.4295761623972991
+5,link,l4,nytimes.com,1.3767418185528848
+5,link,l4,checkpoint.com,1.36515478602853
+5,link,l4,state.ny.us,1.2916673739241598
+5,link,l4,europa.eu,1.1955222423966403
+5,link,l4,junonews.com,1.1649983550077432
+5,link,l4,vanityfair.com,1.163432254938899
+5,link,l4,ft.com,1.1512177207690766
+5,link,l5,lawenforcementtoday.com,1.9728525521000322
+5,link,l5,army.mil,1.816325476765596
+5,link,l5,nine.com.au,1.713853610511401
+5,link,l5,mod.uk,1.5954899694423235
+5,link,l5,canada.ca,1.5059946864769451
+5,link,l5,bbc.com,1.354288975795117
+5,link,l5,apple.news,1.316177710448437
+5,link,l5,deathpenaltyinfo.org,1.287803998749133
+5,link,l5,atlanticcouncil.org,1.24504698517661
+5,link,l5,hii.com,1.1939624940146563
+5,link,l5,counterterrorism.police.uk,1.191672366996574
+5,link,l5,wbez.org,1.1548050991684509
+5,link,l5,irishtimes.com,1.1074679993381968
+5,link,l5,baesystems.com,1.1021887360739058
+5,link,l5,ice.gov,1.0864921239908458
+5,pagina,l1,incorporati: video alternativi,0.35569183793670367
+5,pagina,l1,immagini,0.19657277905044418
+5,pagina,l1,terze parti: social,0.16338348362413002
+5,pagina,l1,sezione commenti,0.1524897906622808
+5,pagina,l1,terze parti: contenuti,0.11049018904349259
+5,pagina,l1,link nella pagina,0.09083189612035564
+5,pagina,l1,pagina: chi siamo,0.0737603608922578
+5,pagina,l1,pagina: etica e standard,0.061881282263518175
+5,pagina,l1,pagina: pubblicita (inserzionisti),0.047626318064059085
+5,pagina,l1,incorporati: video mainstream,0.043244615895893165
+5,pagina,l1,incorporati: social,-0.019674749352527793
+5,pagina,l1,banner dei cookie,-0.02104965224124955
+5,pagina,l1,script,-0.03202188317842442
+5,pagina,l1,pagina: rettifiche,-0.03806682557964117
+5,pagina,l1,data di pubblicazione,-0.052414865073859146
+5,pagina,l2,reti pubblicitarie nel codice,0.41446906275267187
+5,pagina,l2,pagina: proprieta e finanziamento,0.1728104076811223
+5,pagina,l2,incorporati: video mainstream,0.14150614241362972
+5,pagina,l2,link nella pagina,0.13079119158017902
+5,pagina,l2,sezione commenti,0.12175008571797277
+5,pagina,l2,terze parti: contenuti,0.1118473762493148
+5,pagina,l2,terze parti: fingerprinting,0.10192838637752519
+5,pagina,l2,pagina: contatti,0.09009341211494033
+5,pagina,l2,script,0.07200921305956588
+5,pagina,l2,data di pubblicazione,0.017617493766477074
+5,pagina,l2,terze parti: pubblicita,0.01603596676804253
+5,pagina,l2,banner dei cookie,0.004573023406212562
+5,pagina,l2,pagina: newsletter,0.0018454953936998789
+5,pagina,l2,pagina: rettifiche,-0.0011294613580046305
+5,pagina,l2,terze parti: social,-0.014722529762770628
+5,pagina,l3,paywall dichiarato,0.20254501801399016
+5,pagina,l3,pagina: chi siamo,0.19738883577818997
+5,pagina,l3,KB pagina,0.1902418095766808
+5,pagina,l3,pagina: pubblicita (inserzionisti),0.13683146229772317
+5,pagina,l3,firma dell'autore,0.13441250343053232
+5,pagina,l3,dichiarato come opinione,0.13028424206110473
+5,pagina,l3,terze parti: social,0.1256503372424545
+5,pagina,l3,incorporati: social,0.12456308068149885
+5,pagina,l3,reti pubblicitarie nel codice,0.10761780488816167
+5,pagina,l3,incorporati: video mainstream,0.09884439583783977
+5,pagina,l3,immagini,0.09095884779639903
+5,pagina,l3,pagina: contatti,0.09022442965599344
+5,pagina,l3,terze parti: contenuti,0.08382999184229903
+5,pagina,l3,pagina: newsletter,0.08252013384663362
+5,pagina,l3,pagina: proprieta e finanziamento,0.052741728727559625
+5,pagina,l4,paywall dichiarato,0.2448405114697571
+5,pagina,l4,pagina: pubblicita (inserzionisti),0.1877778324597752
+5,pagina,l4,dichiarato come opinione,0.16309529777931833
+5,pagina,l4,incorporati: video mainstream,0.15609027970752562
+5,pagina,l4,reti pubblicitarie nel codice,0.14222026604952745
+5,pagina,l4,pagina: donazioni,0.13515416536491434
+5,pagina,l4,terze parti: fingerprinting,0.101348928699822
+5,pagina,l4,dati strutturati NewsArticle,0.10053064809328337
+5,pagina,l4,terze parti: pubblicita,0.07459530348871925
+5,pagina,l4,pagina: newsletter,0.05255503014239124
+5,pagina,l4,terze parti,0.05033967543702301
+5,pagina,l4,pagina: redazione,0.04612135705603553
+5,pagina,l4,firma dell'autore,0.03259650990098879
+5,pagina,l4,incorporati: video alternativi,-0.00744168437136148
+5,pagina,l4,terze parti: analytics,-0.023185952708888114
+5,pagina,l5,pagina: redazione,0.3088501174939438
+5,pagina,l5,terze parti: analytics,0.30848305708978363
+5,pagina,l5,terze parti,0.2579444274761868
+5,pagina,l5,pagina: contatti,0.2472905264810503
+5,pagina,l5,incorporati: social,0.17641468495574283
+5,pagina,l5,data di pubblicazione,0.1743535516972266
+5,pagina,l5,pagina: rettifiche,0.15130639781742652
+5,pagina,l5,KB pagina,0.11129013972138893
+5,pagina,l5,terze parti: pubblicita,0.0903474440359292
+5,pagina,l5,link nella pagina,0.06595761800290006
+5,pagina,l5,pagina: proprieta e finanziamento,0.0616058568243515
+5,pagina,l5,pagina: pubblicita (inserzionisti),0.043056070081764625
+5,pagina,l5,banner dei cookie,0.036946586774011865
+5,pagina,l5,dati strutturati NewsArticle,0.0348581070590114
+5,pagina,l5,pagina: chi siamo,0.026155214615926653

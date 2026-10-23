@@ -1,0 +1,81 @@
+famiglia,livello,segnale,mean,count
+link,l3,pxf.io,1.6174268530768647,4
+link,l2,twitter.com,1.5677919355982948,4
+link,l1,t.me,1.4768895024255482,5
+link,l2,thelancet.com,1.4418243536703634,3
+link,l1,nbcnews.com,1.4237372822614143,4
+link,l3,facebook.com,1.418404886183876,3
+link,l4,patreon.com,1.383147234353804,3
+link,l2,dailywire.com,1.3829620501036777,4
+link,l2,paypal.com,1.3504014498712211,3
+link,l2,twc.health,1.285625817109318,3
+link,l3,fox59.com,1.2590307730982335,4
+link,l1,tinyurl.com,1.1974426491051036,3
+link,l1,gab.com,1.1905606739909818,4
+link,l3,pagesix.com,1.1840483025278252,5
+link,l2,dawn.com,1.119510314704535,3
+link,l2,sendgrid.net,1.1192533737977284,4
+link,l4,instagram.com,1.1112006347745647,4
+link,l5,apple.news,1.10968381930859,3
+link,l3,history.com,1.107654628429791,4
+link,l5,bbc.com,1.0972378684417563,3
+link,l1,statista.com,1.0915785682782269,4
+link,l3,twitter.com,1.0794379666936016,3
+link,l1,rt-english.com,1.0691910207386939,4
+link,l5,army.mil,1.066047133065587,4
+link,l4,publicnoticeportal.uk,1.0594732562437044,3
+link,l2,rasmussenreports.com,1.0326372201025664,3
+link,l5,nine.com.au,1.0045069613105653,4
+link,l3,www.nhs.uk,0.9927435388682835,4
+link,l5,canada.ca,0.9877013198360629,5
+link,l4,news.com.au,0.9751712915142121,4
+link,l5,politico.eu,0.9405658952266346,4
+link,l1,techcrunch.com,0.9111916101493391,3
+link,l5,mod.uk,0.8808854924218121,4
+link,l5,apple.com,0.8724133543355501,3
+link,l1,pravda.ru,0.8547855300396668,4
+link,l3,proofpoint.com,0.8286413674600492,4
+link,l4,sciencedirect.com,0.808248784751797,4
+link,l4,urldefense.com,0.7373554671055456,4
+link,l4,cnn.com,0.7366660571197112,5
+link,l4,nytimes.com,0.7027662599288176,3
+pagina,l1,incorporati: video alternativi,0.44710516997922395,5
+pagina,l2,reti pubblicitarie nel codice,0.3060151227390625,5
+pagina,l4,paywall dichiarato,0.28697838635220885,5
+pagina,l5,pagina: redazione,0.2717011204367877,5
+pagina,l5,paywall dichiarato,0.25757143925109366,3
+pagina,l4,incorporati: video alternativi,0.25378624424600116,3
+pagina,l3,paywall dichiarato,0.23803576605119298,5
+pagina,l5,terze parti: analytics,0.22744670121749455,5
+pagina,l3,pagina: chi siamo,0.19684763986084888,5
+pagina,l5,terze parti,0.18467427008520435,4
+pagina,l4,pagina: pubblicita (inserzionisti),0.18362270866866812,5
+pagina,l1,link nella pagina,0.1780422320095823,5
+pagina,l5,pagina: rettifiche,0.17357384331706838,5
+pagina,l5,KB pagina,0.16777692569402433,4
+pagina,l1,sezione commenti,0.1671080672098591,5
+pagina,l5,incorporati: social,0.16614810353300574,5
+pagina,l5,pagina: newsletter,0.16597201599131028,3
+pagina,l4,dichiarato come opinione,0.1543333074125198,4
+pagina,l3,incorporati: social,0.14399237264624448,4
+pagina,l4,incorporati: video mainstream,0.14141704960641058,5
+pagina,l2,pagina: contatti,0.14106814531530204,5
+pagina,l1,incorporati: video mainstream,0.13282045963971223,5
+pagina,l1,immagini,0.12117328669225833,5
+pagina,l4,dati strutturati NewsArticle,0.11892191872812083,5
+pagina,l4,terze parti: fingerprinting,0.11533718744572789,4
+pagina,l2,incorporati: video mainstream,0.11492723001970133,5
+pagina,l2,terze parti: fingerprinting,0.10806769192835967,4
+pagina,l3,KB pagina,0.1057631054504029,4
+pagina,l4,reti pubblicitarie nel codice,0.10550399871475402,5
+pagina,l1,terze parti: contenuti,0.10455589942642826,5
+pagina,l3,data di pubblicazione,0.10246194612398167,4
+pagina,l2,terze parti: social,0.10158446003849542,5
+pagina,l3,immagini,0.09501545432362163,4
+pagina,l2,dichiarato come opinione,0.09487365438940272,4
+pagina,l3,pagina: contatti,0.09467042012176977,5
+pagina,l3,terze parti: pubblicita,0.09408107745390455,4
+pagina,l2,sezione commenti,0.09179945207973181,5
+pagina,l2,terze parti: contenuti,0.07809205700259662,5
+pagina,l1,terze parti: social,0.0679248048776419,5
+pagina,l1,incorporati: social,0.0514339554291714,3

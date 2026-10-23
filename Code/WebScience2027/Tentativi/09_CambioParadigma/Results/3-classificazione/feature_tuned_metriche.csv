@@ -1,0 +1,4 @@
+fold,modello,articolo 5cl,articolo F1,articolo bin,articolo tol0.5,articolo tol1,testata 5cl,testata F1,testata bin,testata tol0.5,testata tol1
+per gruppo,TF-IDF + LR (feature_tuned),0.297,0.283,0.65,0.49,0.683,0.369,0.34,0.684,0.555,0.741
+per gruppo,baseline: maggioranza,0.31,0.095,0.558,0.434,0.558,0.316,0.096,0.561,0.439,0.561
+per gruppo,baseline: a caso,0.212,0.171,0.471,0.356,0.501,0.216,0.176,0.485,0.369,0.522

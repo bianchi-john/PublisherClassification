@@ -48,8 +48,7 @@
 \end{frame}
 
 \begin{frame}{Il percorso in breve}
-  \vspace{0.2em}
-  \centering\footnotesize
+  \centering\scriptsize
   \begin{tabular}{>{\raggedright\arraybackslash}p{0.2\textwidth}>{\raggedright\arraybackslash}p{0.33\textwidth}>{\raggedright\arraybackslash}p{0.38\textwidth}}
     \toprule
     \textbf{Fase} & \textbf{La domanda} & \textbf{Il risultato} \\
@@ -65,9 +64,11 @@
     Versione 3 & a parit\`a di genere, il testo dice l'affidabilit\`a? & s\`i, ma poco (0,6 contro 0,5), ed \`e \hl{stile}; il TF-IDF resta davanti \\
     \addlinespace
     Versione 4 & il titolo letto con l'articolo e i criteri NewsGuard aiutano i transformer? & un po', ma il titolo aiuta \hl{anche} il TF-IDF: il distacco resta \\
+    \addlinespace
+    Oltre il testo & i link citati e la pagina HTML aiutano? & \hl{no}: tutto arriva a F1 circa 0,34, binario circa 0,70 \\
     \bottomrule
   \end{tabular}\\[0.6em]
-  \raggedright{\small\itshape Sotto, ogni fase con i dettagli; in fondo, la proposta di Fabio.}
+  \raggedright{\small\itshape Sotto, ogni fase con i dettagli.}
 \end{frame}
 
 % ===================================================================================================
@@ -507,49 +508,38 @@
 \end{frame}
 
 % ===================================================================================================
-\divider{Come ho provato a battere il TF-IDF}{quattro versioni dell'esperimento, 18--22 ottobre}
+\divider{Come ho provato a battere il TF-IDF}{tre tentativi dopo la Versione 1, 19--22 ottobre}
 
-\begin{frame}{Quattro tentativi, lo stesso risultato}
-  \vspace{0.1em}
+\begin{frame}{Quattro versioni, lo stesso risultato}
   \centering\footnotesize
   \resizebox{\textwidth}{!}{%
   \begin{tabular}{llccc}
     \toprule
     & \textbf{L'idea} & \textbf{TF-IDF} & \textbf{ModernBERT} & \textbf{$\Delta$ [IC 95\%]} \\
-    & & & \textbf{(ensemble di 3 seed)} & \\
     \midrule
-    \textbf{V1} & la pipeline pulita: reti, gruppi, fold per gruppo & 0,380 & 0,366 & $-0{,}01$ [$-0{,}07$; $+0{,}04$] \\
-    \addlinespace
-    \textbf{V2} & pi\`u pulizia (resti di link e tweet) e 863 testate nel training & 0,370 & 0,341 & $-0{,}03$ [$-0{,}10$; $+0{,}04$] \\
-    \addlinespace
-    \textbf{V3} & a parit\`a di genere: affidabile s\`i/no dentro ogni orientamento$^{*}$ & 0,593 & 0,551 & $-0{,}04$ [$-0{,}10$; $+0{,}02$] \\
-    \addlinespace
-    \textbf{V4} & il titolo letto insieme all'articolo & 0,390 & 0,356 & $-0{,}03$ [$-0{,}11$; $+0{,}04$] \\
-    & \quad + i 5 criteri NewsGuard come etichette in pi\`u & & 0,360 & $-0{,}03$ [$-0{,}10$; $+0{,}04$] \\
+    \textbf{V1} & la pipeline pulita (reti, gruppi, fold per gruppo) & 0,380 & 0,366 & $-0{,}01$ [$-0{,}07$; $+0{,}04$] \\
+    \textbf{V2} & pi\`u pulizia e pi\`u testate nel training & 0,370 & 0,341 & $-0{,}03$ [$-0{,}10$; $+0{,}04$] \\
+    \textbf{V3} & togliere il genere: affidabile s\`i/no dentro ogni orientamento$^{*}$ & 0,593 & 0,551 & $-0{,}04$ [$-0{,}10$; $+0{,}02$] \\
+    \textbf{V4} & il titolo letto con l'articolo, i criteri NewsGuard come etichette & 0,390 & 0,360 & $-0{,}03$ [$-0{,}10$; $+0{,}04$] \\
     \bottomrule
   \end{tabular}}\\[0.4em]
-  \raggedright{\scriptsize\itshape F1 macro per testata, 304 testate, fold per gruppo, TF-IDF con C scelto in validazione; $\Delta$ = ModernBERT meno TF-IDF, bootstrap per gruppo. $^{*}$V3: accuratezza bilanciata media sugli orientamenti (il caso fa 0,50).}
-  \begin{itemize}[<+->]
-    \footnotesize
-    \item In tutte e quattro il TF-IDF resta \hl{un po' avanti}; nessuna differenza \`e significativa
-    \item Tra un seed e l'altro ModernBERT varia di \hl{3--4 punti}: quanto tutti gli effetti che cerchiamo
+  \raggedright{\scriptsize\itshape F1 macro per testata (V3: accuratezza bilanciata media sugli orientamenti$^{*}$), 304 testate, fold per gruppo; ModernBERT = ensemble di 3 seed (V3: 5); $\Delta$ con bootstrap per gruppo.}\\[0.6em]
+  \centering\small Il TF-IDF resta sempre \hl{un po' avanti}, mai in modo significativo.
+\end{frame}
+
+% ---------------------------------------------------------------- V2
+\begin{frame}{V2 --- pi\`u pulizia e pi\`u dati}
+  \begin{itemize}
+    \setlength\itemsep{0.6em}
+    \item \hl{Cosa}: via i resti di link e tweet incorporati (il TF-IDF li usava per $l_1$); nel training anche le testate escluse dal tetto, \hl{863} invece di 304; una combinazione TF-IDF + ModernBERT
+    \item \hl{Risultato}: TF-IDF 0,370, ModernBERT 0,341, combinazione 0,355. Niente cambia
+    \item \hl{Perch\'e ha fallito}: i resti di link non erano il motivo del vantaggio del TF-IDF, e pi\`u testate della stessa rete non insegnano niente di nuovo
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Che cosa ho provato, in breve}
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.55em}
-    \small
-    \item \hl{V2 --- pi\`u pulizia e pi\`u dati}: via i resti di link e tweet incorporati (lo 0,3\% delle parole, il 24\% degli articoli $l_1$), e nel training anche le testate escluse dal tetto (863 invece di 304). Niente cambia, n\'e per il TF-IDF n\'e per ModernBERT; anche la combinazione dei due non aiuta
-    \item \hl{V3 --- togliere il genere}: pesi che rendono l'orientamento politico inutile per indovinare, e valutazione dentro ogni orientamento. Resta un segnale modesto ed \`e \hl{stile}: il TF-IDF con le sole parole funzione fa quanto con il testo intero
-    \item \hl{V4 --- quello che un TF-IDF non vede}: ModernBERT legge \hl{titolo [SEP] articolo} e pu\`o confrontarli; e impara anche i criteri NewsGuard visibili nel testo. Il titolo aiuta ModernBERT di 1,5 punti, ma aiuta il TF-IDF di 2: il distacco resta
-    \item In pi\`u: ModernBERT-large (V1, non meglio del base), embedding congelati e5 e bge (sempre sotto), 2048 token (non meglio di 1024)
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Perch\'e il TF-IDF resta davanti}
+\begin{frame}{V2 --- l'analisi: che cosa legge il TF-IDF}
   \begin{columns}[c]
-    \begin{column}{0.48\textwidth}
+    \begin{column}{0.46\textwidth}
       \centering\footnotesize
       \begin{tabular}{lc}
         \toprule
@@ -557,185 +547,132 @@
         \midrule
         il testo intero & 0,387 \\
         senza nomi propri & 0,383 \\
-        senza le 1000 parole pi\`u forti & 0,377 \\
         \textbf{solo parole funzione} & \textbf{0,364} \\
-        solo le prime 100 parole & 0,344 \\
         \midrule
-        \textbf{solo metadati NewsGuard} (non testo) & \textbf{0,339} \\
-        12 misure di stile & 0,296 \\
+        \textbf{solo metadati NewsGuard} & \textbf{0,339} \\
         \bottomrule
-      \end{tabular}\\[0.3em]
-      {\scriptsize V2, 304 testate, fold per gruppo}
+      \end{tabular}
     \end{column}
-    \begin{column}{0.52\textwidth}
-      \begin{itemize}[<+->]
+    \begin{column}{0.54\textwidth}
+      \begin{itemize}
         \setlength\itemsep{0.5em}
         \footnotesize
-        \item Il segnale \`e \hl{sparso}: non sono nomi n\'e poche parole; c'\`e in ogni articolo (1 articolo per testata: 0,325)
-        \item Segue il \hl{genere} della testata: il TF-IDF riconosce l'orientamento politico (0,58 contro 0,38), e dentro un orientamento quasi non batte il livello pi\`u comune
-        \item I soli metadati, senza testo, fanno quasi quanto lui
-        \item[] {\itshape \`E un segnale lessicale e diffuso: un modello che conta le parole lo prende tutto, e a un transformer resta poco da aggiungere.}
+        \item Il segnale \`e \hl{sparso}: regge senza nomi e con le sole parole funzione
+        \item Segue il \hl{genere} della testata: $l_1$ = estrema destra e complotti, $l_2$ = destra di parte, $l_4$/$l_5$ = testate internazionali e d'inchiesta
+        \item I soli metadati (orientamento, paese, tipo), senza testo, fanno quasi quanto lui
       \end{itemize}
     \end{column}
   \end{columns}
+  \vspace{0.6em}
+  \centering\small\itshape Un segnale lessicale e diffuso: il TF-IDF lo prende tutto, al transformer resta poco.
 \end{frame}
 
-\begin{frame}{I livelli sono generi diversi di testata}
-  \vspace{0.2em}
-  \centering\footnotesize
-  \begin{tabular}{lccccc}
-    \toprule
-    \textbf{Metadati NewsGuard} (quota di testate) & $l_1$ & $l_2$ & $l_3$ & $l_4$ & $l_5$ \\
-    \midrule
-    orientamento Far Right & 0,69 & 0,32 & 0,25 & 0,05 & 0,00 \\
-    argomento ``Conspiracy theories'' & 0,56 & 0,08 & 0,11 & 0,01 & 0,00 \\
-    opinione o advocacy & 0,90 & 0,89 & 0,75 & 0,53 & 0,33 \\
-    testate fuori dagli Stati Uniti & 0,08 & 0,06 & 0,17 & 0,35 & 0,28 \\
-    \bottomrule
-  \end{tabular}\\[0.5em]
-  \raggedright
-  \begin{itemize}[<+->]
-    \footnotesize
-    \item $l_1$: estrema destra e complotti, siti che riprendono contenuti; \textit{president trump, abortion, media, kiev}; citano le fonti per dominio (\textit{youtube.com, foxnews.com})
-    \item $l_2$: notizie conservatrici di parte; \textit{according to, said, fox news, breitbart}
-    \item $l_3$: giornali locali; parole forti = nomi di contee e citt\`a, firme di una testata sola: indovina l'11\%
-    \item $l_4$ e $l_5$: testate internazionali e d'inchiesta; \textit{per cent, defence, kyiv, Ireland, ProPublica}
+% ---------------------------------------------------------------- V3
+\begin{frame}{V3 --- togliere il genere}
+  \begin{itemize}
+    \setlength\itemsep{0.6em}
+    \item \hl{Cosa}: compito binario (affidabile s\`i/no), pesi che rendono l'orientamento politico inutile per indovinare, valutazione \hl{dentro} ogni orientamento (i soli metadati fanno 0,50)
+    \item \hl{Risultato}: TF-IDF 0,59--0,62, ModernBERT 0,55 (ensemble di 5 seed), embedding congelati 0,50--0,57
+    \item \hl{Perch\'e ha fallito}: oltre il genere resta un segnale modesto ed \`e \hl{stile} (il TF-IDF sulle sole parole funzione fa 0,618, come sul testo intero): di nuovo lessicale
+    \item[] {\small\itshape Unico indizio a favore: nell'orientamento Slightly Right tutti i seed di ModernBERT battono il TF-IDF (0,57--0,71 contro 0,51). Su 78 testate, a posteriori.}
   \end{itemize}
 \end{frame}
 
-\begin{frame}{A parit\`a di genere (V3)}
-  \vspace{0.1em}
-  \centering\footnotesize
-  \begin{tabular}{lcccc}
-    \toprule
-    \textbf{affidabile s\`i/no, dentro ogni orientamento} & \textbf{media} & \textbf{AUC} & \textbf{Slightly Right} & \textbf{Far Right} \\
-    \midrule
-    TF-IDF, C in validazione (riferimento) & 0,593 & \textbf{0,735} & 0,51 & 0,60 \\
-    TF-IDF, C = 1 & \textbf{0,618} & 0,671 & 0,56 & \textbf{0,65} \\
-    TF-IDF, solo parole funzione & \textbf{0,618} & 0,610 & 0,60 & 0,64 \\
-    ModernBERT-base, ensemble di 5 seed & 0,551 & 0,639 & \textbf{0,63} & 0,57 \\
-    solo i metadati (per costruzione) & 0,50 & 0,50 & 0,50 & 0,50 \\
-    \bottomrule
-  \end{tabular}\\[0.4em]
-  \raggedright{\scriptsize\itshape Accuratezza bilanciata per testata; Slightly Right \`e l'unico orientamento bilanciato (40 testate affidabili, 38 no).}
-  \begin{itemize}[<+->]
-    \footnotesize
-    \item Oltre il genere resta un segnale \hl{modesto} (0,55--0,62 contro 0,50), ed \`e \hl{stile}
-    \item Unico indizio a favore dei transformer: in Slightly Right tutti e 5 i seed di ModernBERT battono il TF-IDF di riferimento (0,57--0,71 contro 0,51). A posteriori, su 78 testate: da verificare
+% ---------------------------------------------------------------- V4
+\begin{frame}{V4 --- quello che un TF-IDF non vede}
+  \begin{itemize}
+    \setlength\itemsep{0.6em}
+    \item \hl{Cosa}: ModernBERT legge \hl{titolo [SEP] articolo}, cos\`i pu\`o confrontarli (``titoli ingannevoli'' \`e un criterio NewsGuard); in pi\`u impara i 5 criteri NewsGuard visibili nel testo come etichette in pi\`u
+    \item \hl{Risultato}: ModernBERT da 0,341 a 0,356 con il titolo, 0,360 con i criteri. Ma il TF-IDF con il titolo passa da 0,370 a \hl{0,390}
+    \item \hl{Perch\'e ha fallito}: il titolo aiuta tutti e due allo stesso modo, quindi il distacco resta; i criteri aggiungono pochissimo. Tra un seed e l'altro ModernBERT varia di 4 punti, pi\`u di ogni effetto trovato
   \end{itemize}
-\end{frame}
-
-\begin{frame}{Cosa possiamo dire nel paper}
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.55em}
-    \small
-    \item \hl{Il problema}: con le testate divise come al solito i numeri sono gonfiati dalle reti di siti (primo dataset: 0,68 $\to$ 0,39)
-    \item \hl{Il metodo}: reti trovate senza NewsGuard, da testo e HTML (precisione 0,91, recall 0,88), valutazione per gruppo, processo deterministico e replicabile
-    \item \hl{Il risultato}: con una valutazione onesta il testo d\`a un segnale \hl{moderato} (F1 0,38--0,39, binario 0,74--0,76) e i transformer \hl{non battono} un TF-IDF ben fatto, in quattro versioni diverse dell'esperimento, anche dando loro il titolo e i criteri NewsGuard
-    \item \hl{Il perch\'e}: i livelli NewsGuard vanno di pari passo con il \hl{genere} della testata (orientamento, tipo di sito, paese), che si legge ovunque nel testo, anche nelle parole funzione
-    \item \hl{Oltre il genere}: a parit\`a di orientamento resta un segnale modesto (0,6 contro 0,5) ed \`e soprattutto \hl{stile}
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Prossimi passi}
-  \vfill
-  \begin{enumerate}[<+->]
-    \setlength\itemsep{0.8em}
-    \item Decidere con il gruppo la \hl{storia del paper} (la slide prima) e cominciare a scriverla
-    \item Scrivere il \hl{confondente} orientamento/genere come risultato: i livelli NewsGuard e l'ideologia vanno di pari passo, e il testo dice soprattutto l'ideologia
-    \item La prova pilota con i \hl{segnali di Claude} proprio a parit\`a di genere, anche per verificare l'indizio di \hl{Slightly Right}
-    \item ModernBERT-large quando la \hl{GPU} del server \`e libera (con 7 GB non entra)
-  \end{enumerate}
-  \vfill
 \end{frame}
 
 % ===================================================================================================
-\divider{Proposta di Fabio}{usare un modello grande (Claude) per costruire gli embedding --- una parte ipotetica, ancora da provare}
+\divider{Oltre il testo}{link citati e pagina HTML (tentativo 09, 22--23 ottobre)}
 
-\begin{frame}{La proposta, in breve}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.8em}
-    \item Fabio, nella chat con Claude: invece di addestrare solo modelli piccoli, \hl{sfruttare un modello grande} senza addestrarlo
-    \item \hl{Strada A}: il modello grande \hl{legge} ogni articolo e d\`a un voto su segnali precisi (sensazionalismo, fonti citate, opinione o cronaca\dots). I voti sono il vettore dell'articolo
-    \item \hl{Strada B}: ``training con LLM, embedding + MLP''. Ogni articolo diventa un \hl{embedding}, e sopra si addestra una piccola rete; meglio ancora se la rete legge \hl{tutti gli articoli di una testata insieme}
-    \item In tutte e due il modello grande si usa \hl{una volta per articolo}; quello che si addestra \`e piccolo e veloce
+\begin{frame}{L'idea}
+  \begin{itemize}
+    \setlength\itemsep{0.55em}
+    \small
+    \item Non solo \hl{che cosa scrive} una testata, ma \hl{chi cita} e \hl{com'\`e fatto il suo sito}, tutto dall'HTML gi\`a scaricato. Una riga per testata, tre famiglie:
+    \item[] \hl{testo}: la media TF-IDF dei suoi articoli (e, in pi\`u, ModernBERT: 3 semi)
+    \item[] \hl{link}: i domini citati negli articoli e l'affidabilit\`a dei siti citati (dalle sole etichette del training)
+    \item[] \hl{pagina}: tracker e pubblicit\`a, pagine di trasparenza (chi siamo, rettifiche, redazione\dots), firma, paywall, video incorporati
+    \item \hl{Modelli} (regressioni logistiche): uno per famiglia; uno che le \hl{combina} (stacking sulle probabilit\`a fuori fold); uno \hl{``alla NewsGuard''} che stima i 9 criteri e somma i punti pubblici
+    \item I criteri \hl{non} entrano mai come ingresso: il punteggio \`e esattamente la loro somma pesata, per tutte le 9.222 testate NewsGuard
+    \item \hl{Stessa valutazione}: 301 testate, gruppi reti $\cup$ owner $\cup$ Parent Domain, bootstrap per gruppo. Riferimento: il TF-IDF per articolo, ricalcolato
   \end{itemize}
-  \vfill
 \end{frame}
 
-\begin{frame}{Una precisazione: cosa vuol dire ``embedding di Claude''}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.8em}
-    \item L'API di Claude \hl{scrive testo}: non restituisce i vettori interni del modello
-    \item Quindi ``embedding di Claude'' si pu\`o fare in due modi:
-    \item[] \hl{(A) un vettore che Claude scrive}: per ogni articolo, una ventina di voti da 1 a 10 su domande fissate prima. \`E un embedding piccolo e \hl{leggibile}: ogni numero ha un significato
-    \item[] \hl{(B) un modello fatto apposta per gli embedding}: un servizio a pagamento o un modello aperto basato su un LLM, pi\`u grande di e5 e bge e capace di leggere l'articolo intero
-    \item Le due strade si possono anche \hl{sommare}: voti di Claude + embedding + TF-IDF
-  \end{itemize}
-  \vfill
+\begin{frame}{I risultati}
+  \centering\footnotesize
+  \begin{tabular}{lccc}
+    \toprule
+    \textbf{Modello} & \textbf{F1 a 5 livelli} & \textbf{$\Delta$ dal riferimento [IC 95\%]} & \textbf{binario} \\
+    \midrule
+    \hl{riferimento}: TF-IDF per articolo & \hl{0,340} & --- & 0,684 \\
+    testo (TF-IDF per testata) & 0,339 & $-0{,}00$ [$-0{,}05$; $+0{,}04$] & 0,684 \\
+    ModernBERT (3 semi) & 0,325 & $-0{,}02$ [$-0{,}07$; $+0{,}04$] & 0,708 \\
+    link & 0,247 & \wrong{$-0{,}09$ [$-0{,}15$; $-0{,}03$]} & 0,641 \\
+    pagina & 0,241 & \wrong{$-0{,}10$ [$-0{,}16$; $-0{,}03$]} & 0,615 \\
+    \midrule
+    combinato testo + pagina & \hl{0,354} & $+0{,}01$ [$-0{,}06$; $+0{,}09$] & 0,711 \\
+    combinato tutte & 0,347 & $+0{,}01$ [$-0{,}07$; $+0{,}09$] & 0,688 \\
+    combinato tutte + ModernBERT & 0,318 & $-0{,}02$ [$-0{,}10$; $+0{,}05$] & 0,714 \\
+    alla NewsGuard & 0,319 & $-0{,}02$ [$-0{,}10$; $+0{,}06$] & \hl{0,718} \\
+    \bottomrule
+  \end{tabular}\\[0.5em]
+  \raggedright\scriptsize\itshape Per testata, 301 testate valutate. Maggioranza: F1 0,096, binario 0,561; a caso: F1 0,176. In rosso: significativamente peggio del riferimento.\\[0.6em]
+  \centering\small\upshape Nessun modello batte il testo in modo significativo; link e pagina da soli hanno segnale, ma meno del testo.
 \end{frame}
 
-\begin{frame}{Strada A: Claude come lettore di segnali}
-  \begin{columns}[t]
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}[<+->]
-        \setlength\itemsep{0.6em}
-        \small
-        \item Per ogni articolo, un prompt \hl{fisso}: ``dai un voto da 1 a 10 a\dots''
-        \item Alcune domande vengono dai \hl{criteri NewsGuard} che si vedono nel testo: distingue notizie e opinioni? titolo ingannevole? cita le fonti? corregge gli errori?
-        \item Altre dallo stile: linguaggio emotivo, sensazionalismo, attacchi personali, cautela nelle affermazioni
-        \item La testata = \hl{media dei voti} dei suoi articoli; sopra, la stessa regressione logistica del TF-IDF
-      \end{itemize}
+\begin{frame}{Che cosa si riesce a stimare}
+  \begin{columns}[T]
+    \begin{column}{0.45\textwidth}
+      \centering\footnotesize
+      \begin{tabular}{lc}
+        \toprule
+        \textbf{Criterio (alla NewsGuard)} & \textbf{acc.\ bil.} \\
+        \midrule
+        informazione responsabile & 0,77 \\
+        titoli non ingannevoli & 0,72 \\
+        corregge gli errori & 0,70 \\
+        niente contenuti falsi & 0,67 \\
+        firma gli articoli & 0,63 \\
+        dice chi comanda & 0,62 \\
+        notizie e opinioni & 0,61 \\
+        propriet\`a e finanziamento & 0,56 \\
+        segnala la pubblicit\`a & 0,54 \\
+        \bottomrule
+      \end{tabular}\\[0.4em]
+      \raggedright\scriptsize Si stimano i criteri di \hl{contenuto}, non quelli \hl{di pagina}: proprio il contrario di quello che ci aspettavamo
     \end{column}
-    \begin{column}{0.5\textwidth}
-      \visible<5->{%
-      \begin{exampleblock}{\footnotesize Perch\'e pu\`o funzionare}
-        \footnotesize
-        Pochi numeri per testata (circa 20): con 304 testate un modello piccolo \hl{non pu\`o imparare a memoria}\\[0.3em]
-        Sono segnali \hl{diversi} dalle parole contate dal TF-IDF: possono aiutare dove il TF-IDF sbaglia\\[0.3em]
-        Si capisce \hl{quali segnali contano}, e collega il lavoro ai criteri NewsGuard (il nostro obiettivo secondario)
-      \end{exampleblock}}
+    \begin{column}{0.53\textwidth}
+      \footnotesize
+      \textbf{I segnali pi\`u forti}
+      \begin{itemize}
+        \setlength\itemsep{0.3em}
+        \item \hl{l5} cita bbc.com, apple.news, siti governativi (army.mil, canada.ca, mod.uk); ha redazione, rettifiche, paywall, newsletter
+        \item \hl{l1} cita t.me, gab.com, rt-english.com, pravda.ru; incorpora video da Rumble, Brighteon e simili
+        \item \hl{l2} cita twitter.com, dailywire.com, rasmussenreports.com; ha pi\`u circuiti pubblicitari
+        \item qualche segnale spurio (link riscritti dai filtri email: urldefense, proofpoint)
+      \end{itemize}
     \end{column}
   \end{columns}
 \end{frame}
 
-\begin{frame}{Il rischio: Claude conosce gi\`a le testate}
-  \vfill
-  \begin{itemize}[<+->]
-    \setlength\itemsep{0.8em}
-    \item Un modello grande ha letto quasi tutte queste testate e ne conosce la \hl{reputazione}
-    \item Se nell'articolo c'\`e il nome del sito, una firma o un link, Claude pu\`o \hl{ricordare} invece di leggere: sarebbe la stessa scorciatoia delle reti, in un'altra forma
-    \item Cosa si fa:
-    \item[] \hl{mascherare} prima di inviare: nomi delle testate, domini, firme, link (una regola in pi\`u nella pulizia, uguale per tutti)
-    \item[] \hl{controllare}: su un campione, voti con e senza maschera; e chiedere a Claude di indovinare la testata, per misurare quanto la riconosce
-    \item[] le \hl{etichette NewsGuard} non si mandano mai
-  \end{itemize}
-  \vfill
-\end{frame}
-
-\begin{frame}{Strada B: embedding + rete piccola, per testata}
-  \begin{itemize}[<+->]
+\begin{frame}{Che cosa ne concludiamo}
+  \begin{itemize}
     \setlength\itemsep{0.6em}
-    \item Oggi: e5 e bge congelati + regressione logistica fanno F1 \hl{0,33}, contro 0,38 del TF-IDF. Ma leggono solo l'inizio dell'articolo e fanno una media semplice
-    \item Tre cose da migliorare:
-    \item[] un modello di embedding \hl{pi\`u grande}, che legga l'\hl{articolo intero}
-    \item[] al posto della regressione logistica una \hl{piccola rete} (MLP)
-    \item[] i \hl{sacchetti}: la rete riceve 10--20 articoli della stessa testata insieme e impara quali pesare di pi\`u (\hl{attenzione}), con l'etichetta della testata, che \`e il livello a cui esiste davvero
-    \item Pescando sacchetti diversi dalla stessa testata si ottengono \hl{migliaia di esempi} da 304 testate, e una misura di \hl{confidenza} per testata
+    \small
+    \item Testo letto in due modi, link, pagina, criteri: \hl{tutto arriva allo stesso tetto}, F1 circa 0,34 e binario circa 0,70
+    \item Link e pagina hanno segnale, ma \hl{non aggiungono} al testo: probabilmente raccontano di nuovo il genere della testata, che il testo vede gi\`a
+    \item La \hl{variabilit\`a dei fold} \`e grande quanto le differenze tra modelli: con i gruppi nuovi (Parent Domain) il riferimento passa da 0,357 a 0,340 sulle stesse 284 testate, e 118 di loro cambiano previsione
+    \item Con 301 testate in 218 gruppi non si distinguono differenze sotto i 6--7 punti
+    \item Per il paper: con una valutazione che tiene conto delle reti, il tetto non dipende dal segnale; lo 0,68 che si ottiene senza gruppi era fuga tra training e test
+    \item Possibile passo successivo: ripetere tutto con pi\`u divisioni in fold, per stringere gli intervalli (solo CPU, circa un'ora a divisione)
   \end{itemize}
-\end{frame}
-
-\begin{frame}{Come arrivare a risultati migliori}
-  \begin{enumerate}[<+->]
-    \setlength\itemsep{0.6em}
-    \item \hl{Prova pilota}: 20 articoli per testata (circa 6.000 articoli, qualche milione di token), con un modello Claude piccolo e l'elaborazione in batch. Nelle prove precedenti 5--20 articoli per testata davano quasi tutto il segnale
-    \item Stessi \hl{fold per gruppo}, stesso bootstrap, prompt e domande \hl{fissati prima} di guardare i risultati; risposte salvate e versione del modello fissata, per poter rifare tutto
-    \item \hl{Combinare} i modelli: TF-IDF e ModernBERT sbagliano gi\`a su testate diverse, e i voti di Claude sarebbero un terzo punto di vista. Una combinazione scelta in una \hl{validazione interna} al training (mai sul test) pu\`o battere ognuno da solo
-    \item Confronto onesto: anche \hl{Claude da solo} (``quanto \`e affidabile questa testata?'') con e senza maschera, come riferimento
-  \end{enumerate}
-  \visible<5->{\vspace{0.5em}\small\itshape Se la strada A funziona, la novit\`a per il paper \`e doppia: prestazioni migliori e una spiegazione di \emph{quali} segnali del testo dicono l'affidabilit\`a.}
 \end{frame}
 
 \end{document}

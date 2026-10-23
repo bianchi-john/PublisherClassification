@@ -1,0 +1,83 @@
+2026-10-22 19:44:44  === modernbert_s1: answerdotai/ModernBERT-base, 1024 token, 2 epoche, su Tesla V100S-PCIE-32GB ===
+2026-10-22 19:45:45  75394 articoli di 863 testate tokenizzati in 58 s; token: mediana 782
+2026-10-22 19:45:46  >>> fold 1, parte interna 1/3
+2026-10-22 19:50:13    epoca 1/2: 289 testate, 3444 articoli, loss 1.5248 (264 s)
+2026-10-22 19:54:16    epoca 2/2: 289 testate, 3452 articoli, loss 1.3511 (243 s)
+2026-10-22 19:58:46  fold1_interno1: fatto in 13 min (289 testate di training, 439 predette; memoria GPU massima 5.1 GB)
+2026-10-22 19:58:46  >>> fold 1, parte interna 2/3
+2026-10-22 20:03:18    epoca 1/2: 564 testate, 3727 articoli, loss 1.4954 (271 s)
+2026-10-22 20:07:48    epoca 2/2: 564 testate, 3716 articoli, loss 1.2305 (269 s)
+2026-10-22 20:10:16  fold1_interno2: fatto in 11 min (564 testate di training, 164 predette; memoria GPU massima 5.1 GB)
+2026-10-22 20:10:16  >>> fold 1, parte interna 3/3
+2026-10-22 20:14:21    epoca 1/2: 603 testate, 3217 articoli, loss 1.5358 (245 s)
+2026-10-22 20:18:07    epoca 2/2: 603 testate, 3213 articoli, loss 1.3061 (225 s)
+2026-10-22 20:20:27  fold1_interno3: fatto in 10 min (603 testate di training, 125 predette; memoria GPU massima 5.1 GB)
+2026-10-22 20:20:27  >>> fold 1, finale
+2026-10-22 20:26:52    epoca 1/2: 728 testate, 5167 articoli, loss 1.5088 (384 s)
+2026-10-22 20:33:16    epoca 2/2: 728 testate, 5166 articoli, loss 1.3457 (384 s)
+2026-10-22 20:34:21  fold1_finale: fatto in 14 min (728 testate di training, 61 predette; memoria GPU massima 5.1 GB)
+2026-10-22 20:34:21  >>> fold 2, parte interna 1/3
+2026-10-22 20:38:48    epoca 1/2: 558 testate, 3482 articoli, loss 1.5096 (266 s)
+2026-10-22 20:42:57    epoca 2/2: 558 testate, 3495 articoli, loss 1.2684 (250 s)
+2026-10-22 20:45:33  fold2_interno1: fatto in 11 min (558 testate di training, 159 predette; memoria GPU massima 5.1 GB)
+2026-10-22 20:45:33  >>> fold 2, parte interna 2/3
+2026-10-22 20:49:37    epoca 1/2: 593 testate, 3366 articoli, loss 1.5079 (243 s)
+2026-10-22 20:53:31    epoca 2/2: 593 testate, 3370 articoli, loss 1.2508 (235 s)
+2026-10-22 20:55:33  fold2_interno2: fatto in 10 min (593 testate di training, 124 predette; memoria GPU massima 5.1 GB)
+2026-10-22 20:55:33  >>> fold 2, parte interna 3/3
+2026-10-22 21:00:01    epoca 1/2: 283 testate, 3647 articoli, loss 1.4888 (266 s)
+2026-10-22 21:03:54    epoca 2/2: 283 testate, 3647 articoli, loss 1.2225 (233 s)
+2026-10-22 21:07:58  fold2_interno3: fatto in 12 min (283 testate di training, 434 predette; memoria GPU massima 5.1 GB)
+2026-10-22 21:07:58  >>> fold 2, finale
+2026-10-22 21:14:01    epoca 1/2: 717 testate, 5235 articoli, loss 1.4882 (362 s)
+2026-10-22 21:20:04    epoca 2/2: 717 testate, 5264 articoli, loss 1.2707 (363 s)
+2026-10-22 21:21:03  fold2_finale: fatto in 13 min (717 testate di training, 61 predette; memoria GPU massima 5.1 GB)
+2026-10-22 21:21:03  >>> fold 3, parte interna 1/3
+2026-10-22 21:25:45    epoca 1/2: 283 testate, 3809 articoli, loss 1.5197 (281 s)
+2026-10-22 21:29:53    epoca 2/2: 283 testate, 3816 articoli, loss 1.3183 (248 s)
+2026-10-22 21:32:08  fold3_interno1: fatto in 11 min (283 testate di training, 158 predette; memoria GPU massima 5.1 GB)
+2026-10-22 21:32:08  >>> fold 3, parte interna 2/3
+2026-10-22 21:36:06    epoca 1/2: 280 testate, 3400 articoli, loss 1.5119 (238 s)
+2026-10-22 21:40:13    epoca 2/2: 280 testate, 3392 articoli, loss 1.3108 (246 s)
+2026-10-22 21:42:47  fold3_interno2: fatto in 11 min (280 testate di training, 161 predette; memoria GPU massima 5.1 GB)
+2026-10-22 21:42:47  >>> fold 3, parte interna 3/3
+2026-10-22 21:46:13    epoca 1/2: 319 testate, 3168 articoli, loss 1.5415 (206 s)
+2026-10-22 21:49:41    epoca 2/2: 319 testate, 3168 articoli, loss 1.3313 (208 s)
+2026-10-22 21:52:03  fold3_interno3: fatto in 9 min (319 testate di training, 122 predette; memoria GPU massima 5.1 GB)
+2026-10-22 21:52:03  >>> fold 3, finale
+2026-10-22 21:57:57    epoca 1/2: 441 testate, 5188 articoli, loss 1.5479 (353 s)
+2026-10-22 22:03:55    epoca 2/2: 441 testate, 5196 articoli, loss 1.3392 (358 s)
+2026-10-22 22:05:12  fold3_finale: fatto in 13 min (441 testate di training, 60 predette; memoria GPU massima 5.1 GB)
+2026-10-22 22:05:12  >>> fold 4, parte interna 1/3
+2026-10-22 22:08:56    epoca 1/2: 326 testate, 3356 articoli, loss 1.5511 (223 s)
+2026-10-22 22:12:47    epoca 2/2: 326 testate, 3356 articoli, loss 1.3343 (231 s)
+2026-10-22 22:17:02  fold4_interno1: fatto in 12 min (326 testate di training, 448 predette; memoria GPU massima 5.1 GB)
+2026-10-22 22:17:02  >>> fold 4, parte interna 2/3
+2026-10-22 22:21:01    epoca 1/2: 614 testate, 3702 articoli, loss 1.5196 (239 s)
+2026-10-22 22:25:32    epoca 2/2: 614 testate, 3692 articoli, loss 1.3523 (271 s)
+2026-10-22 22:27:50  fold4_interno2: fatto in 11 min (614 testate di training, 160 predette; memoria GPU massima 5.1 GB)
+2026-10-22 22:27:50  >>> fold 4, parte interna 3/3
+2026-10-22 22:31:38    epoca 1/2: 608 testate, 3356 articoli, loss 1.5127 (227 s)
+2026-10-22 22:35:23    epoca 2/2: 608 testate, 3356 articoli, loss 1.2683 (225 s)
+2026-10-22 22:38:05  fold4_interno3: fatto in 10 min (608 testate di training, 166 predette; memoria GPU massima 5.1 GB)
+2026-10-22 22:38:05  >>> fold 4, finale
+2026-10-22 22:44:08    epoca 1/2: 774 testate, 5203 articoli, loss 1.5075 (362 s)
+2026-10-22 22:50:09    epoca 2/2: 774 testate, 5196 articoli, loss 1.3026 (361 s)
+2026-10-22 22:51:24  fold4_finale: fatto in 13 min (774 testate di training, 60 predette; memoria GPU massima 5.1 GB)
+2026-10-22 22:51:24  >>> fold 5, parte interna 1/3
+2026-10-22 22:55:06    epoca 1/2: 341 testate, 3344 articoli, loss 1.4994 (221 s)
+2026-10-22 22:59:08    epoca 2/2: 341 testate, 3336 articoli, loss 1.3011 (242 s)
+2026-10-22 23:03:01  fold5_interno1: fatto in 12 min (341 testate di training, 451 predette; memoria GPU massima 5.1 GB)
+2026-10-22 23:03:01  >>> fold 5, parte interna 2/3
+2026-10-22 23:07:47    epoca 1/2: 624 testate, 3934 articoli, loss 1.4810 (285 s)
+2026-10-22 23:12:04    epoca 2/2: 624 testate, 3934 articoli, loss 1.2578 (257 s)
+2026-10-22 23:14:42  fold5_interno2: fatto in 12 min (624 testate di training, 168 predette; memoria GPU massima 5.1 GB)
+2026-10-22 23:14:42  >>> fold 5, parte interna 3/3
+2026-10-22 23:18:31    epoca 1/2: 619 testate, 3172 articoli, loss 1.5189 (227 s)
+2026-10-22 23:22:15    epoca 2/2: 619 testate, 3155 articoli, loss 1.3302 (225 s)
+2026-10-22 23:25:14  fold5_interno3: fatto in 11 min (619 testate di training, 173 predette; memoria GPU massima 5.1 GB)
+2026-10-22 23:25:14  >>> fold 5, finale
+2026-10-22 23:31:08    epoca 1/2: 792 testate, 5209 articoli, loss 1.5242 (353 s)
+2026-10-22 23:36:58    epoca 2/2: 792 testate, 5232 articoli, loss 1.3148 (350 s)
+2026-10-22 23:38:01  fold5_finale: fatto in 13 min (792 testate di training, 59 predette; memoria GPU massima 5.1 GB)
+2026-10-22 23:38:01  === modernbert_s1: 5 fold su 5, 301 testate: F1 0.323, binario 0.708 ===

@@ -1,0 +1,41 @@
+2026-10-22 15:14:39  === 863 testate (301 valutate), 75394 articoli, 167885 citazioni; famiglie ['testo', 'link', 'pagina']; C [0.01, 0.1, 1.0, 10.0] ===
+2026-10-22 15:26:01  fold 1: matrici pronte (11.4 min)
+2026-10-22 15:26:47  fold 1 testo: C 10.0, F1 0.418, binario 0.705
+2026-10-22 15:26:48  fold 1 link: C 1.0, F1 0.281, binario 0.738
+2026-10-22 15:26:48  fold 1 pagina: C 0.01, F1 0.306, binario 0.574
+2026-10-22 15:26:48  fold 1 combinato: F1 0.378, binario 0.672
+2026-10-22 15:27:46  fold 1: criteri fatti (13.1 min dal via del fold)
+2026-10-22 15:39:06  fold 2: matrici pronte (11.3 min)
+2026-10-22 15:39:49  fold 2 testo: C 10.0, F1 0.182, binario 0.672
+2026-10-22 15:39:50  fold 2 link: C 1.0, F1 0.192, binario 0.656
+2026-10-22 15:39:50  fold 2 pagina: C 10.0, F1 0.168, binario 0.574
+2026-10-22 15:39:51  fold 2 combinato: F1 0.230, binario 0.672
+2026-10-22 15:40:47  fold 2: criteri fatti (13.0 min dal via del fold)
+2026-10-22 15:52:35  fold 3: matrici pronte (11.8 min)
+2026-10-22 15:53:15  fold 3 testo: C 10.0, F1 0.326, binario 0.767
+2026-10-22 15:53:16  fold 3 link: C 10.0, F1 0.188, binario 0.633
+2026-10-22 15:53:16  fold 3 pagina: C 0.01, F1 0.303, binario 0.800
+2026-10-22 15:53:16  fold 3 combinato: F1 0.454, binario 0.817
+2026-10-22 15:54:06  fold 3: criteri fatti (13.3 min dal via del fold)
+2026-10-22 16:05:32  fold 4: matrici pronte (11.4 min)
+2026-10-22 16:06:11  fold 4 testo: C 1.0, F1 0.343, binario 0.600
+2026-10-22 16:06:12  fold 4 link: C 0.1, F1 0.349, binario 0.567
+2026-10-22 16:06:12  fold 4 pagina: C 0.1, F1 0.209, binario 0.483
+2026-10-22 16:06:12  fold 4 combinato: F1 0.346, binario 0.650
+2026-10-22 16:07:09  fold 4: criteri fatti (13.0 min dal via del fold)
+2026-10-22 16:19:07  fold 5: matrici pronte (12.0 min)
+2026-10-22 16:19:56  fold 5 testo: C 10.0, F1 0.358, binario 0.678
+2026-10-22 16:19:57  fold 5 link: C 10.0, F1 0.218, binario 0.610
+2026-10-22 16:19:58  fold 5 pagina: C 0.1, F1 0.195, binario 0.644
+2026-10-22 16:19:58  fold 5 combinato: F1 0.283, binario 0.627
+2026-10-22 16:20:58  fold 5: criteri fatti (13.8 min dal via del fold)
+2026-10-22 16:20:58  === finito in 66.4 min ===
+                              n  f1_macro  accuratezza  tolerant_1  bin_accuratezza  bin_f1_macro
+testo                     301.0     0.339        0.382       0.721            0.684         0.682
+link                      301.0     0.247        0.276       0.694            0.641         0.626
+pagina                    301.0     0.241        0.252       0.615            0.615         0.608
+combinato (tutte)         301.0     0.347        0.365       0.708            0.688         0.678
+combinato (testo+link)    301.0     0.328        0.349       0.674            0.688         0.682
+combinato (testo+pagina)  301.0     0.354        0.372       0.744            0.711         0.707
+combinato (link+pagina)   301.0     0.300        0.312       0.674            0.681         0.667
+alla NewsGuard            301.0     0.319        0.385       0.718            0.718         0.716
