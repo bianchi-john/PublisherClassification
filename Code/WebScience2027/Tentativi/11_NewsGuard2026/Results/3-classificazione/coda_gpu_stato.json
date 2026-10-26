@@ -1,0 +1,47 @@
+{
+ "esperimenti": {
+  "modernbert_2026_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-23 14:48:04",
+   "minuti": 62.0,
+   "fine": "2026-10-23 15:50:05"
+  },
+  "modernbert_2022_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-23 16:07:07",
+   "minuti": 72.9,
+   "fine": "2026-10-23 17:19:58"
+  },
+  "modernbert_titolo_2026_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-23 17:46:47",
+   "minuti": 73.3,
+   "fine": "2026-10-23 19:00:07"
+  },
+  "modernbert_politici_2026_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-23 19:28:29",
+   "minuti": 37.8,
+   "fine": "2026-10-23 20:06:20"
+  },
+  "modernbert_titolo_2022_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-23 20:36:20",
+   "minuti": 77.3,
+   "fine": "2026-10-23 21:53:39"
+  },
+  "modernbert_politici_2022_s42": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-23 22:23:39",
+   "minuti": 40.8,
+   "fine": "2026-10-23 23:04:26"
+  }
+ },
+ "aggiornato": "2026-10-23 23:04:26"
+}

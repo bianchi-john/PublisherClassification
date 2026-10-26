@@ -1,0 +1,5 @@
+versione,testate,n,articoli,gruppi,affidabili (binario),peso totale,Very Low,Low,Mixed,Mostly Factual,High
+grezzo,valutate,222,37180,168,0.4189189189189189,205.53948135198135,11,33,85,27,66
+grezzo,tutte (training),456,61219,219,0.46710526315789475,280.0,83,53,107,35,178
+pulito,valutate,222,31959,168,0.4189189189189189,205.55165667665665,11,33,85,27,66
+pulito,tutte (training),431,47088,201,0.4756380510440835,258.0,78,46,102,32,173

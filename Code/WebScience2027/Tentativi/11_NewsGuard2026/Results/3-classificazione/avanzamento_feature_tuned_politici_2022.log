@@ -1,0 +1,11 @@
+2026-10-23 16:26:37  === feature_tuned_politici_2022: 25403 articoli, 187 testate (143 valutate), taglio nessuno, solo valutate False ===
+2026-10-23 16:31:39  fold_gruppo fold 1: C scelto 1.0 (F1 interne 0.1: 0.288, 1.0: 0.292, 10.0: 0.232, 100.0: 0.230)
+2026-10-23 16:31:56  fold_gruppo fold 4: C scelto 10.0 (F1 interne 0.1: 0.231, 1.0: 0.246, 10.0: 0.255, 100.0: 0.250)
+2026-10-23 16:32:26  fold_gruppo fold 5: C scelto 1.0 (F1 interne 0.1: 0.251, 1.0: 0.289, 10.0: 0.231, 100.0: 0.229)
+2026-10-23 16:32:35  fold_gruppo fold 2: C scelto 1.0 (F1 interne 0.1: 0.237, 1.0: 0.258, 10.0: 0.222, 100.0: 0.220)
+2026-10-23 16:32:49  fold_gruppo fold 1: fatto in 370 s (18137 training, 4571 test)
+2026-10-23 16:33:00  fold_gruppo fold 3: C scelto 1.0 (F1 interne 0.1: 0.252, 1.0: 0.316, 10.0: 0.306, 100.0: 0.279)
+2026-10-23 16:33:42  fold_gruppo fold 4: fatto in 422 s (19381 training, 5310 test)
+2026-10-23 16:33:49  fold_gruppo fold 5: fatto in 429 s (21863 training, 3486 test)
+2026-10-23 16:33:56  fold_gruppo fold 2: fatto in 437 s (20744 training, 4632 test)
+2026-10-23 16:34:23  fold_gruppo fold 3: fatto in 463 s (21487 training, 3596 test)

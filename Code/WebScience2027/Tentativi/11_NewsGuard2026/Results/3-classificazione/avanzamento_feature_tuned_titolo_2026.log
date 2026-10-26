@@ -1,0 +1,11 @@
+2026-10-23 14:59:12  === feature_tuned_titolo_2026: 71218 articoli, 835 testate (296 valutate), taglio nessuno, solo valutate False ===
+2026-10-23 15:10:54  fold_gruppo fold 5: C scelto 1.0 (F1 interne 0.1: 0.318, 1.0: 0.326, 10.0: 0.293, 100.0: 0.273)
+2026-10-23 15:11:06  fold_gruppo fold 1: C scelto 100.0 (F1 interne 0.1: 0.232, 1.0: 0.240, 10.0: 0.233, 100.0: 0.254)
+2026-10-23 15:12:29  fold_gruppo fold 3: C scelto 0.1 (F1 interne 0.1: 0.403, 1.0: 0.322, 10.0: 0.293, 100.0: 0.264)
+2026-10-23 15:13:49  fold_gruppo fold 4: C scelto 1.0 (F1 interne 0.1: 0.277, 1.0: 0.306, 10.0: 0.272, 100.0: 0.274)
+2026-10-23 15:13:56  fold_gruppo fold 2: C scelto 0.1 (F1 interne 0.1: 0.334, 1.0: 0.320, 10.0: 0.294, 100.0: 0.275)
+2026-10-23 15:13:59  fold_gruppo fold 5: fatto in 879 s (54298 training, 8216 test)
+2026-10-23 15:14:49  fold_gruppo fold 1: fatto in 933 s (52715 training, 8243 test)
+2026-10-23 15:15:09  fold_gruppo fold 3: fatto in 951 s (61084 training, 9150 test)
+2026-10-23 15:16:25  fold_gruppo fold 2: fatto in 1028 s (55325 training, 7894 test)
+2026-10-23 15:17:07  fold_gruppo fold 4: fatto in 1068 s (61450 training, 8987 test)

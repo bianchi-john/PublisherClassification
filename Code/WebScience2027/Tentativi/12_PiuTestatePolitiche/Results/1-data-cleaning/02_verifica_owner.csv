@@ -1,0 +1,13 @@
+,precisione,recall
+nessun segnale (ogni testata da sola),1.0,0.502
+solo autori,0.939,0.648
+solo codice,0.974,0.613
+solo copie,0.979,0.73
+solo dominio,0.989,0.563
+solo titolare,0.997,0.55
+tutti tranne autori,0.947,0.851
+tutti tranne codice,0.91,0.816
+tutti tranne copie,0.907,0.77
+tutti tranne dominio,0.898,0.85
+tutti tranne titolare,0.891,0.83
+tutti i segnali,0.889,0.865

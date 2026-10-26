@@ -1,0 +1,4 @@
+fold,modello,articolo 5cl,articolo F1,articolo bin,articolo tol0.5,articolo tol1,testata 5cl,testata F1,testata bin,testata tol0.5,testata tol1
+per gruppo,TF-IDF + LR (feature_tuned_politici_2026),0.272,0.248,0.57,0.457,0.641,0.336,0.276,0.615,0.535,0.734
+per gruppo,baseline: maggioranza,0.243,0.102,0.499,0.391,0.539,0.259,0.108,0.524,0.413,0.566
+per gruppo,baseline: a caso,0.192,0.188,0.451,0.362,0.533,0.196,0.186,0.455,0.367,0.538

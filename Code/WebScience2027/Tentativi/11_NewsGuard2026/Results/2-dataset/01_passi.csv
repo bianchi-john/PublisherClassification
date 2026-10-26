@@ -1,0 +1,6 @@
+passo,articoli,testate
+articoli puliti (tentativi 06-09),76072,963
+1. testate con un punteggio NewsGuard 2026 e 2022,71883,933
+3. senza copie tra gruppi diversi,71438,933
+4. testate con almeno 5 articoli (training),71218,835
+"5. valutate: almeno 20 articoli, al più 5 per gruppo",42490,296

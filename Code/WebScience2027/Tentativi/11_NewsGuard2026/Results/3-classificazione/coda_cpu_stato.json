@@ -1,0 +1,41 @@
+{
+ "esperimenti": {
+  "feature_tuned_2026": {
+   "stato": "fatto",
+   "tentativi": 0
+  },
+  "feature_tuned_2022": {
+   "stato": "fatto",
+   "tentativi": 0
+  },
+  "feature_tuned_titolo_2026": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-23 14:59:07",
+   "minuti": 18.1,
+   "fine": "2026-10-23 15:17:12"
+  },
+  "feature_tuned_politici_2026": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-23 15:28:45",
+   "minuti": 7.9,
+   "fine": "2026-10-23 15:36:38"
+  },
+  "feature_tuned_titolo_2022": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-23 15:49:42",
+   "minuti": 17.8,
+   "fine": "2026-10-23 16:07:29"
+  },
+  "feature_tuned_politici_2022": {
+   "stato": "fatto",
+   "tentativi": 1,
+   "inizio": "2026-10-23 16:26:31",
+   "minuti": 7.9,
+   "fine": "2026-10-23 16:34:27"
+  }
+ },
+ "aggiornato": "2026-10-23 16:34:27"
+}

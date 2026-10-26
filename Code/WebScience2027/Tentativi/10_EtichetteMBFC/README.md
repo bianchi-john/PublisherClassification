@@ -1,6 +1,15 @@
 # Tentativo 10 — Le etichette MBFC sulle nostre testate
 
-> **Tentativo autonomo**: `1-etichette`, dati in `Dataset/` (fuori da git), risultati in `Results/`. Il percorso di
+> ⚠️ **PROVA INCOMPLETA.** Le parti 1 (etichette MBFC, abbinamento, confronto con NewsGuard 2022) e 2 (i due dataset
+> con le etichette MBFC) sono finite e i loro risultati valgono. La parte 3 (classificatore a feature e ModernBERT con
+> le etichette MBFC) è stata **lanciata e interrotta a mano il 23 ottobre alle 15:05**, dopo 14 minuti, perché sono
+> arrivate le credenziali per i **dati NewsGuard aggiornati**: si è chiuso solo il fold 2 del classificatore a
+> feature sul dataset grezzo, nessun fold di ModernBERT, nessun confronto. In `Results/3-classificazione` ci sono solo
+> i log della corsa interrotta. Il codice è pronto e provato (prove brevi in locale e sul server): per riprenderla
+> basta rilanciare `esegui_tutto.sh` sul server.
+
+> **Tentativo autonomo**: `1-etichette` → `2-dataset` → `3-classificazione`, dati in `Dataset/` (fuori da git),
+> risultati in `Results/`. Il percorso di
 > tutti i tentativi è nel README di `Code/WebScience2027`.
 
 **La domanda.** Le etichette NewsGuard che usiamo sono un'esportazione di **agosto 2022** (ultimo aggiornamento delle
@@ -76,8 +85,42 @@ credibilità; 146 testate abbinate si trovano solo nell'API.
 
 ## Rieseguire
 
-Da `1-etichette/`: `01_pulisci_mbfc.ipynb`, poi `02_abbina_testate.ipynb` (in locale, pochi secondi; serve
-`Dataset/` come sopra). Le esecuzioni salvate sono in `Results/1-etichette/esecuzioni/`.
+Da `1-etichette/`: `01_pulisci_mbfc.ipynb`, poi `02_abbina_testate.ipynb`; da `2-dataset/`: `01_dataset_mbfc.ipynb`
+(in locale, pochi minuti; serve `Dataset/` come sopra, più `derived/02_reti.csv` del tentativo 09). Poi
+`esegui_tutto.sh` sul server (serve una GPU per ModernBERT; circa 3 ore). Le esecuzioni salvate sono in
+`Results/*/esecuzioni/`.
+
+## L'esperimento base con le etichette MBFC (23 ottobre)
+
+Le cose più semplici possibili, fissate prima dei risultati: lo stesso classificatore a feature e lo stesso
+transformer delle versioni precedenti, con l'etichetta **factual reporting MBFC** al posto del livello NewsGuard.
+
+- **Etichetta**: Very Low, Low, Mixed, Mostly Factual, High (Very High, 3 testate, va con High): 5 livelli dal
+  peggiore al migliore, come quelli NewsGuard. **Binario**: affidabile = almeno *Mostly Factual*.
+- **Due versioni del dataset**, con **le stesse 222 testate valutate e gli stessi fold** (`2-dataset/01_dataset_mbfc`):
+  - *grezzo*: gli articoli come li ha scaricati lo scraping (tolti solo i testi vuoti): 456 testate, 61.219 articoli;
+  - *pulito*: gli articoli del dataset finale dei tentativi 06–09 (pulizia della Versione 2, niente copie tra gruppi
+    diversi): 431 testate, 47.088 articoli.
+- **Gruppi** = le nostre reti ∪ stesso owner ∪ stesso Parent Domain NewsGuard (MBFC non dice chi possiede un sito);
+  valutate = almeno 20 articoli e al più 5 per gruppo (222 in 168 gruppi: Very Low 11, Low 33, Mixed 85, Mostly
+  Factual 27, High 66); le altre testate con un'etichetta MBFC entrano nel training con il loro peso; 5 fold per
+  gruppo stratificati per livello MBFC.
+- **Modelli**: il classificatore a feature (TF-IDF + LR, C in validazione interna, voto per testata) e ModernBERT-base
+  (ricetta della Versione 2, un seme, media delle probabilità per testata).
+- **Confronto** (`3-classificazione/03_confronto`): F1 macro, accuratezza, ±1 livello, binario, con bootstrap per
+  gruppo; ModernBERT − feature in ogni versione, pulito − grezzo per ogni modello.
+
+```
+2-dataset/01_dataset_mbfc.ipynb            le due versioni: Dataset/versioni/{grezzo,pulito}/{dataset,fold}.csv
+3-classificazione/comune.py                dati, pesi e metriche (dal tentativo 09; binario = almeno Mostly Factual)
+3-classificazione/01_feature_tfidf.ipynb   il classificatore a feature, VERSIONE = grezzo o pulito
+3-classificazione/02_modernbert.ipynb      ModernBERT-base, VERSIONE = grezzo o pulito
+3-classificazione/03_confronto.ipynb       intervalli, differenze, matrici di confusione
+esegui_tutto.sh                            sul server: CPU (feature) e GPU (ModernBERT) insieme, poi il confronto
+stato.sh, controlla_server.sh              a che punto siamo (sul server; dal PC)
+```
+
+Sul server è stato lanciato in `~/John/Tentativo10` (screen `t10`, 23 ottobre alle 14:51) e **interrotto alle 15:05** (vedi l'avviso in cima).
 
 ## Possibili esperimenti successivi
 

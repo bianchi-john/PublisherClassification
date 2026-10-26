@@ -1,0 +1,7 @@
+2026-10-23 13:53:29  === tentativo 11: feature e ModernBERT, etichette NewsGuard 2026 e 2022 ===
+2026-10-23 13:53:29  >>> modernbert_2026_s42
+2026-10-23 13:53:29  >>> feature_2026
+2026-10-23 14:11:30  <<< feature_2026 fatto
+2026-10-23 14:11:30  >>> feature_2022
+2026-10-23 14:30:13  <<< feature_2022 fatto
+2026-10-23 14:34:43  === fermato a mano: ModernBERT aspettava se stesso (controllo GPU corretto); si riparte con la coda del weekend ===

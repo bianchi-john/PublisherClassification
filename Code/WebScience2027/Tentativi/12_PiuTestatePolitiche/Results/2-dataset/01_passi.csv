@@ -1,0 +1,6 @@
+passo,articoli,testate
+articoli puliti (ottobre + terzo giro),143106,1816
+1. testate con un punteggio 2026 e il solo argomento politico,43728,532
+2. senza copie tra gruppi diversi,43530,532
+3. testate con almeno 5 articoli (training),43442,495
+"4. valutate: almeno 20 articoli, al più 5 per gruppo",36068,254

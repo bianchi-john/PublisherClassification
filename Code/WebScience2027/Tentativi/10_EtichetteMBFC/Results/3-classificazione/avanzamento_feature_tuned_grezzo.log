@@ -1,0 +1,7 @@
+2026-10-23 12:51:33  === feature_tuned_grezzo: 61219 articoli, 456 testate (222 valutate), taglio nessuno, solo valutate False ===
+2026-10-23 13:02:47  fold_gruppo fold 2: C scelto 0.1 (F1 interne 0.1: 0.283, 1.0: 0.265, 10.0: 0.265, 100.0: 0.264)
+2026-10-23 13:03:00  fold_gruppo fold 5: C scelto 1.0 (F1 interne 0.1: 0.287, 1.0: 0.288, 10.0: 0.286, 100.0: 0.280)
+2026-10-23 13:03:22  fold_gruppo fold 3: C scelto 0.1 (F1 interne 0.1: 0.275, 1.0: 0.252, 10.0: 0.240, 100.0: 0.224)
+2026-10-23 13:03:24  fold_gruppo fold 4: C scelto 0.1 (F1 interne 0.1: 0.317, 1.0: 0.251, 10.0: 0.248, 100.0: 0.257)
+2026-10-23 13:03:49  fold_gruppo fold 1: C scelto 1.0 (F1 interne 0.1: 0.256, 1.0: 0.264, 10.0: 0.259, 100.0: 0.250)
+2026-10-23 13:05:01  fold_gruppo fold 2: fatto in 804 s (46810 training, 7216 test)

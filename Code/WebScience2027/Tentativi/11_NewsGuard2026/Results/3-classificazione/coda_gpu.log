@@ -1,0 +1,20 @@
+2026-10-23 14:48:04  === corsia gpu: 6 esperimenti ===
+2026-10-23 14:48:04  >>> modernbert_2026_s42: tentativo 1/3
+2026-10-23 15:50:05  <<< modernbert_2026_s42: fatto in 62 min
+2026-10-23 16:07:07      confronto aggiornato (esito 0)
+2026-10-23 16:07:07  >>> modernbert_2022_s42: tentativo 1/3
+2026-10-23 17:19:58  <<< modernbert_2022_s42: fatto in 73 min
+2026-10-23 17:46:47      confronto aggiornato (esito 0)
+2026-10-23 17:46:47  >>> modernbert_titolo_2026_s42: tentativo 1/3
+2026-10-23 19:00:07  <<< modernbert_titolo_2026_s42: fatto in 73 min
+2026-10-23 19:28:29      confronto aggiornato (esito 0)
+2026-10-23 19:28:29  >>> modernbert_politici_2026_s42: tentativo 1/3
+2026-10-23 20:06:20  <<< modernbert_politici_2026_s42: fatto in 38 min
+2026-10-23 20:36:20      confronto aggiornato (esito tempo scaduto)
+2026-10-23 20:36:20  >>> modernbert_titolo_2022_s42: tentativo 1/3
+2026-10-23 21:53:39  <<< modernbert_titolo_2022_s42: fatto in 77 min
+2026-10-23 22:23:39      confronto aggiornato (esito tempo scaduto)
+2026-10-23 22:23:39  >>> modernbert_politici_2022_s42: tentativo 1/3
+2026-10-23 23:04:26  <<< modernbert_politici_2022_s42: fatto in 41 min
+2026-10-23 23:34:26      confronto aggiornato (esito tempo scaduto)
+2026-10-23 23:34:26  === corsia gpu finita ===
