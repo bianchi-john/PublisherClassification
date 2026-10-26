@@ -1,0 +1,121 @@
+modello,verso,lemma,media,articoli,occorrenze,categoria
+feature,affidabile,reform,0.10236918459684888,21,34,termini di parte
+feature,affidabile,towards,0.10161285445239,12,13,parole funzione
+feature,affidabile,maga,0.09345474064998657,10,18,nomi propri
+feature,affidabile,bipartisan,0.08997580808670526,11,14,altro
+feature,affidabile,assembly,0.08966374192392715,12,14,nomi propri
+feature,affidabile,chair,0.08914254469010867,18,19,argomento
+feature,affidabile,economy,0.08230165541248094,27,40,emozioni
+feature,affidabile,britain,0.08023743957520313,14,24,nomi propri
+feature,affidabile,uk,0.08014644580128451,15,27,nomi propri
+feature,affidabile,sort,0.07941293754208188,10,13,argomento
+feature,affidabile,ohio,0.0785653375690461,15,40,nomi propri
+feature,affidabile,ad,0.07656416856415042,10,18,argomento
+feature,affidabile,instance,0.07604801577474173,11,11,argomento
+feature,affidabile,midterm,0.07584153284817557,21,43,argomento
+feature,affidabile,democracy,0.07498431048845577,20,25,termini di parte
+feature,affidabile,daily,0.07447900087092799,18,21,nomi propri
+feature,affidabile,himself,0.07413813033790928,23,27,parole funzione
+feature,affidabile,ai,0.0674057880282491,17,47,nomi propri
+feature,affidabile,labour,0.0655366147528211,15,35,nomi propri
+feature,affidabile,gop,0.06523281511862178,21,31,nomi propri
+feature,affidabile,per,0.06350561901687476,22,36,parole funzione
+feature,affidabile,recently,0.0629665203275492,32,38,altro
+feature,affidabile,donald,0.06229184954358533,58,80,nomi propri
+feature,affidabile,particularly,0.06021818346363124,27,33,altro
+feature,affidabile,wing,0.06001451989646264,16,25,argomento
+feature,affidabile,though,0.059550201316323555,37,43,parole funzione
+feature,affidabile,overall,0.0595486646426403,13,15,altro
+feature,affidabile,wall,0.05862112907768116,10,11,argomento
+feature,affidabile,eye,0.05808551483019467,18,18,argomento
+feature,affidabile,employment,0.05785148526416562,12,13,argomento
+feature,non affidabile,democrat,-0.12601055654982202,21,40,nomi propri
+feature,non affidabile,emphasize,-0.11238325519893669,14,14,emozioni
+feature,non affidabile,biden,-0.10405677719892084,16,28,nomi propri
+feature,non affidabile,rally,-0.09220135631892577,13,24,argomento
+feature,non affidabile,governor,-0.08663406916063122,21,43,morale e religione
+feature,non affidabile,expansion,-0.08571806335841779,14,17,argomento
+feature,non affidabile,scene,-0.07807880233940304,17,19,termini di parte
+feature,non affidabile,massive,-0.0766958393408339,17,20,altro
+feature,non affidabile,socialist,-0.07586816627944983,10,26,emozioni
+feature,non affidabile,directly,-0.07539200358036838,26,30,altro
+feature,non affidabile,virginia,-0.0737361780493375,11,25,nomi propri
+feature,non affidabile,pattern,-0.06935111873350637,18,21,termini di parte
+feature,non affidabile,georgia,-0.06649224820179701,13,28,nomi propri
+feature,non affidabile,core,-0.06487694441478696,14,15,termini di parte
+feature,non affidabile,proposal,-0.06262384273317051,12,19,argomento
+feature,non affidabile,inside,-0.06071288194300077,22,26,parole funzione
+feature,non affidabile,china,-0.06021778015059609,18,52,nomi propri
+feature,non affidabile,arizona,-0.059922913387641705,10,25,nomi propri
+feature,non affidabile,confirm,-0.05771199839635029,19,26,fonti e attribuzione
+feature,non affidabile,special,-0.05740718240762458,22,27,emozioni
+feature,non affidabile,hide,-0.054894025222862325,10,11,emozioni
+feature,non affidabile,video,-0.052991296567948126,30,52,termini di parte
+feature,non affidabile,central,-0.05246440872891698,29,34,altro
+feature,non affidabile,left,-0.05236833923227931,30,50,termini di parte
+feature,non affidabile,aggressive,-0.052098326035582745,11,13,sensazionalismo
+feature,non affidabile,medical,-0.05204800458504011,20,45,termini di parte
+feature,non affidabile,identity,-0.05198556943105342,12,14,termini di parte
+feature,non affidabile,un,-0.05177589480089532,10,14,nomi propri
+feature,non affidabile,trend,-0.051631877883388806,17,18,argomento
+feature,non affidabile,why,-0.05098960693930618,77,111,parole funzione
+ModernBERT,affidabile,ceasefire,0.05629025702364739,10,10,argomento
+ModernBERT,affidabile,useful,0.034887180508424785,11,12,altro
+ModernBERT,affidabile,perhaps,0.03142035170458252,17,21,cautela ed enfasi
+ModernBERT,affidabile,sex,0.02999422312455455,10,18,sensazionalismo
+ModernBERT,affidabile,appropriate,0.029539238153533463,10,11,altro
+ModernBERT,affidabile,emerge,0.02697232299085171,17,21,altro
+ModernBERT,affidabile,particular,0.026712103727428816,10,12,altro
+ModernBERT,affidabile,replace,0.02647907931455651,15,19,altro
+ModernBERT,affidabile,insist,0.02626829947500173,11,12,fonti e attribuzione
+ModernBERT,affidabile,increasingly,0.026149430065689674,25,34,altro
+ModernBERT,affidabile,annual,0.02571235902723852,16,16,numeri e date
+ModernBERT,affidabile,conference,0.02544181512591116,18,24,termini di parte
+ModernBERT,affidabile,deadline,0.025052694647456474,10,16,argomento
+ModernBERT,affidabile,rare,0.02491653669858346,14,16,altro
+ModernBERT,affidabile,tax,0.023899359571643953,20,45,emozioni
+ModernBERT,affidabile,candidate,0.02385118958999871,33,77,argomento
+ModernBERT,affidabile,particularly,0.023025078882435008,27,33,altro
+ModernBERT,affidabile,mail,0.021676740812836194,11,16,emozioni
+ModernBERT,affidabile,spokesperson,0.02150006563617633,10,13,fonti e attribuzione
+ModernBERT,affidabile,potentially,0.021340265563738144,19,19,altro
+ModernBERT,affidabile,midterm,0.021274903073072993,21,43,argomento
+ModernBERT,affidabile,funding,0.019847395175413462,19,37,termini di parte
+ModernBERT,affidabile,entirely,0.01983357531328993,12,12,altro
+ModernBERT,affidabile,closely,0.01978658119748741,14,14,altro
+ModernBERT,affidabile,whether,0.019497558262178652,62,91,parole funzione
+ModernBERT,affidabile,likely,0.0193799001364303,45,56,cautela ed enfasi
+ModernBERT,affidabile,interest,0.01931875648968399,33,62,argomento
+ModernBERT,affidabile,found,0.018992607589877593,14,14,emozioni
+ModernBERT,affidabile,history,0.018767357933728995,37,52,argomento
+ModernBERT,affidabile,hire,0.018717287535158268,10,12,emozioni
+ModernBERT,non affidabile,finance,-0.024711764458676497,13,17,argomento
+ModernBERT,non affidabile,defeat,-0.02298228856862371,13,19,argomento
+ModernBERT,non affidabile,nor,-0.022491852031089353,12,15,parole funzione
+ModernBERT,non affidabile,fight,-0.022045158320439146,43,70,morale e religione
+ModernBERT,non affidabile,throughout,-0.02130766345286053,19,19,parole funzione
+ModernBERT,non affidabile,deadly,-0.020845984269936453,11,13,sensazionalismo
+ModernBERT,non affidabile,injure,-0.020784797132364457,14,16,morale e religione
+ModernBERT,non affidabile,accord,-0.01980593419594172,92,141,fonti e attribuzione
+ModernBERT,non affidabile,everything,-0.01894665771254857,33,41,parole funzione
+ModernBERT,non affidabile,check,-0.018733612984290403,20,29,altro
+ModernBERT,non affidabile,himself,-0.018173705682986263,23,27,parole funzione
+ModernBERT,non affidabile,witness,-0.018010597515967636,21,32,emozioni
+ModernBERT,non affidabile,jersey,-0.017562640764351364,10,21,nomi propri
+ModernBERT,non affidabile,scene,-0.01705710675052708,17,19,termini di parte
+ModernBERT,non affidabile,due,-0.016780268571649944,23,30,parole funzione
+ModernBERT,non affidabile,towards,-0.016456103453842456,12,13,parole funzione
+ModernBERT,non affidabile,gather,-0.016217190173587605,14,14,altro
+ModernBERT,non affidabile,catch,-0.015717725753067756,12,13,emozioni
+ModernBERT,non affidabile,passenger,-0.015301049214654703,10,35,emozioni
+ModernBERT,non affidabile,upon,-0.01515734482270016,11,13,parole funzione
+ModernBERT,non affidabile,beat,-0.01506620672230113,11,17,altro
+ModernBERT,non affidabile,minute,-0.015008537707707055,17,26,numeri e date
+ModernBERT,non affidabile,wednesday,-0.014989894770440573,12,21,numeri e date
+ModernBERT,non affidabile,kill,-0.014857481625354394,36,55,morale e religione
+ModernBERT,non affidabile,mexico,-0.01482873523075663,10,14,nomi propri
+ModernBERT,non affidabile,reader,-0.014729324977711913,11,14,argomento
+ModernBERT,non affidabile,assault,-0.014477041476455135,10,19,morale e religione
+ModernBERT,non affidabile,corruption,-0.014182829747109502,12,35,morale e religione
+ModernBERT,non affidabile,headline,-0.013708789448213287,18,23,argomento
+ModernBERT,non affidabile,nothing,-0.013637113838922193,34,40,parole funzione

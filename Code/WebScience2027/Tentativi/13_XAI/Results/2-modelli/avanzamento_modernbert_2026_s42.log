@@ -1,0 +1,27 @@
+2026-10-26 09:48:45  === modernbert_2026_s42: answerdotai/ModernBERT-base, 1024 token, seed 42, su Tesla V100S-PCIE-32GB ===
+2026-10-26 09:50:47  42219 articoli tokenizzati in 119 s; token per articolo: mediana 898, al massimo 1024 nel 40% dei casi
+2026-10-26 09:50:47  fold 1: 222 testate di training (177 valutate) in 154 gruppi, 40 di validazione, 51 di test; 3814 articoli per epoca; pesi di classe [1.1100000143051147, 0.8700000047683716, 1.809999942779541, 0.6000000238418579, 1.3700000047683716]; batch 4
+2026-10-26 09:56:39  fold 1 epoca 1/2: loss 1.5554, val loss 1.5885, val F1 testate 0.271, val acc articoli 0.290 (348 s)
+2026-10-26 10:02:12  fold 1 epoca 2/2: loss 1.4033, val loss 1.5457, val F1 testate 0.271, val acc articoli 0.298 (333 s)
+2026-10-26 10:04:08  fold 1: finito in 13 min, test acc articoli 0.332, F1 testate 0.347, memoria GPU massima 5.1 GB
+2026-10-26 10:04:09  fold 2: 214 testate di training (176 valutate) in 154 gruppi, 41 di validazione, 51 di test; 3823 articoli per epoca; pesi di classe [1.1699999570846558, 0.9100000262260437, 1.6200000047683716, 0.5899999737739563, 1.3799999952316284]; batch 4
+2026-10-26 10:09:36  fold 2 epoca 1/2: loss 1.5415, val loss 1.7278, val F1 testate 0.278, val acc articoli 0.336 (327 s)
+2026-10-26 10:14:52  fold 2 epoca 2/2: loss 1.3534, val loss 1.6964, val F1 testate 0.270, val acc articoli 0.247 (316 s)
+2026-10-26 10:16:50  fold 2: finito in 13 min, test acc articoli 0.297, F1 testate 0.234, memoria GPU massima 5.1 GB
+2026-10-26 10:16:51  fold 3: 209 testate di training (176 valutate) in 150 gruppi, 42 di validazione, 51 di test; 3786 articoli per epoca; pesi di classe [1.2200000286102295, 0.8899999856948853, 1.659999966621399, 0.5899999737739563, 1.309999942779541]; batch 4
+2026-10-26 10:22:38  fold 3 epoca 1/2: loss 1.5425, val loss 1.4549, val F1 testate 0.348, val acc articoli 0.371 (346 s)
+2026-10-26 10:28:21  fold 3 epoca 2/2: loss 1.3532, val loss 1.4667, val F1 testate 0.378, val acc articoli 0.368 (343 s)
+2026-10-26 10:30:05  fold 3: finito in 13 min, test acc articoli 0.282, F1 testate 0.319, memoria GPU massima 5.1 GB
+2026-10-26 10:30:06  fold 4: 216 testate di training (176 valutate) in 151 gruppi, 43 di validazione, 51 di test; 3820 articoli per epoca; pesi di classe [1.159999966621399, 0.8999999761581421, 1.6100000143051147, 0.6000000238418579, 1.3300000429153442]; batch 4
+2026-10-26 10:35:54  fold 4 epoca 1/2: loss 1.5135, val loss 1.7460, val F1 testate 0.247, val acc articoli 0.266 (348 s)
+2026-10-26 10:41:36  fold 4 epoca 2/2: loss 1.3447, val loss 1.7335, val F1 testate 0.300, val acc articoli 0.248 (342 s)
+2026-10-26 10:42:39  fold 4: finito in 13 min, test acc articoli 0.278, F1 testate 0.256, memoria GPU massima 5.1 GB
+2026-10-26 10:42:40  fold 5: 222 testate di training (179 valutate) in 154 gruppi, 43 di validazione, 50 di test; 3848 articoli per epoca; pesi di classe [1.1399999856948853, 0.9100000262260437, 1.6200000047683716, 0.6000000238418579, 1.3799999952316284]; batch 4
+2026-10-26 10:47:57  fold 5 epoca 1/2: loss 1.5254, val loss 1.3671, val F1 testate 0.299, val acc articoli 0.472 (316 s)
+2026-10-26 10:53:24  fold 5 epoca 2/2: loss 1.3267, val loss 1.4336, val F1 testate 0.522, val acc articoli 0.450 (327 s)
+2026-10-26 10:55:01  fold 5: finito in 12 min, test acc articoli 0.285, F1 testate 0.338, memoria GPU massima 5.1 GB
+2026-10-26 10:55:02  === modernbert_2026_s42 FINITO: testata (media) F1 0.310, acc 0.343, bin 0.638 ===
+2026-10-26 10:55:03  fold 0: 273 testate di training (221 valutate) in 190 gruppi, 50 di validazione, 0 di test; 4785 articoli per epoca; pesi di classe [1.149999976158142, 0.8700000047683716, 1.6799999475479126, 0.6000000238418579, 1.3799999952316284]; batch 4
+2026-10-26 11:01:46  fold 0 epoca 1/2: loss 1.5263, val loss 1.5886, val F1 testate 0.262, val acc articoli 0.348 (402 s)
+2026-10-26 11:08:08  fold 0 epoca 2/2: loss 1.3141, val loss 1.6429, val F1 testate 0.457, val acc articoli 0.338 (382 s)
+2026-10-26 11:08:09  modello finale: addestrato su 273 testate in 13 min, salvato in ../Modelli/modernbert/finale

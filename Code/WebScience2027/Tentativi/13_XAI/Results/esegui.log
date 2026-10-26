@@ -1,0 +1,19 @@
+2026-10-26 09:48:41  === tentativo 13, fase 1: dataset, feature e ModernBERT con i modelli salvati, performance ===
+2026-10-26 09:48:41  salto dataset (già fatto)
+2026-10-26 09:48:41  >>> feature (tentativo 1/3)
+2026-10-26 09:48:41  >>> modernbert (tentativo 1/3)
+2026-10-26 10:06:31  <<< feature fatto
+2026-10-26 10:30:46  === tentativo 13, fase 2 (XAI): aspetto la fine della fase 1 ===
+2026-10-26 11:08:13  <<< modernbert fatto
+2026-10-26 11:08:13  >>> confronto (tentativo 1/3)
+2026-10-26 11:08:16  <<< confronto fatto
+2026-10-26 11:08:16  === fase 1 finita ===
+2026-10-26 11:10:46  >>> xai_01_campione (tentativo 1/3)
+2026-10-26 11:11:24  <<< xai_01_campione fatto
+2026-10-26 11:11:24  >>> xai_02_attribuzioni (tentativo 1/3)
+2026-10-26 11:53:51  <<< xai_02_attribuzioni fatto
+2026-10-26 11:53:51  >>> xai_03_analisi (tentativo 1/3)
+2026-10-26 11:54:07  <<< xai_03_analisi fatto
+2026-10-26 11:54:07  >>> xai_04_maschere (tentativo 1/3)
+2026-10-26 12:15:27  <<< xai_04_maschere fatto
+2026-10-26 12:15:27  === fase 2 finita ===

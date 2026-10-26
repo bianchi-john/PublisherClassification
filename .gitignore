@@ -55,3 +55,9 @@ Code/WebScience2027/**/Results/**/*.npy
 Code/WebScience2027/**/Results/**/*.pkl
 Code/WebScience2027/Tentativi/*/Results/prove/
 Code/WebScience2027/**/Results/**/prova/
+
+# =====================================================================
+# Modelli addestrati (dal tentativo 13): TF-IDF e ModernBERT per fold e finali, circa 3,5 GB;
+# si scaricano dal server con lo script del tentativo e restano solo in locale
+# =====================================================================
+Code/WebScience2027/Tentativi/*/Modelli/

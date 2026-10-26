@@ -1,0 +1,8 @@
+valutazione,orientamento,l1,l2,l3,l4,l5,All
+solo training,Left,1,19,0,6,0,26
+solo training,Right,7,17,5,3,0,32
+solo training,nessuno,0,2,0,7,2,11
+valutate,Left,3,15,6,38,16,78
+valutate,Right,37,36,18,25,4,120
+valutate,nessuno,6,4,7,19,20,56
+All,,54,93,36,98,42,323

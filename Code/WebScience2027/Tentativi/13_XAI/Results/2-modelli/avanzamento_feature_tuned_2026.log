@@ -1,0 +1,12 @@
+2026-10-26 09:48:46  === feature_tuned_2026: 42219 articoli, 323 testate (254 valutate), taglio nessuno, solo valutate False ===
+2026-10-26 09:57:31  fold_gruppo fold 2: C scelto 10.0 (F1 interne 0.1: 0.305, 1.0: 0.320, 10.0: 0.359, 100.0: 0.317)
+2026-10-26 09:57:51  fold_gruppo fold 3: C scelto 1.0 (F1 interne 0.1: 0.331, 1.0: 0.358, 10.0: 0.313, 100.0: 0.309)
+2026-10-26 09:58:56  fold_gruppo fold 4: C scelto 10.0 (F1 interne 0.1: 0.320, 1.0: 0.365, 10.0: 0.399, 100.0: 0.379)
+2026-10-26 09:59:40  fold_gruppo fold 5: C scelto 100.0 (F1 interne 0.1: 0.370, 1.0: 0.343, 10.0: 0.380, 100.0: 0.384)
+2026-10-26 10:00:09  fold_gruppo fold 3: fatto in 679 s (33084 training, 7142 test); modello salvato
+2026-10-26 10:00:17  fold_gruppo fold 2: fatto in 688 s (31803 training, 7764 test); modello salvato
+2026-10-26 10:00:31  fold_gruppo fold 1: C scelto 100.0 (F1 interne 0.1: 0.250, 1.0: 0.287, 10.0: 0.325, 100.0: 0.341)
+2026-10-26 10:02:05  fold_gruppo fold 4: fatto in 794 s (36040 training, 5929 test); modello salvato
+2026-10-26 10:02:28  fold_gruppo fold 5: fatto in 817 s (33882 training, 7955 test); modello salvato
+2026-10-26 10:03:04  fold_gruppo fold 1: fatto in 855 s (34067 training, 7278 test); modello salvato
+2026-10-26 10:06:26  modello finale: C 10.0 (scelti nei fold [100.0, 10.0, 1.0, 10.0, 100.0]), 42219 articoli, 202 s; salvato
