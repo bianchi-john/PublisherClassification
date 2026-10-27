@@ -10,6 +10,8 @@ key.txt
 **/key.txt
 *.env
 .env
+TODO.md
+UTILI.md
 
 # =====================================================================
 # Large derived files (regenerable; 70-92 MB each, over GitHub's 100 MB limit)
@@ -64,3 +66,4 @@ Code/WebScience2027/Tentativi/*/Modelli/
 # tentativi 14-15: dataset con etichette NewsGuard e previsioni per articolo (dati riservati, restano fuori da git)
 Code/WebScience2027/Tentativi/*/Results/dataset/*.csv*
 Code/WebScience2027/Tentativi/*/Results/cache/
+Code/WebScience2027/Tentativi/*/Results/dataset/cache/

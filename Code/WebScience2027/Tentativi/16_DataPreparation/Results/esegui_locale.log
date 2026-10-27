@@ -1,0 +1,8 @@
+Input Notebook:  01_data_preparation.ipynb
+Output Notebook: Results/01_data_preparation_eseguito.ipynb
+Unable to parse line 2 'TESTATE = 0            # 0 = tutte; un numero = prova veloce su quel numero di testate politiche a caso'.
+Executing:   0%|          | 0/34 [00:00<?, ?cell/s][IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+Executing notebook with kernel: irgood-venv
+Executing:   3%|▎         | 1/34 [00:00<00:30,  1.08cell/s]Executing:  12%|█▏        | 4/34 [00:04<00:31,  1.05s/cell]Executing:  18%|█▊        | 6/34 [00:06<00:28,  1.03s/cell]/usr/lib/python3.14/multiprocessing/resource_tracker.py:396: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown: {'/mp-qikuuwru'}
+  warnings.warn(
+[IPKernelApp] WARNING | Parent appears to have exited, shutting down.

@@ -1,0 +1,21 @@
+confronto,indice,AUC,verso
+l1 contro l5,ragionamento,0.6970899470899471,più alto nelle affidabili
+l1 contro l5,emotività,0.8108465608465609,più basso nelle affidabili
+l1 contro l5,complessità,0.6547619047619048,più alto nelle affidabili
+l1 contro l5,fonti,0.5308641975308641,più basso nelle affidabili
+l1–l2 contro l4–l5,ragionamento,0.6890184645286687,più alto nelle affidabili
+l1–l2 contro l4–l5,emotività,0.6822157434402332,più basso nelle affidabili
+l1–l2 contro l4–l5,complessità,0.5791545189504373,più alto nelle affidabili
+l1–l2 contro l4–l5,fonti,0.5737609329446064,più basso nelle affidabili
+l1 contro l4,ragionamento,0.6337868480725622,più alto nelle affidabili
+l1 contro l4,emotività,0.7881708238851096,più basso nelle affidabili
+l1 contro l4,complessità,0.563869992441421,più alto nelle affidabili
+l1 contro l4,fonti,0.5498866213151927,più basso nelle affidabili
+l2 contro l4,ragionamento,0.6846609611586569,più alto nelle affidabili
+l2 contro l4,emotività,0.6067588325652842,più basso nelle affidabili
+l2 contro l4,complessità,0.542132982225148,più alto nelle affidabili
+l2 contro l4,fonti,0.596664472240509,più basso nelle affidabili
+l2 contro l3 (confine),ragionamento,0.5931899641577061,più alto nelle affidabili
+l2 contro l3 (confine),emotività,0.508363201911589,più alto nelle affidabili
+l2 contro l3 (confine),complessità,0.5197132616487454,più alto nelle affidabili
+l2 contro l3 (confine),fonti,0.538231780167264,più basso nelle affidabili
