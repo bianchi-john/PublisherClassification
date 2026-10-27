@@ -61,6 +61,6 @@ Code/WebScience2027/**/Results/**/prova/
 # si scaricano dal server con lo script del tentativo e restano solo in locale
 # =====================================================================
 Code/WebScience2027/Tentativi/*/Modelli/
-# tentativo 14: dataset con etichette NewsGuard e previsioni per articolo (dati riservati, restano fuori da git)
-Code/WebScience2027/Tentativi/14_Chunk/Results/dataset/*.csv*
-Code/WebScience2027/Tentativi/14_Chunk/Results/cache/
+# tentativi 14-15: dataset con etichette NewsGuard e previsioni per articolo (dati riservati, restano fuori da git)
+Code/WebScience2027/Tentativi/*/Results/dataset/*.csv*
+Code/WebScience2027/Tentativi/*/Results/cache/
