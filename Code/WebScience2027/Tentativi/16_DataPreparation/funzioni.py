@@ -838,7 +838,10 @@ def modernbert_fold(art, k, config, cartella, registra, max_token=2048, epoche=5
     tr_testate = testate[testate.fold != k]
     if config.endswith("estremi"):
         tr_testate = tr_testate[tr_testate.label != 2]
-    fit_t, val_t = train_test_split(tr_testate.domain, test_size=quota_validazione, stratify=tr_testate.label, random_state=seme + k)
+    if quota_validazione > 0:                      # una parte delle testate di training fa da validazione
+        fit_t, val_t = train_test_split(tr_testate.domain, test_size=quota_validazione, stratify=tr_testate.label, random_state=seme + k)
+    else:                                         # numero di epoche fisso: tutte le testate di training si usano per addestrare
+        fit_t, val_t = tr_testate.domain, []
     fit = np.where(np.isin(dom, fit_t))[0]; val = np.where(np.isin(dom, val_t))[0]; test = np.where(fold == k)[0]
     pesi_righe = pesi_bilanciati(lab[fit], np.ones(len(fit)))                      # ogni livello pesa uguale (classi bilanciate)
     peso_di = dict(zip(fit, pesi_righe))
@@ -907,11 +910,11 @@ def modernbert_fold(art, k, config, cartella, registra, max_token=2048, epoche=5
             if b % accumulo == 0 or b == len(gruppi):
                 scaler.unscale_(opt); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
                 scaler.step(opt); scaler.update(); opt.zero_grad(); sched.step()
-        valore = misura(prevedi(model, val), val)
-        curva.append({"epoca": e, "loss": tot / n, "validazione": valore})
+        valore = misura(prevedi(model, val), val) if len(val) else e      # senza validazione si tiene l'ultima epoca
+        curva.append({"epoca": e, "loss": tot / n, "validazione": valore if len(val) else np.nan})
         if misura_test:
             curva[-1]["test"] = misura(prevedi(model, test), test)
-        registra(f"{config}, fold {k}, epoca {e}/{epoche}: loss {tot / n:.4f}, validazione {valore:.3f}"
+        registra(f"{config}, fold {k}, epoca {e}/{epoche}: loss {tot / n:.4f}" + (f", validazione {valore:.3f}" if len(val) else "")
                  + (f", test {curva[-1]['test']:.3f}" if misura_test else "") + f" ({time.time() - t0:.0f} s)")
         if valore > migliore:
             migliore, stato = valore, copy.deepcopy({kk: v.detach().cpu() for kk, v in model.state_dict().items()})
@@ -926,7 +929,7 @@ def modernbert_fold(art, k, config, cartella, registra, max_token=2048, epoche=5
         out[colonna(config)] = P[:, 0] * 100
     out.to_csv(file, index=False)
     pd.DataFrame(curva).to_csv(Path(cartella) / f"curva_fold{k}.csv", index=False)
-    registra(f"{config}, fold {k}: finito; epoca migliore {int(np.argmax([c['validazione'] for c in curva])) + 1}, "
+    registra(f"{config}, fold {k}: finito; epoca usata {int(np.nanargmax([c['validazione'] for c in curva])) + 1 if len(val) else epoche}, "
              f"memoria GPU massima {torch.cuda.max_memory_allocated() / 2**30:.1f} GB")
     del model, opt; torch.cuda.empty_cache()
     return out

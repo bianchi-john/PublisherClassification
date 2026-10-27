@@ -39,6 +39,9 @@ F.grafico_riassunto(T, tab5, tab2, "{titolo}", OUT / "riassunto.png")'''
 
 
 def notebook(celle, nome, kernel="johnvenv"):
+    for c in celle:                         # la cella dei parametri (MAIUSCOLE = valore) va etichettata per papermill
+        if c.cell_type == "code" and c.source.split("\n")[0].split("=")[0].strip().isupper() and "import" not in c.source:
+            c.metadata["tags"] = ["parameters"]; break
     nb = nbf.v4.new_notebook(cells=celle)
     nb.metadata["kernelspec"] = {"name": kernel, "display_name": "johnVenv", "language": "python"}
     nbf.write(nb, CARTELLA + nome)
@@ -138,17 +141,18 @@ precedenti (modello sottoallenato: circa 300 passi, 20 articoli per testata) qui
 di training a ogni epoca (migliaia di passi), fino a 5 epoche, con learning rate 3e-5.
 
 Prima una **diagnostica su un solo fold** (6 epoche, loss e F1 su validazione e test dopo ogni epoca) per vedere quante
-epoche servono. Poi i 5 fold: una parte delle testate di training (15%) fa da **validazione**, dopo ogni epoca si misura
-lì (F1 per i classificatori, correlazione per i regressori) e si tiene **l'epoca migliore**. Le configurazioni sono
-quelle del notebook 3; per tempo si lanciano quelle scelte in `CONFIGURAZIONI` (circa 5 ore ciascuna sulla V100):
+epoche servono. Poi i 5 fold con un **numero di epoche fisso**, scelto dalla diagnostica, su tutte le testate di training
+(una validazione di poche testate si è rivelata troppo rumorosa per scegliere l'epoca). Le configurazioni sono quelle del
+notebook 3; per tempo si lanciano quelle scelte in `CONFIGURAZIONI`:
 
 {TABELLA}
 
 Classificatori: entropia incrociata con classi bilanciate e label smoothing 0,1. Regressori: errore quadratico sul
 punteggio. Precisione fp16 (la V100 non supporta bf16)."""),
-    code('''CONFIGURAZIONI = "5 classi,regressione"   # anche: binario, binario_estremi, regressione_bilanciata, regressione_estremi
+    code('''CONFIGURAZIONI = "regressione,5 classi"   # anche: binario, binario_estremi, regressione_bilanciata, regressione_estremi
 DIAGNOSTICA = True                           # prima un fold solo (il 2), 6 epoche, con le curve
-EPOCHE = 5
+EPOCHE = 5                                   # fisso: la diagnostica mostra il plateau dalla 4ª–5ª epoca
+VALIDAZIONE = 0.0                            # 0 = niente validazione: tutte le testate di training addestrano, si tiene l'ultima epoca
 MAX_TOKEN = 2048
 LR = 3e-5
 BATCH = 4                                    # batch effettivo 32 (accumulo dei gradienti)
@@ -185,20 +189,19 @@ if DIAGNOSTICA:
 parti = []
 for config in SCELTE:
     cartella = OUT / config; cartella.mkdir(exist_ok=True)
-    p = pd.concat([F.modernbert_fold(art, k, config, cartella, registra, max_token=MAX_TOKEN, epoche=EPOCHE, lr=LR, batch=BATCH, gb_gpu=GB_GPU)
-                   for k in range(1, 6)], ignore_index=True)
+    p = pd.concat([F.modernbert_fold(art, k, config, cartella, registra, max_token=MAX_TOKEN, epoche=EPOCHE, lr=LR, batch=BATCH, gb_gpu=GB_GPU,
+                                     quota_validazione=VALIDAZIONE) for k in range(1, 6)], ignore_index=True)
     parti.append(p.set_index(["article_id", "domain"]))
 pa = pd.concat(parti, axis=1).reset_index()
 pa.to_csv(OUT / "previsioni_articoli.csv", index=False)
 print(f"{len(pa):,} articoli previsti")'''),
-    code('''# 1.2 la validazione epoca per epoca (per vedere quante epoche servono)
+    code('''# 1.2 la loss di training epoca per epoca, per ogni fold
 fig, assi = plt.subplots(1, len(SCELTE), figsize=(6 * len(SCELTE), 3.4), squeeze=False)
 for ax, config in zip(assi[0], SCELTE):
     for k in range(1, 6):
         c = pd.read_csv(OUT / config / f"curva_fold{k}.csv")
-        ax.plot(c.epoca, c.validazione, marker="o", label=f"fold {k}")
-    ax.set_title(f"{config}: validazione dopo ogni epoca"); ax.set_xlabel("epoca")
-    ax.set_ylabel("F1 per testata" if not config.startswith("regressione") else "correlazione per testata"); ax.legend(fontsize=7)
+        ax.plot(c.epoca, c.loss, marker="o", label=f"fold {k}")
+    ax.set_title(f"{config}: loss di training"); ax.set_xlabel("epoca"); ax.legend(fontsize=7)
 plt.tight_layout(); plt.savefig(OUT / "curve.png", dpi=160, bbox_inches="tight"); plt.show()'''),
     md("## 2. I risultati"),
     code(RISULTATI.format(n=2, out="Results/modernbert", titolo="ModernBERT a 2.048 token · 5 fold · linee grigie: intervalli al 95%")),
@@ -206,34 +209,62 @@ plt.tight_layout(); plt.savefig(OUT / "curve.png", dpi=160, bbox_inches="tight")
 
 # ------------------------------------------------------------------------------------------------ 6. confronto finale
 notebook([
-    md("""# Tentativo 16 · 6. Il confronto finale
+    md("""# Tentativo 16 · I risultati
 
-TF-IDF (notebook 3), embedding (notebook 4) e ModernBERT (notebook 5) **sulle stesse testate e sugli stessi 5 fold**,
-ognuno in due impostazioni: **classificazione a 5 classi** e **regressione sul punteggio**. Quattro misure: F1 sui 5
-livelli, tolerant ±1, e l'accuratezza nel dire se una testata è affidabile (punteggio ≥ 60), su tutte le testate e solo
-sulle estreme (l1, l2, l4, l5). Si mostrano i modelli che hanno già finito."""),
+**Che cosa abbiamo fatto**
+- **Dataset**: testate politiche, testo estratto con trafilatura (modalità precisione), articoli tra 100 e 1.500 parole
+  (entrano interi in 2.048 token), doppioni tolti tra tutte le testate, **una testata per gruppo** Owner/Parent Domain.
+- **TF-IDF** (il riferimento): parole e coppie di parole + modello lineare.
+- **Embedding congelati**: Qwen3-Embedding (0,6B e 8B), senza addestramento, + lo stesso modello lineare.
+- **ModernBERT** addestrato: articoli interi a 2.048 token, tutti gli articoli, 5 epoche.
+
+Ogni modello in due impostazioni: **classificazione a 5 classi** e **regressione sul punteggio** NewsGuard (0–100).
+Stessi 5 fold per tutti."""),
     code('''import warnings
 from pathlib import Path
 
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 
 import funzioni as F
 
 warnings.filterwarnings("ignore")
-OUT = Path("Results/confronto"); OUT.mkdir(parents=True, exist_ok=True)'''),
-    md("## 1. I risultati di ogni modello"),
-    code('''# 1.1 le previsioni per testata salvate dai notebook 3, 4 e 5
+OUT = Path("Results/confronto"); OUT.mkdir(parents=True, exist_ok=True)
 FONTI = {"TF-IDF": "Results/feature", "Embedding Qwen3 0.6B": "Results/embedding/Qwen3-Embedding-0.6B",
          "Embedding Qwen3 8B": "Results/embedding/Qwen3-Embedding-8B", "ModernBERT 2048": "Results/modernbert"}
 T = {nome: pd.read_csv(Path(c) / "previsioni_testate.csv", index_col=0) for nome, c in FONTI.items()
      if (Path(c) / "previsioni_testate.csv").exists()}
+t = pd.read_csv("Results/dataset/testate.csv", index_col="domain")
+print(f"{t.articoli.sum():,} articoli di {len(t)} testate · per livello: " + ", ".join(f"{l} {n}" for l, n in t.livello.value_counts().sort_index().items()))
 print("modelli con i risultati:", ", ".join(T))'''),
-    code('''# 1.2 le quattro misure (intervalli al 95% con un bootstrap sulle testate)
-valori, intervalli, differenze, vero = F.misure_modelli(T)
+    md("""## 1. Il confronto
+
+Quattro misure: **F1** sui 5 livelli, **tolerant ±1** (giusto anche se sbaglia di un livello), e l'accuratezza nel dire
+se una testata è **affidabile** (punteggio ≥ 60), su tutte le testate e solo sulle estreme (l1, l2, l4, l5). In blu la
+classificazione a 5 classi, in arancio la regressione; linee grigie: intervalli al 95%."""),
+    code('''valori, intervalli, differenze, vero = F.misure_modelli(T)
 valori.to_csv(OUT / "confronto.csv")
-valori.round(3)'''),
-    md("## 2. Il grafico\nUna riga per modello: in blu la classificazione a 5 classi, in arancio la regressione."),
-    code('''F.grafico_confronto(valori, intervalli, vero, OUT / "confronto.png")'''),
-    md("## 3. Le differenze dal TF-IDF\nStessa impostazione, stessi ricampionamenti: la differenza è chiara se l'intervallo non contiene lo zero."),
-    code('''differenze if len(differenze) else "per ora c'è solo il TF-IDF"'''),
+F.grafico_confronto(valori, intervalli, vero, OUT / "confronto.png")'''),
+    md("## 2. In numeri\nIn alto i valori; sotto la differenza da TF-IDF con la stessa impostazione (è chiara se l'intervallo non contiene lo zero)."),
+    code('''display(valori.round(3))
+differenze if len(differenze) else "per ora c'è solo il TF-IDF"'''),
+    md("""## 3. ModernBERT è addestrato abbastanza?
+
+La diagnostica su un fold (fold 2): 6 epoche su tutti gli articoli di training. La loss di training scende molto (il
+modello impara); la F1 sul test si stabilizza dalla 4ª–5ª epoca: per questo i 5 fold usano 5 epoche."""),
+    code('''f = Path("Results/modernbert/diagnostica/curva_fold2.csv")
+if f.exists():
+    c = pd.read_csv(f)
+    with plt.rc_context(F.STILE_GRAFICI):
+        fig, assi = plt.subplots(1, 2, figsize=(11, 3.4))
+        assi[0].plot(c.epoca, c.loss, marker="o", color="#2a78d6"); assi[0].axhline(np.log(5), ls=":", color="#52514e")
+        assi[0].set_title("loss di training (··· a caso: ln 5 = 1,61)")
+        assi[1].plot(c.epoca, c.test, marker="o", color="#eb6834"); assi[1].set_ylim(0, 0.5)
+        assi[1].set_title("F1 sul fold di test, dopo ogni epoca")
+        for a in assi:
+            a.set_xlabel("epoca")
+        plt.tight_layout(); plt.savefig(OUT / "diagnostica.png", dpi=180, bbox_inches="tight"); plt.show()
+else:
+    print("la diagnostica non c'è ancora")'''),
 ], "06_confronto.ipynb")
