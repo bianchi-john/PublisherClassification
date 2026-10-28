@@ -516,6 +516,12 @@ differenze_v'''),
   sì/no 0,83), quindi le due rappresentazioni vedono cose in parte diverse.
 - **L'istruzione sullo stile non aiuta**: stessi valori o un po' meno (un vettore per testata: 0,35 contro 0,44). Spingere
   il vettore lontano dall'argomento toglie segnale, come nelle analisi del tentativo 15 (argomento e geografia pesano).
+- **Mistral-Small 24B** (un LLM tre volte più grande, notebook 8) arriva dove arriva l'8B: F1 sui 5 livelli 0,40–0,44
+  (strato 27), tolerant fino a 0,88, affidabile sì/no fino a 0,82. Un lettore più grande non sposta i numeri: siamo vicini
+  al tetto che le etichette permettono (vedi il tentativo 17, accordo con gli esperti).
+- **Il voto degli articoli** (punto 5) cambia poco: per i classificatori è lo stesso; per le regressioni l'F1 sui 5 livelli
+  scende un po' (la media dei punteggi tiene più informazione del voto), mentre affidabile sì/no resta uguale o sale di
+  poco (TF-IDF + 8B: 0,83).
 - Cautela: le varianti sono state confrontate sul test; per il paper va fissata prima una variante e le altre vanno
   presentate come analisi."""),
 ], "07_analisi_embedding.ipynb")

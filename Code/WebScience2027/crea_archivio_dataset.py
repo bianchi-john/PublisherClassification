@@ -17,6 +17,7 @@ FILE = ["LEGGIMI.md",
         "risorse/lessici/mfd2.0.dic",
         "risorse/lessici/NRC-Emotion-Lexicon/NRC-Emotion-Lexicon-Wordlevel-v0.92.txt",
         "risorse/lessici/NRC-VAD-Lexicon/OneFilePerDimension/arousal-NRC-VAD-Lexicon.txt",
+        "tentativi/10_EtichetteMBFC/mbfc_pulito.csv",                     # MBFC (tentativo 17)
         "tentativi/12_PiuTestatePolitiche/derived/disconnect_services.json",
         "tentativi/14_DatasetRipensatoChunk/articoli.csv.gz", "tentativi/14_DatasetRipensatoChunk/testate.csv",
         "tentativi/16_DataPreparation/articoli.csv.gz", "tentativi/16_DataPreparation/testate.csv",

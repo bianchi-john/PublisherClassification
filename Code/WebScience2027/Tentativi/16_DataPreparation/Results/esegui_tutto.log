@@ -35,3 +35,8 @@
 2026-10-28 12:14:52  punti 1-2 finiti (exit 0)
 2026-10-28 14:16:21  >>> 7. analisi degli embedding (circa 30 min, solo CPU)
 2026-10-28 14:22:47  <<< FINITO
+2026-10-28 17:17:03  ================ notte: Mistral-Small 24B e voto degli articoli
+2026-10-28 17:17:03  >>> 8. Mistral-Small 24B, strati 27 e 40 (circa 4 ore; tentativo 1/3)
+2026-10-28 21:36:00  Mistral finito
+2026-10-28 21:36:00  >>> 7. analisi degli embedding con Mistral e con il voto degli articoli (circa 20 minuti)
+2026-10-28 21:52:46  <<< FINITO
