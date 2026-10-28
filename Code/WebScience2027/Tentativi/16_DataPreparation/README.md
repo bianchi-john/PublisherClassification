@@ -52,7 +52,12 @@ Sono salvati **già eseguiti**, con tutti gli output. Il 4 ha gli output degli e
    misura, le baseline), le differenze dal TF-IDF con i loro intervalli, e la loss di ModernBERT epoca per epoca
    accanto al test.
 
-Le parti comuni sono in `funzioni.py`, sezioni 10–14. `costruisci_notebook.py` rigenera i notebook 3–6.
+7. `07_analisi_embedding.ipynb`: come migliorare l'embedding 8B congelato senza toccarlo: il parametro del modello
+   lineare scelto con una cross-validation interna al training, un vettore per testata (anche con la regressione
+   ordinale), TF-IDF + embedding, e un'altra istruzione (sullo stile). Si lancia con `esegui_07.sh`, che prima calcola
+   gli embedding con la nuova istruzione (circa 2 ore di GPU).
+
+Le parti comuni sono in `funzioni.py`, sezioni 10–15. `costruisci_notebook.py` rigenera i notebook 3–6.
 `esegui_tutto.sh` lancia tutto in fila sul server: 1–3 in circa 15 minuti, embedding 0,6B circa 15 minuti, 8B circa
 2 ore, ModernBERT circa 13 ore (2 configurazioni × 5 fold × 5 epoche, circa 15 minuti a epoca su una V100).
 

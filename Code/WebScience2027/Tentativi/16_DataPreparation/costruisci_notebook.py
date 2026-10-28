@@ -105,12 +105,13 @@ MAX_TOKEN = 2304                            # 2.048 per l'articolo più l'istruz
 BATCH = 8
 ISTRUZIONE = "Represent this news article to judge the reliability and journalistic standards of the outlet that published it"
 GB_GPU = 20                                 # memoria GPU libera necessaria per partire
-PROVA = 0                                   # > 0: solo quel numero di articoli per testata (prova veloce, in Results/prova)'''),
+PROVA = 0                                   # > 0: solo quel numero di articoli per testata (prova veloce, in Results/prova)
+ETICHETTA = ""                              # se c'è, i risultati vanno in Results/embedding/<modello>_<etichetta> (per un'altra istruzione)'''),
     code(SETUP.format(nome="embedding") + '''
 import time
 if PROVA:
     art = art.groupby("domain").head(PROVA).reset_index(drop=True); OUT = Path("Results/prova/embedding"); print(f"PROVA: {len(art):,} articoli")
-NOME = MODELLO.split("/")[-1]
+NOME = MODELLO.split("/")[-1] + (f"_{ETICHETTA}" if ETICHETTA else "")
 OUT = OUT / NOME; OUT.mkdir(parents=True, exist_ok=True)
 registra = lambda m: print(time.strftime("%H:%M:%S"), m, flush=True)'''),
     md("## 1. Gli embedding\nUna volta sola, senza etichette; si salvano. Con lo 0,6B circa 15 minuti, con l'8B circa 2–3 ore (sulla V100)."),
@@ -295,3 +296,164 @@ articolo eredita il livello della sua testata, quindi il modello impara a ricono
 un segnale che vale per testate nuove. Più epoche non servirebbero: nella diagnostica il test si ferma a 0,30 dalla 4ª
 epoca, e per fold ModernBERT e TF-IDF si alternano."""),
 ], "06_confronto.ipynb")
+
+# ------------------------------------------------------------------------------------------------ 7. analisi degli embedding
+notebook([
+    md("""# Tentativo 16 · 7. Analisi degli embedding
+
+L'embedding **Qwen3-Embedding-8B congelato** con un modello lineare è il primo modello sopra il TF-IDF (notebook 6). Qui
+proviamo a migliorarlo senza toccare il modello di embedding:
+1. **il parametro del modello lineare scelto dentro il training**: nel notebook 4 C = 10 e alpha = 1 erano fissi;
+2. **altri modi di mettere insieme**: un vettore per testata (la media dei suoi articoli) invece del voto degli
+   articoli, la regressione **ordinale** (i livelli sono in ordine), e **TF-IDF + embedding** (la media delle due previsioni);
+3. **un'altra istruzione** per l'embedding: sullo stile invece che sull'affidabilità.
+
+**Regola**: ogni scelta si fa dentro il training di ogni fold, con una cross-validation interna sulle testate di
+training (3 fold, testate mai divise); il fold di test non entra mai nella scelta. Stessi 5 fold di tutto il tentativo."""),
+    code('''EMBEDDING = "Results/embedding/Qwen3-Embedding-8B"              # gli embedding del notebook 4 (istruzione sull'affidabilità)
+ALTRA = "Results/embedding/Qwen3-Embedding-8B_stile"            # punto 3: gli stessi con l'istruzione sullo stile
+INTERNI = 3                                                     # fold della cross-validation interna
+N_JOBS = 32'''),
+    code('''import warnings
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+import funzioni as F
+
+warnings.filterwarnings("ignore")
+OUT = Path("Results/analisi_embedding"); OUT.mkdir(parents=True, exist_ok=True)
+art = pd.read_csv("Results/dataset/articoli.csv.gz")
+t = pd.read_csv("Results/dataset/testate.csv", index_col="domain")
+
+
+def leggi(cartella):
+    """Gli embedding salvati dal notebook 4, se ci sono e sono di questo dataset."""
+    f, f_id = Path(cartella) / "embedding.npy", Path(cartella) / "embedding_article_id.npy"
+    if f.exists() and f_id.exists() and np.array_equal(np.load(f_id), art.article_id.to_numpy()):
+        return np.load(f)
+
+
+def calcola(nome, funzione):
+    """Le previsioni e la griglia di una variante: si calcolano una volta, poi si rileggono."""
+    f, g = OUT / f"{nome}_previsioni.csv", OUT / f"{nome}_griglia.csv"
+    if not (f.exists() and g.exists()):
+        pa, griglia = funzione(); pa.to_csv(f, index=False); griglia.to_csv(g, index=False)
+    return pd.read_csv(f), pd.read_csv(g)
+
+
+E = leggi(EMBEDDING)
+T = {"TF-IDF": pd.read_csv("Results/feature/previsioni_testate.csv", index_col=0),
+     "8B come nel notebook 4 (C=10, alpha=1)": pd.read_csv(Path(EMBEDDING) / "previsioni_testate.csv", index_col=0)}
+print(f"{len(art):,} articoli di {len(t)} testate · embedding {E.shape[1]} dimensioni")'''),
+    md("""## 1. Il parametro scelto dentro il training
+
+Per ogni fold, la cross-validation interna prova cinque valori: C della logistica (5 classi) da 0,001 a 10, alpha della
+ridge (regressione) da 1 a 10.000. Criterio: F1 sui 5 livelli delle testate di validazione (voto degli articoli) per la
+logistica, correlazione di Spearman tra punteggio vero e medio previsto per la ridge. Poi il modello si riaddestra su
+tutto il training con il valore migliore. Circa 15 minuti la prima volta."""),
+    code('''pa1, g1 = calcola("articoli", lambda: F.modelli_scelti(E, art, interni=INTERNI, n_jobs=N_JOBS))
+F.grafico_griglia(g1, "1. Embedding 8B, un vettore per articolo", OUT / "griglia_articoli.png")
+T["8B, parametro scelto"] = F.testate_da_previsioni(pa1, t)'''),
+    md("""## 2. Altri modi di mettere insieme
+
+- **Un vettore per testata**: la media dei vettori dei suoi articoli; il modello lineare impara sulle testate (circa
+  180 per fold) invece che sugli articoli, quindi niente voto. Tre modelli: 5 classi, **ordinale** (quattro logistiche
+  «livello ≥ l2», «≥ l3»…, Frank e Hall 2001) e regressione, ognuno con il parametro scelto come al punto 1.
+- **TF-IDF + 8B**: per ogni articolo la media delle probabilità (5 classi) o dei punteggi (regressione) del TF-IDF del
+  notebook 3 e dell'8B del punto 1, con pesi uguali fissati prima (nessuna scelta sul test)."""),
+    code('''M, righe = F.media_per_testata(E, art)
+pa2, g2 = calcola("testate", lambda: F.modelli_scelti(M, righe, tipi=("5 classi", "ordinale", "regressione"), interni=INTERNI, n_jobs=N_JOBS))
+F.grafico_griglia(g2, "2. Embedding 8B, un vettore per testata", OUT / "griglia_testate.png")
+T["8B, un vettore per testata"] = F.testate_da_previsioni(pa2, t)
+T["8B, un vettore per testata, ordinale"] = F.testate_da_previsioni(pa2, t, ordinale=True)
+
+tfidf = pd.read_csv("Results/feature/previsioni_articoli.csv").set_index("article_id")
+insieme = pa1.set_index("article_id")
+colonne = F.CLASSI + ["s_regressione"]
+insieme[colonne] = (insieme[colonne] + tfidf.loc[insieme.index, colonne]) / 2
+T["TF-IDF + 8B (media)"] = F.testate_da_previsioni(insieme.reset_index(), t)'''),
+    md("""## 3. Un'altra istruzione
+
+Qwen3-Embedding legge l'articolo preceduto da un'istruzione che dice a che cosa serve il vettore. Nel notebook 4:
+*"Represent this news article to judge the reliability and journalistic standards of the outlet that published it"*.
+Qui: *"Represent the writing style, tone, sourcing and rigor of this news article, regardless of its topic"*, per
+spingere il vettore verso **come** è scritto l'articolo invece che **di che cosa** parla. Gli embedding si calcolano con il
+notebook 4 (`ETICHETTA = "stile"`, circa 2 ore di GPU); sopra, gli stessi modelli dei punti 1 e 2."""),
+    code('''E2 = leggi(ALTRA)
+if E2 is None:
+    print("gli embedding con l'istruzione sullo stile non ci sono ancora")
+else:
+    T["8B «stile» come nel notebook 4 (C=10, alpha=1)"] = pd.read_csv(Path(ALTRA) / "previsioni_testate.csv", index_col=0)
+    pa3, g3 = calcola("stile_articoli", lambda: F.modelli_scelti(E2, art, interni=INTERNI, n_jobs=N_JOBS))
+    T["8B «stile», parametro scelto"] = F.testate_da_previsioni(pa3, t)
+    M2, _ = F.media_per_testata(E2, art)
+    pa4, g4 = calcola("stile_testate", lambda: F.modelli_scelti(M2, righe, tipi=("5 classi", "ordinale", "regressione"), interni=INTERNI, n_jobs=N_JOBS))
+    T["8B «stile», un vettore per testata"] = F.testate_da_previsioni(pa4, t)
+    T["8B «stile», un vettore per testata, ordinale"] = F.testate_da_previsioni(pa4, t, ordinale=True)
+    F.grafico_griglia(pd.concat([g3.assign(tipo=g3.tipo + ", articoli"), g4.assign(tipo=g4.tipo + ", testate")]),
+                      "3. Embedding 8B con l'istruzione sullo stile", OUT / "griglia_stile.png")'''),
+    md("""## 4. Tutti i risultati insieme
+
+Qui ci sono anche i modelli dei notebook 3–5, per avere tutto in un posto solo:
+
+| nel grafico | che cos'è |
+|---|---|
+| TF-IDF | parole e coppie di parole, logistica/ridge (notebook 3): il riferimento |
+| ModernBERT | ModernBERT-base addestrato, 5 epoche, articoli interi (notebook 5) |
+| Qwen3 0,6B / 8B | embedding congelati con l'istruzione sull'affidabilità, C = 10 e alpha = 1 fissi (notebook 4) |
+| parametro scelto | come sopra, ma C e alpha scelti dentro il training (punto 1) |
+| un vettore per testata | la media dei vettori degli articoli, il modello impara sulle testate (punto 2) |
+| ordinale | come sopra, con la regressione ordinale invece delle 5 classi (punto 2) |
+| TF-IDF + 8B | la media delle previsioni dei due modelli (punto 2) |
+| «stile» | gli stessi modelli 8B con l'istruzione sullo stile (punto 3) |
+
+Le misure sono quelle del notebook 6: **F1** sui 5 livelli, **tolerant ±1** (giusto o sbagliato di un livello),
+**affidabile sì/no** (punteggio ≥ 60) su tutte le testate e solo su l1–l2 contro l4–l5. In blu la classificazione a 5
+classi, in arancio la regressione sul punteggio; linee grigie: intervalli al 95% (bootstrap sulle testate)."""),
+    code("""TUTTI = {"TF-IDF": T["TF-IDF"],
+         "ModernBERT 2048": pd.read_csv("Results/modernbert/previsioni_testate.csv", index_col=0),
+         "Embedding Qwen3 0.6B": pd.read_csv("Results/embedding/Qwen3-Embedding-0.6B/previsioni_testate.csv", index_col=0)}
+TUTTI.update({nome: v for nome, v in T.items() if nome != "TF-IDF"})
+AFF, STI = "istruzione sull'affidabilità", "istruzione sullo stile"
+DESCRIZIONI = {
+    "TF-IDF": "TF-IDF\\nparole e coppie di parole\\n+ logistica / ridge (C=10, alpha=1)",
+    "ModernBERT 2048": "ModernBERT-base, addestrato\\n5 epoche · lr 3e-5\\narticoli interi (2.048 token)",
+    "Embedding Qwen3 0.6B": f"Qwen3-Embedding 0,6B congelato\\n{AFF}\\n+ logistica / ridge (C=10, alpha=1)",
+    "8B come nel notebook 4 (C=10, alpha=1)": f"Qwen3-Embedding 8B congelato\\n{AFF}\\n+ logistica / ridge (C=10, alpha=1)",
+    "8B, parametro scelto": f"Qwen3 8B, {AFF}\\nun vettore per articolo\\nC e alpha scelti nel training",
+    "8B, un vettore per testata": f"Qwen3 8B, {AFF}\\nun vettore per testata (media)\\nC e alpha scelti nel training",
+    "8B, un vettore per testata, ordinale": f"Qwen3 8B, {AFF}\\nun vettore per testata\\nregressione ordinale, C scelto",
+    "TF-IDF + 8B (media)": "TF-IDF + Qwen3 8B (parametro scelto)\\nmedia delle due previsioni\\nper ogni articolo",
+    "8B «stile» come nel notebook 4 (C=10, alpha=1)": f"Qwen3-Embedding 8B congelato\\n{STI}\\n+ logistica / ridge (C=10, alpha=1)",
+    "8B «stile», parametro scelto": f"Qwen3 8B, {STI}\\nun vettore per articolo\\nC e alpha scelti nel training",
+    "8B «stile», un vettore per testata": f"Qwen3 8B, {STI}\\nun vettore per testata (media)\\nC e alpha scelti nel training",
+    "8B «stile», un vettore per testata, ordinale": f"Qwen3 8B, {STI}\\nun vettore per testata\\nregressione ordinale, C scelto"}
+NOTA = ("Addestramento: sui 4 fold di training, tutte le testate (l1…l5, anche le l3). Test: le testate del fold escluso, "
+        "una previsione per testata (voto o media dei suoi articoli; con «un vettore per testata»\\nla previsione è già per "
+        "testata). «Scelti nel training»: con una cross-validation interna alle testate di training, senza guardare il test. "
+        "Baseline: chi risponde sempre allo stesso modo, senza leggere i testi.")
+valori, intervalli, differenze, vero = F.misure_modelli(TUTTI)
+valori.to_csv(OUT / "confronto.csv")
+F.grafico_confronto(valori, intervalli, vero, OUT / "confronto.png")"""),
+    md("### Lo stesso grafico, con i dettagli\nAccanto ai nomi che cosa è ogni modello, nei titoli su quali testate si misura, sotto come si addestra e come si testa."),
+    code('F.grafico_confronto(valori, intervalli, vero, OUT / "confronto_dettagli.png", dettagli=True, descrizioni=DESCRIZIONI, nota=NOTA)'),
+    md("### In numeri\nIn alto i valori; sotto la differenza da TF-IDF con la stessa impostazione (è chiara se l'intervallo non contiene lo zero)."),
+    code("""display(valori.round(3))
+differenze"""),
+    md("""## 5. Che cosa viene fuori
+
+- **Scegliere il parametro dentro il training aiuta**: con C e alpha scelti, l'8B batte il TF-IDF sui 5 livelli in modo
+  chiaro (F1 0,41 contro 0,33, intervallo della differenza da +0,02 a +0,15). La ridge sceglie quasi sempre alpha =
+  1.000 (nel notebook 4 era 1): la regressione sale da 0,31 a 0,34. La C della logistica invece cambia molto tra i fold.
+- **Un vettore per testata** è il migliore sui 5 livelli: F1 0,44 (+0,11 sul TF-IDF, da +0,03 a +0,19); l'ordinale non
+  aggiunge nulla.
+- **TF-IDF + 8B** è il più equilibrato: migliore del TF-IDF su tutte e quattro le misure (tolerant 0,88, affidabile
+  sì/no 0,83), quindi le due rappresentazioni vedono cose in parte diverse.
+- **L'istruzione sullo stile non aiuta**: stessi valori o un po' meno (un vettore per testata: 0,35 contro 0,44). Spingere
+  il vettore lontano dall'argomento toglie segnale, come nelle analisi del tentativo 15 (argomento e geografia pesano).
+- Cautela: le varianti sono state confrontate sul test; per il paper va fissata prima una variante e le altre vanno
+  presentate come analisi."""),
+], "07_analisi_embedding.ipynb")

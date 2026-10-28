@@ -29,3 +29,9 @@
 2026-10-28 08:46:18  >>> 4. embedding 8B (circa 2-3 ore)
 2026-10-28 10:58:32  >>> 6. confronto finale
 2026-10-28 10:59:41  <<< FINITO
+2026-10-28 12:05:54  ================ analisi degli embedding, istruzione «stile»: Represent the writing style, tone, sourcing and rigor of this news article, regardless of its topic
+2026-10-28 12:05:54  >>> 4. embedding 8B con l'istruzione «stile» (circa 2 ore)
+2026-10-28 12:09:47  >>> 7. analisi degli embedding, punti 1-2 (in parallelo, solo CPU)
+2026-10-28 12:14:52  punti 1-2 finiti (exit 0)
+2026-10-28 14:16:21  >>> 7. analisi degli embedding (circa 30 min, solo CPU)
+2026-10-28 14:22:47  <<< FINITO

@@ -978,10 +978,11 @@ DESCRIZIONI = {"TF-IDF": "TF-IDF\nparole e coppie di parole (1–2 grammi)\n+ lo
                "ModernBERT 2048": "ModernBERT-base, addestrato\n5 epoche · lr 3e-5 · batch 32\narticoli interi (2.048 token)"}
 
 
-def grafico_confronto(valori, intervalli, vero, file, dettagli=False):
+def grafico_confronto(valori, intervalli, vero, file, dettagli=False, descrizioni=None, nota=None):
     """Un grafico per tutto il confronto: una riga per modello, in blu la classificazione a 5 classi e in arancio la
     regressione; quattro misure, con i valori sulle barre e gli intervalli al 95%. Con `dettagli` accanto ai nomi c'è che
-    cosa è ogni modello, i titoli dicono su quali testate si misura, e sotto c'è come si addestra e come si testa."""
+    cosa è ogni modello (`descrizioni`, altrimenti DESCRIZIONI), i titoli dicono su quali testate si misura, e sotto c'è
+    come si addestra e come si testa (`nota`, altrimenti quella del notebook 6)."""
     import matplotlib.pyplot as plt
     BLU, ARANCIO, GRIGIO = "#2a78d6", "#eb6834", "#52514e"
     modelli = list(dict.fromkeys(m for m, _ in valori.index))
@@ -1002,7 +1003,8 @@ def grafico_confronto(valori, intervalli, vero, file, dettagli=False):
                        "binario, estreme": (affidabili_estreme, "sempre «affidabile»")}
         titoli = {}
     with plt.rc_context(STILE_GRAFICI):
-        fig, assi = plt.subplots(1, 4, figsize=(18, (1.45 if dettagli else 1.2) * len(modelli) + 1.6), sharey=True)
+        h = (1.45 if dettagli else 1.2) * len(modelli) + 1.6                    # altezza in pollici; le distanze sotto sono fisse
+        fig, assi = plt.subplots(1, 4, figsize=(18, h), sharey=True)
         for ax, metrica in zip(assi, ["F1 5 livelli", "tolerant ±1", "binario, tutte", "binario, estreme"]):
             for dy, imp, colore in [(0.19, "5 classi", BLU), (-0.19, "regressione", ARANCIO)]:
                 for yy, m in zip(y, modelli):
@@ -1017,12 +1019,13 @@ def grafico_confronto(valori, intervalli, vero, file, dettagli=False):
                 r, nome_r = riferimenti[metrica]; ax.axvline(r, color=GRIGIO, ls=":", lw=1); titolo += f"\n··· {nome_r}: {r:.2f}"
             ax.set_title(titolo, fontsize=9.5 if dettagli else 10); ax.set_xlim(0, 1.08); ax.grid(False); ax.grid(axis="x")
             ax.set_xticks([0, 0.25, 0.5, 0.75, 1]); ax.set_xticklabels(["0", "", "0,5", "", "1"])
-        assi[0].set_yticks(y, [DESCRIZIONI.get(m, m) for m in modelli] if dettagli else modelli, fontsize=9.5 if dettagli else 10.5)
+        descrizioni = descrizioni or DESCRIZIONI
+        assi[0].set_yticks(y, [descrizioni.get(m, m) for m in modelli] if dettagli else modelli, fontsize=9.5 if dettagli else 10.5)
         fig.legend([plt.Rectangle((0, 0), 1, 1, color=c) for c in [BLU, ARANCIO]],
                    ["classificazione a 5 classi", "regressione sul punteggio (livelli con le quote del training; affidabile = ≥ 60)"],
-                   ncol=2, loc="lower center", bbox_to_anchor=(0.5, -0.06 if not dettagli else -0.05), fontsize=9.5)
+                   ncol=2, loc="lower center", bbox_to_anchor=(0.5, -(0.37 if dettagli else 0.384) / h), fontsize=9.5)
         if dettagli:
-            fig.text(0.01, -0.075,
+            fig.text(0.01, -0.555 / h, nota or
                      "Addestramento: sempre su tutti gli articoli di tutte le testate dei 4 fold di training (l1…l5, anche le l3). "
                      "Test: le testate del fold escluso, una previsione per testata\n(classificazione: voto dei suoi articoli; "
                      "regressione: media dei punteggi previsti). Ogni testata è nel test una volta sola. "
@@ -1030,7 +1033,8 @@ def grafico_confronto(valori, intervalli, vero, file, dettagli=False):
                      fontsize=8.5, color=GRIGIO, va="top")
         fig.suptitle(f"TF-IDF contro transformer · {len(vero)} testate politiche · 5 fold · linee grigie: intervalli al 95%",
                      fontsize=12.5, fontweight="bold", x=0.01, ha="left")
-        plt.tight_layout(); plt.savefig(file, dpi=180, bbox_inches="tight"); plt.show()
+        plt.tight_layout(rect=(0, 0, 1, 1 - 0.75 / h) if h > 8 else None)    # figure alte: spazio fisso per il titolo
+        plt.savefig(file, dpi=180, bbox_inches="tight"); plt.show()
 
 
 # ===================================================================================== 14. la loss di ModernBERT epoca per epoca (tentativo 16)
@@ -1143,3 +1147,122 @@ def grafico_loss_epoche(L, per_fold, diagnostica, file):
         fig.suptitle("ModernBERT epoca per epoca: impara il training quasi a memoria, ma sulle testate nuove non va oltre il TF-IDF",
                      fontsize=12.5, fontweight="bold", x=0.01, ha="left")
         plt.tight_layout(); plt.savefig(file, dpi=180, bbox_inches="tight"); plt.show()
+
+
+# ===================================================================================== 15. analisi degli embedding (tentativo 16, notebook 7)
+GRIGLIE = {"5 classi": (0.001, 0.01, 0.1, 1, 10), "ordinale": (0.001, 0.01, 0.1, 1, 10),   # C della logistica
+           "regressione": (1, 10, 100, 1_000, 10_000)}                                      # alpha della ridge
+
+
+def media_per_testata(E, art):
+    """Un vettore per testata: la media dei vettori dei suoi articoli. Ritorna i vettori e una riga per testata."""
+    righe = art.groupby("domain", sort=True).agg(label=("label", "first"), score=("score", "first"), fold=("fold", "first")).reset_index()
+    pos = pd.Series(np.arange(len(righe)), index=righe.domain)
+    M = np.zeros((len(righe), E.shape[1]), dtype=np.float32)
+    np.add.at(M, pos[art.domain].to_numpy(), E)
+    return M / art.domain.value_counts().reindex(righe.domain).to_numpy()[:, None], righe
+
+
+def _adatta(tipo, valore, A, y, s):
+    """Un modello lineare su righe già standardizzate; ritorna la funzione che prevede: probabilità dei 5 livelli
+    (5 classi; ordinale, con 4 logistiche «livello ≥ k» alla Frank e Hall 2001) o il punteggio (regressione)."""
+    from sklearn.linear_model import LogisticRegression, Ridge
+    if tipo == "regressione":
+        m = Ridge(alpha=valore).fit(A, s)
+        return lambda B: m.predict(B)
+    if tipo == "5 classi":
+        m = LogisticRegression(C=valore, max_iter=3000).fit(A, y, sample_weight=pesi_bilanciati(y, np.ones(len(y))))
+
+        def prob(B):
+            P = np.zeros((B.shape[0], 5)); P[:, m.classes_] = m.predict_proba(B); return P
+        return prob
+    soglie = [LogisticRegression(C=valore, max_iter=3000).fit(A, y >= k, sample_weight=pesi_bilanciati(y >= k, np.ones(len(y))))
+              for k in range(1, 5)]
+
+    def prob_ordinale(B):
+        sopra = np.column_stack([np.ones(B.shape[0])] + [m.predict_proba(B)[:, 1] for m in soglie] + [np.zeros(B.shape[0])])
+        sopra = np.minimum.accumulate(sopra, axis=1)                       # P(livello ≥ k) non può crescere con k
+        return sopra[:, :-1] - sopra[:, 1:]
+    return prob_ordinale
+
+
+def _misura_interna(tipo, previsione, dom, y, s):
+    """Il criterio della scelta, sulle testate di validazione: F1 sui 5 livelli (voto degli articoli) o correlazione di
+    Spearman tra punteggio vero e medio previsto."""
+    from scipy.stats import spearmanr
+    from sklearn.metrics import f1_score
+    if tipo == "regressione":
+        g = pd.DataFrame({"d": dom, "s": s, "p": previsione}).groupby("d").mean()
+        return spearmanr(g.s, g.p).correlation
+    g = pd.DataFrame({"d": dom, "y": y, "p": previsione.argmax(1)}).groupby("d").agg(y=("y", "first"), p=("p", voto))
+    return f1_score(g.y, g.p, average="macro", labels=range(5), zero_division=0)
+
+
+def _lavoro(X, y, s, dom, tr, te, tipo, valore, misura):
+    from sklearn.preprocessing import StandardScaler
+    sc = StandardScaler().fit(X[tr])
+    prevedi = _adatta(tipo, valore, sc.transform(X[tr]), y[tr], s[tr])
+    p = prevedi(sc.transform(X[te]))
+    return _misura_interna(tipo, p, dom[te], y[te], s[te]) if misura else p
+
+
+def modelli_scelti(X, righe, tipi=("5 classi", "regressione"), interni=3, n_jobs=32):
+    """Modelli lineari con il parametro scelto dentro il training. `righe` (una per riga di X: articoli o testate) ha
+    domain, label, score, fold. Per ogni fold esterno: una cross-validation interna sulle testate di training (`interni`
+    fold stratificati per livello, le testate mai divise) prova ogni valore della griglia; si tiene il valore con la
+    misura media migliore e si riaddestra su tutto il training. Il fold di test non entra mai nella scelta.
+    Ritorna le previsioni per le righe di test (CLASSI o CLASSI dell'ordinale, s_regressione) e la tabella della scelta."""
+    from joblib import Parallel, delayed
+    from sklearn.model_selection import StratifiedGroupKFold
+    y, s, dom, fold = righe.label.to_numpy(), righe.score.to_numpy(), righe.domain.to_numpy(), righe.fold.to_numpy()
+    lavori = []
+    for k in range(1, 6):
+        tr = np.where(fold != k)[0]
+        for j, (a, b) in enumerate(StratifiedGroupKFold(interni, shuffle=True, random_state=SEED).split(tr, y[tr], dom[tr])):
+            lavori += [(k, j, tipo, v, tr[a], tr[b]) for tipo in tipi for v in GRIGLIE[tipo]]
+    misure = Parallel(n_jobs=n_jobs)(delayed(_lavoro)(X, y, s, dom, a, b, tipo, v, True) for k, j, tipo, v, a, b in lavori)
+    griglia = pd.DataFrame([(k, j, tipo, v, m) for (k, j, tipo, v, _, _), m in zip(lavori, misure)],
+                           columns=["fold", "interno", "tipo", "valore", "misura"])
+    media = griglia.groupby(["fold", "tipo", "valore"]).misura.mean().reset_index()
+    scelte = media.loc[media.groupby(["fold", "tipo"]).misura.idxmax()].set_index(["fold", "tipo"])
+    finali = [(k, tipo, scelte.loc[(k, tipo), "valore"]) for k in range(1, 6) for tipo in tipi]
+    prev = Parallel(n_jobs=n_jobs)(delayed(_lavoro)(X, y, s, dom, np.where(fold != k)[0], np.where(fold == k)[0], tipo, v, False)
+                                   for k, tipo, v in finali)
+    pezzi = []
+    for k in range(1, 6):
+        te = np.where(fold == k)[0]
+        out = righe.iloc[te][["domain"] + (["article_id"] if "article_id" in righe else [])].reset_index(drop=True)
+        for (kk, tipo, _), p in zip(finali, prev):
+            if kk != k:
+                continue
+            if tipo == "regressione":
+                out["s_regressione"] = p
+            else:
+                out[[c if tipo == "5 classi" else f"ordinale_{c}" for c in CLASSI]] = p
+        pezzi.append(out)
+    return pd.concat(pezzi, ignore_index=True), media
+
+
+def testate_da_previsioni(pa, t, ordinale=False):
+    """Come `testate_da_articoli`, anche per previsioni già per testata (una riga per testata) e per l'ordinale."""
+    if ordinale:
+        pa = pa.drop(columns=[c for c in CLASSI + ["s_regressione"] if c in pa]).rename(columns={f"ordinale_{c}": c for c in CLASSI})
+    return testate_da_articoli(pa, t)
+
+
+def grafico_griglia(medie, titolo, file):
+    """La scelta del parametro: per ogni tipo di modello la misura media della cross-validation interna per ogni valore
+    della griglia, una linea per fold esterno."""
+    import matplotlib.pyplot as plt
+    tipi = list(dict.fromkeys(medie.tipo))
+    with plt.rc_context(STILE_GRAFICI):
+        fig, assi = plt.subplots(1, len(tipi), figsize=(4.6 * len(tipi), 3.2), squeeze=False)
+        for ax, tipo in zip(assi[0], tipi):
+            m = medie[medie.tipo == tipo]
+            for k, g in m.groupby("fold"):
+                ax.plot(g.valore, g.misura, marker="o", lw=1.2, color="#2a78d6", alpha=0.6)
+                b = g.loc[g.misura.idxmax()]; ax.scatter(b.valore, b.misura, s=60, color="#eb6834", zorder=3)
+            ax.set_xscale("log"); ax.set_xlabel("alpha della ridge" if tipo == "regressione" else "C della logistica")
+            ax.set_title(f"{tipo}: " + ("Spearman" if tipo == "regressione" else "F1 5 livelli") + " sulla validazione interna")
+        fig.suptitle(titolo + " · una linea per fold · ● il valore scelto", fontsize=11, fontweight="bold", x=0.01, ha="left")
+        plt.tight_layout(); plt.savefig(file, dpi=160, bbox_inches="tight"); plt.show()

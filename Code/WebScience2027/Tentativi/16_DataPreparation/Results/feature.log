@@ -1,0 +1,5 @@
+Input Notebook:  03_feature.ipynb
+Output Notebook: Results/03_feature_eseguito.ipynb
+Executing:   0%|          | 0/12 [00:00<?, ?cell/s][IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+Executing notebook with kernel: johnvenv
+Executing:   8%|▊         | 1/12 [00:00<00:07,  1.41cell/s]Executing:  17%|█▋        | 2/12 [00:08<00:46,  4.62s/cell]Executing:  33%|███▎      | 4/12 [00:08<00:14,  1.77s/cell]Executing:  50%|█████     | 6/12 [00:08<00:06,  1.08s/cell]Executing:  67%|██████▋   | 8/12 [00:10<00:03,  1.11cell/s]Executing:  83%|████████▎ | 10/12 [00:11<00:01,  1.09cell/s]Executing: 100%|██████████| 12/12 [00:12<00:00,  1.07s/cell]

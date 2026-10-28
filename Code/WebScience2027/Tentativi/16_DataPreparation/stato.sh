@@ -7,6 +7,8 @@ echo "ora: $(date '+%d/%m %H:%M')"
 if screen -ls | grep -q "\.t16"; then echo "STATO: la catena è IN CORSO"; else echo "STATO: la catena NON è in corso (finita o fermata: vedi sotto)"; fi
 echo; echo "---- passi"; tail -n 12 Results/esegui_tutto.log 2>/dev/null || echo "non ancora partita"
 echo; echo "---- notebook in esecuzione"; tail -c 300 Results/esegui_tutto.out 2>/dev/null | tr '\r' '\n' | grep -v '^$' | tail -n 1
+f=$(ls -t Results/04_embedding_*_eseguito.ipynb 2>/dev/null | head -1)
+[ -n "$f" ] && { echo; echo "---- embedding ($f)"; grep -o '[0-9,]*/[0-9,]* articoli ([0-9]* s)' "$f" | tail -n 1; }
 for f in Results/prova/modernbert/avanzamento.log Results/modernbert/avanzamento.log; do
     [ -f $f ] && { echo; echo "---- $f (ultime righe)"; tail -n 4 $f; }
 done
