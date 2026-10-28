@@ -1,16 +1,17 @@
 """Tentativo 12: percorsi e costanti per il dataset solo politici con più testate (etichette NewsGuard 2026).
 
-I dati NewsGuard sono riservati: stanno in ../Dataset (fuori da git) e non si ridistribuiscono. Le credenziali del feed
+I dati NewsGuard sono riservati: stanno in Dataset/ nella radice del repo (fuori da git) e non si ridistribuiscono. Le credenziali del feed
 S3 non stanno nel repository: si usano con il profilo AWS "newsguard" di chi lancia (~/.aws/credentials).
 """
 from pathlib import Path
 
 import pandas as pd
 
-DATASET = Path("../Dataset")
+DATI = Path("../../../../../Dataset")             # la cartella unica dei dati, nella radice del repo
+DATASET = DATI / "tentativi" / "12_PiuTestatePolitiche"
 RESULTS = Path("../Results/2-dataset")
-NG2026 = DATASET / "newsguard_2026.csv"
-NG2022 = DATASET / "newsguard_2022.csv"
+NG2026 = DATI / "etichette" / "newsguard_2026.csv"
+NG2022 = DATI / "etichette" / "newsguard_2022.csv"
 ARTICOLI = DATASET / "NuovoScraping" / "dataset_articoli.csv"
 PULITI = DATASET / "derived" / "01_articoli_puliti.csv"
 LIVELLI = ["l1", "l2", "l3", "l4", "l5"]

@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score
 
-VERS = Path("../Dataset/versioni")
+VERS = Path("../../../../../Dataset/tentativi/02_ScrapingConPagine/versioni")
 RESULTS = Path("../Results/2-classificazione")
 SEED = 42
 CLASSI = ["p_l1", "p_l2", "p_l3", "p_l4", "p_l5"]

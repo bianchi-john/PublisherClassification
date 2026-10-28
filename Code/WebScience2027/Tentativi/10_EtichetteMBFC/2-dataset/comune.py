@@ -2,7 +2,8 @@
 import re
 from pathlib import Path
 
-DATASET = Path("../Dataset")
+DATI = Path("../../../../../Dataset")             # la cartella unica dei dati, nella radice del repo
+DATASET = DATI / "tentativi" / "10_EtichetteMBFC"
 RESULTS = Path("../Results/2-dataset")
 VERSIONI = DATASET / "versioni"
 SEED = 42

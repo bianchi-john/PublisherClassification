@@ -2,7 +2,9 @@
 
 `01_data_preparation.ipynb`: dai dati grezzi al dataset, con regole semplici fissate prima dei risultati.
 Le funzioni stanno in `funzioni.py`, quelle del tentativo 14 più la riestrazione dall'HTML (sezione 9). I dati sono in
-`Dataset/`, fuori da git: sul PC sono link al tentativo 12, sul server sono hardlink.
+`Dataset/` nella radice del repo (fuori da git): lo scraping in `Dataset/scraping/`, NewsGuard 2026 in `Dataset/etichette/`,
+il dataset finale (`articoli.csv.gz`, `testate.csv`, la cache di trafilatura) in `Dataset/tentativi/16_DataPreparation/`.
+`funzioni.py` trova la cartella da solo (`F.DATI`, `F.DATASET`); sul server sta in `~/John/Dataset`.
 
 **Le regole**
 1. Solo testate **politiche**: per NewsGuard 2026 hanno un solo argomento, "Political news or commentary", e un

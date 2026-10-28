@@ -19,8 +19,8 @@ import json; s = json.load(open('$W/Results/esegui_tutto/stato.json'))
 print('  dataset di riserva in uso!' if s.get('riserva') else '  dataset: quello nuovo')
 for n, f in s['fasi'].items(): print(f\"  {n:22s} {f['stato']:20s} {f.get('minuti', '')!s:>7} min\")"
     tail -3 $W/Results/esegui_tutto/esegui_tutto.log | sed 's/^/  /'
-    if [ -f $W/Dataset/NuovoScraping/stato_generale.json ]; then
-        echo "  scraping: $(~/John/johnVenv/bin/python -c "import json; s=json.load(open('$W/Dataset/NuovoScraping/stato_generale.json')); print(s['testate_finite'], 'su', s['testate_totali'], 'testate tentate; ore mancanti stimate', s.get('ore_mancanti_stimate'))")"
+    if [ -f $W/../../../../Dataset/scraping/NuovoScraping/stato_generale.json ]; then
+        echo "  scraping: $(~/John/johnVenv/bin/python -c "import json; s=json.load(open('$W/../../../../Dataset/scraping/NuovoScraping/stato_generale.json')); print(s['testate_finite'], 'su', s['testate_totali'], 'testate tentate; ore mancanti stimate', s.get('ore_mancanti_stimate'))")"
     fi
 fi
 

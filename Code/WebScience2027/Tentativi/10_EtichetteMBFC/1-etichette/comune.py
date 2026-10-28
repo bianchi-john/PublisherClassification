@@ -9,14 +9,15 @@ from pathlib import Path
 import pandas as pd
 import tldextract
 
-DATASET = Path("../Dataset")
+DATI = Path("../../../../../Dataset")             # la cartella unica dei dati, nella radice del repo
+DATASET = DATI / "tentativi" / "10_EtichetteMBFC"
 RESULTS = Path("../Results/1-etichette")
 MBFC_API = DATASET / "mbfc_api_2026-10-23.json"
 MBFC_ESTENSIONE = DATASET / "mbfc_estensione_2026-10-22.json"
-NEWSGUARD = DATASET / "newsguard.csv"
+NEWSGUARD = DATI / "etichette" / "newsguard_2022.csv"
 FINALE = DATASET / "versioni" / "fold_finale.csv"
-TENTATE = DATASET / "NuovoScraping" / "elenco_testate.csv"
-ARTICOLI = DATASET / "NuovoScraping" / "dataset_articoli.csv"
+TENTATE = DATI / "scraping" / "NuovoScraping" / "elenco_testate.csv"
+ARTICOLI = DATI / "scraping" / "NuovoScraping" / "dataset_articoli.csv"
 
 # livelli MBFC dal migliore al peggiore
 FACTUAL = ["Very High", "High", "Mostly Factual", "Mixed", "Low", "Very Low"]

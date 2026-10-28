@@ -2,9 +2,9 @@
 import re
 import pandas as pd
 
-DATASET = "../Dataset/NuovoScraping/dataset_articoli.csv"
-NEWSGUARD = "../Dataset/newsguard.csv"
-DERIVED = "../Dataset/derived/"
+DATASET = "../../../../../Dataset/scraping/NuovoScraping/dataset_articoli.csv"
+NEWSGUARD = "../../../../../Dataset/etichette/newsguard_2022.csv"
+DERIVED = "../../../../../Dataset/tentativi/02_ScrapingConPagine/derived/"
 RESULTS = "../Results/1-data-cleaning/"
 SEED = 42
 LIVELLI = ["l1", "l2", "l3", "l4", "l5"]

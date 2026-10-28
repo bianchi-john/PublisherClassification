@@ -10,7 +10,7 @@ pm() { python -m papermill -k johnvenv "$@"; }
 nota ">>> prova: notebook 1 su 100 testate"
 pm -p TESTATE 100 01_preparazione_dataset.ipynb Results/prova/01_prova.ipynb >> Results/esegui.out 2>&1 || { nota "FERMATO: prova del notebook 1 fallita"; exit 1; }
 nota ">>> prova: notebook 2 sul dataset di prova"
-pm -p DATASET_DIR Results/dataset/prova -p CACHE_DIR Results/prova/cache -p OUT_DIR Results/prova/classificazione \
+pm -p DATASET_DIR prova -p CACHE_DIR Results/prova/cache -p OUT_DIR Results/prova/classificazione \
    02_classificazione.ipynb Results/prova/02_prova.ipynb >> Results/esegui.out 2>&1 || { nota "FERMATO: prova del notebook 2 fallita"; exit 1; }
 
 nota ">>> notebook 1 completo"

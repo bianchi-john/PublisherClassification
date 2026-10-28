@@ -1,6 +1,6 @@
 #!/bin/bash
 # A che punto è il tentativo 12. Sul server: ~/John/Tentativo12/stato.sh (dal PC: ./controlla_server.sh)
-Q="$(cd "$(dirname "$0")" && pwd)"; G=$Q/Dataset/NuovoScraping_giro3; R=$Q/Results/3-classificazione
+Q="$(cd "$(dirname "$0")" && pwd)"; G=$Q/../../../../Dataset/scraping/NuovoScraping_giro3; R=$Q/Results/3-classificazione
 echo "=== ora italiana $(TZ=Europe/Rome date '+%d/%m %H:%M')  (i log usano l'ora UTC del server: 1 ora indietro d'inverno, 2 d'estate)"
 echo; echo "=== screen"; screen -ls | grep -E "t12" || echo "  nessuno: tutto finito (o fermo: guarda le ultime righe qui sotto)"
 echo; echo "=== terzo giro di scraping"

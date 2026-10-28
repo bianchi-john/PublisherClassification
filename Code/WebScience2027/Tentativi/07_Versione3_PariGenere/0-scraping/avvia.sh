@@ -3,7 +3,7 @@
 # Le testate già finite vengono saltate, quindi ogni rilancio riprende da dove era arrivato.
 # Uso (dentro screen):  bash avvia.sh [cartella_output] [processi]
 cd "$(dirname "$0")"
-OUT="${1:-../Dataset/NuovoScraping}"
+OUT="${1:-../../../../../Dataset/scraping/NuovoScraping}"
 PROCESSI="${2:-64}"
 PY="${PYTHON:-$HOME/John/johnVenv/bin/python}"
 mkdir -p "$OUT"

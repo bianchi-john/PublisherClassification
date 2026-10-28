@@ -3,13 +3,13 @@ import re
 
 import pandas as pd
 
-NUOVO = "../Dataset/NuovoScraping/dataset_articoli.csv"                 # scraping di ottobre 2026 (0-scraping)
-VECCHIO = "../Dataset/VecchioScraping/onlyPoliticsAutoScraping.csv"     # scraping di IrForGood (marzo 2025), grezzo
-DATASET = "../Dataset/derived/00_articoli_uniti.csv"                    # i due insieme, dopo 00_unione_dataset
-GREZZI = "../Dataset/NuovoScraping/"          # stato/, html/ del nuovo scraping (l'HTML grezzo sta solo sul server)
-NEWSGUARD = "../Dataset/newsguard.csv"
-DERIVED = "../Dataset/derived/"
-VERSIONI = "../Dataset/versioni/"
+NUOVO = "../../../../../Dataset/scraping/NuovoScraping/dataset_articoli.csv"                 # scraping di ottobre 2026 (0-scraping)
+VECCHIO = "../../../../../Dataset/scraping/VecchioScraping/onlyPoliticsAutoScraping.csv"     # scraping di IrForGood (marzo 2025), grezzo
+DATASET = "../../../../../Dataset/tentativi/04_DueScrapingUniti/derived/00_articoli_uniti.csv"                    # i due insieme, dopo 00_unione_dataset
+GREZZI = "../../../../../Dataset/scraping/NuovoScraping/"          # stato/, html/ del nuovo scraping (l'HTML grezzo sta solo sul server)
+NEWSGUARD = "../../../../../Dataset/etichette/newsguard_2022.csv"
+DERIVED = "../../../../../Dataset/tentativi/04_DueScrapingUniti/derived/"
+VERSIONI = "../../../../../Dataset/tentativi/04_DueScrapingUniti/versioni/"
 RESULTS = "../Results/1-data-cleaning/"
 SEED = 42
 LIVELLI = ["l1", "l2", "l3", "l4", "l5"]

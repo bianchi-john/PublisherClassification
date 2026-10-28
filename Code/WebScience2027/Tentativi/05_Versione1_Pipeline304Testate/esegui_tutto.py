@@ -6,7 +6,7 @@
 - ogni fase ha un tempo massimo; allo scadere si uccide il suo gruppo di processi e si va avanti;
 - ogni fase finita lascia un segno in Results/esegui_tutto/: se lo script viene rilanciato la salta;
 - se la costruzione del dataset o la pulizia falliscono, la classificazione usa il dataset di riserva
-  (quello del weekend, 193 testate, Dataset/riserva_weekend/) e il log lo dice chiaramente;
+  (quello del weekend, 193 testate, ../../../../Dataset/tentativi/05_Versione1_Pipeline304Testate/riserva_weekend/) e il log lo dice chiaramente;
 - la classificazione è 2-classificazione/coda_weekend.py, che ha già i suoi tentativi e i suoi tempi massimi;
 - log in Results/esegui_tutto/esegui_tutto.log, stato in Results/esegui_tutto/stato.json.
 """
@@ -34,7 +34,7 @@ def papermill(cartella, nb, uscita):
 
 FASI = [
     {"nome": "scraping", "ore": 3, "cwd": "0-scraping", "obbligatoria": False,
-     "cmd": ["bash", "avvia.sh", "../Dataset/NuovoScraping", "64"]},
+     "cmd": ["bash", "avvia.sh", "../../../../../Dataset/scraping/NuovoScraping", "64"]},
     {"nome": "costruisci_dataset", "ore": 2, "cwd": "0-scraping", "obbligatoria": True,
      "cmd": papermill("0-scraping", "costruisci_dataset.ipynb", "Results/0-scraping/costruisci_dataset.ipynb")},
     {"nome": "01_pulizia_articoli", "ore": 2, "cwd": "1-data-cleaning", "obbligatoria": True,
@@ -86,9 +86,9 @@ def esegui(fase):
 
 
 def usa_riserva(stato, motivo):
-    versioni = W / "Dataset" / "versioni"
+    versioni = W.parents[3] / "Dataset" / "tentativi" / W.name / "versioni"
     versioni.mkdir(parents=True, exist_ok=True)
-    for f in (W / "Dataset" / "riserva_weekend").glob("*.csv"):
+    for f in (W.parents[3] / "Dataset" / "tentativi" / W.name / "riserva_weekend").glob("*.csv"):
         shutil.copy(f, versioni / f.name)
     stato["riserva"] = True
     scrivi_log(f"!!! {motivo}: la classificazione usa il DATASET DI RISERVA (weekend, 193 testate)")
@@ -112,8 +112,8 @@ def main():
             usa_riserva(stato, "il dataset nuovo non è stato costruito")
             salva_stato(stato)
         if fase["nome"] == "costruisci_dataset":         # copia di sicurezza del dataset del primo giro
-            vecchio = W / "Dataset" / "NuovoScraping" / "dataset_articoli.csv"
-            copia = W / "Dataset" / "NuovoScraping" / "dataset_articoli_13ottobre.csv"
+            vecchio = W.parents[3] / "Dataset" / "scraping" / "NuovoScraping" / "dataset_articoli.csv"
+            copia = W.parents[3] / "Dataset" / "scraping" / "NuovoScraping" / "dataset_articoli_13ottobre.csv"
             if vecchio.exists() and not copia.exists():
                 shutil.copy(vecchio, copia)
         s["tentativi"] += 1; s["stato"] = "in corso"; s["inizio"] = ora(); salva_stato(stato)

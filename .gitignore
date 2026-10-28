@@ -1,9 +1,11 @@
 # =====================================================================
 # Proprietary NewsGuard data -- licensed to the authors, NOT redistributable.
 # Also far too large for GitHub (single files up to 127 MB; limit is 100 MB).
-# Every version under Code/ has its own Dataset/; this pattern matches them all.
+# WebScience2027 keeps all its data in Dataset/ at the repo root (only Dataset/LEGGIMI.md is tracked);
+# IrForGood and RejectedTCSS keep their own Code/<version>/Dataset/. This pattern matches them all.
 # =====================================================================
-Dataset/
+**/Dataset/*
+!/Dataset/LEGGIMI.md
 
 # Secrets
 key.txt
@@ -72,3 +74,9 @@ Code/WebScience2027/Tentativi/16_DataPreparation/Results/modernbert/*/fold*.csv
 # tentativo 16: previsioni per testata con il punteggio NewsGuard vero (dati NewsGuard, restano fuori da git)
 Code/WebScience2027/Tentativi/16_DataPreparation/Results/**/previsioni_testate.csv
 Code/WebScience2027/Tentativi/16_DataPreparation/Results/analisi_embedding/*_previsioni.csv
+Code/WebScience2027/Tentativi/16_DataPreparation/Results/analisi_embedding/media_testate_*
+
+# Modelli addestrati di tutti i tentativi (radice del repo), fuori da git
+/Modelli/
+# archivio leggero dei dati (si crea con Code/WebScience2027/crea_archivio_dataset.py), fuori da git
+/Dataset.zip

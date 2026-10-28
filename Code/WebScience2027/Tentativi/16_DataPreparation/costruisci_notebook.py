@@ -33,8 +33,8 @@ import funzioni as F
 
 warnings.filterwarnings("ignore"); os.environ["PYTHONWARNINGS"] = "ignore"
 OUT = Path("Results/{nome}"); OUT.mkdir(parents=True, exist_ok=True)
-art = pd.read_csv("Results/dataset/articoli.csv.gz")
-t = pd.read_csv("Results/dataset/testate.csv", index_col="domain")
+art = pd.read_csv(F.DATASET / "articoli.csv.gz")
+t = pd.read_csv(F.DATASET / "testate.csv", index_col="domain")
 print(f"{{len(art):,}} articoli di {{len(t)}} testate, 5 fold")'''
 
 RISULTATI = '''# {n}.1 dagli articoli alle testate, le misure (salvate in {out}), il grafico
@@ -245,7 +245,7 @@ FONTI = {"TF-IDF": "Results/feature", "Embedding Qwen3 0.6B": "Results/embedding
          "Embedding Qwen3 8B": "Results/embedding/Qwen3-Embedding-8B", "ModernBERT 2048": "Results/modernbert"}
 T = {nome: pd.read_csv(Path(c) / "previsioni_testate.csv", index_col=0) for nome, c in FONTI.items()
      if (Path(c) / "previsioni_testate.csv").exists()}
-t = pd.read_csv("Results/dataset/testate.csv", index_col="domain")
+t = pd.read_csv(F.DATASET / "testate.csv", index_col="domain")
 print(f"{t.articoli.sum():,} articoli di {len(t)} testate · per livello: " + ", ".join(f"{l} {n}" for l, n in t.livello.value_counts().sort_index().items()))
 print("modelli con i risultati:", ", ".join(T))'''),
     md("""## 1. Il confronto
@@ -325,8 +325,8 @@ import funzioni as F
 
 warnings.filterwarnings("ignore")
 OUT = Path("Results/analisi_embedding"); OUT.mkdir(parents=True, exist_ok=True)
-art = pd.read_csv("Results/dataset/articoli.csv.gz")
-t = pd.read_csv("Results/dataset/testate.csv", index_col="domain")
+art = pd.read_csv(F.DATASET / "articoli.csv.gz")
+t = pd.read_csv(F.DATASET / "testate.csv", index_col="domain")
 
 
 def leggi(cartella):

@@ -30,7 +30,7 @@ from torch.utils.data import DataLoader, TensorDataset
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 QUI = Path(__file__).resolve().parent
-PULITO = QUI.parent / "Dataset" / "DatasetPulito"
+PULITO = QUI.parents[4] / "Dataset" / "tentativi/01_PrimoDataset/DatasetPulito"
 RESULTS = QUI.parent / "Results" / "2-classificazione"
 PER_FOLD = RESULTS / "bert"
 LOG = RESULTS / "avanzamento_bert.log"

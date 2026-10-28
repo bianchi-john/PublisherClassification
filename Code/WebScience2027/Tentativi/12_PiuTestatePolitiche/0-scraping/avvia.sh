@@ -3,13 +3,13 @@
 # Le testate già finite vengono saltate, quindi ogni rilancio riprende da dove era arrivato.
 # Uso (dentro screen):  bash avvia.sh [cartella_output] [processi]
 cd "$(dirname "$0")"
-OUT="${1:-../Dataset/NuovoScraping_giro3}"
+OUT="${1:-../../../../../Dataset/scraping/NuovoScraping_giro3}"
 PROCESSI="${2:-64}"
 PY="${PYTHON:-$HOME/John/johnVenv/bin/python}"
 mkdir -p "$OUT"
 for tentativo in $(seq 1 50); do
     echo "$(date '+%F %T')  avvio numero $tentativo" >> "$OUT/riavvii.log"
-    "$PY" scraper.py --newsguard ../Dataset/newsguard_giro3.csv --out "$OUT" --processi "$PROCESSI" >> "$OUT/console.log" 2>&1
+    "$PY" scraper.py --newsguard ../../../../../Dataset/tentativi/12_PiuTestatePolitiche/newsguard_giro3.csv --out "$OUT" --processi "$PROCESSI" >> "$OUT/console.log" 2>&1
     if grep -q "=== FINITO ===" "$OUT/scraping.log" 2>/dev/null && \
        [ "$(ls "$OUT/stato" | wc -l)" -ge "$(($(wc -l < "$OUT/elenco_testate.csv") - 1))" ]; then
         echo "$(date '+%F %T')  finito" >> "$OUT/riavvii.log"

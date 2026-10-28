@@ -7,7 +7,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score
 
-PULITO = "../Dataset/DatasetPulito/"     # versioni pulite del dataset (notebook 1-data-cleaning/02)
+PULITO = "../../../../../Dataset/tentativi/01_PrimoDataset/DatasetPulito/"     # versioni pulite del dataset (notebook 1-data-cleaning/02)
 RESULTS = "../Results/2-classificazione/"
 SEED = 42
 LIVELLI = ["l1", "l2", "l3", "l4", "l5"]

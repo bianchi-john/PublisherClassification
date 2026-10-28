@@ -32,7 +32,7 @@ passo() {      # nome, comando...: fino a 3 tentativi
 ferma() { log "=== catena FERMATA: $1 non è riuscito dopo 3 tentativi ==="; exit 1; }
 
 log "=== tentativo 12: scraping integrativo, pulizia, dataset solo politici, feature e ModernBERT ==="
-G=Dataset/NuovoScraping_giro3
+G=../../../../Dataset/scraping/NuovoScraping_giro3
 until grep -q "=== FINITO ===" $G/scraping.log 2>/dev/null && ! screen -ls | grep -q "\.t12_scraping\s"; do sleep 300; done
 log "terzo giro di scraping finito: $(ls $G/stato | wc -l) testate tentate su $(($(wc -l < $G/elenco_testate.csv) - 1))"
 passo unisci bash -c "0-scraping/unisci.sh >> $E/unisci.out 2>&1" || ferma unisci

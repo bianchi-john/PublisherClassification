@@ -3,7 +3,7 @@
     cd ~/John/WebScience2027/Tentativi/06_Versione2_PiuPuliziaPiuTraining
     screen -dmS v2 bash -c 'until ~/John/johnVenv/bin/python esegui_tutto.py; do sleep 120; done'
 
-- lo scraping non si rifà: si parte da ../Dataset/NuovoScraping (lo stesso della prima versione);
+- lo scraping non si rifà: si parte da ../../../../../Dataset/scraping/NuovoScraping (lo stesso della prima versione);
 - ogni fase ha un tempo massimo; allo scadere si uccide il suo gruppo di processi;
 - ogni fase finita lascia un segno in Results/esegui_tutto/stato.json: se lo script viene rilanciato la salta;
 - una fase che fallisce si riprova (lo script esce e il ciclo di screen lo rilancia tra 2 minuti): la pulizia una
@@ -81,7 +81,7 @@ def esegui(fase):
 
 
 def main():
-    for d in ["Results/esegui_tutto", "Results/1-data-cleaning/esecuzioni", "Results/2-classificazione/esecuzioni", "Dataset/derived"]:
+    for d in ["Results/esegui_tutto", "Results/1-data-cleaning/esecuzioni", "Results/2-classificazione/esecuzioni", "../../../../Dataset/tentativi/06_Versione2_PiuPuliziaPiuTraining/derived"]:
         (W / d).mkdir(parents=True, exist_ok=True)
     stato = leggi_stato()
     scrivi_log("=== avvio (o ripresa) della catena della Versione 2 ===")

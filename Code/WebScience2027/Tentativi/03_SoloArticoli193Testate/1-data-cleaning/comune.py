@@ -3,11 +3,11 @@ import re
 
 import pandas as pd
 
-DATASET = "../Dataset/NuovoScraping/dataset_articoli.csv"
-GREZZI = "../Dataset/NuovoScraping/"          # stato/, html/ (l'HTML grezzo sta solo sul server)
-NEWSGUARD = "../Dataset/newsguard.csv"
-DERIVED = "../Dataset/derived/"
-VERSIONI = "../Dataset/versioni/"
+DATASET = "../../../../../Dataset/scraping/NuovoScraping/dataset_articoli.csv"
+GREZZI = "../../../../../Dataset/scraping/NuovoScraping/"          # stato/, html/ (l'HTML grezzo sta solo sul server)
+NEWSGUARD = "../../../../../Dataset/etichette/newsguard_2022.csv"
+DERIVED = "../../../../../Dataset/tentativi/03_SoloArticoli193Testate/derived/"
+VERSIONI = "../../../../../Dataset/tentativi/03_SoloArticoli193Testate/versioni/"
 RESULTS = "../Results/1-data-cleaning/"
 SEED = 42
 LIVELLI = ["l1", "l2", "l3", "l4", "l5"]

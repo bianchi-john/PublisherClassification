@@ -14,11 +14,11 @@ from pathlib import Path
 
 import tldextract
 
-VERSIONI = Path("../Dataset/versioni")
-HTML = Path("../Dataset/NuovoScraping/html")
-SEGNALI = Path("../Dataset/segnali")
-DISCONNECT = Path("../Dataset/derived/disconnect_services.json")
-NEWSGUARD = Path("../Dataset/newsguard.csv")
+VERSIONI = Path("../../../../../Dataset/tentativi/09_CambioParadigma/versioni")
+HTML = Path("../../../../../Dataset/scraping/NuovoScraping/html")
+SEGNALI = Path("../../../../../Dataset/tentativi/09_CambioParadigma/segnali")
+DISCONNECT = Path("../../../../../Dataset/tentativi/09_CambioParadigma/derived/disconnect_services.json")
+NEWSGUARD = Path("../../../../../Dataset/etichette/newsguard_2022.csv")
 RESULTS = Path("../Results/2-segnali")
 LIVELLI = ["l1", "l2", "l3", "l4", "l5"]
 

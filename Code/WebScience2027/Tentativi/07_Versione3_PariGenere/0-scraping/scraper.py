@@ -20,7 +20,7 @@ Robustezza:
   - nessuna eccezione di una testata ferma le altre;
   - il file avvia.sh rilancia lo script se il processo principale dovesse morire.
 
-Output (cartella --out, default ../Dataset/NuovoScraping):
+Output (cartella --out, default ../../../../../Dataset/scraping/NuovoScraping):
   articoli/<dominio>.jsonl     un articolo per riga
   html/<dominio>.jsonl.gz      l'HTML grezzo degli articoli salvati
   config.json                  parametri e versioni delle librerie
@@ -389,8 +389,8 @@ def scegli_testate(newsguard, seed):
 def main():
     global MAX_ARTICOLI
     ap = argparse.ArgumentParser()
-    ap.add_argument("--newsguard", default=str(QUI.parent / "Dataset" / "newsguard.csv"))
-    ap.add_argument("--out", default=str(QUI.parent / "Dataset" / "NuovoScraping"))
+    ap.add_argument("--newsguard", default=str(QUI.parents[4] / "Dataset" / "etichette/newsguard_2022.csv"))
+    ap.add_argument("--out", default=str(QUI.parents[4] / "Dataset" / "scraping/NuovoScraping"))
     ap.add_argument("--processi", type=int, default=32)
     ap.add_argument("--solo", type=int, default=0, help="solo le prime N testate (per le prove)")
     ap.add_argument("--domini", nargs="*", default=None, help="solo questi domini (per le prove)")

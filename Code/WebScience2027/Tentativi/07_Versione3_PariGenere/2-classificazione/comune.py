@@ -12,8 +12,8 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
 
-VERSIONI = Path("../Dataset/versioni")        # costruito da ../1-data-cleaning (la stessa pulizia della Versione 2)
-NEWSGUARD = Path("../Dataset/newsguard.csv")
+VERSIONI = Path("../../../../../Dataset/tentativi/07_Versione3_PariGenere/versioni")        # costruito da ../1-data-cleaning (la stessa pulizia della Versione 2)
+NEWSGUARD = Path("../../../../../Dataset/etichette/newsguard_2022.csv")
 RESULTS = Path("../Results/2-classificazione")
 SEED = 42
 ORIENTAMENTI = ["(nessuno)", "Far Left", "Far Right", "Slightly Left", "Slightly Right"]

@@ -18,9 +18,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-VERSIONI = Path("../Dataset/versioni")
-LESSICI = Path("../Dataset/lessici")
-MODELLI = Path("../Modelli")
+VERSIONI = Path("../../../../../Dataset/tentativi/13_XAI/versioni")
+LESSICI = Path("../../../../../Dataset/risorse/lessici")
+MODELLI = Path("../../../../../Modelli/13_XAI")
 RESULTS = Path("../Results/3-xai")
 RISULTATI_MODELLI = Path("../Results/2-modelli")
 SEED = 42

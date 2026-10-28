@@ -81,18 +81,25 @@ grafici è `Riunioni/Stato dei lavori/stato_dei_lavori.pdf`.
 
 ## 4. Com'è fatto un tentativo
 
-Ogni tentativo è **autonomo**: contiene la catena completa e legge e scrive solo dentro la sua cartella, come se si
-ripartisse da zero.
+Ogni tentativo è **autonomo**: contiene la catena completa e scrive solo i suoi dati, come se si ripartisse da zero.
+**Dal 28 ottobre 2026 i dati di tutti i tentativi stanno in una cartella unica**, `Dataset/` nella radice del repo
+(fuori da git, la struttura è in `Dataset/LEGGIMI.md`), e i modelli addestrati in `Modelli/`:
+- `Dataset/scraping/`: gli scraping grezzi (`NuovoScraping`, `VecchioScraping`, `NuovoScraping_ottobre`, `NuovoScraping_giro3`);
+- `Dataset/etichette/`: NewsGuard 2022 e 2026;
+- `Dataset/risorse/`: i lessici NRC;
+- `Dataset/tentativi/<tentativo>/`: quello che produce ogni tentativo (`derived/`, `versioni/`, il dataset finale…).
+
+I README dei tentativi citano ancora i vecchi percorsi `../Dataset/<x>`: oggi `<x>` è in `Dataset/tentativi/<tentativo>/<x>`,
+oppure in `Dataset/scraping/` (gli scraping) e `Dataset/etichette/` (NewsGuard).
 
 ```
 Tentativi/NN_nome/
   README.md            la domanda, il disegno fissato prima dei risultati, i risultati, come rilanciarlo
-  0-scraping/          scraper + costruisci_dataset.ipynb            ->  Dataset/NuovoScraping/
+  0-scraping/          scraper + costruisci_dataset.ipynb            ->  Dataset/scraping/NuovoScraping/
   1-data-cleaning/     01 pulizia, 02 reti di testate, 03 dataset finale e fold
-                                                                        ->  Dataset/derived/, Dataset/versioni/
+                                                                        ->  Dataset/tentativi/NN_nome/{derived,versioni}/
   2-classificazione/   01 TF-IDF, 02 transformer, 03 confronto, (04 embedding…), coda degli esperimenti
                                                                         ->  Results/2-classificazione/
-  Dataset/             i dati: fuori da git (le etichette NewsGuard non sono redistribuibili, e lo scraping pesa ~9 GB)
   Results/             notebook eseguiti, log, predizioni per articolo, metriche (in git, tranne embedding e modelli)
   stato.sh, controlla_server.sh, esegui_tutto.py / coda.py   per far girare tutto sul server senza nessuno davanti
 ```
@@ -108,8 +115,10 @@ tentativi.
 
 ## 5. Rilanciare
 
-**I dati.** `Dataset/newsguard.csv` (l'export NewsGuard, dati proprietari) va messo a mano in ogni tentativo; tutto
-il resto lo produce la catena (`0-scraping` scarica gli articoli e l'HTML grezzo, che serve a `02_reti`).
+**I dati.** Si scarica la cartella `Dataset/` e la si mette nella radice del repo (accanto a `Code/`): ogni tentativo la
+trova da solo. Per il protocollo attuale (tentativi 14–16) basta l'archivio leggero `Dataset.zip` (305 MB, si crea con
+`crea_archivio_dataset.py`), da estrarre nella radice del repo. Le etichette NewsGuard (`Dataset/etichette/`) sono dati proprietari e non si ridistribuiscono; tutto il
+resto lo produce la catena (`0-scraping` scarica gli articoli e l'HTML grezzo, che serve a `02_reti`).
 
 **Il server.** Si lavora sul server condiviso `artes4` (GPU Tesla V100S da 32 GB, di solito solo ~7 GB liberi
 perché la usano anche altri), con il venv `~/John/johnVenv` e il kernel Jupyter `johnvenv`. Un tentativo va copiato

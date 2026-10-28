@@ -7,6 +7,10 @@ ratings are aggregated per publisher.
 The work has gone through several paper versions. Each has its own code, data and
 results under `Code/`; the papers themselves are under `Paper/`.
 
+**Start here:** `CLAUDE.md` is a short guide to the repository (in Italian, also meant for another Claude
+instance); the current work is `Code/WebScience2027/Tentativi/16_DataPreparation`. Its data come as `Dataset.zip`
+(to unzip at the repository root, see `Dataset/LEGGIMI.md`).
+
 ```
 Code/
   RejectedTCSS/    code of the version rejected by IEEE TCSS
@@ -23,7 +27,7 @@ Every version follows the same layout:
 | `0-scraping/` | collect and clean the corpus |
 | `1-…/` | the version's experiments (classification, data cleaning, …) |
 | `2-analysis/` | figures and tables of the paper |
-| `Dataset/` | NewsGuard labels and scraped articles (**not in git**) |
+| `Dataset/` | NewsGuard labels and scraped articles (**not in git**; for WebScience2027 the single `Dataset/` at the repo root) |
 | `Results/` | predictions, figures, tables |
 
 `WebScience2027/` starts from the same scraped dataset as the other versions:
@@ -79,6 +83,10 @@ resta corretto ma i font non coincidono con quelli del paper.
 Reliability and political-orientation labels come from **NewsGuard** and are
 licensed to the authors. They are proprietary and **not redistributable**, so no
 `Dataset/` folder is part of this repository.
+
+WebScience2027 keeps all its data (scraping, labels, the intermediate and final datasets of every attempt) in a
+single `Dataset/` folder at the repository root, and its trained models in `Modelli/`; both are outside git and are
+shared separately. `Dataset/LEGGIMI.md` (tracked) describes its layout.
 
 The IrForGood analysis runs from `Code/IrForGood/Results/predictions/`, which
 holds article ids, URLs, domains and labels but **no article text**.

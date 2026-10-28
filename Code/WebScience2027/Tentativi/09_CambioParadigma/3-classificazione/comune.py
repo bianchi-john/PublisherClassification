@@ -10,10 +10,10 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, precision_recall_fscore_support
 
-VERSIONI = Path("../Dataset/versioni")
+VERSIONI = Path("../../../../../Dataset/tentativi/09_CambioParadigma/versioni")
 RESULTS = Path("../Results/3-classificazione")
-SEGNALI = Path("../Dataset/segnali")
-NEWSGUARD = Path("../Dataset/newsguard.csv")
+SEGNALI = Path("../../../../../Dataset/tentativi/09_CambioParadigma/segnali")
+NEWSGUARD = Path("../../../../../Dataset/etichette/newsguard_2022.csv")
 SEED = 42
 CLASSI = ["p_l1", "p_l2", "p_l3", "p_l4", "p_l5"]
 SCHEMI = ["fold_gruppo", "fold_testata"]

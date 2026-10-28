@@ -3,13 +3,14 @@ import re
 
 import pandas as pd
 
-# tutto dentro questo tentativo: lo scraping e NewsGuard in ../Dataset, quello che produce la pulizia in ../Dataset/derived
-# e ../Dataset/versioni, i risultati in ../Results
-DATASET = "../Dataset/NuovoScraping/dataset_articoli.csv"
-GREZZI = "../Dataset/NuovoScraping/"       # stato/, html/ (l'HTML grezzo sta solo sul server)
-NEWSGUARD = "../Dataset/newsguard.csv"
-DERIVED = "../Dataset/derived/"
-VERSIONI = "../Dataset/versioni/"
+# i dati stanno nella cartella unica Dataset/ nella radice del repo: lo scraping in Dataset/scraping, NewsGuard in
+# Dataset/etichette, quello che produce la pulizia in Dataset/tentativi/08_Versione4_TitoloCriteri/derived
+# e Dataset/tentativi/08_Versione4_TitoloCriteri/versioni; i risultati in ../Results
+DATASET = "../../../../../Dataset/scraping/NuovoScraping/dataset_articoli.csv"
+GREZZI = "../../../../../Dataset/scraping/NuovoScraping/"       # stato/, html/ (l'HTML grezzo sta solo sul server)
+NEWSGUARD = "../../../../../Dataset/etichette/newsguard_2022.csv"
+DERIVED = "../../../../../Dataset/tentativi/08_Versione4_TitoloCriteri/derived/"
+VERSIONI = "../../../../../Dataset/tentativi/08_Versione4_TitoloCriteri/versioni/"
 RESULTS = "../Results/1-data-cleaning/"
 SEED = 42
 LIVELLI = ["l1", "l2", "l3", "l4", "l5"]

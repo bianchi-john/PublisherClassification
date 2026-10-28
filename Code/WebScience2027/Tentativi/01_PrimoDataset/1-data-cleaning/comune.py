@@ -3,10 +3,10 @@ import re
 
 import pandas as pd
 
-DATASET = "../Dataset/CleannedDataset/newDataframeWithOldCleanedPoliticsVersion.csv"
-NEWSGUARD = "../Dataset/newsguard.csv"
-DERIVED = "../Dataset/derived/"          # file intermedi grandi, fuori da git
-PULITO = "../Dataset/DatasetPulito/"     # le versioni pulite del dataset, fuori da git
+DATASET = "../../../../../Dataset/tentativi/01_PrimoDataset/CleannedDataset/newDataframeWithOldCleanedPoliticsVersion.csv"
+NEWSGUARD = "../../../../../Dataset/etichette/newsguard_2022.csv"
+DERIVED = "../../../../../Dataset/tentativi/01_PrimoDataset/derived/"          # file intermedi grandi, fuori da git
+PULITO = "../../../../../Dataset/tentativi/01_PrimoDataset/DatasetPulito/"     # le versioni pulite del dataset, fuori da git
 RESULTS = "../Results/1-data-cleaning/"
 SEED = 42
 LIVELLI = ["l1", "l2", "l3", "l4", "l5"]

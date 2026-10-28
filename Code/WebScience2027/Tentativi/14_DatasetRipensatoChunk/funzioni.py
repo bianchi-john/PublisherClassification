@@ -29,6 +29,19 @@ CONFINI = [-1, 39, 59, 74, 99, 100]          # dal punteggio NewsGuard ai livell
 POLITICA = "Political news or commentary"
 
 
+def cartella_dati():
+    """La cartella unica dei dati: Dataset/ nella radice del repo (sul server: ~/John/Dataset, accanto ai tentativi).
+    Si cerca salendo dalla cartella di lavoro fino a una cartella Dataset/ con dentro LEGGIMI.md."""
+    for p in [Path.cwd(), *Path.cwd().resolve().parents]:
+        if (p / "Dataset" / "LEGGIMI.md").exists():
+            return p / "Dataset"
+    raise FileNotFoundError("non trovo la cartella Dataset/ (con LEGGIMI.md) salendo dalla cartella di lavoro")
+
+
+DATI = cartella_dati()
+DATASET = DATI / "tentativi" / "14_DatasetRipensatoChunk"          # il dataset di questo tentativo (articoli.csv.gz, testate.csv, cache)
+
+
 # ===================================================================================== 1. dati grezzi
 def leggi_scraping(cartelle, testate=None):
     """Tutti i testi estratti dallo scraping (un file articoli/<dominio>.jsonl per testata, in una o più cartelle),

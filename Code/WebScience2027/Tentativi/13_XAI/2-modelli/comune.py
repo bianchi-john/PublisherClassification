@@ -1,7 +1,7 @@
 """Tentativo 13: dati, pesi e metriche dei modelli da spiegare (dal comune dei tentativi 11-12).
 
 Dataset: le testate solo politiche del tentativo 12 con almeno 10 articoli (../1-dataset), etichetta NewsGuard 2026.
-I modelli addestrati (TF-IDF e ModernBERT, per fold e finale) si salvano in ../Modelli (fuori da git).
+I modelli addestrati (TF-IDF e ModernBERT, per fold e finale) si salvano in Modelli/13_XAI nella radice del repo (fuori da git).
 """
 from datetime import datetime
 from pathlib import Path
@@ -10,9 +10,9 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, precision_recall_fscore_support
 
-VERSIONI = Path("../Dataset/versioni")
+VERSIONI = Path("../../../../../Dataset/tentativi/13_XAI/versioni")
 RESULTS = Path("../Results/2-modelli")
-MODELLI = Path("../Modelli")
+MODELLI = Path("../../../../../Modelli/13_XAI")
 SEED = 42
 CLASSI = ["p_l1", "p_l2", "p_l3", "p_l4", "p_l5"]
 SCHEMI = ["fold_gruppo"]
