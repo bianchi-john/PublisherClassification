@@ -1,0 +1,10 @@
+criterio,punti,tipo,soddisfatto,r,r tutto NewsGuard
+raccoglie e presenta le informazioni con cura,18.0,testo,0.602,0.785,0.889
+niente notizie false,22.0,testo,0.872,0.704,0.763
+corregge gli errori,12.5,sito,0.429,0.693,0.676
+titoli non ingannevoli,10.0,testo,0.903,0.641,0.755
+dice chi comanda,5.0,sito,0.717,0.635,0.557
+distingue notizia e opinione,12.5,testo,0.571,0.583,0.804
+nomi degli autori,5.0,sito,0.704,0.55,0.681
+dichiara proprietà e finanziamento,7.5,sito,0.447,0.441,0.647
+distingue la pubblicità,7.5,sito,0.867,0.322,0.375

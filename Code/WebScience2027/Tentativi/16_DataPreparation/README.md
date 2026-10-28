@@ -58,8 +58,13 @@ Sono salvati **già eseguiti**, con tutti gli output. Il 4 ha gli output degli e
    lineare scelto con una cross-validation interna al training, un vettore per testata (anche con la regressione
    ordinale), TF-IDF + embedding, e un'altra istruzione (sullo stile). Si lancia con `esegui_07.sh`, che prima calcola
    gli embedding con la nuova istruzione (circa 2 ore di GPU).
+8. `08_llm_grande.ipynb`: un LLM generativo grande come lettore, **Mistral-Small 24B** (base, congelato, in 4 bit): ogni
+   articolo è la media degli stati nascosti allo strato 27 di 40 e all'ultimo, poi gli stessi modelli lineari. Non esistono
+   modelli di embedding aperti più grandi di 8B; Gemma 27B in fp16 sulla V100 dà valori fuori scala. Circa 4 ore di GPU;
+   si lancia con `esegui_notte.sh`, che poi riesegue il 7 (dove Mistral entra nel confronto, insieme a una seconda versione
+   del grafico con la testata decisa dal voto di maggioranza dei suoi articoli per tutti i modelli).
 
-Le parti comuni sono in `funzioni.py`, sezioni 10–15. `costruisci_notebook.py` rigenera i notebook 3–6.
+Le parti comuni sono in `funzioni.py`, sezioni 10–17. `costruisci_notebook.py` rigenera i notebook 3–6.
 `esegui_tutto.sh` lancia tutto in fila sul server: 1–3 in circa 15 minuti, embedding 0,6B circa 15 minuti, 8B circa
 2 ore, ModernBERT circa 13 ore (2 configurazioni × 5 fold × 5 epoche, circa 15 minuti a epoca su una V100).
 

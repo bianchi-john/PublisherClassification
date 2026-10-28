@@ -960,10 +960,12 @@ def misure_modelli(T, B=2000):
     previsioni = {}
     for nome, t_ in T.items():
         t_ = t_.reindex(vero.index)
-        if "5 classi" in t_:
-            previsioni[(nome, "5 classi")] = (t_["5 classi"].to_numpy().astype(int), (t_["5 classi"] >= 2).to_numpy())
+        if "5 classi" in t_:                    # affidabile: dal livello della testata, o dal voto degli articoli se c'è
+            aff = t_["5 classi: affidabile"] if "5 classi: affidabile" in t_ else t_["5 classi"] >= 2
+            previsioni[(nome, "5 classi")] = (t_["5 classi"].to_numpy().astype(int), aff.to_numpy().astype(bool))
         if "regressione" in t_:
-            previsioni[(nome, "regressione")] = (t_["regressione → quote del training"].to_numpy().astype(int), (t_["regressione"] >= 60).to_numpy())
+            aff = t_["regressione: affidabile"] if "regressione: affidabile" in t_ else t_["regressione"] >= 60
+            previsioni[(nome, "regressione")] = (t_["regressione → quote del training"].to_numpy().astype(int), aff.to_numpy().astype(bool))
     misure = {"F1 5 livelli": lambda l, a, i: metriche(y[i], l[i])["F1 macro"],
               "tolerant ±1": lambda l, a, i: (np.abs(y[i] - l[i]) <= 1).mean(),
               "binario, tutte": lambda l, a, i: ((y[i] >= 2) == a[i]).mean(),
@@ -1279,3 +1281,76 @@ def grafico_griglia(medie, titolo, file):
             ax.set_title(f"{tipo}: " + ("Spearman" if tipo == "regressione" else "F1 5 livelli") + " sulla validazione interna")
         fig.suptitle(titolo + " · una linea per fold · ● il valore scelto", fontsize=11, fontweight="bold", x=0.01, ha="left")
         plt.tight_layout(); plt.savefig(file, dpi=160, bbox_inches="tight"); plt.show()
+
+
+# ===================================================================================== 16. un LLM grande come lettore (tentativo 16, notebook 8)
+def embedding_llm(testi, modello, max_token, batch, strati, registra, file_parziale=None, ogni=200):
+    """Un vettore per articolo da un LLM generativo grande, caricato in 4 bit (NF4, calcoli in fp16: la V100 non ha
+    bf16): la media degli stati nascosti dei token dell'articolo (senza padding), per ognuno degli `strati` (indici
+    di hidden_states: 0 = embedding dei token, n = ultimo strato). Nessuna istruzione: il modello legge solo il testo.
+    Gli articoli vanno dal più corto al più lungo; con `file_parziale` ogni `ogni` lotti si salva il lavoro fatto e,
+    se il calcolo si interrompe, si riparte da lì. Ritorna {strato: matrice articoli × dimensione}."""
+    import torch
+    from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+    tok = AutoTokenizer.from_pretrained(modello)
+    tok.pad_token = tok.pad_token or tok.eos_token; tok.padding_side = "right"
+    quant = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16,
+                               bnb_4bit_use_double_quant=True)
+    m = AutoModelForCausalLM.from_pretrained(modello, quantization_config=quant, torch_dtype=torch.float16, device_map={"": 0}).eval()
+    ordine = np.argsort([len(x) for x in testi])
+    E, fatti = None, np.zeros(len(testi), bool)
+    if file_parziale is not None and Path(file_parziale).exists():
+        p = np.load(file_parziale, allow_pickle=True).item()
+        if p["n"] == len(testi):
+            E, fatti = p["E"], p["fatti"]; registra(f"riprendo: {fatti.sum():,} articoli già fatti")
+    t0 = time.time()
+    with torch.no_grad():
+        for b, k in enumerate(range(0, len(ordine), batch)):
+            idx = ordine[k:k + batch]
+            if fatti[idx].all():
+                continue
+            enc = tok([testi[i] for i in idx], padding=True, truncation=True, max_length=max_token, return_tensors="pt").to("cuda")
+            out = m.model(**enc, output_hidden_states=True)                  # solo il trasformatore, senza la testa
+            maschera = enc["attention_mask"].unsqueeze(-1).float()
+            if E is None:
+                E = {s: np.zeros((len(testi), out.hidden_states[s].shape[-1]), dtype=np.float32) for s in strati}
+            for s in strati:
+                h = out.hidden_states[s].float()
+                E[s][idx] = ((h * maschera).sum(1) / maschera.sum(1)).cpu().numpy()
+            fatti[idx] = True
+            del out
+            if b % ogni == 0:
+                registra(f"{fatti.sum():,}/{len(testi):,} articoli ({time.time() - t0:.0f} s)")
+                if file_parziale is not None:
+                    np.save(file_parziale, {"n": len(testi), "E": E, "fatti": fatti}, allow_pickle=True)
+    for s in strati:
+        if not np.isfinite(E[s]).all():
+            registra(f"ATTENZIONE: strato {s}, {(~np.isfinite(E[s]).all(1)).sum()} articoli con valori non finiti")
+    del m; torch.cuda.empty_cache()
+    return E
+
+
+# ===================================================================================== 17. la testata decisa dal voto dei suoi articoli (tentativo 16, notebook 7)
+def testate_voto(pa, t):
+    """Una riga per testata, come `testate_da_articoli`, ma ogni articolo dà un livello e la testata prende quello votato
+    dalla maggioranza dei suoi articoli (a parità il più basso), anche per la regressione; "affidabile" è il voto degli
+    articoli con un livello da l3 in su. Classificatore: il livello più probabile di ogni articolo. Regressione: in ogni
+    fold i punteggi previsti degli articoli di test si ordinano e si tagliano con le quote di livelli degli articoli di
+    training (come le quote del training per testata, ma articolo per articolo)."""
+    pa = pa.assign(fold=t.fold.reindex(pa.domain).to_numpy())
+    T = pd.DataFrame({"livello vero": t.label, "punteggio vero": t.score, "fold": t.fold})
+    vota = lambda livelli: pd.Series(livelli, index=pa.index).groupby(pa.domain).agg(voto)
+    if set(CLASSI) <= set(pa.columns):
+        lv = pa[CLASSI].to_numpy().argmax(1)
+        T["5 classi"] = vota(lv); T["5 classi: affidabile"] = vota((lv >= 2).astype(int)).astype(bool)
+    if "s_regressione" in pa:
+        etichetta = t.label.reindex(pa.domain).to_numpy()
+        lv = np.zeros(len(pa), dtype=int)
+        for k in sorted(pa.fold.unique()):
+            te = (pa.fold == k).to_numpy()
+            quote = np.cumsum(np.bincount(etichetta[~te], minlength=5))[:-1] / (~te).sum()
+            sc = pa.s_regressione.to_numpy()[te]
+            lv[te] = np.searchsorted(np.quantile(sc, quote), sc)
+        T["regressione"] = pa.groupby("domain").s_regressione.mean()
+        T["regressione → quote del training"] = vota(lv); T["regressione: affidabile"] = vota((lv >= 2).astype(int)).astype(bool)
+    return T.reindex(t.index)

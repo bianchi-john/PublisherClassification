@@ -395,6 +395,25 @@ else:
     T["8B «stile», un vettore per testata, ordinale"] = F.testate_da_previsioni(pa4, t, ordinale=True)
     F.grafico_griglia(pd.concat([g3.assign(tipo=g3.tipo + ", articoli"), g4.assign(tipo=g4.tipo + ", testate")]),
                       "3. Embedding 8B con l'istruzione sullo stile", OUT / "griglia_stile.png")'''),
+    md("""## 3 bis. Un LLM grande come lettore: Mistral-Small 24B
+
+Non esistono modelli di embedding aperti più grandi di 8B, quindi il modello più grande è un **LLM generativo**,
+Mistral-Small 24B, congelato e in 4 bit (notebook 8): ogni articolo è la media degli stati nascosti dei suoi token, allo
+strato 27 di 40 (circa due terzi) e all'ultimo. Sopra, gli stessi modelli dei punti 1 e 2: il parametro scelto nel training
+e un vettore per testata, come classificatore (5 classi) e come regressore."""),
+    code('''MISTRAL, STRATI_MISTRAL = "Results/embedding/Mistral-Small-24B-Base-2501_strato{s}", [27, 40]
+for s in STRATI_MISTRAL:
+    Em = leggi(MISTRAL.format(s=s))
+    if Em is None:
+        print(f"i vettori di Mistral (strato {s}) non ci sono ancora: vanno calcolati con il notebook 8"); continue
+    T[f"Mistral 24B, strato {s}, come nel notebook 8 (C=10, alpha=1)"] = pd.read_csv(Path(MISTRAL.format(s=s)) / "previsioni_testate.csv", index_col=0)
+    pam, gm = calcola(f"mistral{s}_articoli", lambda: F.modelli_scelti(Em, art, interni=INTERNI, n_jobs=N_JOBS))
+    T[f"Mistral 24B, strato {s}, parametro scelto"] = F.testate_da_previsioni(pam, t)
+    Mm, _ = F.media_per_testata(Em, art)
+    pbm, gbm = calcola(f"mistral{s}_testate", lambda: F.modelli_scelti(Mm, righe, interni=INTERNI, n_jobs=N_JOBS))
+    T[f"Mistral 24B, strato {s}, un vettore per testata"] = F.testate_da_previsioni(pbm, t)
+    F.grafico_griglia(pd.concat([gm.assign(tipo=gm.tipo + ", articoli"), gbm.assign(tipo=gbm.tipo + ", testate")]),
+                      f"3 bis. Mistral-Small 24B, strato {s}", OUT / f"griglia_mistral{s}.png")'''),
     md("""## 4. Tutti i risultati insieme
 
 Qui ci sono anche i modelli dei notebook 3–5, per avere tutto in un posto solo:
@@ -409,6 +428,7 @@ Qui ci sono anche i modelli dei notebook 3–5, per avere tutto in un posto solo
 | ordinale | come sopra, con la regressione ordinale invece delle 5 classi (punto 2) |
 | TF-IDF + 8B | la media delle previsioni dei due modelli (punto 2) |
 | «stile» | gli stessi modelli 8B con l'istruzione sullo stile (punto 3) |
+| Mistral 24B | l'LLM grande come lettore, strato 27 o 40, con C = 10 e alpha = 1 fissi (notebook 8), con il parametro scelto o con un vettore per testata (punto 3 bis) |
 
 Le misure sono quelle del notebook 6: **F1** sui 5 livelli, **tolerant ±1** (giusto o sbagliato di un livello),
 **affidabile sì/no** (punteggio ≥ 60) su tutte le testate e solo su l1–l2 contro l4–l5. In blu la classificazione a 5
@@ -431,6 +451,10 @@ DESCRIZIONI = {
     "8B «stile», parametro scelto": f"Qwen3 8B, {STI}\\nun vettore per articolo\\nC e alpha scelti nel training",
     "8B «stile», un vettore per testata": f"Qwen3 8B, {STI}\\nun vettore per testata (media)\\nC e alpha scelti nel training",
     "8B «stile», un vettore per testata, ordinale": f"Qwen3 8B, {STI}\\nun vettore per testata\\nregressione ordinale, C scelto"}
+for s in [27, 40]:
+    DESCRIZIONI[f"Mistral 24B, strato {s}, come nel notebook 8 (C=10, alpha=1)"] = f"Mistral-Small 24B (LLM) congelato, 4 bit\\nmedia dello strato {s} di 40\\n+ logistica / ridge (C=10, alpha=1)"
+    DESCRIZIONI[f"Mistral 24B, strato {s}, parametro scelto"] = f"Mistral-Small 24B, strato {s} di 40\\nun vettore per articolo\\nC e alpha scelti nel training"
+    DESCRIZIONI[f"Mistral 24B, strato {s}, un vettore per testata"] = f"Mistral-Small 24B, strato {s} di 40\\nun vettore per testata (media)\\nC e alpha scelti nel training"
 NOTA = ("Addestramento: sui 4 fold di training, tutte le testate (l1…l5, anche le l3). Test: le testate del fold escluso, "
         "una previsione per testata (voto o media dei suoi articoli; con «un vettore per testata»\\nla previsione è già per "
         "testata). «Scelti nel training»: con una cross-validation interna alle testate di training, senza guardare il test. "
@@ -443,7 +467,45 @@ F.grafico_confronto(valori, intervalli, vero, OUT / "confronto.png")"""),
     md("### In numeri\nIn alto i valori; sotto la differenza da TF-IDF con la stessa impostazione (è chiara se l'intervallo non contiene lo zero)."),
     code("""display(valori.round(3))
 differenze"""),
-    md("""## 5. Che cosa viene fuori
+    md("""## 5. La testata decisa dal voto dei suoi articoli
+
+Nei grafici sopra la testata prende il voto dei suoi articoli solo nei classificatori; nelle regressioni prende la media
+dei punteggi. Qui **tutti i modelli che giudicano gli articoli** decidono la testata allo stesso modo, con il **voto di
+maggioranza** (a parità vince il livello più basso):
+- classificatore: ogni articolo vota il suo livello più probabile;
+- regressione: in ogni fold i punteggi previsti degli articoli si ordinano e si tagliano con le quote di livelli degli
+  articoli di training, poi ogni articolo vota il suo livello;
+- affidabile sì/no: la maggioranza degli articoli ha un livello da l3 in su.
+
+I modelli con «un vettore per testata» giudicano già la testata intera e restano come sopra."""),
+    code('''def articoli(f):
+    """Le previsioni per articolo salvate da un notebook (se ci sono)."""
+    f = Path(f)
+    return pd.read_csv(f) if f.exists() else None
+
+
+mb = [pd.read_csv(f"Results/modernbert/{c}/fold{k}.csv") for c in ["5 classi", "regressione"] for k in range(1, 6)]
+PA = {"TF-IDF": tfidf.reset_index(),
+      "ModernBERT 2048": pd.concat(mb[:5]).merge(pd.concat(mb[5:])[["article_id", "s_regressione"]], on="article_id"),
+      "Embedding Qwen3 0.6B": articoli("Results/embedding/Qwen3-Embedding-0.6B/previsioni_articoli.csv"),
+      "8B come nel notebook 4 (C=10, alpha=1)": articoli(Path(EMBEDDING) / "previsioni_articoli.csv"),
+      "8B, parametro scelto": pa1, "TF-IDF + 8B (media)": insieme.reset_index(),
+      "8B «stile» come nel notebook 4 (C=10, alpha=1)": articoli(Path(ALTRA) / "previsioni_articoli.csv"),
+      "8B «stile», parametro scelto": articoli(OUT / "stile_articoli_previsioni.csv")}
+for s in STRATI_MISTRAL:
+    PA[f"Mistral 24B, strato {s}, come nel notebook 8 (C=10, alpha=1)"] = articoli(Path(MISTRAL.format(s=s)) / "previsioni_articoli.csv")
+    PA[f"Mistral 24B, strato {s}, parametro scelto"] = articoli(OUT / f"mistral{s}_articoli_previsioni.csv")
+VOTO = {nome: F.testate_voto(PA[nome], t) if PA.get(nome) is not None else v for nome, v in TUTTI.items()}
+NOTA_VOTO = ("La testata è decisa dal voto di maggioranza dei suoi articoli per tutti i modelli che giudicano gli articoli (regressione: ogni "
+             "articolo diventa un livello con le quote del training);\\nchi ha «un vettore per testata» giudica già la testata intera. "
+             "Addestramento sui 4 fold di training, test sul fold escluso. Baseline: chi risponde sempre allo stesso modo.")
+valori_v, intervalli_v, differenze_v, _ = F.misure_modelli(VOTO)
+valori_v.to_csv(OUT / "confronto_voto.csv")
+F.grafico_confronto(valori_v, intervalli_v, vero, OUT / "confronto_voto_dettagli.png", dettagli=True, descrizioni=DESCRIZIONI, nota=NOTA_VOTO)'''),
+    md("### In numeri, con il voto degli articoli"),
+    code('''display(valori_v.round(3))
+differenze_v'''),
+    md("""## 6. Che cosa viene fuori
 
 - **Scegliere il parametro dentro il training aiuta**: con C e alpha scelti, l'8B batte il TF-IDF sui 5 livelli in modo
   chiaro (F1 0,41 contro 0,33, intervallo della differenza da +0,02 a +0,15). La ridge sceglie quasi sempre alpha =
@@ -457,3 +519,68 @@ differenze"""),
 - Cautela: le varianti sono state confrontate sul test; per il paper va fissata prima una variante e le altre vanno
   presentate come analisi."""),
 ], "07_analisi_embedding.ipynb")
+
+# ------------------------------------------------------------------------------------------------ 8. un LLM grande come lettore
+notebook([
+    md(f"""# Tentativo 16 · 8. Un LLM grande come lettore
+
+Non esistono modelli **di embedding** aperti più grandi di 8B (Qwen3-Embedding-8B è il più grande della sua famiglia).
+Per vedere se un modello più grande legge meglio le testate, usiamo un **LLM generativo da 24 miliardi di parametri**,
+**Mistral-Small-24B** (base, licenza Apache), congelato: ogni articolo diventa la **media degli stati nascosti** dei suoi
+token, in due punti del modello (lo strato 27 di 40, a circa due terzi, e l'ultimo). Nessuna istruzione: il modello legge
+solo il testo.
+
+Il modello è caricato **in 4 bit** (NF4) con i calcoli in fp16: in fp16 pieno servirebbero 48 GB e la V100 ne ha 32 e non
+supporta bf16 (per questo non Gemma 27B, che in fp16 dà valori fuori scala). Sopra i vettori, gli **stessi modelli lineari**
+dei notebook 3 e 4, nelle stesse sei configurazioni e sugli stessi fold; le varianti con il parametro scelto nel training e
+con un vettore per testata sono nel notebook 7.
+
+{TABELLA}"""),
+    code('''MODELLO = "mistralai/Mistral-Small-24B-Base-2501"
+MAX_TOKEN = 2048                            # ogni articolo entra intero (al più 1.500 parole)
+BATCH = 4
+STRATI = "27,40"                            # indici degli stati nascosti: 27 di 40 (circa due terzi) e l'ultimo
+GB_GPU = 22                                 # memoria GPU libera necessaria per partire (il modello ne usa circa 19)
+PROVA = 0                                   # > 0: solo quel numero di articoli per testata (prova veloce, in Results/prova)'''),
+    code(SETUP.format(nome="embedding") + '''
+import time
+if PROVA:
+    art = art.groupby("domain").head(PROVA).reset_index(drop=True); OUT = Path("Results/prova/embedding"); OUT.mkdir(parents=True, exist_ok=True)
+    print(f"PROVA: {len(art):,} articoli")
+NOME = MODELLO.split("/")[-1]
+STRATI = [int(s) for s in str(STRATI).split(",")]
+CARTELLE = {s: OUT / f"{NOME}_strato{s}" for s in STRATI}
+registra = lambda m: print(time.strftime("%H:%M:%S"), m, flush=True)'''),
+    md("""## 1. I vettori
+Una volta sola, senza etichette; si salvano (uno per strato). Circa 4,5 ore sulla V100; se si interrompe, riparte dal
+lavoro salvato."""),
+    code('''# 1.1 un vettore per articolo e per strato
+pronti = lambda c: (c / "embedding.npy").exists() and np.array_equal(np.load(c / "embedding_article_id.npy"), art.article_id.to_numpy())
+if all(pronti(c) for c in CARTELLE.values()):
+    E = {s: np.load(c / "embedding.npy") for s, c in CARTELLE.items()}
+else:
+    F.aspetta_gpu(GB_GPU, registra)
+    E = F.embedding_llm(art.text.tolist(), MODELLO, MAX_TOKEN, BATCH, STRATI, registra, file_parziale=OUT / f"{NOME}_parziale.npy")
+    for s, c in CARTELLE.items():
+        c.mkdir(parents=True, exist_ok=True); np.save(c / "embedding.npy", E[s]); np.save(c / "embedding_article_id.npy", art.article_id.to_numpy())
+    (OUT / f"{NOME}_parziale.npy").unlink(missing_ok=True)
+for s in STRATI:
+    print(f"strato {s}: {E[s].shape[0]:,} articoli, vettori di {E[s].shape[1]} dimensioni, tutti finiti: {np.isfinite(E[s]).all()}")'''),
+    md("## 2. I sei modelli lineari, fold per fold, per ogni strato\nVettori standardizzati sul training di ogni fold; stessi modelli dei notebook 3 e 4."),
+    code('''# 2.1 addestramento, previsione e misure
+from sklearn.preprocessing import StandardScaler
+
+def un_fold(X, k):
+    tr, te = (art.fold != k).to_numpy(), (art.fold == k).to_numpy()
+    s = StandardScaler().fit(X[tr])
+    out = art.loc[te, ["article_id", "domain"]].reset_index(drop=True)
+    return out.assign(**F.modelli_lineari(s.transform(X[tr]), s.transform(X[te]), art.label.to_numpy()[tr], art.score.to_numpy()[tr]))
+
+for s, c in CARTELLE.items():
+    pa = pd.concat(Parallel(n_jobs=5)(delayed(un_fold)(E[s], k) for k in range(1, 6)), ignore_index=True)
+    pa.to_csv(c / "previsioni_articoli.csv", index=False)
+    T = F.testate_da_articoli(pa, t); T.to_csv(c / "previsioni_testate.csv")
+    tab5, tab2 = F.misure_testate(T); tab5.to_csv(c / "cinque_livelli.csv"); tab2.to_csv(c / "binario.csv")
+    F.grafico_riassunto(T, tab5, tab2, f"{NOME}, strato {s} + modelli lineari, sei configurazioni · 5 fold · linee grigie: intervalli al 95%",
+                        c / "riassunto.png")'''),
+], "08_llm_grande.ipynb")
