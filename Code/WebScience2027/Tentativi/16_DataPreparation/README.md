@@ -31,9 +31,12 @@ Le funzioni stanno in `funzioni.py`, quelle del tentativo 14 più la riestrazion
   le testate restano. Spesso sono articoli di agenzia ripresi da testate indipendenti.
 
 Sul server, in `~/John/Tentativo16`, circa 6 minuti:
-`python -m papermill -k johnvenv 01_data_preparation.ipynb Results/01_data_preparation_eseguito.ipynb`.
+`python -m papermill -k johnvenv 01_data_preparation.ipynb 01_data_preparation.ipynb`.
 
 ## I notebook
+
+Sono salvati **già eseguiti**, con tutti gli output. Il 4 ha gli output degli embedding 8B; quelli dello 0,6B sono in
+`Results/04_embedding_0.6B_eseguito.ipynb`.
 
 1. `01_data_preparation.ipynb`: il dataset.
 2. `02_data_analysis.ipynb`: lo stile sul piano (ragionamento ed emotività, l1–l2 contro l4–l5).
@@ -78,6 +81,6 @@ Le parti comuni sono in `funzioni.py`, sezioni 10–14. `costruisci_notebook.py`
   catena si ferma subito.
 - **Dal PC**, nella cartella del tentativo:
   - `./stato.sh` dice a che punto è: passi fatti, notebook in corso, ultime epoche di ModernBERT, errori, GPU e disco;
-  - `./scarica.sh` porta qui i notebook eseguiti, i grafici e le tabelle.
+  - `./scarica.sh` porta qui i notebook eseguiti (al posto di quelli del PC), i grafici e le tabelle.
 
   Chiedono la password del server una volta.

@@ -3,4 +3,5 @@
 cd "$(dirname "$0")"
 rsync -av --include "modernbert/*/fold*.csv" --exclude cache --exclude "*.npy" --exclude "articoli.csv.gz" --exclude "previsioni_articoli.csv" --exclude "fold*.csv" \
       fabio.pinelli@10.181.100.6:John/Tentativo16/Results/ Results/ | tail -n 3
-echo "I notebook eseguiti sono in Results/*_eseguito.ipynb; i grafici in Results/*/riassunto.png e Results/confronto/confronto.png"
+rsync -av --include "0*.ipynb" --exclude "*" fabio.pinelli@10.181.100.6:John/Tentativo16/ ./ | tail -n 3
+echo "I notebook eseguiti sono 01…06 (06_confronto.ipynb è la pagina dei risultati); i grafici in Results/*/riassunto.png e Results/confronto/"

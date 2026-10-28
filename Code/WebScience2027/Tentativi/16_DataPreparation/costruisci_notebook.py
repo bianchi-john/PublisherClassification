@@ -1,4 +1,7 @@
-"""Costruisce i notebook 3 (feature), 4 (embedding) e 5 (ModernBERT a 2048 token) del tentativo 16."""
+"""Costruisce i notebook 3 (feature), 4 (embedding), 5 (ModernBERT a 2048 token) e 6 (confronto) del tentativo 16.
+
+I notebook sono salvati già eseguiti, con gli output: se il codice di un notebook non cambia, resta com'è; se cambia,
+si riscrive senza output e va rieseguito (esegui_tutto.sh)."""
 from pathlib import Path
 
 import nbformat as nbf
@@ -47,8 +50,9 @@ def notebook(celle, nome, kernel="johnvenv"):
     nb = nbf.v4.new_notebook(cells=celle)
     nb.metadata["kernelspec"] = {"name": kernel, "display_name": "johnVenv", "language": "python"}
     vecchio = Path(CARTELLA + nome)
-    if vecchio.exists() and [c.source for c in nbf.read(vecchio, as_version=4).cells] == [c.source for c in celle]:
-        print(nome, "invariato"); return          # niente da riscrivere: gli id delle celle restano quelli di prima
+    if vecchio.exists() and [c.source for c in nbf.read(vecchio, as_version=4).cells
+                             if "injected-parameters" not in c.metadata.get("tags", [])] == [c.source for c in celle]:
+        print(nome, "invariato"); return          # stesso codice: il notebook resta com'è, con i suoi output
     nbf.write(nb, CARTELLA + nome)
     for c in celle:
         if c.cell_type == "code":
