@@ -1,0 +1,69 @@
+2026-10-27 17:47:59  5 classi, fold 2, epoca 1/6: loss 1.2229, validazione 0.403, test 0.275 (941 s)
+2026-10-27 18:03:24  5 classi, fold 2, epoca 2/6: loss 0.6549, validazione 0.224, test 0.198 (1866 s)
+2026-10-27 18:18:52  5 classi, fold 2, epoca 3/6: loss 0.5063, validazione 0.322, test 0.241 (2794 s)
+2026-10-27 18:34:28  5 classi, fold 2, epoca 4/6: loss 0.4471, validazione 0.297, test 0.293 (3730 s)
+2026-10-27 18:50:05  5 classi, fold 2, epoca 5/6: loss 0.4289, validazione 0.343, test 0.301 (4667 s)
+2026-10-27 19:05:41  5 classi, fold 2, epoca 6/6: loss 0.4240, validazione 0.343, test 0.303 (5603 s)
+2026-10-27 19:06:50  5 classi, fold 2: finito; epoca migliore 1, memoria GPU massima 8.1 GB
+2026-10-27 19:09:07  5 classi, fold 2: già fatto, salto
+2026-10-27 19:23:04  5 classi, fold 2: già fatto, salto
+2026-10-27 19:38:59  regressione, fold 1, epoca 1/5: loss 0.0592 (938 s)
+2026-10-27 19:51:15  regressione, fold 1, epoca 2/5: loss 0.0201 (1674 s)
+2026-10-27 20:03:16  regressione, fold 1, epoca 3/5: loss 0.0093 (2395 s)
+2026-10-27 20:18:52  regressione, fold 1, epoca 4/5: loss 0.0041 (3330 s)
+2026-10-27 20:34:29  regressione, fold 1, epoca 5/5: loss 0.0020 (4267 s)
+2026-10-27 20:35:48  regressione, fold 1: finito; epoca usata 5, memoria GPU massima 8.1 GB
+2026-10-27 20:52:19  regressione, fold 2, epoca 1/5: loss 0.0613 (973 s)
+2026-10-27 21:08:31  regressione, fold 2, epoca 2/5: loss 0.0182 (1946 s)
+2026-10-27 21:24:39  regressione, fold 2, epoca 3/5: loss 0.0078 (2914 s)
+2026-10-27 21:40:50  regressione, fold 2, epoca 4/5: loss 0.0033 (3885 s)
+2026-10-27 21:56:56  regressione, fold 2, epoca 5/5: loss 0.0015 (4851 s)
+2026-10-27 21:58:09  regressione, fold 2: finito; epoca usata 5, memoria GPU massima 8.1 GB
+2026-10-27 22:14:56  regressione, fold 3, epoca 1/5: loss 0.0534 (990 s)
+2026-10-27 22:31:38  regressione, fold 3, epoca 2/5: loss 0.0194 (1992 s)
+2026-10-27 22:48:09  regressione, fold 3, epoca 3/5: loss 0.0085 (2984 s)
+2026-10-27 23:00:24  regressione, fold 3, epoca 4/5: loss 0.0034 (3719 s)
+2026-10-27 23:12:23  regressione, fold 3, epoca 5/5: loss 0.0015 (4438 s)
+2026-10-27 23:13:28  regressione, fold 3: finito; epoca usata 5, memoria GPU massima 8.1 GB
+2026-10-27 23:29:51  regressione, fold 4, epoca 1/5: loss 0.0671 (968 s)
+2026-10-27 23:46:06  regressione, fold 4, epoca 2/5: loss 0.0196 (1942 s)
+2026-10-28 00:02:38  regressione, fold 4, epoca 3/5: loss 0.0089 (2935 s)
+2026-10-28 00:18:51  regressione, fold 4, epoca 4/5: loss 0.0038 (3908 s)
+2026-10-28 00:35:08  regressione, fold 4, epoca 5/5: loss 0.0016 (4885 s)
+2026-10-28 00:36:18  regressione, fold 4: finito; epoca usata 5, memoria GPU massima 8.1 GB
+2026-10-28 00:52:36  regressione, fold 5, epoca 1/5: loss 0.0508 (959 s)
+2026-10-28 01:08:36  regressione, fold 5, epoca 2/5: loss 0.0171 (1919 s)
+2026-10-28 01:24:32  regressione, fold 5, epoca 3/5: loss 0.0077 (2874 s)
+2026-10-28 01:40:27  regressione, fold 5, epoca 4/5: loss 0.0035 (3830 s)
+2026-10-28 01:56:26  regressione, fold 5, epoca 5/5: loss 0.0017 (4789 s)
+2026-10-28 01:57:43  regressione, fold 5: finito; epoca usata 5, memoria GPU massima 8.1 GB
+2026-10-28 02:13:51  5 classi, fold 1, epoca 1/5: loss 1.2246 (950 s)
+2026-10-28 02:29:39  5 classi, fold 1, epoca 2/5: loss 0.6843 (1897 s)
+2026-10-28 02:45:27  5 classi, fold 1, epoca 3/5: loss 0.5230 (2846 s)
+2026-10-28 03:01:25  5 classi, fold 1, epoca 4/5: loss 0.4571 (3804 s)
+2026-10-28 03:17:05  5 classi, fold 1, epoca 5/5: loss 0.4353 (4744 s)
+2026-10-28 03:18:24  5 classi, fold 1: finito; epoca usata 5, memoria GPU massima 8.1 GB
+2026-10-28 03:32:31  5 classi, fold 2, epoca 1/5: loss 1.1968 (829 s)
+2026-10-28 03:48:45  5 classi, fold 2, epoca 2/5: loss 0.6679 (1803 s)
+2026-10-28 04:04:57  5 classi, fold 2, epoca 3/5: loss 0.5135 (2775 s)
+2026-10-28 04:21:05  5 classi, fold 2, epoca 4/5: loss 0.4478 (3743 s)
+2026-10-28 04:37:17  5 classi, fold 2, epoca 5/5: loss 0.4282 (4715 s)
+2026-10-28 04:38:28  5 classi, fold 2: finito; epoca usata 5, memoria GPU massima 8.1 GB
+2026-10-28 04:55:22  5 classi, fold 3, epoca 1/5: loss 1.1839 (998 s)
+2026-10-28 05:11:55  5 classi, fold 3, epoca 2/5: loss 0.6683 (1990 s)
+2026-10-28 05:28:32  5 classi, fold 3, epoca 3/5: loss 0.5206 (2987 s)
+2026-10-28 05:45:07  5 classi, fold 3, epoca 4/5: loss 0.4576 (3982 s)
+2026-10-28 06:01:46  5 classi, fold 3, epoca 5/5: loss 0.4408 (4981 s)
+2026-10-28 06:02:51  5 classi, fold 3: finito; epoca usata 5, memoria GPU massima 8.1 GB
+2026-10-28 06:19:32  5 classi, fold 4, epoca 1/5: loss 1.1540 (983 s)
+2026-10-28 06:35:50  5 classi, fold 4, epoca 2/5: loss 0.6572 (1961 s)
+2026-10-28 06:52:23  5 classi, fold 4, epoca 3/5: loss 0.5116 (2953 s)
+2026-10-28 07:08:33  5 classi, fold 4, epoca 4/5: loss 0.4484 (3924 s)
+2026-10-28 07:20:42  5 classi, fold 4, epoca 5/5: loss 0.4281 (4653 s)
+2026-10-28 07:21:34  5 classi, fold 4: finito; epoca usata 5, memoria GPU massima 8.1 GB
+2026-10-28 07:38:11  5 classi, fold 5, epoca 1/5: loss 1.1805 (977 s)
+2026-10-28 07:54:41  5 classi, fold 5, epoca 2/5: loss 0.7022 (1967 s)
+2026-10-28 08:11:08  5 classi, fold 5, epoca 3/5: loss 0.5310 (2954 s)
+2026-10-28 08:27:33  5 classi, fold 5, epoca 4/5: loss 0.4563 (3939 s)
+2026-10-28 08:44:04  5 classi, fold 5, epoca 5/5: loss 0.4350 (4930 s)
+2026-10-28 08:45:21  5 classi, fold 5: finito; epoca usata 5, memoria GPU massima 8.1 GB

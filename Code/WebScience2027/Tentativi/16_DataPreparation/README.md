@@ -18,7 +18,7 @@ Le funzioni stanno in `funzioni.py`, quelle del tentativo 14 più la riestrazion
    tiene quella con più articoli.
 7. Su ogni articolo il **punteggio NewsGuard 2026** (0–100) e il livello; 5 fold di testate stratificati per livello.
 
-**Il dataset**: **233 testate, 29.524 articoli** (l1 38, l2 42, l3 31, l4 83, l5 39).
+**Il dataset**: **226 testate, 25.524 articoli** (l1 35, l2 43, l3 30, l4 79, l5 39).
 
 **Da sapere**
 - I doppioni esatti tra testate fanno sparire intere reti di siti che ripubblicano gli stessi articoli: da 532 a 363
@@ -41,14 +41,35 @@ Sul server, in `~/John/Tentativo16`, circa 6 minuti:
    estremi, regressione, regressione bilanciata, regressione sugli estremi), con il grafico riassuntivo.
 4. `04_embedding.ipynb`: embedding di Qwen3-Embedding (0,6B e 8B, senza addestramento) più gli stessi modelli lineari.
 5. `05_modernbert.ipynb`: ModernBERT a 2.048 token, classificatore a 5 classi e regressore. Prima una diagnostica
-   su un fold (6 epoche, curve di training, validazione e test); poi i 5 fold, al più 5 epoche, learning rate 3e-5,
-   scelta dell'epoca sulla validazione.
-6. `06_confronto.ipynb`: TF-IDF, embedding e ModernBERT in un solo grafico (5 classi e regressione; F1, tolerant,
-   binario), con le differenze dal TF-IDF e i loro intervalli.
+   su un fold (6 epoche, curve di training, validazione e test); poi i 5 fold con **5 epoche fisse**, learning rate
+   3e-5, batch 32, su tutte le testate di training (la validazione, circa 27 testate, era troppo rumorosa per scegliere
+   l'epoca).
+6. `06_confronto.ipynb`: **la pagina dei risultati**. TF-IDF, embedding e ModernBERT in un solo grafico (5 classi e
+   regressione; F1, tolerant, binario), lo stesso grafico con i dettagli (che cosa è ogni modello, su quali testate si
+   misura, le baseline), le differenze dal TF-IDF con i loro intervalli, e la loss di ModernBERT epoca per epoca
+   accanto al test.
 
-Le parti comuni sono in `funzioni.py`, sezioni 10–12. `costruisci_notebook.py` rigenera i notebook 3–6.
+Le parti comuni sono in `funzioni.py`, sezioni 10–14. `costruisci_notebook.py` rigenera i notebook 3–6.
 `esegui_tutto.sh` lancia tutto in fila sul server: 1–3 in circa 15 minuti, embedding 0,6B circa 15 minuti, 8B circa
-2–3 ore, ModernBERT circa 9 ore.
+2 ore, ModernBERT circa 13 ore (2 configurazioni × 5 fold × 5 epoche, circa 15 minuti a epoca su una V100).
+
+## Che cosa viene fuori
+
+| | F1 5 livelli | tolerant ±1 | affidabile sì/no, tutte | affidabile sì/no, l1–l2 contro l4–l5 |
+|---|---|---|---|---|
+| baseline | 0,20 (a caso) | 0,65 (sempre l4) | 0,65 (sempre «affidabile») | 0,60 |
+| TF-IDF, regressione | 0,35 | 0,82 | **0,81** | 0,81 |
+| Embedding Qwen3 8B congelato, 5 classi | **0,40** | 0,83 | 0,79 | 0,83 |
+| Embedding Qwen3 8B congelato, regressione | 0,31 | **0,87** | 0,80 | **0,84** |
+| ModernBERT addestrato, regressione | 0,33 | 0,82 | 0,79 | 0,80 |
+
+- L'**embedding 8B congelato** è il primo modello sopra il TF-IDF: F1 +0,07 sul TF-IDF a 5 classi (intervallo al 95%
+  da −0,00 a +0,14), tolerant e binario sugli estremi migliori. Con 226 testate la differenza è al limite.
+- **ModernBERT** è pari al TF-IDF (regressione) o sotto (5 classi). Non è sottoallenato: dopo 5 epoche la loss di
+  training è quasi il minimo possibile (0,43 contro 0,42 con la label smoothing) e l'errore sul training è di 4 punti;
+  sul test la loss è 2,1 (a caso 1,63) e l'errore 25 punti. Impara le testate di training, non un segnale che vale per
+  testate nuove.
+- La regressione sul punteggio va meglio della classificazione a 5 classi per TF-IDF e ModernBERT.
 
 ## Lanciare e controllare
 

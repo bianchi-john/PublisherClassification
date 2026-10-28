@@ -67,3 +67,7 @@ Code/WebScience2027/Tentativi/*/Modelli/
 Code/WebScience2027/Tentativi/*/Results/dataset/*.csv*
 Code/WebScience2027/Tentativi/*/Results/cache/
 Code/WebScience2027/Tentativi/*/Results/dataset/cache/
+# tentativo 16: previsioni di ModernBERT per articolo (servono alla sezione 3 di 06_confronto; si scaricano con scarica.sh)
+Code/WebScience2027/Tentativi/16_DataPreparation/Results/modernbert/*/fold*.csv
+# tentativo 16: previsioni per testata con il punteggio NewsGuard vero (dati NewsGuard, restano fuori da git)
+Code/WebScience2027/Tentativi/16_DataPreparation/Results/**/previsioni_testate.csv

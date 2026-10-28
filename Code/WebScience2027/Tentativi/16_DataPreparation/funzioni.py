@@ -971,17 +971,38 @@ def misure_modelli(T, B=2000):
     return pd.DataFrame(valori).T, intervalli, pd.DataFrame(differenze).T, vero
 
 
-def grafico_confronto(valori, intervalli, vero, file):
+# Per il grafico con i dettagli: che cosa è ogni modello e che cosa misura ogni pannello.
+DESCRIZIONI = {"TF-IDF": "TF-IDF\nparole e coppie di parole (1–2 grammi)\n+ logistica / ridge",
+               "Embedding Qwen3 0.6B": "Embedding Qwen3 0,6B\ncongelato (non addestrato)\n+ logistica / ridge",
+               "Embedding Qwen3 8B": "Embedding Qwen3 8B\ncongelato (non addestrato)\n+ logistica / ridge",
+               "ModernBERT 2048": "ModernBERT-base, addestrato\n5 epoche · lr 3e-5 · batch 32\narticoli interi (2.048 token)"}
+
+
+def grafico_confronto(valori, intervalli, vero, file, dettagli=False):
     """Un grafico per tutto il confronto: una riga per modello, in blu la classificazione a 5 classi e in arancio la
-    regressione; quattro misure, con i valori sulle barre e gli intervalli al 95%."""
+    regressione; quattro misure, con i valori sulle barre e gli intervalli al 95%. Con `dettagli` accanto ai nomi c'è che
+    cosa è ogni modello, i titoli dicono su quali testate si misura, e sotto c'è come si addestra e come si testa."""
     import matplotlib.pyplot as plt
     BLU, ARANCIO, GRIGIO = "#2a78d6", "#eb6834", "#52514e"
     modelli = list(dict.fromkeys(m for m, _ in valori.index))
     y = np.arange(len(modelli))[::-1]
-    riferimenti = {"F1 5 livelli": (0.2, "a caso"), "binario, tutte": ((vero >= 2).mean(), "sempre «affidabile»"),
-                   "binario, estreme": ((vero[vero != 2] >= 2).mean(), "sempre «affidabile»")}
+    v_ = np.asarray(vero); estreme = v_ != 2
+    affidabili, affidabili_estreme = (v_ >= 2).mean(), (v_[estreme] >= 2).mean()
+    if dettagli:
+        riferimenti = {"F1 5 livelli": (0.2, "a caso"), "tolerant ±1": ((np.abs(v_ - 3) <= 1).mean(), "sempre l4, il livello più frequente"),
+                       "binario, tutte": (affidabili, "baseline: sempre «affidabile»"),
+                       "binario, estreme": (affidabili_estreme, "baseline: sempre «affidabile»")}
+        titoli = {"F1 5 livelli": f"F1 macro sui 5 livelli (l1…l5)\ntest su tutte le {len(v_)} testate",
+                  "tolerant ±1": f"tolerant ±1: livello giusto o sbagliato di uno\ntest su tutte le {len(v_)} testate",
+                  "binario, tutte": f"affidabile sì/no (punteggio ≥ 60, cioè l3–l5)\ntest su tutte le {len(v_)} testate",
+                  "binario, estreme": f"affidabile sì/no, test solo su l1–l2 contro l4–l5\n"
+                                      f"({estreme.sum()} testate; le l3 escluse solo dal test)"}
+    else:
+        riferimenti = {"F1 5 livelli": (0.2, "a caso"), "binario, tutte": (affidabili, "sempre «affidabile»"),
+                       "binario, estreme": (affidabili_estreme, "sempre «affidabile»")}
+        titoli = {}
     with plt.rc_context(STILE_GRAFICI):
-        fig, assi = plt.subplots(1, 4, figsize=(18, 1.2 * len(modelli) + 1.6), sharey=True)
+        fig, assi = plt.subplots(1, 4, figsize=(18, (1.45 if dettagli else 1.2) * len(modelli) + 1.6), sharey=True)
         for ax, metrica in zip(assi, ["F1 5 livelli", "tolerant ±1", "binario, tutte", "binario, estreme"]):
             for dy, imp, colore in [(0.19, "5 classi", BLU), (-0.19, "regressione", ARANCIO)]:
                 for yy, m in zip(y, modelli):
@@ -991,15 +1012,134 @@ def grafico_confronto(valori, intervalli, vero, file):
                     ax.barh(yy + dy, v, height=0.36, color=colore)
                     ax.errorbar(v, yy + dy, xerr=[[v - lo], [hi - v]], color=GRIGIO, lw=1, capsize=2.5)
                     ax.text(hi + 0.01, yy + dy, f"{v:.2f}", va="center", fontsize=8.5, fontweight="bold", color=GRIGIO)
-            titolo = metrica
+            titolo = titoli.get(metrica, metrica)
             if metrica in riferimenti:
                 r, nome_r = riferimenti[metrica]; ax.axvline(r, color=GRIGIO, ls=":", lw=1); titolo += f"\n··· {nome_r}: {r:.2f}"
-            ax.set_title(titolo, fontsize=10); ax.set_xlim(0, 1.08); ax.grid(False); ax.grid(axis="x")
+            ax.set_title(titolo, fontsize=9.5 if dettagli else 10); ax.set_xlim(0, 1.08); ax.grid(False); ax.grid(axis="x")
             ax.set_xticks([0, 0.25, 0.5, 0.75, 1]); ax.set_xticklabels(["0", "", "0,5", "", "1"])
-        assi[0].set_yticks(y, modelli, fontsize=10.5)
+        assi[0].set_yticks(y, [DESCRIZIONI.get(m, m) for m in modelli] if dettagli else modelli, fontsize=9.5 if dettagli else 10.5)
         fig.legend([plt.Rectangle((0, 0), 1, 1, color=c) for c in [BLU, ARANCIO]],
                    ["classificazione a 5 classi", "regressione sul punteggio (livelli con le quote del training; affidabile = ≥ 60)"],
-                   ncol=2, loc="lower center", bbox_to_anchor=(0.5, -0.06), fontsize=9.5)
+                   ncol=2, loc="lower center", bbox_to_anchor=(0.5, -0.06 if not dettagli else -0.05), fontsize=9.5)
+        if dettagli:
+            fig.text(0.01, -0.075,
+                     "Addestramento: sempre su tutti gli articoli di tutte le testate dei 4 fold di training (l1…l5, anche le l3). "
+                     "Test: le testate del fold escluso, una previsione per testata\n(classificazione: voto dei suoi articoli; "
+                     "regressione: media dei punteggi previsti). Ogni testata è nel test una volta sola. "
+                     "Baseline: il valore di chi risponde sempre allo stesso modo, senza leggere i testi.",
+                     fontsize=8.5, color=GRIGIO, va="top")
         fig.suptitle(f"TF-IDF contro transformer · {len(vero)} testate politiche · 5 fold · linee grigie: intervalli al 95%",
+                     fontsize=12.5, fontweight="bold", x=0.01, ha="left")
+        plt.tight_layout(); plt.savefig(file, dpi=180, bbox_inches="tight"); plt.show()
+
+
+# ===================================================================================== 14. la loss di ModernBERT epoca per epoca (tentativo 16)
+def _media_lotti(perdite, pesi, rng, batch=4):
+    """La loss come la scrive l'addestramento: per ogni lotto da `batch` articoli la media pesata (classi bilanciate),
+    poi la media dei lotti pesata per la loro grandezza."""
+    ordine = rng.permutation(len(perdite)); lotti = [ordine[i:i + batch] for i in range(0, len(ordine), batch)]
+    return float(np.average([perdite[g].sum() / pesi[g].sum() for g in lotti], weights=[len(g) for g in lotti]))
+
+
+def loss_epoche(cartella, t, eps=0.1, seme=0):
+    """Per le due configurazioni di ModernBERT e i 5 fold: la loss di training dopo ogni epoca (dalle curve salvate),
+    la stessa loss sugli articoli del fold di test dopo l'ultima epoca (dalle previsioni salvate) e i riferimenti.
+    5 classi: entropia incrociata con classi bilanciate e label smoothing `eps`, come nell'addestramento; il minimo è la
+    loss di un modello che riproduce esattamente il bersaglio smussato su ogni articolo (training imparato a memoria), e
+    non è zero per via della label smoothing. Regressione: errore quadratico medio sul punteggio/100, mostrato come
+    radice in punti NewsGuard (RMSE); il riferimento è prevedere sempre la media del training."""
+    rng = np.random.default_rng(seme); righe = []
+    for config in ["5 classi", "regressione"]:
+        for k in range(1, 6):
+            curva = pd.read_csv(Path(cartella) / config / f"curva_fold{k}.csv")
+            te = pd.read_csv(Path(cartella) / config / f"fold{k}.csv")
+            tr = t[t.fold != k]
+            y_tr = np.repeat(tr.label.to_numpy(), tr.articoli.to_numpy())
+            y_te, s_te = t.label.reindex(te.domain).to_numpy(), t.score.reindex(te.domain).to_numpy()
+            riga = {"configurazione": config, "fold": k}
+            if config == "5 classi":
+                w = len(y_tr) / (5 * np.bincount(y_tr, minlength=5))
+                a = eps * w / 5 + np.diag((1 - eps) * w)          # riga c: il peso di −log p_j per un articolo di livello c
+                minimo = -(a * np.log(a / a.sum(1, keepdims=True))).sum(1)
+                riga.update({f"epoca {e}": l for e, l in zip(curva.epoca, curva.loss)})
+                P = np.clip(te[CLASSI].to_numpy(), 1e-7, 1)
+                riga["test, dopo l'ultima epoca"] = _media_lotti((a[y_te] * -np.log(P)).sum(1), w[y_te], rng)
+                riga["minimo possibile (training a memoria)"] = _media_lotti(minimo[y_tr], w[y_tr], rng)
+                riga["a caso (1/5 a ogni livello)"] = _media_lotti(a.sum(1)[y_tr] * np.log(5), w[y_tr], rng)
+            else:
+                riga.update({f"epoca {e}": np.sqrt(l) * 100 for e, l in zip(curva.epoca, curva.loss)})
+                riga["test, dopo l'ultima epoca"] = float(np.sqrt(((te.s_regressione - s_te) ** 2).mean()))
+                riga["sempre la media del training"] = float(np.sqrt(((s_te - np.repeat(tr.score.to_numpy(), tr.articoli.to_numpy()).mean()) ** 2).mean()))
+            righe.append(riga)
+    return pd.DataFrame(righe).set_index(["configurazione", "fold"])
+
+
+def misure_per_fold(T):
+    """F1 sui 5 livelli e accuratezza affidabile sì/no per fold (dict nome → previsioni per testata)."""
+    from sklearn.metrics import f1_score
+    righe = []
+    for nome, t_ in T.items():
+        for imp, livelli, affidabile in [("5 classi", "5 classi", None), ("regressione", "regressione → quote del training", "regressione")]:
+            for k, g in t_.groupby("fold"):
+                y = g["livello vero"].to_numpy(); l = g[livelli].to_numpy().astype(int)
+                a = (g[affidabile] >= 60).to_numpy() if affidabile else l >= 2
+                righe.append({"modello": nome, "configurazione": imp, "fold": k,
+                              "F1 5 livelli": f1_score(y, l, average="macro", labels=range(5), zero_division=0),
+                              "affidabile sì/no": ((y >= 2) == a).mean()})
+    return pd.DataFrame(righe)
+
+
+def grafico_loss_epoche(L, per_fold, diagnostica, file):
+    """Due righe (5 classi, regressione). A sinistra la loss di training epoca per epoca (una linea per fold) e, dopo
+    l'ultima epoca, la stessa loss sul fold di test; al centro e a destra il test per fold, ModernBERT contro TF-IDF;
+    in alto a destra la diagnostica sul fold 2 (il test misurato dopo ogni epoca)."""
+    import matplotlib.pyplot as plt
+    BLU, ARANCIO, GRIGIO, CHIARO = "#2a78d6", "#eb6834", "#52514e", "#b5b3ab"
+    with plt.rc_context(STILE_GRAFICI):
+        fig, assi = plt.subplots(2, 3, figsize=(17, 8.2), gridspec_kw={"width_ratios": [1.35, 1, 1]})
+        for r, config in enumerate(["5 classi", "regressione"]):
+            ax = assi[r, 0]; d = L.loc[config]
+            epoche = [c for c in d.columns if c.startswith("epoca")]; x = np.arange(1, len(epoche) + 1)
+            for k, riga in d.iterrows():
+                ax.plot(x, riga[epoche].to_numpy(float), color=BLU, alpha=0.55, lw=1.3, marker="o", ms=3.5)
+            ax.plot([], [], color=BLU, marker="o", label="training, un fold per linea")
+            xt = len(epoche) + 0.8
+            ax.scatter(np.full(len(d), xt) + np.linspace(-0.12, 0.12, len(d)), d["test, dopo l'ultima epoca"], color=ARANCIO, s=34,
+                       zorder=3, label="test (articoli delle testate mai viste)")
+            test = d["test, dopo l'ultima epoca"]
+            ax.text(xt, test.max() * 1.03, f"media\n{test.mean():.2f}".replace(".", ","),
+                    ha="center", va="bottom", fontsize=8, color=ARANCIO, fontweight="bold")
+            for nome in [c for c in d.columns if not c.startswith(("epoca", "test"))]:
+                v = d[nome].mean(); ax.axhline(v, color=GRIGIO, ls=":", lw=1)
+                ax.text(0.85, v, f"{nome}: {v:.2f}".replace(".", ","), va="bottom", fontsize=8, color=GRIGIO)
+            ax.set_xticks(list(x) + [xt], [str(e) for e in x] + ["test"]); ax.set_xlabel("epoca di addestramento")
+            ax.set_xlim(0.7, xt + 0.4); ax.legend(loc="center right", fontsize=8)
+            if config == "5 classi":
+                ax.set_title("5 classi · loss dopo ogni epoca (entropia incrociata)"); ax.set_ylim(0, d.max().max() * 1.2)
+            else:
+                ax.set_title("regressione · errore medio dopo ogni epoca (punti NewsGuard, RMSE)"); ax.set_ylim(0, d.max().max() * 1.2)
+            for c, metrica in enumerate(["F1 5 livelli", "affidabile sì/no"], start=1):
+                if config == "5 classi" and c == 2:
+                    continue
+                ax = assi[r, c]; p = per_fold[per_fold.configurazione == config]
+                for dx, nome, colore in [(-0.12, "TF-IDF", GRIGIO), (0.12, "ModernBERT 2048", ARANCIO)]:
+                    q = p[p.modello == nome]
+                    ax.scatter(q.fold + dx, q[metrica], color=colore, s=40, zorder=3, label=nome.replace(" 2048", ""))
+                    ax.axhline(q[metrica].mean(), color=colore, lw=1, ls="--", alpha=0.7)
+                ax.set_xticks(range(1, 6), [f"fold {k}" for k in range(1, 6)]); ax.set_ylim(0, 1); ax.legend(fontsize=8, loc="lower right")
+                ax.set_title(f"{config} · test per fold: {metrica}\n(-- media dei 5 fold)")
+        ax = assi[0, 2]
+        if diagnostica is not None:
+            ax.plot(diagnostica.epoca, diagnostica.test, marker="o", color=ARANCIO, label="test (fold 2)")
+            ax.plot(diagnostica.epoca, diagnostica.validazione, marker="o", color=CHIARO, ls="--", label="validazione (15% del training)")
+            tf = per_fold[(per_fold.modello == "TF-IDF") & (per_fold.configurazione == "5 classi") & (per_fold.fold == 2)]["F1 5 livelli"]
+            if len(tf):
+                ax.axhline(tf.iloc[0], color=GRIGIO, ls=":", lw=1); ax.text(1.6, tf.iloc[0], f"TF-IDF sul fold 2: {tf.iloc[0]:.2f}".replace(".", ","),
+                                                                      va="bottom", fontsize=8, color=GRIGIO)
+            ax.set_ylim(0, 0.6); ax.set_xlabel("epoca di addestramento"); ax.legend(fontsize=8, loc="lower right")
+            ax.set_title("5 classi · diagnostica: F1 sul test dopo ogni epoca\n(fold 2, 6 epoche, prima dei 5 fold)")
+        else:
+            ax.axis("off")
+        fig.suptitle("ModernBERT epoca per epoca: impara il training quasi a memoria, ma sulle testate nuove non va oltre il TF-IDF",
                      fontsize=12.5, fontweight="bold", x=0.01, ha="left")
         plt.tight_layout(); plt.savefig(file, dpi=180, bbox_inches="tight"); plt.show()

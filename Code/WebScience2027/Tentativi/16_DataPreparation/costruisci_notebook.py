@@ -1,4 +1,6 @@
 """Costruisce i notebook 3 (feature), 4 (embedding) e 5 (ModernBERT a 2048 token) del tentativo 16."""
+from pathlib import Path
+
 import nbformat as nbf
 
 CARTELLA = "/home/john/Repos/PublisherClassification/Code/WebScience2027/Tentativi/16_DataPreparation/"
@@ -44,6 +46,9 @@ def notebook(celle, nome, kernel="johnvenv"):
             c.metadata["tags"] = ["parameters"]; break
     nb = nbf.v4.new_notebook(cells=celle)
     nb.metadata["kernelspec"] = {"name": kernel, "display_name": "johnVenv", "language": "python"}
+    vecchio = Path(CARTELLA + nome)
+    if vecchio.exists() and [c.source for c in nbf.read(vecchio, as_version=4).cells] == [c.source for c in celle]:
+        print(nome, "invariato"); return          # niente da riscrivere: gli id delle celle restano quelli di prima
     nbf.write(nb, CARTELLA + nome)
     for c in celle:
         if c.cell_type == "code":
@@ -246,25 +251,43 @@ classificazione a 5 classi, in arancio la regressione; linee grigie: intervalli 
     code('''valori, intervalli, differenze, vero = F.misure_modelli(T)
 valori.to_csv(OUT / "confronto.csv")
 F.grafico_confronto(valori, intervalli, vero, OUT / "confronto.png")'''),
+    md("""### Lo stesso grafico, con i dettagli
+
+Accanto ai nomi che cosa è ogni modello, nei titoli su quali testate si misura, sotto come si addestra e come si testa.
+La **baseline** è il valore di chi risponde sempre allo stesso modo senza leggere i testi: per «affidabile sì/no» è dire
+sempre «affidabile», cioè la quota di testate affidabili (0,65 su tutte, 0,60 sulle estreme). Un modello serve solo se
+sta sopra."""),
+    code('F.grafico_confronto(valori, intervalli, vero, OUT / "confronto_dettagli.png", dettagli=True)'),
     md("## 2. In numeri\nIn alto i valori; sotto la differenza da TF-IDF con la stessa impostazione (è chiara se l'intervallo non contiene lo zero)."),
     code('''display(valori.round(3))
 differenze if len(differenze) else "per ora c'è solo il TF-IDF"'''),
-    md("""## 3. ModernBERT è addestrato abbastanza?
+    md("""## 3. ModernBERT è addestrato abbastanza? La loss epoca per epoca
 
-La diagnostica su un fold (fold 2): 6 epoche su tutti gli articoli di training. La loss di training scende molto (il
-modello impara); la F1 sul test si stabilizza dalla 4ª–5ª epoca: per questo i 5 fold usano 5 epoche."""),
-    code('''f = Path("Results/modernbert/diagnostica/curva_fold2.csv")
-if f.exists():
-    c = pd.read_csv(f)
-    with plt.rc_context(F.STILE_GRAFICI):
-        fig, assi = plt.subplots(1, 2, figsize=(11, 3.4))
-        assi[0].plot(c.epoca, c.loss, marker="o", color="#2a78d6"); assi[0].axhline(np.log(5), ls=":", color="#52514e")
-        assi[0].set_title("loss di training (··· a caso: ln 5 = 1,61)")
-        assi[1].plot(c.epoca, c.test, marker="o", color="#eb6834"); assi[1].set_ylim(0, 0.5)
-        assi[1].set_title("F1 sul fold di test, dopo ogni epoca")
-        for a in assi:
-            a.set_xlabel("epoca")
-        plt.tight_layout(); plt.savefig(OUT / "diagnostica.png", dpi=180, bbox_inches="tight"); plt.show()
+Per ogni fold, la loss di training dopo ognuna delle 5 epoche e, accanto, la stessa loss sugli articoli del fold di test
+(testate mai viste), misurata dopo l'ultima epoca.
+- **5 classi**: entropia incrociata, con classi bilanciate e label smoothing 0,1 come nell'addestramento. Due riferimenti:
+  *a caso* (1/5 a ogni livello, 1,63) e il *minimo possibile* (circa 0,42). Con la label smoothing la loss non può
+  arrivare a zero: il minimo è quello di un modello che ha imparato a memoria ogni articolo di training.
+- **Regressione**: errore medio in punti NewsGuard (radice dell'errore quadratico); riferimento: dire sempre il
+  punteggio medio del training (circa 28 punti).
+
+Al centro e a destra il test per fold, ModernBERT contro TF-IDF; in alto a destra la diagnostica fatta prima dei 5 fold
+(fold 2, 6 epoche, il test misurato dopo ogni epoca)."""),
+    code('''if (Path("Results/modernbert/regressione") / "fold1.csv").exists():
+    L = F.loss_epoche("Results/modernbert", t)
+    per_fold = F.misure_per_fold(T)
+    f = Path("Results/modernbert/diagnostica/curva_fold2.csv")
+    F.grafico_loss_epoche(L, per_fold, pd.read_csv(f) if f.exists() else None, OUT / "loss_epoche.png")
+    L.to_csv(OUT / "loss_epoche.csv")
+    display(L.round(2))
 else:
-    print("la diagnostica non c'è ancora")'''),
+    print("mancano le previsioni per articolo di ModernBERT (Results/modernbert/*/fold*.csv)")'''),
+    md("""**Che cosa vuol dire.** ModernBERT non è sottoallenato: dopo 5 epoche la loss di training è 0,43, quasi il minimo
+possibile (0,42), e l'errore della regressione sul training è di 4 punti. Il training è imparato quasi a memoria.
+
+Sul test invece la loss è circa 2,1, più alta che rispondendo a caso (1,63): sulle testate nuove il modello sbaglia
+con sicurezza. L'errore della regressione è di circa 25 punti, poco meno dei 28 di chi dice sempre la media. Ogni
+articolo eredita il livello della sua testata, quindi il modello impara a riconoscere le testate di training più che
+un segnale che vale per testate nuove. Più epoche non servirebbero: nella diagnostica il test si ferma a 0,30 dalla 4ª
+epoca, e per fold ModernBERT e TF-IDF si alternano."""),
 ], "06_confronto.ipynb")

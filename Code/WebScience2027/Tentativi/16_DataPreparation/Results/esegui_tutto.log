@@ -1,0 +1,31 @@
+2026-10-27 17:01:08  ================ inizio
+2026-10-27 17:01:08  spostato Results/feature in Results/vecchi_senza_limite_1500
+2026-10-27 17:01:08  spostato Results/analisi in Results/vecchi_senza_limite_1500
+2026-10-27 17:01:08  spostato Results/cache/stile_articoli.csv.gz in Results/vecchi_senza_limite_1500
+2026-10-27 17:01:08  >>> 1. data preparation (circa 6 min)
+2026-10-27 17:03:25  >>> 2. data analysis (circa 10 min)
+2026-10-27 17:05:09  >>> 3. feature (circa 5 min)
+2026-10-27 17:07:32  >>> prova: embedding 0.6B
+2026-10-27 17:07:32  FERMATO: errore nella prova degli embedding
+--- rilancio Tue Oct 27 04:08:29 PM UTC 2026
+2026-10-27 17:08:29  ================ inizio
+2026-10-27 17:08:29  >>> 1. data preparation (circa 6 min)
+2026-10-27 17:10:43  >>> 2. data analysis (circa 10 min)
+2026-10-27 17:10:50  >>> 3. feature (circa 5 min)
+2026-10-27 17:10:57  >>> prova: embedding 0.6B
+2026-10-27 17:31:54  >>> prova: ModernBERT
+--- rilancio Tue Oct 27 06:07:45 PM UTC 2026 (4 epoche fisse, regressione prima)
+2026-10-27 19:07:45  ================ inizio resto
+2026-10-27 19:07:45  >>> 4. embedding 0.6B (circa 15 min; pochi minuti se già calcolati)
+2026-10-27 19:08:27  >>> 6. confronto (TF-IDF ed embedding 0.6B)
+2026-10-27 19:09:01  >>> 5. ModernBERT (diagnostica + 2 configurazioni, al più 3 epoche: circa 7 ore; tentativo 1/3)
+--- rilancio Tue Oct 27 06:21:44 PM UTC 2026 (5 epoche fisse, regressione prima)
+2026-10-27 19:21:44  ================ inizio resto
+2026-10-27 19:21:44  >>> 4. embedding 0.6B (circa 15 min; pochi minuti se già calcolati)
+2026-10-27 19:22:24  >>> 6. confronto (TF-IDF ed embedding 0.6B)
+2026-10-27 19:22:58  >>> 5. ModernBERT (diagnostica in cache + 2 configurazioni, 5 epoche: circa 12 ore; tentativo 1/3)
+2026-10-28 08:45:28  ModernBERT finito
+2026-10-28 08:45:28  >>> 6. confronto (con ModernBERT)
+2026-10-28 08:46:18  >>> 4. embedding 8B (circa 2-3 ore)
+2026-10-28 10:58:32  >>> 6. confronto finale
+2026-10-28 10:59:41  <<< FINITO
