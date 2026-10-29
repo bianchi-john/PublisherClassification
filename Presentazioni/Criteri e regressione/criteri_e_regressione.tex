@@ -110,22 +110,101 @@
 % ===================================================================================================
 \divider{La regressione}{come si addestra e come si valuta, passo per passo}
 
-\begin{frame}{Passo 1 e 2: si impara un numero, la testata prende la media}
+\begin{frame}{Che cosa impara un regressore}
   \vfill
-  \begin{enumerate}
-    \setlength\itemsep{1.1em}
-    \item \hl{Addestramento.} Ogni articolo eredita il punteggio NewsGuard della sua testata (da 0 a 100). Il modello
-          (ridge sopra il TF-IDF o gli embedding, oppure ModernBERT) impara a prevedere quel \hl{numero}, sbagliando il meno
-          possibile in media (errore quadratico).
-    \item \hl{Test.} Le testate di test non sono mai state viste. Il modello d\`a un numero a ognuno dei loro articoli e la
-          \hl{testata prende la media} dei numeri dei suoi articoli.
-  \end{enumerate}
+  \begin{itemize}
+    \setlength\itemsep{0.9em}
+    \item \hl{L'etichetta \`e un numero.} Ogni articolo eredita il punteggio NewsGuard della sua testata, da 0 a 100: tutti gli articoli di \textit{lifezette.com} valgono 0, tutti quelli di \textit{theweek.com} 100.
+    \item \hl{Il modello impara a prevedere quel numero} leggendo l'articolo, sbagliando il meno possibile in media: si
+          minimizza l'\hl{errore quadratico}, cio\`e la media di (previsto $-$ vero)$^2$ sugli articoli di training.
+    \item \hl{Testate mai viste.} Le 226 testate sono divise in 5 gruppi (fold). Si addestra su 4 e si prova sul quinto,
+          a turno: ogni testata viene giudicata da un modello che non l'ha mai vista.
+    \item Tre famiglie di modelli, \hl{stessa etichetta e stessa valutazione}: cambia solo come il testo diventa numeri.
+  \end{itemize}
   \vfill
-  \raggedright\small\itshape Non si misura mai la distanza esatta (``ha detto 70, era 71''): il numero si trasforma in una
-  decisione, come nei passi 3 e 4.
 \end{frame}
 
-\begin{frame}{Passo 3: affidabile s\`i o no}
+\begin{frame}{Il regressore a feature: TF-IDF + ridge}
+  \vfill
+  \begin{enumerate}
+    \setlength\itemsep{0.9em}
+    \item \hl{Il testo diventa un elenco di numeri}: per ognuna delle 100.000 parole e coppie di parole pi\`u utili, quanto
+          compare nell'articolo, pesato da quanto \`e rara (TF-IDF). Il vocabolario si impara \hl{solo dagli articoli di training}.
+    \item \hl{Ridge}: il punteggio previsto \`e una \hl{somma pesata} di questi numeri, pi\`u una costante. Ogni parola ha un
+          peso: per esempio ``Kyiv'' spinge in su e ``Kiev'' in gi\`u, ``Getty Images'' in su, ``Rumble'' e ``Gettr'' in gi\`u.
+    \item \hl{Addestramento}: i pesi si scelgono in un colpo solo, con una formula, per minimizzare l'errore quadratico
+          sugli articoli di training pi\`u una penalit\`a sui pesi troppo grandi (alpha = 1), che evita di imparare a memoria.
+    \item \hl{Test}: per ogni articolo delle testate di test si calcola la somma pesata, cio\`e un numero.
+  \end{enumerate}
+  \vfill
+\end{frame}
+
+\begin{frame}{I transformer congelati: Qwen3-Embedding 8B e Mistral-Small 24B}
+  \vfill
+  \begin{enumerate}
+    \setlength\itemsep{0.9em}
+    \item \hl{Il transformer legge l'articolo intero} (fino a 2.048 token) e lo trasforma in un \hl{vettore} di 4.096 (Qwen3)
+          o 5.120 (Mistral) numeri. \hl{Il transformer non si addestra}: \`e usato cos\`i com'\`e (``congelato''), come un lettore.
+    \item Sopra i vettori c'\`e \hl{la stessa ridge} del modello a feature: una somma pesata dei 4.096 o 5.120 numeri.
+    \item \hl{Addestramento}: si imparano solo i pesi della ridge (qualche migliaio di numeri), sugli articoli di training.
+          La penalit\`a alpha \`e 1 nella versione base; nella versione migliore si sceglie con una validazione interna al training (per l'8B quasi sempre 1.000).
+    \item \hl{Test}: il vettore di ogni articolo di test, moltiplicato per i pesi, d\`a il punteggio previsto.
+  \end{enumerate}
+  \vfill
+  \raggedright\small\itshape Imparare pochi pesi \`e un pregio: il modello non ha abbastanza libert\`a per imparare a memoria
+  le testate di training.
+\end{frame}
+
+\begin{frame}{Il transformer addestrato: ModernBERT}
+  \vfill
+  \begin{enumerate}
+    \setlength\itemsep{0.8em}
+    \item \hl{Modello}: ModernBERT-base (150 milioni di parametri) con \hl{un solo neurone in uscita}: legge l'articolo
+          (fino a 2.048 token) e d\`a un numero.
+    \item \hl{Bersaglio}: il punteggio diviso 100 (da 0 a 1), per avere numeri piccoli durante l'addestramento.
+    \item \hl{Addestramento}, a lotti di 32 articoli di training, in ordine casuale:
+      \begin{itemize}
+        \item il modello prevede un numero per ogni articolo del lotto;
+        \item si misura l'errore quadratico rispetto al punteggio/100;
+        \item si correggono di poco \hl{tutti} i 150 milioni di pesi nella direzione che riduce l'errore (AdamW, passo 3e-5).
+      \end{itemize}
+          Si ripete su tutti gli articoli di training per \hl{5 volte} (5 epoche) e si tiene il modello dell'ultima.
+    \item \hl{Test}: il modello legge ogni articolo delle testate di test; il numero, moltiplicato per 100, \`e il punteggio previsto.
+  \end{enumerate}
+  \vfill
+\end{frame}
+
+\begin{frame}{Tre strade, lo stesso risultato: un numero per articolo}
+  \vfill
+  \centering\small
+  \begin{tabular}{>{\raggedright\arraybackslash}p{0.2\textwidth}>{\raggedright\arraybackslash}p{0.27\textwidth}>{\raggedright\arraybackslash}p{0.2\textwidth}>{\raggedright\arraybackslash}p{0.2\textwidth}}
+    \toprule
+    \textbf{Modello} & \textbf{Come il testo diventa numeri} & \textbf{Che cosa si addestra} & \textbf{Quanti pesi si imparano} \\
+    \midrule
+    TF-IDF + ridge & conteggi di parole e coppie & la ridge & 100.000 \\
+    \addlinespace
+    Qwen3 / Mistral + ridge & il vettore del transformer congelato & la ridge & 4.096 / 5.120 \\
+    \addlinespace
+    ModernBERT & il transformer stesso & tutto il transformer & 150 milioni \\
+    \bottomrule
+  \end{tabular}\\[1.2em]
+  \raggedright
+  Da qui in poi la valutazione \`e \hl{identica per tutti}: conta solo il numero che il modello d\`a a ogni articolo
+  delle testate di test.
+  \vfill
+\end{frame}
+
+\begin{frame}{Valutazione, passo 1: dagli articoli alla testata}
+  \centering
+  \includegraphics[width=0.9\textwidth]{da_articoli_a_testata.png}\\[0.3em]
+  \raggedright\small
+  Ogni punto grigio \`e un articolo di una testata di test (ModernBERT regressore). Il singolo articolo sbaglia molto, ma la
+  \hl{media dei suoi articoli} (blu) \`e il punteggio previsto della testata. Le medie stanno strette: qui 44 e 74, contro
+  12 e 100 veri. La valutazione non guarda la distanza dal vero (44 contro 12), ma da che parte di 60 sta la testata
+  (passo 2) e in che posizione sta rispetto alle altre (passo 3).
+\end{frame}
+
+\begin{frame}{Valutazione, passo 2: affidabile s\`i o no}
   \begin{columns}[T]
     \column{0.52\textwidth}
       \includegraphics[width=\textwidth]{compressione.png}
@@ -138,13 +217,14 @@
         \item \hl{Previsto 70, vero 71}: tutti e due sopra 60, \hl{giusto}. Anche previsto 61 e vero 98 \`e giusto.
         \item \hl{Previsto 58, vero 61}: da una parte e dall'altra della soglia, \hl{sbagliato}, anche se la distanza \`e
               piccola.
+        \item Misura: \hl{accuratezza} (quota di testate giuste).
       \end{itemize}
       \vspace{0.4em}
       In rosso le testate sbagliate (TF-IDF in regressione).
   \end{columns}
 \end{frame}
 
-\begin{frame}{Passo 4: i 5 livelli, e perch\'e non bastano le soglie di NewsGuard}
+\begin{frame}{Valutazione, passo 3: i 5 livelli, e perch\'e non bastano le soglie di NewsGuard}
   \begin{columns}[T]
     \column{0.5\textwidth}
       \small
@@ -152,7 +232,8 @@
         \setlength\itemsep{0.7em}
         \item I livelli NewsGuard sono fasce di punteggio: l1 0--39, l2 40--59, l3 60--74, l4 75--99, l5 100.
         \item Ma i numeri previsti stanno \hl{stretti intorno alla media}: il TF-IDF prevede solo tra 43 e 93, mentre i veri
-              vanno da 0 a 100 (nel grafico a fianco, i punti stanno su una fascia orizzontale).
+              vanno da 0 a 100 (nel grafico i punti stanno su una fascia orizzontale). \`E tipico della regressione: nel
+              dubbio, il modello si avvicina alla media.
         \item Con le fasce di NewsGuard nessuna testata finirebbe in \hl{l1} (sotto 40) o in \hl{l5} (100): conta di pi\`u
               l'\hl{ordine} delle testate che il numero esatto.
       \end{itemize}
@@ -161,14 +242,55 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Passo 4: le quote del training}
+\begin{frame}{Valutazione, passo 3: le quote del training}
   \centering
   \includegraphics[width=0.93\textwidth]{quote.png}\\[0.2em]
   \raggedright\small
   Le testate di test si mettono \hl{in ordine di punteggio previsto} e si tagliano con le \hl{stesse quote di livelli del
-  training} (fold 1: 16\% l1, 19\% l2, 13\% l3, 35\% l4, 17\% l5). Contorno nero = livello giusto.\\
-  \hl{Previsto 70, vero 71} (l3): nel fold 1 il 70 cade in \hl{l4}, quindi per l'F1 sui 5 livelli \`e un errore, ma per la
-  \hl{tolerant} ($\pm$1 livello) e per affidabile s\`i/no \`e giusto.
+  training} (fold 1: 16\% l1, 19\% l2, 13\% l3, 35\% l4, 17\% l5). Contorno nero = livello giusto. Poi si misurano l'\hl{F1}
+  sui 5 livelli (livello esatto) e la \hl{tolerant} ($\pm$1 livello).\\
+  \hl{Previsto 70, vero 71} (l3): nel fold 1 il 70 cade in \hl{l4}: errore per l'F1, giusto per la tolerant e per
+  affidabile s\`i/no.
+\end{frame}
+
+\begin{frame}{Un esempio completo}
+  \vfill
+  \small
+  Una testata di test con 5 articoli, punteggio vero NewsGuard \hl{71} (livello l3, affidabile). Supponiamo che nel suo fold i tagli delle quote siano 57, 64, 67, 74.\\[0.8em]
+  \centering
+  \begin{tabular}{lccccc}
+    \toprule
+    & articolo 1 & articolo 2 & articolo 3 & articolo 4 & articolo 5 \\
+    \midrule
+    punteggio previsto & 62 & 71 & 55 & 80 & 66 \\
+    \bottomrule
+  \end{tabular}\\[1em]
+  \raggedright
+  \begin{enumerate}
+    \setlength\itemsep{0.6em}
+    \item \hl{Testata}: media $= (62+71+55+80+66)/5 = 66{,}8$.
+    \item \hl{Affidabile s\`i/no}: 66,8 $\geq$ 60 $\Rightarrow$ affidabile; vero 71 $\geq$ 60 $\Rightarrow$ \hl{giusto}.
+    \item \hl{5 livelli}: 66,8 sta tra 64 e 67 $\Rightarrow$ \hl{l3}; vero l3 $\Rightarrow$ \hl{giusto} per l'F1 e per la tolerant.
+  \end{enumerate}
+  \vfill
+\end{frame}
+
+\begin{frame}{La variante con il voto degli articoli (tentativo 17)}
+  \vfill
+  \small
+  Invece della media, \hl{ogni articolo diventa un livello} e la testata prende il \hl{livello votato dalla maggioranza} dei
+  suoi articoli (a parit\`a vince il pi\`u basso).
+  \begin{itemize}
+    \setlength\itemsep{0.7em}
+    \item Il livello di ogni articolo: i punteggi previsti di tutti gli articoli di test del fold si ordinano e si tagliano
+          con le quote di livelli degli \hl{articoli} di training (come prima, ma articolo per articolo).
+    \item Affidabile: s\`i se la \hl{maggioranza} degli articoli ha un livello da l3 in su.
+    \item Nell'esempio di prima, con i tagli 57, 64, 67, 74: livelli l2, l4, l1, l5, l3 \ $\Rightarrow$ nessuna maggioranza,
+          vince il pi\`u basso (l1); affidabili 3 articoli su 5 $\Rightarrow$ affidabile.
+  \end{itemize}
+  \vspace{0.5em}
+  Il voto permette di chiedersi \hl{quanti articoli servono}: con 1 articolo solo, con 5, con 25 (la curva del ``DNA'').
+  \vfill
 \end{frame}
 
 \begin{frame}{In breve}
@@ -176,7 +298,7 @@
   \centering\small
   \begin{tabular}{>{\raggedright\arraybackslash}p{0.26\textwidth}>{\raggedright\arraybackslash}p{0.62\textwidth}}
     \toprule
-    \textbf{Misura} & \textbf{Come si ottiene dal numero previsto per la testata} \\
+    \textbf{Misura} & \textbf{Come si ottiene dal numero previsto per la testata (media dei suoi articoli)} \\
     \midrule
     Affidabile s\`i/no & giusto se previsto e vero stanno dalla stessa parte di 60 \\
     \addlinespace
@@ -189,6 +311,7 @@
   \raggedright
   \begin{itemize}
     \setlength\itemsep{0.6em}
+    \item Tutti e tre i regressori (TF-IDF, transformer congelati, ModernBERT) si valutano allo stesso modo.
     \item La distanza esatta tra previsto e vero (70 contro 71) non entra mai nelle misure: conta da che parte di 60 sta la
           testata e in che posizione sta rispetto alle altre.
     \item I classificatori a 5 classi invece danno direttamente un livello a ogni articolo, e la testata prende il

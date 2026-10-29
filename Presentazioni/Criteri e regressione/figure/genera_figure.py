@@ -108,3 +108,23 @@ ax.set_title(f"Fold {k}: {len(te)} testate di test in ordine di punteggio previs
              fontsize=10)
 plt.tight_layout(); plt.savefig(QUI / "quote.png", bbox_inches="tight"); plt.close()
 print("quote del training (fold 1):", ", ".join(f"{q:.0%}" for q in np.diff(np.r_[0, quote, 1])), "| tagli:", np.round(tagli, 1))
+
+# 5. dagli articoli alla testata: i punteggi previsti per ogni articolo di due testate di test (ModernBERT regressore)
+mb = pd.concat([pd.read_csv(T16 / f"Results/modernbert/regressione/fold{k}.csv") for k in range(1, 6)])
+n_art = mb.domain.value_counts()
+media = mb.groupby("domain").s_regressione.mean()
+candidati = t[(n_art.reindex(t.index) >= 40) & (n_art.reindex(t.index) <= 120)]
+esempi = [candidati[candidati.score <= 30].score.idxmin(), candidati[candidati.score >= 95].index[0]]
+fig, assi = plt.subplots(1, 2, figsize=(9, 3.1), sharey=True)
+for ax, d in zip(assi, esempi):
+    v = mb[mb.domain == d].s_regressione.to_numpy()
+    ax.scatter(rng.uniform(-0.3, 0.3, len(v)), v, s=12, color=CHIARO, label="un articolo")
+    ax.axhline(media[d], color=BLU, lw=2.2, label=f"media dei {len(v)} articoli: {media[d]:.0f}")
+    ax.axhline(t.score[d], color=ROSSO, lw=1.5, ls="--", label=f"punteggio vero NewsGuard: {t.score[d]:.0f}")
+    ax.axhline(60, color=GRIGIO, ls=":", lw=1)
+    ax.set_xticks([]); ax.set_ylim(-5, 105); ax.grid(axis="x", visible=False)
+    ax.set_title(f"testata {'poco' if t.score[d] < 60 else 'molto'} affidabile (livello {t.livello[d]})")
+    ax.legend(fontsize=8, loc="lower right" if t.score[d] >= 60 else "upper right")
+assi[0].set_ylabel("punteggio previsto (0–100)")
+plt.tight_layout(); plt.savefig(QUI / "da_articoli_a_testata.png", bbox_inches="tight"); plt.close()
+print("esempi:", {d: (round(t.score[d]), int(n_art[d]), round(media[d], 1)) for d in esempi})
