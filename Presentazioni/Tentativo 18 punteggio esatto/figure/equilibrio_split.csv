@@ -1,0 +1,11 @@
+split,fold,l1,l2,l4,per articolo
+vecchi (per livello),1,18.5,47.9,84.3,67.5
+vecchi (per livello),2,31.4,49.3,86.8,67.9
+vecchi (per livello),3,19.6,50.2,84.1,61.3
+vecchi (per livello),4,21.8,49.0,86.8,71.4
+vecchi (per livello),5,12.1,52.8,82.8,64.6
+nuovi (per punteggio),1,21.6,49.6,84.3,68.9
+nuovi (per punteggio),2,19.9,50.2,85.5,63.2
+nuovi (per punteggio),3,21.4,49.2,84.3,66.7
+nuovi (per punteggio),4,20.6,50.4,85.3,66.4
+nuovi (per punteggio),5,19.9,49.6,85.6,67.3

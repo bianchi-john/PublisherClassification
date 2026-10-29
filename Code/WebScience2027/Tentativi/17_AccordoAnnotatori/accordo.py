@@ -86,3 +86,35 @@ def bootstrap(coppie, n, B=2000, seme=0):
     valori = {c: misure(*x) for c, x in coppie.items()}
     campioni = {c: pd.DataFrame([misure(*(v[i] for v in x)) for i in idx]) for c, x in coppie.items()}
     return valori, campioni
+
+
+def conteggi(gruppi_testate, k_livelli=5):
+    """Per ogni testata quanti suoi articoli il modello mette in ogni livello (testate × 5)."""
+    return np.array([np.bincount(v, minlength=k_livelli) for v in gruppi_testate])
+
+
+def accuratezza_e_f1(C, etichetta, soglia_rif, aff_testata=None):
+    """Da conteggi testate × livelli (articoli, oppure un solo voto per testata) e dall'etichetta di riferimento di ogni
+    testata (0-4): accuratezza su affidabile sì/no (modello: livello da l3 in su; riferimento: etichetta ≥ `soglia_rif`)
+    e F1 macro sui 5 livelli. Con `aff_testata` l'affidabile della testata è quello già deciso dal voto."""
+    vero_aff = etichetta >= soglia_rif
+    if aff_testata is None:
+        giusti = (C[:, 2:].sum(1) * vero_aff + C[:, :2].sum(1) * ~vero_aff).sum()
+        acc = giusti / C.sum()
+    else:
+        acc = np.mean(aff_testata.astype(bool) == vero_aff)
+    M = np.zeros((5, 5))
+    np.add.at(M, etichetta, C)                               # matrice di confusione: riga = vero, colonna = previsto
+    tp = np.diag(M); prec = tp / np.maximum(M.sum(0), 1e-12); rich = tp / np.maximum(M.sum(1), 1e-12)
+    f1 = np.where(prec + rich > 0, 2 * prec * rich / np.maximum(prec + rich, 1e-12), 0)
+    return acc, f1[M.sum(1) > 0].mean()
+
+
+def quattro_misure(livello, etichetta, soglia_rif, affidabile=None):
+    """Accuratezza e kappa su affidabile sì/no, F1 macro e Spearman sui 5 livelli, tra i livelli del modello e quelli
+    di riferimento (articoli o testate). Senza `affidabile`, affidabile = livello da l3 in su."""
+    from sklearn.metrics import f1_score
+    aff = (livello >= SOGLIA["modello"]) if affidabile is None else affidabile.astype(bool)
+    vero = etichetta >= soglia_rif
+    return {"accuratezza": float(np.mean(aff == vero)), "F1": f1_score(etichetta, livello, average="macro", labels=range(5), zero_division=0),
+            "kappa": cohen_kappa_score(aff, vero), "Spearman": spearmanr(livello, etichetta).correlation}
