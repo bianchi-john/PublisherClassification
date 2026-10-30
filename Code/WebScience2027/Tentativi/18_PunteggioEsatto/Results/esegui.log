@@ -1,0 +1,16 @@
+2026-10-29 17:47:17  CPU: 2. TF-IDF e Mistral, 300 lavori (tentativo 1/2)
+2026-10-29 17:47:17  GPU: 3. ModernBERT, condizione B (tentativo 1/3)
+2026-10-29 18:20:39  CPU: modelli lineari finiti
+2026-10-29 18:20:39  CPU: 4. primo confronto (con i BERT già finiti)
+2026-10-29 18:20:48  ATTENZIONE: errore nel confronto
+2026-10-29 18:20:48  CPU: fine
+2026-10-29 23:30:20  GPU: ModernBERT B finito
+2026-10-29 23:30:20  GPU: 3. ModernBERT, condizione C (tentativo 1/3)
+2026-10-30 00:05:14  GPU: ModernBERT C finito
+2026-10-30 00:05:14  GPU: 3. DeBERTa, condizione B (tentativo 1/3)
+2026-10-30 03:23:45  GPU: DeBERTa B finito
+2026-10-30 03:23:45  GPU: 3. ModernBERT, condizione A (tentativo 1/3)
+2026-10-30 09:02:28  GPU: ModernBERT A finito
+2026-10-30 09:02:28  GPU: 4. confronto finale con tutto
+2026-10-30 09:02:36  ATTENZIONE: errore nel confronto finale
+2026-10-30 09:02:36  <<< FINITO

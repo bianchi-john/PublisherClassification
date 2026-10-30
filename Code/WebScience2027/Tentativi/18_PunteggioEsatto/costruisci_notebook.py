@@ -223,7 +223,7 @@ vero = t.score
 pa = [pd.read_csv(OUT / "lineari" / "previsioni_articoli.csv.gz")] if (OUT / "lineari" / "previsioni_articoli.csv.gz").exists() else []
 pa += [pd.read_csv(f) for f in sorted((OUT / "bert").glob("*/previsioni.csv.gz"))]
 pa = pd.concat(pa, ignore_index=True)
-pa["vero"] = vero.reindex(pa.domain).to_numpy()
+pa["vero"] = vero.reindex(pa.domain).to_numpy(); pa["previsione"] = pd.to_numeric(pa.previsione)
 # il riferimento: la media dei punteggi delle testate di training, fold per fold
 base = []
 for s in split.columns:
@@ -245,7 +245,7 @@ for unita, d in [("articolo", pa), ("testata", pt)]:
     for chiave, g in d.groupby(CHIAVI):
         mis.append({**dict(zip(CHIAVI, chiave)), "unità": unita, **P.misure(g.vero, g.previsione)})
 mis = pd.DataFrame(mis); mis.to_csv(OUT / "misure_per_split.csv", index=False)
-sintesi = mis.groupby(["modello", "tipo", "condizione", "unità"]).agg(["mean", "min", "max"])
+sintesi = mis.drop(columns="split").groupby(["modello", "tipo", "condizione", "unità"]).agg(["mean", "min", "max"])
 print(f"{pa[CHIAVI].drop_duplicates().shape[0]} configurazioni × split")'''),
     md("""## 1. Il quadro completo
 Una riga per configurazione. **MAE** (più basso è meglio) e **Spearman** (più alto è meglio), per testata e per articolo.

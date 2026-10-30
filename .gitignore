@@ -80,3 +80,8 @@ Code/WebScience2027/Tentativi/16_DataPreparation/Results/analisi_embedding/media
 /Modelli/
 # archivio leggero dei dati (si crea con Code/WebScience2027/crea_archivio_dataset.py), fuori da git
 /Dataset.zip
+# tentativo 18: previsioni per articolo e per testata (pesanti, fuori da git; restano sul PC e sul server)
+Code/WebScience2027/Tentativi/18_PunteggioEsatto/Results/**/*.csv.gz
+Code/WebScience2027/Tentativi/18_PunteggioEsatto/Results/**/fold*.csv
+Code/WebScience2027/Tentativi/18_PunteggioEsatto/Results/lineari/lavori/
+Code/WebScience2027/Tentativi/18_PunteggioEsatto/Results/cpu_fatto
