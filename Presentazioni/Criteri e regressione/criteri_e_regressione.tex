@@ -189,13 +189,43 @@
           $41{,}7 < 60 \Rightarrow$ \textbf{inaffidabile}. Vero: inaffidabile. \si
     \item \hl{5 livelli}: qui s\`i, le medie si riadattano \hl{con le quote} (non con minimo e massimo). Le quote vengono dalle
           \hl{testate} di training del fold (l1 15\%, l2 19\%, l3 13\%, l4 35\%, l5 18\%). Le medie delle 45 \hl{testate di test}
-          si ordinano e si tagliano a quelle quote. Soglie: $53{,}1 \mid 60{,}4 \mid 67{,}6 \mid 84{,}7$.\\
+          si ordinano e si tagliano a quelle quote. Soglie: $53{,}1 \mid 60{,}4 \mid 67{,}6 \mid 84{,}7$ (da dove vengono:
+          slide seguente).\\
           Media $41{,}7 <53{,}1 \Rightarrow$ \textbf{l1}. Vero: l1. \si
   \end{enumerate}
   \vspace{0.4em}
   \raggedright
   \hl{Misure}: F1 sui 5 livelli, tolerant ($\pm$1 livello), accuratezza su affidabile s\`i/no.\\
   Perch\'e i due casi sono trattati diversamente? \hl{Sezione seguente}.
+\end{frame}
+
+\begin{frame}{Da dove vengono le soglie 53,1 | 60,4 | 67,6 | 84,7}
+  \small
+  Dal \hl{training} si prende \hl{quante} testate per livello; dalle previsioni di \hl{test} si prende \hl{dove} tagliare.
+  \begin{enumerate}
+    \setlength\itemsep{0.35em}
+    \item \hl{Training}: 181 testate, per NewsGuard l1 28, l2 35, l3 23, l4 63, l5 32 = 15,5 / 19,3 / 12,7 / 34,8 / 17,7\%.\\
+          Quante stanno \hl{in quel livello o sotto}: l1 15,5\%; l1+l2 = 15,5+19,3 = \textbf{34,8\%}; fino a l3 +12,7 =
+          \textbf{47,5\%}; fino a l4 +34,8 = \textbf{82,3\%}.
+    \item \hl{Test}: le 45 testate in fila per media prevista:\\
+          {\footnotesize 36,5 \ 39,4 \ 41,0 \ \errore{41,7} \ 42,7 \ 45,4 \ 49,0 $\mid$ 54,1 \ldots\ 60,3 $\mid$ 60,6 \ldots\ 65,2 $\mid$
+          67,8 \ldots\ 84,6 $\mid$ 84,9 \ldots\ 89,7} \quad (\errore{41,7} = lifezette)
+  \end{enumerate}
+  \centering\footnotesize
+  \begin{tabular}{cccc}
+    \toprule
+    \textbf{3. percentuale} & \textbf{$\times$ 45 testate} & \textbf{quindi} & \textbf{4. soglia: tra le due vicine} \\
+    \midrule
+    15,5\% & $\approx$ 7 & le 7 pi\`u basse sono l1 & 7\textordfeminine\ (49,0) e 8\textordfeminine\ (54,1) $\to$ \textbf{53,1} \\
+    34,8\% & $\approx$ 16 & dalla 8\textordfeminine\ alla 16\textordfeminine: l2 & 60,3 e 60,6 $\to$ \textbf{60,4} \\
+    47,5\% & $\approx$ 21 & dalla 17\textordfeminine\ alla 21\textordfeminine: l3 & 65,2 e 67,8 $\to$ \textbf{67,6} \\
+    82,3\% & $\approx$ 37 & dalla 22\textordfeminine\ alla 37\textordfeminine: l4; le ultime 8: l5 & 84,6 e 84,9 $\to$
+    \textbf{84,7} \\
+    \bottomrule
+  \end{tabular}\\[0.5em]
+  \raggedright\small
+  Del training si usano \hl{solo le percentuali}, non i voti. Le soglie \hl{cambiano da fold a fold}: dipendono dalle previsioni di
+  quelle 45 testate.
 \end{frame}
 
 % ------------------------------------------------------------------ dal numero alla classe
@@ -343,10 +373,10 @@
   \small
   \begin{enumerate}
     \setlength\itemsep{0.45em}
-    \item \hl{Quote dagli articoli di training} del fold: si contano gli \hl{articoli} (non le testate) per livello:
-          l1 17\%, l2 22\%, l3 13\%, l4 31\%, l5 17\%.
-    \item \hl{Soglie}: i punteggi previsti di \hl{tutti i $\sim$5.000 articoli di test} del fold si ordinano e si tagliano a
-          quelle quote. Soglie: $45{,}9 \mid 60{,}6 \mid 68{,}5 \mid 87{,}4$.
+    \item \hl{Quote dagli articoli di training} del fold: si contano i 20.043 \hl{articoli} (non le testate) per livello:
+          l1 17\%, l2 22\%, l3 13\%, l4 31\%, l5 17\% (sommate: 17,3\% $\mid$ 39,3\% $\mid$ 52,1\% $\mid$ 83,5\%).
+    \item \hl{Soglie}: \hl{stesso calcolo} della strategia 1, ma la fila sono i \hl{5.481 articoli di test} del fold: le soglie
+          cadono tra gli articoli al 17,3\%, 39,3\%, \ldots\ della fila: $45{,}9 \mid 60{,}6 \mid 68{,}5 \mid 87{,}4$.
     \item \hl{Un livello per articolo}: $22{\to}$l1, $34{\to}$l1, $42{\to}$l1, $44{\to}$l1, $39{\to}$l1, $37{\to}$l1,
           $71{\to}$l4, $26{\to}$l1, \ldots
     \item \hl{Voto sui 5 livelli}: l1 23, l2 6, l3 1, l4 1 (su 31) $\Rightarrow$ \textbf{l1}. Vero: l1. \si\\

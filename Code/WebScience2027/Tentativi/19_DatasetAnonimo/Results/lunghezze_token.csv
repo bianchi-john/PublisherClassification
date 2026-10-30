@@ -1,0 +1,4 @@
+modello,mediana,99%,massimo,limite,articoli troncati
+ModernBERT,764,1924,2635,4096,0
+Qwen3 8B,759,1898,3000,4160,0
+Mistral 24B,753,1912,2991,4096,0

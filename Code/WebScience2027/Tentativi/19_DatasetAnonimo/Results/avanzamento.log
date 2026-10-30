@@ -1,0 +1,6 @@
+2026-10-30 17:33:14  Qwen3-Embedding-8B: inizio
+2026-10-30 17:33:41  Qwen: lotto 0, 1 s
+2026-10-30 17:34:40  classificazione, TF-IDF, fold 1: penalità 1000 (interna), 118 s
+2026-10-30 17:36:35  classificazione, TF-IDF, fold 2: penalità 10000 (interna), 115 s
+2026-10-30 17:36:57  Qwen: lotto 200, 197 s
+2026-10-30 17:38:28  classificazione, TF-IDF, fold 3: penalità 100000 (bordo della griglia), 113 s
