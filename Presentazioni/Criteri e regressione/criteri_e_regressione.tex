@@ -1,7 +1,8 @@
 % =========================================================================
-% Criteri NewsGuard e regressione (Web Science 2027, tentativo 16): quali criteri NewsGuard si vedono nel testo,
-% quanto pesano sul punteggio complessivo, e come si valuta un modello addestrato a prevedere il punteggio.
-% Figure: figure/genera_figure.py (legge Dataset/ e Code/WebScience2027/Tentativi/16_DataPreparation).
+% La regressione dell'affidabilita' (Web Science 2027): tre strategie per andare dal testo al punteggio NewsGuard,
+% ognuna con allenamento, valutazione ed esempi reali di input/output (testate lifezette.com e americanprogress.org).
+% I risultati della strategia 3 vengono dal tentativo 18.
+% Figure: figure/genera_figure.py (tentativo 16) e figure del tentativo 18.
 % Build: tectonic criteri_e_regressione.tex
 % =========================================================================
 \documentclass[aspectratio=169]{beamer}
@@ -27,11 +28,13 @@
     \vfill
   \end{frame}}
 \definecolor{dividerblue}{RGB}{28,42,92}
-\definecolor{testo}{RGB}{42,120,214}
-\newcommand{\testo}[1]{\textcolor{testo}{\textbf{#1}}}
+\definecolor{rosso}{RGB}{176,42,42}
+\definecolor{verde}{RGB}{27,120,90}
+\newcommand{\si}{\textcolor{verde}{\textbf{giusto}}}
+\newcommand{\errore}[1]{\textcolor{rosso}{\textbf{#1}}}
 
-\title[Criteri, regressione e accordo]{Criteri NewsGuard, regressione e accordo con gli esperti}
-\subtitle{Che cosa si vede nel testo, come valutiamo, e il modello come terzo annotatore}
+\title[La regressione]{La regressione dell'affidabilit\`a}
+\subtitle{Tre strategie per andare dal testo al punteggio: come si allena il modello, come si valuta}
 \author[John Bianchi]{John Bianchi}
 \institute[]{IMT Lucca \& IIT-CNR Pisa}
 \date{}
@@ -43,276 +46,551 @@
 \end{frame}
 
 % ===================================================================================================
-\divider{I criteri NewsGuard}{quali si vedono negli articoli, e quanto contano}
+\divider{L'allenamento, comune a tutte}{un regressore che d\`a un punteggio a ogni articolo}
 
-\begin{frame}{Il punteggio NewsGuard \`e la somma di 9 criteri}
-  \centering\small
-  \begin{tabular}{>{\raggedright\arraybackslash}p{0.5\textwidth}r>{\raggedright\arraybackslash}p{0.26\textwidth}}
-    \toprule
-    \textbf{Criterio} & \textbf{Punti} & \textbf{Dove si vede} \\
-    \midrule
-    \testo{Non pubblica notizie false} & 22 & \testo{negli articoli} \\
-    \testo{Raccoglie e presenta le informazioni con cura} & 18 & \testo{negli articoli} \\
-    Corregge gli errori & 12,5 & pratica del sito \\
-    \testo{Distingue notizia e opinione} & 12,5 & \testo{negli articoli} \\
-    \testo{Evita i titoli ingannevoli} & 10 & \testo{negli articoli} \\
-    Dichiara propriet\`a e finanziamento & 7,5 & pratica del sito \\
-    Distingue la pubblicit\`a & 7,5 & pratica del sito \\
-    Dice chi comanda (e i conflitti di interesse) & 5 & pratica del sito \\
-    Mette i nomi degli autori & 5 & pratica del sito \\
-    \bottomrule
-  \end{tabular}\\[0.7em]
-  \raggedright
-  Ogni criterio \`e un s\`i o un no; il punteggio (0--100) \`e la somma dei punti dei s\`i. Affidabile = almeno 60.\\
-  \testo{4 criteri} riguardano il contenuto (\testo{62,5 punti}); \hl{5} le pratiche e la trasparenza del sito (37,5 punti),
-  che negli articoli non si vedono.
-\end{frame}
-
-\begin{frame}{Quanto ogni criterio va d'accordo con il punteggio complessivo}
-  \centering
-  \includegraphics[width=0.92\textwidth]{correlazioni.png}\\[0.3em]
-  \raggedright\small
-  Barre: le nostre 226 testate (tentativo 16); trattini: tutte le 11.564 testate valutate da NewsGuard.\\
-  Il criterio pi\`u legato al punteggio \`e \testo{raccoglie e presenta le informazioni con cura} (0,79; 0,89 su tutte):
-  \`e il pi\`u ``testuale'' e anche il pi\`u informativo.
-\end{frame}
-
-\begin{frame}{I soli criteri sul testo spiegano quasi tutto il punteggio}
-  \begin{columns}[T]
-    \column{0.52\textwidth}
-      \includegraphics[width=\textwidth]{testo_e_punteggio.png}
-    \column{0.46\textwidth}
-      \small
-      \begin{itemize}
-        \setlength\itemsep{0.7em}
-        \item La somma dei punti dei 4 criteri sul testo ha correlazione \hl{0,93} con il punteggio complessivo
-              (0,95 su tutte le testate NewsGuard): ne spiega circa l'\hl{87\%}.
-        \item Chi soddisfa tutti e 4 \`e \hl{sempre affidabile} (94 testate su 94): anche perdendo tutti i punti del sito
-              resta a 62,5.
-        \item Chi ne manca anche uno solo \`e inaffidabile in 79 casi su 132.
-      \end{itemize}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{Che cosa ne segue per l'addestramento}
+\begin{frame}{Il compito e l'etichetta}
   \vfill
   \begin{itemize}
-    \setlength\itemsep{1em}
-    \item \hl{Il punteggio dei soli criteri sul testo} (0--62,5) \`e un bersaglio sensato: \`e quasi lo stesso del punteggio
-          complessivo, ma toglie le pratiche del sito, che un modello che legge gli articoli non pu\`o vedere.
-    \item \hl{I criteri presi uno per uno} sono pi\`u difficili: ``niente notizie false'' e ``titoli non ingannevoli''
-          li soddisfa circa il 90\% delle nostre testate, quindi restano solo 23--29 esempi negativi per imparare.
-    \item I criteri sono legati tra loro: misurano in buona parte la stessa cosa, la qualit\`a generale della testata.
+    \setlength\itemsep{0.8em}
+    \item Ogni \hl{testata} ha un punteggio NewsGuard da 0 a 100 (es. \textit{lifezette.com} = 0, \textit{americanprogress.org} = 100).
+    \item L'etichetta \`e \hl{per testata}: ogni articolo \hl{eredita} il punteggio della sua testata. Tutti i 31 articoli di
+          lifezette.com valgono 0, tutti i 70 di americanprogress.org valgono 100.
+    \item Il \hl{regressore} legge \hl{un articolo} e d\`a \hl{un numero} (il punteggio previsto per quell'articolo).
+    \item Si allena a sbagliare il meno possibile in media: minimizza $(\text{previsto}-\text{vero})^2$ sugli articoli di training.
+    \item \hl{5 fold di testate}: si allena su 4 gruppi, prevede sul quinto. Ogni testata \`e giudicata da un modello che
+          \hl{non l'ha mai vista}.
   \end{itemize}
   \vfill
 \end{frame}
 
-% ============================================================================================% ===================================================================================================
-\divider{La regressione}{tre strategie, passo per passo}
-
-\begin{frame}{Tre strategie di regressione in una pagina}
+\begin{frame}{Il bersaglio: il voto esatto, non la classe}
   \vfill
   \centering\small
-  \begin{tabular}{>{\raggedright\arraybackslash}p{0.17\textwidth}>{\raggedright\arraybackslash}p{0.26\textwidth}>{\raggedright\arraybackslash}p{0.3\textwidth}>{\raggedright\arraybackslash}p{0.17\textwidth}}
+  Il \hl{regressore} impara il \hl{voto NewsGuard esatto} (0--100). Il \hl{classificatore} impara la \hl{classe} (l1--l5).\\[0.7em]
+  \begin{tabular}{lcc}
     \toprule
-    \textbf{Strategia} & \textbf{Addestramento} & \textbf{Dalla previsione al giudizio} & \textbf{Misure} \\
+    \textbf{testata} & \textbf{voto 0--100} & \textbf{livello} \\
+     & \textbf{(bersaglio del regressore)} & \textbf{(bersaglio del classificatore)} \\
     \midrule
-    \hl{1. Per classi} (tentativo 16) & sul punteggio 0--100; fold per livello & testata = media degli articoli; s\`i/no se $\geq$ 60; livelli con le quote del training & F1, tolerant, accuratezza \\
-    \addlinespace
-    \hl{2. Voto degli articoli} (tentativo 17) & come la 1 & ogni articolo diventa un livello (quote sugli articoli); la testata prende il livello della maggioranza & F1, accuratezza, kappa, Spearman \\
-    \addlinespace
-    \hl{3. Punteggio esatto} (tentativo 18) & sul punteggio; fold \hl{per punteggio}; 5 modi di pesare le testate & nessuna classe: testata = media degli articoli & errore in punti (MAE), R$^2$, Spearman \\
+    lifezette.com & 0 & l1 \\
+    americanthinker.com & 22,5 & l1 \\
+    amgreatness.com & 49,5 & l2 \\
+    ammoland.com & 67,5 & l3 \\
+    theamericanconservative.com & 85 & l4 \\
+    americanprogress.org & 100 & l5 \\
     \bottomrule
   \end{tabular}\\[1em]
   \raggedright
-  In tutte e tre l'etichetta \`e il punteggio NewsGuard della testata, ereditato da ogni suo articolo, e ogni testata \`e
-  giudicata da un modello che non l'ha mai vista.
-  \vfill
+  lifezette.com e americanthinker.com sono \hl{entrambe l1}, ma il regressore impara \hl{0} e \hl{22,5} (due numeri diversi),
+  mentre il classificatore impara \hl{l1} per tutte e due. Il regressore sente le differenze \hl{dentro} il livello; il classificatore no.
 \end{frame}
 
-\begin{frame}{L'addestramento: tre modi di leggere il testo}
-  \vfill
-  \centering\small
-  \begin{tabular}{>{\raggedright\arraybackslash}p{0.22\textwidth}>{\raggedright\arraybackslash}p{0.3\textwidth}>{\raggedright\arraybackslash}p{0.36\textwidth}}
-    \toprule
-    \textbf{Modello} & \textbf{Il testo diventa numeri} & \textbf{Che cosa si addestra} \\
-    \midrule
-    TF-IDF + ridge & conteggi di parole e coppie (100.000) & una somma pesata delle parole (ridge) \\
-    \addlinespace
-    Qwen3 8B, Mistral 24B & il vettore del transformer \hl{congelato} & la stessa ridge sopra il vettore \\
-    \addlinespace
-    ModernBERT, DeBERTa & il transformer stesso & \hl{tutto} il transformer, 5 epoche \\
-    \bottomrule
-  \end{tabular}\\[1.4em]
-  \raggedright
-  \begin{itemize}
-    \setlength\itemsep{0.5em}
-    \item Bersaglio: il punteggio 0--100 (diviso 100 nei transformer addestrati); si minimizza l'errore quadratico.
-    \item La penalit\`a della ridge si sceglie dentro il training; i transformer addestrati tengono l'ultima epoca.
-  \end{itemize}
-  \vfill
-\end{frame}
-
-\begin{frame}{Strategia 1, passo 1: dagli articoli alla testata}
-  \centering
-  \includegraphics[width=0.82\textwidth]{da_articoli_a_testata.png}\\[0.3em]
-  \raggedright\small
-  \begin{enumerate}
-    \item Un numero per articolo; \hl{la testata prende la media} dei suoi articoli.
-    \item \hl{Affidabile} se la media \`e almeno 60 (giusto se anche il vero \`e almeno 60).
-    \item \hl{5 livelli}: le testate in ordine di punteggio previsto, tagliate con le quote di livelli del training (passo 2).
-  \end{enumerate}
-\end{frame}
-
-\begin{frame}{Strategia 1, passo 2: i livelli con le quote del training}
-  \centering
-  \includegraphics[width=0.97\textwidth]{quote.png}\\[0.4em]
-  \raggedright\small I punteggi previsti stanno stretti intorno alla media (43--93): con le fasce di NewsGuard nessuna testata andrebbe in l1 o l5. Si ordinano le testate e si tagliano con le quote del training. L'etichetta vera usa sempre le fasce di NewsGuard.
-\end{frame}
-
-\begin{frame}{Strategia 2: il voto degli articoli}
+\begin{frame}{Input e output: un esempio}
   \vfill
   \small
-  \begin{enumerate}
-    \setlength\itemsep{0.6em}
-    \item In ogni fold i punteggi previsti per \hl{tutti gli articoli} di test si ordinano e si tagliano con le quote di livelli
-          degli \hl{articoli} di training: ogni articolo prende un livello.
-    \item La testata prende il \hl{livello votato dalla maggioranza} dei suoi articoli (a parit\`a vince il pi\`u basso).
-    \item Affidabile: s\`i se la maggioranza degli articoli \`e da l3 in su.
-  \end{enumerate}
-  \vspace{0.6em}
+  \hl{In allenamento} (il modello vede testo e punteggio della testata):\\[0.4em]
   \centering
-  \begin{tabular}{lccccc}
+  \begin{tabular}{>{\raggedright\arraybackslash}p{0.6\textwidth}c}
     \toprule
-    & art. 1 & art. 2 & art. 3 & art. 4 & art. 5 \\
+    \textbf{testo dell'articolo (input)} & \textbf{punteggio da imparare (output)} \\
     \midrule
-    previsto & 62 & 71 & 55 & 80 & 66 \\
-    livello (tagli 57, 64, 67, 74) & l2 & l4 & l1 & l5 & l3 \\
+    ``\textit{\ldots a radical left-wing mob stormed\ldots}'' (lifezette.com) & 0 \\
+    ``\textit{\ldots the report, which the agency confirmed\ldots}'' (americanprogress.org) & 100 \\
     \bottomrule
-  \end{tabular}\\[0.5em]
+  \end{tabular}\\[1em]
   \raggedright
-  Nessuna maggioranza: vince il pi\`u basso (l1); 3 articoli su 5 da l3 in su: affidabile.\\
-  Il voto mette regressori e classificatori sullo stesso piano e permette la curva del DNA (1, 3, 5\ldots{} articoli).
-  \vfill
-\end{frame}
-
-\begin{frame}{Strategia 3: perch\'e un altro tentativo}
-  \vfill
-  \begin{itemize}
-    \setlength\itemsep{0.9em}
-    \item \hl{Obiettivo}: il punteggio esatto, senza classi n\'e in addestramento n\'e in valutazione.
-    \item \hl{Split per livello}: dentro un livello il punteggio era lasciato al caso; le testate l1 di un fold avevano in
-          media 12 punti, quelle di un altro 31.
-    \item \hl{Testate prolifiche}: le testate hanno da 10 a 201 articoli; addestrando per articolo, chi scrive di pi\`u pesa
-          di pi\`u.
-    \item \hl{La regressione serve?} Va confrontata con un classificatore sullo stesso terreno, il punteggio.
-  \end{itemize}
-  \vfill
-\end{frame}
-
-\begin{frame}{Strategia 3, passo 1: split stratificati sul punteggio}
+  \hl{In test} (il modello vede solo il testo e d\`a un numero):\\[0.4em]
   \centering
-  \includegraphics[width=0.97\textwidth]{come_si_fa_lo_split.png}\\[0.4em]
-  \raggedright\small Le testate si ordinano per punteggio; a blocchi di 5 consecutive, ognuna va in un fold diverso (un colore per fold). Tre split con semi diversi. Ora le testate l1 hanno in media 20--22 punti in ogni fold.
+  \begin{tabular}{>{\raggedright\arraybackslash}p{0.6\textwidth}c}
+    \toprule
+    \textbf{testo di un articolo mai visto (input)} & \textbf{punteggio previsto (output)} \\
+    \midrule
+    un articolo di lifezette.com & 34 \\
+    un altro articolo di lifezette.com & 71 \\
+    un articolo di americanprogress.org & 97 \\
+    \bottomrule
+  \end{tabular}\\[0.8em]
+  \raggedright
+  Il singolo articolo \`e rumoroso; il giudizio sulla \hl{testata} nasce mettendo insieme i suoi articoli --- ed \`e qui
+  che cambiano le tre strategie.
 \end{frame}
 
-\begin{frame}{Strategia 3, passo 2: cinque modi di pesare le testate}
-  \centering
-  \includegraphics[width=0.97\textwidth]{condizioni.png}\\[0.4em]
-  \raggedright\small \textbf{A} tutti gli articoli; \textbf{B} ogni testata pesa uguale (peso $1/n$); \textbf{C} al pi\`u 10 articoli; \textbf{D} al pi\`u 30; \textbf{E} un vettore per testata (la media). Cambia solo l'addestramento: il test sono sempre tutti gli articoli.
-\end{frame}
-
-\begin{frame}{Strategia 3, passo 3: regressore o classificatore, sullo stesso terreno}
+\begin{frame}{I quattro modi di leggere il testo}
   \vfill
-  \begin{itemize}
-    \setlength\itemsep{0.7em}
-    \item \hl{Regressore}: la ridge (o il transformer addestrato) prevede il punteggio.
-    \item \hl{Classificatore}: la logistica prevede 5 probabilit\`a; il punteggio \`e la media dei punteggi medi di ogni livello
-          nel training, pesata con le probabilit\`a.
-  \end{itemize}
   \centering\small
-  \begin{tabular}{lccccc}
+  \begin{tabular}{>{\raggedright\arraybackslash}p{0.2\textwidth}>{\raggedright\arraybackslash}p{0.42\textwidth}>{\raggedright\arraybackslash}p{0.27\textwidth}}
     \toprule
-    livello & l1 & l2 & l3 & l4 & l5 \\
+    \textbf{Lettore} & \textbf{Come il testo diventa numeri} & \textbf{Si addestra?} \\
     \midrule
-    punteggio medio nel training (circa) & 21 & 50 & 67 & 85 & 100 \\
-    probabilit\`a & 0,1 & 0,2 & 0,3 & 0,3 & 0,1 \\
+    TF-IDF + ridge & conteggi di parole e coppie (100.000) & no (solo la ridge sopra) \\
+    \addlinespace
+    Qwen3 8B, Mistral 24B + ridge & il vettore del transformer \hl{congelato} & no: \`e un lettore, si allena la ridge \\
+    \addlinespace
+    ModernBERT, DeBERTa & il transformer stesso & \hl{s\`i}, tutto, 5 epoche \\
     \bottomrule
-  \end{tabular}\\[0.5em]
-  punteggio $= 0{,}1\cdot21 + 0{,}2\cdot50 + 0{,}3\cdot67 + 0{,}3\cdot85 + 0{,}1\cdot100 = 67{,}7$\\[0.8em]
+  \end{tabular}\\[1em]
   \raggedright
-  Lettori: TF-IDF e Mistral 24B congelato (300 addestramenti: 2 lettori $\times$ 2 tipi $\times$ 5 condizioni $\times$ 3 split
-  $\times$ 5 fold); ModernBERT (condizioni A, B, C) e DeBERTa (B) addestrati come regressori, split 1.
-  \vfill
-\end{frame}
-
-\begin{frame}{Strategia 3, passo 4: come si valuta, in punti}
-  \small
-  Testata = media dei suoi articoli (E: il vettore medio). Quattro testate di esempio:\\[0.3em]
-  \centering
-  \begin{tabular}{lcccc}
-    \toprule
-    vero & 10 & 50 & 80 & 100 \\
-    previsto & 30 & 55 & 70 & 85 \\
-    \bottomrule
-  \end{tabular}\\[0.5em]
-  \raggedright
-  \begin{tabular}{>{\raggedright\arraybackslash}p{0.13\textwidth}>{\raggedright\arraybackslash}p{0.5\textwidth}>{\raggedright\arraybackslash}p{0.27\textwidth}}
-    \hl{MAE} & errore medio assoluto, in punti & (20+5+10+15)/4 = 12,5 \\
-    \hl{RMSE} & pesa di pi\`u gli errori grandi & 13,7 \\
-    \hl{R$^2$} & quanto si spiega (0 = dire sempre la media, 1 = perfetto) & 0,84 \\
-    \hl{Spearman} & l'ordine delle testate \`e giusto? & 1 \\
-  \end{tabular}\\[0.5em]
-  Riferimento: chi dice sempre la media del training sbaglia in media di \hl{22,6 punti}. Anche l'articolo singolo si valuta
-  allo stesso modo (ogni articolo contro il punteggio della sua testata).
-\end{frame}
-
-\divider{I risultati}{otto modelli contro NewsGuard: articolo singolo e testata}
-
-\begin{frame}{Un articolo da solo -- tutte le 226 testate}
-  \centering
-  \includegraphics[width=0.97\textwidth]{classiche_226_articolo.png}\\[0.4em]
-  \raggedright\small Ogni articolo contro l'etichetta della sua testata.
-\end{frame}
-
-\begin{frame}{La testata -- tutte le 226 testate}
-  \centering
-  \includegraphics[width=0.97\textwidth]{classiche_226_testata.png}\\[0.4em]
-  \raggedright\small La testata prende il voto dei suoi articoli: tutto sale di 0,05--0,10, ma l'F1 resta tra 0,28 e 0,43.
-\end{frame}
-
-\begin{frame}{Un articolo da solo -- le 170 testate valutate anche da MBFC}
-  \centering
-  \includegraphics[width=0.97\textwidth]{classiche_170_articolo.png}\\[0.4em]
-  \raggedright\small Le stesse misure sulle 170 testate che useremo per il confronto con MBFC.
-\end{frame}
-
-\begin{frame}{La testata -- le 170 testate valutate anche da MBFC}
-  \centering
-  \includegraphics[width=0.97\textwidth]{classiche_170_testata.png}\\[0.4em]
-  \raggedright\small Numeri quasi uguali a quelli sulle 226: le 170 sono rappresentative.
-\end{frame}
-
-\begin{frame}{Siamo sempre l\`i}
-  \vfill
-  \begin{itemize}
-    \setlength\itemsep{1em}
-    \item Il voto degli articoli aiuta, i modelli grandi congelati sono i migliori, ma l'\hl{F1 sui 5 livelli si ferma a circa 0,43}.
-    \item Mistral 24B (tre volte pi\`u grande) va come Qwen3 8B: un lettore pi\`u grande non sposta i numeri.
-    \item Accuratezza 0,77--0,82, contro lo 0,65 di chi dice sempre ``affidabile''.
-    \item \hl{Domanda}: \`e un limite dei modelli, o delle etichette? Le etichette sono giudizi di esperti: quanto sono
-          d'accordo due esperti tra loro?
-  \end{itemize}
+  Il lettore cambia \hl{solo come il testo diventa numeri}. Le tre strategie qui sotto valgono per tutti allo stesso modo:
+  cambiano solo \hl{come dai punteggi degli articoli si arriva al giudizio sulla testata}, e \hl{come si misura l'errore}.
   \vfill
 \end{frame}
 
 % ===================================================================================================
-\divider{Il punteggio esatto}{i risultati della strategia 3 (tentativo 18)}
+\divider{Le tre strategie}{dai punteggi degli articoli al giudizio sulla testata}
+
+\begin{frame}{Le tre strategie in una pagina}
+  \vfill
+  \centering\small
+  \begin{tabular}{>{\raggedright\arraybackslash}p{0.26\textwidth}>{\raggedright\arraybackslash}p{0.36\textwidth}>{\raggedright\arraybackslash}p{0.26\textwidth}}
+    \toprule
+    \textbf{Strategia} & \textbf{Dal testo al giudizio sulla testata} & \textbf{Come si misura} \\
+    \midrule
+    \hl{1. Prima la media, poi il livello} \newline (tentativo 16) & media dei punteggi dei suoi articoli $\to$ un livello
+    (l1--l5) o affidabile s\`i/no & F1, tolerant, accuratezza \\
+    \addlinespace
+    \hl{2. Prima il livello, poi il voto} \newline (tentativo 17) & ogni articolo $\to$ un livello; la testata prende il livello
+    \hl{votato} dai suoi articoli & + kappa, Spearman \\
+    \addlinespace
+    \hl{3. Solo il punteggio, in punti} \newline (tentativo 18) & media dei punteggi dei suoi articoli; \hl{nessun livello} & errore in punti
+    (MAE), R$^2$, Spearman \\
+    \bottomrule
+  \end{tabular}\\[1em]
+  \raggedright
+  1 e 2 trasformano il punteggio in \hl{classi} (per confrontarsi con NewsGuard a livelli); 3 resta sul \hl{numero}.\\
+  Tra 1 e 2 non cambia solo ``media contro maggioranza'': cambiano anche \hl{le quote} e \hl{la regola di affidabile}
+  (slide dedicata dopo la strategia 2).
+  \vfill
+\end{frame}
+
+% ------------------------------------------------------------------ Strategia 1
+\divider{Strategia 1}{prima la media, poi il livello (tentativo 16)}
+
+\begin{frame}{Strategia 1 --- come si allena}
+  \vfill
+  \begin{itemize}
+    \setlength\itemsep{0.9em}
+    \item \hl{Bersaglio}: il \hl{voto esatto 0--100} (non la classe). Un articolo di lifezette.com $\to$ 0, uno di
+          amgreatness.com $\to$ 49,5. Le classi \hl{non entrano nell'allenamento} del regressore.
+    \item \hl{Lo split dei fold \`e per livello}: con \texttt{StratifiedKFold} sui 5 livelli, ogni fold ha la stessa quota di
+          testate l1, l2, \ldots, l5.
+    \item \hl{Attenzione al disallineamento}: il bersaglio \`e il voto \hl{continuo}, ma la divisione in fold guarda solo il
+          \hl{livello} --- dentro un livello il voto \`e lasciato al caso. \`E il dubbio che la strategia 3 risolve.
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Strategia 1 --- come si valuta (esempio: lifezette.com)}
+  \small
+  31 articoli, punteggio vero \hl{0} (livello l1, inaffidabile). Punteggi previsti dei primi articoli:
+  \[ 22,\ 34,\ 42,\ 44,\ 39,\ 37,\ 71,\ 26,\ \ldots \qquad \textbf{media} = \mathbf{41{,}7} \]
+  \begin{enumerate}
+    \setlength\itemsep{0.6em}
+    \item \hl{Affidabile s\`i/no}: soglia \hl{fissa} 60 sulla media \hl{grezza}, \hl{nessuno stiramento}:
+          $41{,}7 < 60 \Rightarrow$ \textbf{inaffidabile}. Vero: inaffidabile. \si
+    \item \hl{5 livelli}: qui s\`i, le medie si riadattano \hl{con le quote} (non con minimo e massimo). Le quote vengono dalle
+          \hl{testate} di training del fold (l1 15\%, l2 19\%, l3 13\%, l4 35\%, l5 18\%). Le medie delle 45 \hl{testate di test}
+          si ordinano e si tagliano a quelle quote. Soglie: $53{,}1 \mid 60{,}4 \mid 67{,}6 \mid 84{,}7$.\\
+          Media $41{,}7 <53{,}1 \Rightarrow$ \textbf{l1}. Vero: l1. \si
+  \end{enumerate}
+  \vspace{0.4em}
+  \raggedright
+  \hl{Misure}: F1 sui 5 livelli, tolerant ($\pm$1 livello), accuratezza su affidabile s\`i/no.\\
+  Perch\'e i due casi sono trattati diversamente? \hl{Sezione seguente}.
+\end{frame}
+
+% ------------------------------------------------------------------ dal numero alla classe
+\divider{Dal numero alla classe}{che cosa succede ai punteggi del regressore prima di diventare livelli}
+
+\begin{frame}{Che cosa succede ai punteggi, caso per caso}
+  \vfill
+  \centering\small
+  \begin{tabular}{>{\raggedright\arraybackslash}p{0.3\textwidth}>{\raggedright\arraybackslash}p{0.58\textwidth}}
+    \toprule
+    \textbf{Dove} & \textbf{Trasformazione del punteggio previsto} \\
+    \midrule
+    strategia 1, \hl{affidabile s\`i/no} & \hl{nessuna}: media grezza $\ge$ 60 \\
+    \addlinespace
+    strategia 1, \hl{5 livelli} & \hl{quote}: si ordinano le medie delle testate di test e si tagliano alle quote delle testate
+    di training \\
+    \addlinespace
+    strategia 2, \hl{livelli e affidabile} & \hl{quote}: si ordinano gli articoli di test e si tagliano alle quote degli articoli
+    di training; affidabile = maggioranza in l3--l5 \\
+    \addlinespace
+    strategia 3, \hl{errore in punti} & \hl{nessuna}: media grezza contro voto vero \\
+    \bottomrule
+  \end{tabular}\\[1em]
+  \raggedright
+  \hl{Mai} uno stiramento lineare tra minimo e massimo, \hl{mai} un ritaglio a 0--100. Le quote non sono uno stiramento
+  lineare: sono uno stiramento \hl{per ordine}, livello per livello (slide seguenti).
+  \vfill
+\end{frame}
+
+\begin{frame}{Il problema: il regressore schiaccia verso il centro}
+  \centering
+  \includegraphics[width=\textwidth]{schiacciamento.png}\\[0.3em]
+  \raggedright\small
+  I voti veri vanno da 0 a 100, le medie previste solo da \hl{36 a 111}: nessuna testata sotto 36, quasi nessuna a 100 o
+  oltre. \`E come una \hl{foto poco contrastata}: l'ordine c'\`e (Spearman 0,7), ma tutto \`e grigio medio.\\
+  Con i confini NewsGuard (40 | 60 | 75 | 100) sul numero grezzo, l1 e l5 \hl{non escono quasi mai}.
+\end{frame}
+
+\begin{frame}{Tre modi di portare le medie sulla scala dei livelli}
+  \centering
+  \includegraphics[width=\textwidth,height=0.62\textheight,keepaspectratio]{stiramento.png}\\[0.2em]
+  \raggedright\scriptsize
+  Fold di lifezette: 45 testate di test (i punti); sopra la scala prevista, sotto i 5 livelli NewsGuard; i numeri sono le testate
+  per livello. \textbf{1} nessuna trasformazione. \textbf{2} come il \hl{contrasto} di una foto: il punto pi\`u scuro va a 0, il
+  pi\`u chiaro a 100, in mezzo tutto in proporzione. \textbf{3} come l'\hl{equalizzazione dell'istogramma}: ogni livello prende
+  la stessa quota di testate che ha nel training, per quanto stretto sia il suo tratto (l3: da 60,4 a 67,6).
+\end{frame}
+
+\begin{frame}{Le quote, passo passo (fold di lifezette)}
+  \centering
+  \includegraphics[width=\textwidth]{quote_passo_passo.png}\\[0.3em]
+  \raggedright\small
+  \begin{enumerate}
+    \setlength\itemsep{0.2em}
+    \item Nelle testate di training del fold: l1 15\%, l2 19\%, l3 13\%, l4 35\%, l5 18\%.
+    \item Le 45 medie di test si mettono in ordine; le soglie cadono al 15\%, 34\%, 47\%, 82\% della fila:
+          $53{,}1 \mid 60{,}4 \mid 67{,}6 \mid 84{,}7$.
+    \item Risultato: 7, 9, 5, 16, 8 testate per livello (le vere: 7, 8, 7, 16, 7). Si usano \hl{solo le etichette di training}
+          e l'\hl{ordine} delle previsioni di test.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Le quote: tre cose da sapere}
+  \vfill
+  \begin{enumerate}
+    \setlength\itemsep{1em}
+    \item \hl{Conta solo l'ordine}. Se tutte le previsioni si moltiplicano per 2, o se ne prende la radice, i livelli non
+          cambiano. Per questo lo schiacciamento non danneggia i livelli: basta che l'ordine sia giusto.
+    \item \hl{Le soglie si calcolano su tutto il fold di test insieme}, non testata per testata: per tagliare al 15\% serve una
+          fila di testate. Una testata nuova, da sola, non si potrebbe valutare cos\`i.
+    \item \hl{Le etichette di test non si usano mai}: le quote vengono dalle etichette di training, del test si usano solo le
+          previsioni.
+  \end{enumerate}
+  \vfill
+\end{frame}
+
+\begin{frame}{Quale funziona meglio sui 5 livelli (226 testate)}
+  \centering\small
+  \begin{tabular}{lcccc}
+    \toprule
+    \textbf{dal numero al livello} & \textbf{giusti} & \textbf{F1} & \textbf{tolerant} & \textbf{testate per livello l1--l5} \\
+    \midrule
+    1. confini fissi NewsGuard & 94 & 0,32 & 0,89 & \errore{4} / 72 / 61 / 88 / \errore{1} \\
+    2. stiramento min--max & 69 & 0,26 & 0,70 & 86 / 55 / 42 / 38 / \errore{5} \\
+    3. \hl{quote del training} & \textbf{95} & \textbf{0,40} & 0,85 & 36 / 44 / 28 / 78 / 40 \\
+    \midrule
+    livelli veri & & & & 35 / 43 / 30 / 79 / 39 \\
+    \bottomrule
+  \end{tabular}\\[1em]
+  \raggedright
+  \begin{itemize}
+    \setlength\itemsep{0.4em}
+    \item \hl{Confini fissi}: quasi niente l1 e l5, tutto in mezzo. Il tolerant \`e alto proprio per questo: chi sta in mezzo \`e
+          sempre a un livello da tutti.
+    \item \hl{Min--max}: dipende da \hl{una sola} testata per estremo. In questo fold la pi\`u bassa \`e 36,5, e lifezette
+          (41,7) diventa 9,8: troppe l1, quasi nessuna l5.
+    \item \hl{Quote}: le classi escono nelle proporzioni giuste per costruzione, e l'F1 sale. \`E quella usata.
+  \end{itemize}
+  {\scriptsize Mistral 24B regressore, tutti gli articoli, primo split del tentativo 18; ogni metodo calcolato fold per fold.}
+\end{frame}
+
+\begin{frame}{E affidabile s\`i/no? Nessuno stiramento, e non serve}
+  \small
+  Stesse previsioni (226 testate), tre modi di decidere ``affidabile'':\\[0.5em]
+  \centering
+  \begin{tabular}{lccc}
+    \toprule
+    \textbf{regola} & \textbf{accuratezza} & \textbf{previste affidabili} & \textbf{vere affidabili} \\
+    \midrule
+    \hl{media grezza $\ge$ 60} (strategia 1) & \textbf{0,83} & 150 & 148 \\
+    quota del training (35\% inaffidabili) & 0,81 & 146 & 148 \\
+    stiramento min--max, poi $\ge$ 60 & 0,69 & \errore{85} & 148 \\
+    \bottomrule
+  \end{tabular}\\[1em]
+  \raggedright
+  \begin{itemize}
+    \setlength\itemsep{0.4em}
+    \item Lo schiacciamento sposta soprattutto gli \hl{estremi}: le testate vere 0--10 sono previste in media \hl{52} (+42), quelle
+          a 100 in media \hl{84} ($-$16). Quelle tra 55 e 65 in media \hl{64}: solo +4. Con le quote, nel fold di lifezette la
+          soglia sarebbe \hl{60,4}: praticamente 60.
+    \item Quindi per il s\`i/no la soglia fissa basta. Per i 5 livelli no, perch\'e l1 e l5 sono proprio gli estremi.
+    \item \hl{Attenzione}: che 60 grezzo e 60 ``a quote'' coincidano \`e verificato per questo modello, non garantito per tutti.
+          Nella strategia 2 il s\`i/no passa comunque per le quote (articoli in l3--l5).
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------ Strategia 2
+\divider{Strategia 2}{prima il livello, poi il voto (tentativo 17)}
+
+\begin{frame}{Strategia 2 --- come si allena}
+  \vfill
+  \begin{itemize}
+    \setlength\itemsep{0.9em}
+    \item \hl{Identico alla strategia 1}: stesso modello, stesse previsioni, stesso bersaglio (il voto esatto 0--100), stessi
+          fold per livello. Nessun riaddestramento.
+    \item Cambia solo \hl{come dai punteggi degli articoli si arriva al livello della testata}: la strategia 2 \`e
+          \hl{un altro modo di valutare} le stesse previsioni.
+    \item \hl{Perch\'e serve}: ogni articolo riceve un livello suo, quindi si pu\`o chiedere ``\hl{quanti articoli servono}?''
+          (la curva del DNA: con 1 articolo, con 5, con 25\ldots) e trattare il modello come un annotatore (kappa, Spearman).
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Strategia 2 --- come si valuta, passo passo (lifezette.com)}
+  \small
+  \begin{enumerate}
+    \setlength\itemsep{0.45em}
+    \item \hl{Quote dagli articoli di training} del fold: si contano gli \hl{articoli} (non le testate) per livello:
+          l1 17\%, l2 22\%, l3 13\%, l4 31\%, l5 17\%.
+    \item \hl{Soglie}: i punteggi previsti di \hl{tutti i $\sim$5.000 articoli di test} del fold si ordinano e si tagliano a
+          quelle quote. Soglie: $45{,}9 \mid 60{,}6 \mid 68{,}5 \mid 87{,}4$.
+    \item \hl{Un livello per articolo}: $22{\to}$l1, $34{\to}$l1, $42{\to}$l1, $44{\to}$l1, $39{\to}$l1, $37{\to}$l1,
+          $71{\to}$l4, $26{\to}$l1, \ldots
+    \item \hl{Voto sui 5 livelli}: l1 23, l2 6, l3 1, l4 1 (su 31) $\Rightarrow$ \textbf{l1}. Vero: l1. \si\\
+          A parit\`a di voti vince il livello \hl{pi\`u basso}.
+    \item \hl{Voto su affidabile}: ogni articolo vota ``s\`i'' se il suo livello \`e l3 o pi\`u. S\`i: 2, no: 29
+          $\Rightarrow$ \textbf{inaffidabile}. \si\ A parit\`a: inaffidabile.
+  \end{enumerate}
+  \vspace{0.2em}
+  \raggedright
+  \hl{Misure}: F1, tolerant, accuratezza (come la 1), pi\`u kappa e Spearman (l'accordo tra annotatori).
+\end{frame}
+
+\begin{frame}{Strategia 1 e 2: non solo ``media contro maggioranza''}
+  \centering\small
+  \begin{tabular}{>{\raggedright\arraybackslash}p{0.17\textwidth}>{\raggedright\arraybackslash}p{0.36\textwidth}>{\raggedright\arraybackslash}p{0.36\textwidth}}
+    \toprule
+    & \textbf{1. Prima la media, poi il livello} & \textbf{2. Prima il livello, poi il voto} \\
+    \midrule
+    \hl{ordine} & media degli articoli $\to$ un numero $\to$ un livello & ogni articolo $\to$ un livello $\to$ voto \\
+    \addlinespace
+    \hl{chi si taglia} & le $\sim$45 medie delle testate di test & i $\sim$5.000 articoli di test \\
+    \addlinespace
+    \hl{quote} & dalle \hl{testate} di training \newline 16 / 19 / 13 / 36 / 17\% & dagli \hl{articoli} di training \newline
+    18 / 21 / 13 / 30 / 18\% \\
+    \addlinespace
+    \hl{affidabile} & media $\ge$ 60 \newline (soglia \hl{fissa}, sul numero) & maggioranza di articoli in l3--l5 \newline
+    (soglia \hl{a quote}, sull'ordine) \\
+    \addlinespace
+    \hl{parit\`a} & --- & livello pi\`u basso; inaffidabile \\
+    \bottomrule
+  \end{tabular}\\[0.8em]
+  \raggedright
+  Quote del fold 4. Le quote degli articoli sono diverse perch\'e le testate l4 scrivono meno (36\% delle testate, 30\% degli
+  articoli). L'allenamento \`e lo stesso: cambia solo il \hl{conto} finale.
+\end{frame}
+
+\begin{frame}{Quando 1 e 2 non sono d'accordo: americanthinker.com}
+  \small
+  49 articoli, punteggio vero \hl{22,5} (l1, inaffidabile), fold 4. Primi punteggi previsti:
+  \[ 52,\ 66,\ 44,\ 48,\ 33,\ 48,\ 38,\ 59,\ \ldots \qquad \textbf{media} = \mathbf{50{,}7} \]
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \hl{Strategia 1}\\[0.2em]
+      soglie sulle medie delle testate:\\
+      $50{,}7 \mid 55{,}3 \mid 60{,}7 \mid 86{,}8$\\[0.2em]
+      media $50{,}7$, non sopra la prima soglia\\
+      $\Rightarrow$ \textbf{l1} \si\\[0.2em]
+      $50{,}7 < 60 \Rightarrow$ inaffidabile \si
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \hl{Strategia 2}\\[0.2em]
+      soglie sugli articoli:\\
+      $46{,}4 \mid 57{,}0 \mid 64{,}8 \mid 83{,}2$\\[0.2em]
+      l2 l4 l1 l2 l1 l2 l1 l3 \ldots\\
+      conteggi: l1 13, \hl{l2 25}, l3 6, l4 5 $\Rightarrow$ \errore{l2}\\[0.2em]
+      in l3--l5: 11 su 49 $\Rightarrow$ inaffidabile \si
+    \end{column}
+  \end{columns}
+  \vspace{0.8em}
+  \raggedright
+  La media (50,7) \`e bassa \hl{rispetto alle altre testate}; ma i singoli articoli stanno quasi tutti appena sopra la prima
+  soglia degli articoli (46,4), e la maggioranza va in l2. Stesse previsioni, \hl{livello diverso}.
+\end{frame}
+
+\begin{frame}{Quanto spesso 1 e 2 non sono d'accordo (226 testate)}
+  \small
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \centering
+      \begin{tabular}{l|ccccc}
+        \textbf{1 $\downarrow$ \ 2 $\rightarrow$} & l1 & l2 & l3 & l4 & l5 \\
+        \midrule
+        l1 & \textbf{30} & 6 & 0 & 0 & 0 \\
+        l2 & 6 & \textbf{35} & 1 & 2 & 0 \\
+        l3 & 0 & \errore{13} & \textbf{2} & \errore{13} & 0 \\
+        l4 & 0 & 0 & 1 & \textbf{72} & 5 \\
+        l5 & 0 & 0 & 0 & 8 & \textbf{32} \\
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \setlength\itemsep{0.4em}
+        \item Livello diverso per \hl{55 testate su 226}, quasi sempre di un solo livello (53).
+        \item Affidabile diverso per 13.
+        \item Livelli giusti: 95 (strategia 1) contro 96 (strategia 2).
+        \item La differenza vera: con il voto \hl{l3 quasi sparisce} (4 testate contro 28).
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vspace{0.8em}
+  \raggedright
+  \hl{Perch\'e}: l3 \`e una fascia stretta (13\%). Gli articoli di una testata di mezzo si spargono tra l2, l3 e l4, e il voto va
+  a uno dei vicini pi\`u grandi. La media invece li compensa e cade in mezzo.\\[0.3em]
+  {\scriptsize Esempi e conteggi: Mistral 24B regressore, tutti gli articoli, primo split del tentativo 18.}
+\end{frame}
+
+% ------------------------------------------------------------------ Strategia 3
+\divider{Strategia 3}{solo il punteggio, in punti (tentativo 18)}
+
+\begin{frame}{Strategia 3 --- perch\'e un altro tentativo}
+  \vfill
+  \begin{itemize}
+    \setlength\itemsep{0.8em}
+    \item \hl{Obiettivo}: prevedere il \hl{punteggio esatto} (0--100), senza mai passare per le classi.
+    \item \hl{Dubbio sullo split}: con i fold per livello, il punteggio \hl{dentro} un livello era lasciato al caso (le testate l1
+          di un fold avevano in media 12 punti, quelle di un altro 31).
+    \item \hl{Dubbio sul peso}: le testate hanno da 10 a 201 articoli; allenando per articolo, \hl{chi scrive di pi\`u pesa di pi\`u}.
+    \item \hl{La regressione serve davvero?} Va confrontata con un classificatore sullo stesso terreno, il numero.
+  \end{itemize}
+  \vfill
+\end{frame}
+
+\begin{frame}{Lo split: per livello (strategie 1 e 2) o per voto (strategia 3)}
+  \small
+  Il bersaglio \`e sempre il voto 0--100. Cambia \hl{come si dividono le testate nei fold}. Le 35 testate l1 hanno voti da
+  \hl{0 a 37}: come finiscono nei 5 fold?\\[0.7em]
+  \centering
+  \begin{tabular}{lccccc}
+    \toprule
+    \textbf{voto medio delle testate l1 nel fold} & fold 1 & fold 2 & fold 3 & fold 4 & fold 5 \\
+    \midrule
+    split \hl{per livello} (strategie 1 e 2) & 18 & \errore{31} & 20 & 22 & \errore{12} \\
+    split \hl{per voto} (strategia 3) & 22 & 20 & 21 & 21 & 20 \\
+    \bottomrule
+  \end{tabular}\\[1em]
+  \raggedright
+  \hl{Per livello}: ogni fold ha la stessa quota di testate l1, ma \hl{dentro} le l1 un fold prende le pi\`u basse (media 12),
+  un altro le pi\`u alte (media 31): il modello vede voti diversi a seconda del fold. \hl{Per voto}: le testate si ordinano per
+  voto e si distribuiscono a giro, cos\`i ogni fold ha lo stesso spettro (media 20--22 ovunque).
+\end{frame}
+
+\begin{frame}{Strategia 3 --- lo split per voto, come si costruisce}
+  \centering
+  \includegraphics[width=0.95\textwidth]{come_si_fa_lo_split.png}\\[0.4em]
+  \raggedright\small
+  Le testate si ordinano per punteggio; a blocchi di 5 consecutive, ognuna va in un fold diverso (un colore per fold).
+  Tre split con semi diversi. Ora ogni fold ha testate di tutti i punteggi: le l1 hanno in media 20--22 punti in \hl{ogni} fold.
+\end{frame}
+
+\begin{frame}{Strategia 3 --- come si allena (2): cinque modi di pesare le testate}
+  \centering
+  \includegraphics[width=0.95\textwidth]{condizioni.png}\\[0.3em]
+  \raggedright\small
+  \textbf{A} tutti gli articoli (come prima); \textbf{B} ogni testata pesa uguale (peso $1/n$); \textbf{C} al pi\`u 10 articoli;
+  \textbf{D} al pi\`u 30; \textbf{E} un vettore per testata (la media).\\
+  Cambia solo l'allenamento: \hl{il test sono sempre tutti gli articoli} delle testate di test.
+\end{frame}
+
+\begin{frame}{Strategia 3 --- come si valuta (esempio: lifezette.com)}
+  \small
+  Stessi 31 articoli, punteggio vero \hl{0}, media prevista \hl{41,7}. Nessun livello: si resta sul numero.
+  \[ \text{errore} = |\,\text{media previsto} - \text{vero}\,| = |41{,}7 - 0| = \errore{42 punti} \]
+  \begin{itemize}
+    \setlength\itemsep{0.5em}
+    \item \hl{MAE}: errore medio assoluto in punti, su tutte le testate. \hl{RMSE}: pesa di pi\`u gli errori grandi.
+    \item \hl{R$^2$}: quanta variabilit\`a dei punteggi si spiega (0 = come dire sempre la media, 1 = perfetto).
+    \item \hl{Spearman}: l'ordine delle testate \`e giusto?
+  \end{itemize}
+  \vspace{0.4em}
+  \raggedright
+  \hl{Riferimento}: chi dice sempre la media del training (68,5) sbaglia in media di \hl{22,6 punti}.\\
+  Qui l'errore \`e 42 punti: il modello \hl{non arriva a 0}, si ferma a 42. Le classi erano giuste, il numero no.
+\end{frame}
+
+% ------------------------------------------------------------------ esempio completo
+\begin{frame}{Un esempio completo: due testate reali, le tre strategie}
+  \centering\small
+  \begin{tabular}{>{\raggedright\arraybackslash}p{0.27\textwidth}>{\centering\arraybackslash}p{0.33\textwidth}>{\centering\arraybackslash}p{0.3\textwidth}}
+    \toprule
+    & \textbf{lifezette.com} & \textbf{americanprogress.org} \\
+    \midrule
+    punteggio vero & 0 \ (l1, inaffidabile) & 100 \ (l5, affidabile) \\
+    articoli & 31 & 70 \\
+    punteggi previsti (alcuni) & 22, 34, 42, 44, 39, 71 & 97, 102, 79, 104, 84, 81 \\
+    \hl{media prevista} & 41,7 & 90,2 \\
+    \midrule
+    \textbf{1. media $\to$ livello} & l1 \si\ --- inaffidabile \si & l5 \si\ --- affidabile \si \\
+    \textbf{2. livello $\to$ voto} & l1 \si\ (23 art. su 31) & l5 \si\ (51 art. su 70) \\
+    \textbf{3. punteggio in punti} & errore \errore{42} & errore \errore{10} \\
+    \bottomrule
+  \end{tabular}\\[1em]
+  \raggedright
+  Le strategie 1 e 2 \hl{azzeccano la classe} in tutti e due i casi. La strategia 3 mostra l'errore vero: la testata da 0
+  prevista 42, quella da 100 prevista 90. Il modello \hl{si schiaccia verso il centro}: non osa gli estremi.
+\end{frame}
+
+% ------------------------------------------------------------------ normalizzazioni
+\divider{Le normalizzazioni}{che cosa si scala, dove, e che cosa no}
+
+\begin{frame}{Normalizzazioni in allenamento}
+  \centering\scriptsize
+  \begin{tabular}{>{\raggedright\arraybackslash}p{0.17\textwidth}>{\raggedright\arraybackslash}p{0.45\textwidth}>{\raggedright\arraybackslash}p{0.28\textwidth}}
+    \toprule
+    \textbf{Che cosa} & \textbf{Che cosa si fa} & \textbf{Fittato su} \\
+    \midrule
+    \hl{bersaglio}, ridge & il voto \hl{cos\`i com'\`e}, 0--100. Nessuna standardizzazione & --- \\
+    \addlinespace
+    \hl{bersaglio}, ModernBERT e DeBERTa & voto / 100 (0--1) per la loss; l'uscita si rimoltiplica $\times$100. Solo un cambio di
+    scala: nessuna sigmoide, l'uscita \`e libera & --- \\
+    \addlinespace
+    \hl{input} TF-IDF & tf sublineare ($1+\log$ tf) $\times$ idf, ogni vettore a norma 1 & vocabolario e idf: \hl{solo testi di
+    training} \\
+    \addlinespace
+    \hl{input} embedding & Qwen3 8B: ultimo token, a norma 1. Mistral 24B: media dei token. Poi ogni dimensione a media 0 e
+    varianza 1 (StandardScaler) & media e varianza: \hl{solo righe di training} \\
+    \addlinespace
+    \hl{pesi} & strategia 3, condizione B: peso $1/n$ per articolo (ogni testata pesa uguale), riscalato a media 1 & articoli
+    di training \\
+    \addlinespace
+    \hl{penalit\`a} & ridge: scelta con 3 fold interni sulle testate di training (errore in punti) & solo training \\
+    \bottomrule
+  \end{tabular}\\[0.8em]
+  \raggedright\small
+  Niente di quello che si scala vede il test: \hl{tutto si calcola sul training} del fold e poi si applica al test.
+\end{frame}
+
+\begin{frame}{Normalizzazioni in valutazione: il punteggio previsto non si tocca}
+  \small
+  \begin{itemize}
+    \setlength\itemsep{0.55em}
+    \item \hl{Nessun ritaglio a 0--100}: le previsioni restano come escono. Vanno da $-14$ a 133 (729 articoli su 25.524 sopra
+          100, 5 sotto 0); una testata ha media 110,6.\\
+          Ritagliando: errore medio 15,33 $\to$ 15,35 punti. \hl{Non cambia nulla}, quindi non si ritaglia.
+    \item \hl{Nessuna ricalibrazione} del numero (niente riscalatura, niente regressione isotonica). La testata = \hl{media
+          semplice} dei suoi articoli.
+    \item \hl{Strategia 3} usa il numero grezzo: per questo si vede lo schiacciamento al centro (lifezette 42 invece di 0).
+    \item \hl{Classificatore $\to$ punteggio} (strategia 3): probabilit\`a dei 5 livelli $\times$ voto medio di ogni livello
+          nel training (circa 21, 50, 67, 85, 100).
+  \end{itemize}
+  \vspace{0.3em}
+  \raggedright
+  L'unica ``normalizzazione'' in valutazione \`e quella delle \hl{quote} (strategie 1 e 2), spiegata nella sezione \hl{Dal numero alla classe}.\\[0.2em]
+  {\scriptsize Numeri: Mistral 24B regressore, tutti gli articoli, primo split del tentativo 18.}
+\end{frame}
+
+% ===================================================================================================
+\divider{I risultati della strategia 3}{il punteggio esatto (tentativo 18)}
 
 \begin{frame}{Il quadro: tutte le configurazioni}
   \centering
   \includegraphics[width=0.97\textwidth]{quadro.png}\\[0.4em]
-  \raggedright\small Media dei 3 split (linee: minimo e massimo); chiaro = classificatore trasformato in punteggio; tratteggio: la media del training (22,6 punti).
+  \raggedright\small
+  Errore medio (MAE, pi\`u basso \`e meglio) e Spearman, per testata e per articolo. Media dei 3 split (linee: minimo e
+  massimo); chiaro = classificatore trasformato in punteggio; tratteggio: la media del training (22,6 punti).
 \end{frame}
 
 \begin{frame}{Le migliori configurazioni, per testata}
@@ -331,115 +609,45 @@
     \bottomrule
   \end{tabular}\\[1.2em]
   \raggedright
-  \begin{itemize}
-    \item Il migliore sbaglia in media di \hl{15 punti} contro i 22,6 di chi dice sempre la media: un terzo in meno; spiega
-          met\`a della variabilit\`a dei punteggi.
-    \item Per articolo singolo l'errore \`e pi\`u grande: 17,6 punti per Mistral, contro 23,0 della media.
-  \end{itemize}
-  \vfill
+  Il migliore sbaglia in media di \hl{15 punti} contro i 22,6 di chi dice sempre la media: un terzo in meno; spiega met\`a
+  della variabilit\`a. L'ordine delle testate (Spearman 0,73) \`e buono come tra i due esperti umani (0,70).
 \end{frame}
 
 \begin{frame}{Regressore o classificatore? Il peso delle testate?}
   \centering
   \includegraphics[width=0.97\textwidth]{regressore_o_classificatore.png}\\[0.4em]
-  \raggedright\small Il \hl{classificatore} trasformato in punteggio fa come il regressore o meglio (Mistral 14,7--15,4 contro 15,2--15,5; TF-IDF 16,9--18,8 contro 18,1--19,8). Pesare le testate (B) aiuta poco; tagliare gli articoli (C, D) peggiora il TF-IDF, che ha bisogno di testo.
+  \raggedright\small
+  Il \hl{classificatore} trasformato in punteggio fa come il regressore o meglio: \hl{prevedere il numero non aggiunge nulla}.
+  Pesare le testate (B) aiuta poco; tagliare gli articoli (C, D) peggiora il TF-IDF, che ha bisogno di testo.
 \end{frame}
 
 \begin{frame}{Dove si sbaglia: le previsioni schiacciate verso il centro}
   \centering
   \includegraphics[width=0.97\textwidth]{errore_per_fascia.png}\\[0.4em]
-  \raggedright\small Le testate da 0--39 sono sovrastimate di 30--40 punti, quelle da 100 sottostimate di 15--20; in mezzo (60--74) l'errore \`e di 7--9 punti.
+  \raggedright\small
+  Le testate da 0--39 sono \hl{sovrastimate} di 30--40 punti, quelle da 100 \hl{sottostimate} di 15--20; in mezzo (60--74)
+  l'errore \`e di 7--9 punti. \`E il limite della regressione: nel dubbio, il modello va verso la media.
 \end{frame}
 
-\begin{frame}{Il DNA in punti}
+\begin{frame}{Il DNA in punti: quanti articoli servono}
   \centering
   \includegraphics[width=0.97\textwidth]{dna_punti.png}\\[0.4em]
-  \raggedright\small Con un solo articolo Mistral sbaglia di 18,6 punti; con 9 articoli di 15,1; con tutti di 14,7. Dopo una decina di articoli si guadagna poco.
-\end{frame}
-
-\begin{frame}{Che cosa dice il punteggio esatto}
-  \vfill
-  \begin{itemize}
-    \setlength\itemsep{0.8em}
-    \item \hl{La regressione non aggiunge nulla}: un classificatore trasformato in punteggio fa lo stesso o meglio.
-    \item \hl{Il peso delle testate e lo split non falsavano i risultati}: le cinque condizioni cambiano l'errore di meno di
-          un punto per Mistral; i tre split differiscono in media di 0,6 punti.
-    \item \hl{Mistral congelato resta il migliore} (MAE 14,7, Spearman 0,73); i BERT addestrati restano sotto (DeBERTa 16,5,
-          ModernBERT 17,1--17,6).
-    \item \hl{Il limite \`e agli estremi}: le previsioni si schiacciano verso il centro; le testate peggiori e le migliori sono
-          quelle sbagliate di pi\`u.
-    \item Il quadro coincide con quello delle classi e dell'accordo: Spearman 0,73 come i due esperti tra loro (0,70).
-  \end{itemize}
-  \vfill
-\end{frame}
-
-\divider{Un altro modo di valutare}{il modello come terzo annotatore}
-
-\begin{frame}{Due esperti non sono sempre d'accordo}
-  \vfill
-  \centering
-  {\large NewsGuard (punteggio) e Media Bias/Fact Check (fattualit\`a), sulle \hl{170 testate} valutate da entrambi}\\[1.6em]
-  \begin{tabular}{ccc}
-    {\Huge\textbf{0,70}} & {\Huge\textbf{0,58}} & {\Huge\textbf{79\%}} \\[0.4em]
-    Spearman sui livelli & kappa su affidabile s\`i/no & stesso giudizio s\`i/no \\
-  \end{tabular}\\[1.6em]
   \raggedright\small
-  \begin{itemize}
-    \item \hl{Spearman}: mettono le testate nello stesso ordine? \hl{kappa}: danno lo stesso s\`i/no, oltre il caso?
-    \item Su una testata su cinque due esperti danno giudizi opposti: \`e il tetto naturale.
-    \item Il modello si tratta come un \hl{terzo annotatore}: va d'accordo con gli esperti quanto loro tra loro?
-  \end{itemize}
-  \vfill
-\end{frame}
-
-\begin{frame}{Le misure di accordo -- la testata -- tutte le 226 testate}
-  \centering
-  \includegraphics[width=0.97\textwidth]{accordo_226_testata.png}\\[0.4em]
-  \raggedright\small Con kappa e Spearman le differenze tra modelli si vedono; i modelli grandi arrivano alla linea degli esperti.
-\end{frame}
-
-\begin{frame}{Terzo annotatore -- contro NewsGuard (170 testate)}
-  \centering
-  \includegraphics[width=0.97\textwidth]{accordo_170_NewsGuard.png}\\[0.4em]
-  \raggedright\small Qwen3 8B e Mistral 24B vanno d'accordo con NewsGuard \hl{quanto MBFC} (differenza intorno a 0, intervallo che contiene lo 0).
-\end{frame}
-
-\begin{frame}{Terzo annotatore -- contro MBFC (mai visto in addestramento)}
-  \centering
-  \includegraphics[width=0.97\textwidth]{accordo_170_MBFC.png}\\[0.4em]
-  \raggedright\small Il confronto indipendente: un po' sotto i due esperti tra loro, ma lontano dal caso.
-\end{frame}
-
-\begin{frame}{Chi va d'accordo con chi}
-  \centering
-  \includegraphics[width=0.9\textwidth]{matrice_accordo.png}\\[0.4em]
-  \raggedright\small Ogni casella: l'accordo tra due annotatori (riquadro: i due esperti). I modelli grandi sono vicini a NewsGuard quanto MBFC.
-\end{frame}
-
-\begin{frame}{Il DNA negli articoli}
-  \centering
-  \includegraphics[width=0.97\textwidth]{dna.png}\\[0.4em]
-  \raggedright\small La testata giudicata leggendo solo $k$ articoli: \hl{uno solo dice gi\`a qualcosa}; con 10--25 articoli i modelli grandi arrivano al livello degli esperti.
-\end{frame}
-
-\begin{frame}{Dove sbagliano i modelli}
-  \centering
-  \includegraphics[width=0.78\textwidth]{disaccordo.png}\\[0.4em]
-  \raggedright\small Dove i due esperti concordano, i modelli grandi coincidono con NewsGuard nell'85--88\% dei casi; dove non concordano, nel 66--77\%.
+  Con un solo articolo Mistral sbaglia di 18,6 punti; con 9 articoli di 15,1; con tutti di 14,7. Gi\`a \hl{un articolo} dice
+  molto, e dopo una decina si guadagna poco.
 \end{frame}
 
 \begin{frame}{In breve}
   \vfill
   \begin{itemize}
-    \setlength\itemsep{0.8em}
-    \item Con le misure classiche siamo fermi: F1 al massimo 0,43, accuratezza 0,82.
-    \item Con il punteggio esatto: il migliore sbaglia di \hl{15 punti} (la media 22,6); la regressione non aggiunge nulla
-          rispetto alla classificazione; il peso delle testate e gli split non cambiano il quadro.
-    \item Le etichette sono giudizi: \hl{due esperti concordano con Spearman 0,70 e kappa 0,58}.
-    \item I modelli grandi congelati (Qwen3 8B, Mistral 24B), leggendo solo gli articoli, \hl{vanno d'accordo con NewsGuard
-          quanto MBFC}, e con MBFC (mai visto) poco meno.
-    \item \hl{Il DNA dell'affidabilit\`a sta negli articoli}: uno basta per un indizio, una decina per un giudizio da esperto.
-    \item Prossimi passi: controlli sul nome della testata, addestramento speculare su MBFC.
+    \setlength\itemsep{0.9em}
+    \item Tre strategie, stesso allenamento: cambia come dai punteggi degli articoli si arriva al giudizio, e come si misura.
+    \item Classi (strategie 1 e 2): i modelli grandi azzeccano l'affidabile s\`i/no e il livello, meglio del TF-IDF
+          soprattutto sulle misure di accordo (kappa, Spearman).
+    \item Punteggio esatto (strategia 3): il migliore sbaglia di \hl{15 punti} (la media 22,6); \hl{la regressione non aggiunge
+          nulla} rispetto alla classificazione; il peso delle testate e gli split cambiano meno di un punto.
+    \item Il limite \`e agli estremi: le previsioni si \hl{schiacciano verso il centro}.
+    \item Il quadro \`e coerente nelle tre strategie: i modelli grandi congelati sono gi\`a al \hl{tetto} che le etichette permettono.
   \end{itemize}
   \vfill
 \end{frame}
