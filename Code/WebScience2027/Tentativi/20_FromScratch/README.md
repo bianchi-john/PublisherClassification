@@ -37,4 +37,18 @@ the working directory (on the server `~/John/Dataset`).
 `screen -dmS t20_cpu ./run_cpu.sh` and `screen -dmS t20_gpu ./run_gpu.sh`. Then from the PC `./status.sh` and
 `./download.sh` (`./download.sh all` also brings the article outputs).
 
-**Results.** See `09_results.ipynb`.
+**Results** (`09_results.ipynb`; per outlet, 95% bootstrap intervals; 226 outlets, 25,524 articles).
+- Steps 2 and 4 reproduce attempt 16 (same 25,524 articles, texts and labels) and the first split of attempt 18;
+  re-running steps 1-5 gives identical files. No article is truncated (longest: 3,000 tokens).
+- Anonymization touches 54.6% of the articles; no distinctive outlet name is left as a word. Known leftovers: acronyms
+  of the outlet name (e.g. "TPM") and author names written differently from the author field (e.g. in capitals).
+- Levels, F1 macro (without text 0.10): Mistral-24B regressor + training quotas 0.42 [0.35; 0.49], Qwen3-8B 0.40
+  (classifier and regressor), TF-IDF 0.39 (regressor) / 0.32 (classifier), ModernBERT 0.34 / 0.26. With the fixed
+  NewsGuard bounds the regressor drops to 0.24-0.28 (predictions squeezed to the centre).
+- Score, MAE (without text 22.6): Mistral-24B 14.8 (classifier, expected score) / 15.7 (regressor), Qwen3-8B 15.9 /
+  16.1, TF-IDF 16.6 / 17.7, ModernBERT 18.3 / 17.7. Spearman 0.73 (Mistral) down to 0.58-0.61 (ModernBERT).
+- Anonymization changes almost nothing compared with attempts 16 and 18 (Mistral MAE 14.8 vs 14.7): the models read
+  the text, not the outlet name. Large frozen models > TF-IDF > fine-tuned ModernBERT.
+- Classifier vs regressor (paired): on the score they are equivalent; on the levels the regressor with training quotas
+  is equal or better (Spearman and quadratic kappa significantly higher for Mistral, TF-IDF and ModernBERT); 31 of 100
+  paired differences are not chance.

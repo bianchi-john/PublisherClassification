@@ -1,0 +1,30 @@
+2026-10-30 18:02:14  CPU: 01_scraping
+2026-10-30 18:02:23  CPU: 02_cleaning
+2026-10-30 18:05:59  CPU: 03_anonymization
+2026-10-30 18:08:24  CPU: 04_split
+2026-10-30 18:08:32  CPU: 06_classification, TF-IDF (attempt 1)
+2026-10-30 18:09:14  GPU: 05_embeddings (attempt 1)
+2026-10-30 18:18:41  CPU: 07_regression, TF-IDF (attempt 1)
+2026-10-31 00:16:57  GPU: 06_classification, ModernBERT (attempt 1)
+2026-10-31 00:18:39  CPU: 06_classification, Qwen3-8B and Mistral-24B (attempt 1)
+2026-10-31 00:34:53  CPU: 07_regression, Qwen3-8B and Mistral-24B (attempt 1)
+2026-10-31 00:38:04  CPU: done
+2026-10-31 06:44:30  GPU: 07_regression, ModernBERT (attempt 1)
+2026-10-31 12:48:44  GPU: 06_classification summary
+2026-10-31 12:48:57  GPU: 07_regression summary
+2026-10-31 12:49:10  GPU: 08_evaluation
+2026-10-31 12:49:20  ERROR in 08_evaluation
+2026-10-31 12:49:20  GPU: 09_results
+2026-10-31 12:49:22  ERROR in 09_results
+2026-10-31 12:49:22  <<< FINISHED
+2026-11-02 11:30:08  08_evaluation (rerun after fix)
+2026-11-02 12:38:51  restore: 01_scraping
+2026-11-02 12:38:59  restore: 02_cleaning
+2026-11-02 12:40:12  restore: 03_anonymization
+2026-11-02 12:42:37  restore: 04_split
+2026-11-02 12:42:45  restore: 05_embeddings
+2026-11-02 12:43:37  restore: 06_classification summary
+2026-11-02 12:43:50  restore: 07_regression summary
+2026-11-02 12:44:03  08_evaluation
+2026-11-02 12:49:37  09_results
+2026-11-02 12:49:41  <<< ALL DONE

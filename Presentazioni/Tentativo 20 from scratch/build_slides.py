@@ -148,10 +148,27 @@ slides = [
         "Baseline without text: most frequent level, mean training score",
         "Per outlet, 95% intervals (bootstrap), classifier vs regressor **in pairs**",
     ]),
-    page("", "Where we are", "Built, checked, running", [
-        "Steps 1-4 run and checked: same dataset as attempt 16",
-        "Steps 5-9 running on the server (about one day)",
-        "All results on one page: `09_results.ipynb`",
+    page("Results: ", "levels", "226 anonymous outlets, per outlet, 95% intervals", [
+        ("**F1 macro** on the 5 levels (without text: 0.10)", [
+            "Mistral-24B: regressor + training quotas **0.42** [0.35; 0.49], classifier 0.39",
+            "Qwen3-8B: classifier 0.40, regressor + quotas 0.40",
+            "TF-IDF: regressor + quotas 0.39, classifier 0.32",
+            "ModernBERT: regressor + quotas 0.34, classifier [[0.26]]"]),
+        ("**Spearman** with the true level", ["Qwen3-8B 0.72, Mistral-24B 0.70, TF-IDF 0.68, ModernBERT 0.60 (regressors)"]),
+        "Regressor with the fixed NewsGuard bounds: F1 only 0.24-0.28 (predictions squeezed to the centre)",
+    ]),
+    page("Results: ", "score", "Error in points, per outlet (without text: 22.6)", [
+        ("**MAE**", ["Mistral-24B **14.8** (classifier, expected score) / 15.7 (regressor)",
+                     "Qwen3-8B 15.9 / 16.1, TF-IDF 16.6 / 17.7, ModernBERT 18.3 / 17.7"]),
+        ("**Spearman** with the true score", ["Mistral-24B 0.73, Qwen3-8B 0.72, TF-IDF 0.68-0.70, ModernBERT 0.58-0.61"]),
+        "**Within 10 points**: up to 44-45% of the outlets (without text 18%)",
+    ]),
+    page("", "In short", "What attempt 20 says", [
+        "**Anonymization changes almost nothing**: same numbers as before (MAE 14.8 vs 14.7)",
+        "-> the models read the text, not the outlet name",
+        "**Large frozen models > TF-IDF > fine-tuned ModernBERT**",
+        "**Classifier or regressor?** Same on the score; on the levels the regressor (with quotas) is equal or better",
+        "Everything reproducible: re-running steps 1-5 gives identical files",
     ], p="X24"),
 ]
 

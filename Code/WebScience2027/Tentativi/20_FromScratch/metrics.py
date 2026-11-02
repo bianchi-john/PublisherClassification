@@ -62,7 +62,7 @@ def levels_article_vote(pa, art):
     articles of its fold, then the outlet takes the most voted level (ties: the lowest)."""
     a = pa.merge(art[["article_id", "label"]], on="article_id")
     a["level"] = levels_quotas(a.prediction, a.fold, a.label)
-    return a.groupby("domain").level.agg(majority)
+    return a.groupby("domain")["level"].agg(majority)
 
 
 def expected_score(T, outlets):
@@ -150,6 +150,26 @@ def probability_metrics(T):
 
 METRICS = {"levels": level_metrics, "score": score_metrics}
 
+ONE = {   # the metrics used in the bootstrap, one at a time (same values as above, much faster)
+    ("levels", "F1 macro"): lambda y, p: M.f1_score(y, p, average="macro", labels=range(5), zero_division=0),
+    ("levels", "tolerant (±1 level)"): lambda y, p: np.mean(np.abs(y - p) <= 1),
+    ("levels", "quadratic kappa"): lambda y, p: M.cohen_kappa_score(y, p, weights="quadratic"),
+    ("levels", "Spearman"): lambda y, p: _safe(lambda: spearmanr(y, p).correlation),
+    ("levels", "reliable: accuracy"): lambda y, p: np.mean((y >= 2) == (p >= 2)),
+    ("score", "MAE"): lambda y, p: np.mean(np.abs(p - y)),
+    ("score", "Spearman"): lambda y, p: _safe(lambda: spearmanr(y, p).correlation),
+    ("score", "within 10 points"): lambda y, p: np.mean(np.abs(p - y) <= 10),
+    ("score", "within 20 points"): lambda y, p: np.mean(np.abs(p - y) <= 20),
+    ("score", "reliable: accuracy"): lambda y, p: np.mean((y >= 60) == (p >= 60)),
+}
+
+
+def one_metric(space, key, y, p):
+    """A single metric (fast path for the bootstrap; any other metric falls back to the full table)."""
+    y, p = (np.asarray(y, int), np.asarray(p, int)) if space == "levels" else (np.asarray(y, float), np.asarray(p, float))
+    f = ONE.get((space, key))
+    return float(f(y, p)) if f else METRICS[space](y, p)[key]
+
 
 # ------------------------------------------------------------------------- 4. the views of a model
 def classifier_views(T, outlets):
@@ -184,9 +204,8 @@ def bootstrap(y, p, space, keys, B=2000, seed=SEED):
     values = {c: [] for c in keys}
     for _ in range(B):
         i = rng.integers(0, len(y), len(y))
-        m = METRICS[space](y[i], p[i])
         for c in keys:
-            values[c].append(m[c])
+            values[c].append(one_metric(space, c, y[i], p[i]))
     return {c: (np.nanpercentile(v, 2.5), np.nanpercentile(v, 97.5)) for c, v in values.items()}
 
 
@@ -199,6 +218,6 @@ def bootstrap_difference(view1, view2, key, B=2000, seed=SEED):
     diff = []
     for _ in range(B):
         i = rng.integers(0, len(y1), len(y1))
-        diff.append(METRICS[s1](y1[i], p1[i])[key] - METRICS[s2](y2[i], p2[i])[key])
-    d = METRICS[s1](y1, p1)[key] - METRICS[s2](y2, p2)[key]
+        diff.append(one_metric(s1, key, y1[i], p1[i]) - one_metric(s2, key, y2[i], p2[i]))
+    d = one_metric(s1, key, y1, p1) - one_metric(s2, key, y2, p2)
     return d, (np.nanpercentile(diff, 2.5), np.nanpercentile(diff, 97.5))
