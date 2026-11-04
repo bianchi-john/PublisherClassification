@@ -170,7 +170,7 @@ def anonymize_text(text, name_re, author_re, signature_re):
     return text, counts
 
 
-def anonymize(art):
+def  anonymize(art):
     """Anonymize text and title of every article. Returns the anonymous articles, the replacements per article and
     what the rules found (names, common words, lowercase names, signatures, authors)."""
     names = {d: outlet_names(d) for d in sorted(art.domain.unique())}
