@@ -32,7 +32,7 @@ plt.rcParams.update({"figure.dpi": 150, "font.size": 11, "axes.spines.top": Fals
 K = [1, 2, 3, 5, 10, 20, 50, "tutti"]
 X = [1, 2, 3, 5, 10, 20, 50, 160]                        # «tutti» disegnato a destra di 50
 MISURE = [("Spearman", "Spearman (ordine)"), ("Kendall", "Kendall (ordine, a coppie)"),
-          ("MAE", "Errore medio (punti)"), ("entro 20", "Testate entro 20 punti (%)")]
+          ("MAE", "Errore medio (punti)"), ("entro 20", "% testate con errore ≤ 20")]
 B = 1000
 
 art, testate = MO.load()
@@ -112,7 +112,7 @@ def disegna(voti, nome):
                                linewidth=1.6, zorder=4)
         if misura in senza:
             ax.axhline(senza[misura], color=GRIGIO, ls=":", lw=1.2)
-            ax.text(1, senza[misura], " senza testo", va="bottom", fontsize=9, color=GRIGIO)
+            ax.text(1, senza[misura], " baseline: voto medio", va="bottom", fontsize=9, color=GRIGIO)
         ax.set_xscale("log"); ax.set_xticks(X, [str(k) for k in K]); ax.minorticks_off()
         ax.set_xlabel("articoli letti per testata"); ax.set_title(titolo)
     assi[0].legend(frameon=False, fontsize=9, loc="lower right")

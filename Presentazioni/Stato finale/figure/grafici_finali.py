@@ -3,7 +3,7 @@ sera 6), con il voto del regressore STIRATO:
 - curve_mbfc.png: Spearman del modello con NewsGuard e con MBFC (170 testate in comune); linea = accordo tra i due
   esperti (NewsGuard ↔ MBFC). Cerchiati i punti in cui il modello batte il TF-IDF in modo significativo (bootstrap
   sulle testate, 1.000 volte, stesse estrazioni di articoli, intervallo al 95% tutto sopra 0).
-- curve_cls_reg.png: classificatore (tratteggiato) e regressore stirato (pieno), stessi articoli estratti per entrambi:
+- curve_cls_reg.png: classificatore (pieno) e regressore stirato (tratteggiato, come lo stirato nelle altre slide), stessi articoli estratti per entrambi:
   Spearman e errore sul voto (classificatore: voto atteso), entro 20 punti, F1 macro sui livelli (classificatore:
   livello più votato; regressore: quote del training).
 Per ogni k: k articoli a caso per testata, 20 volte, poi la media; «tutti» = tutti gli articoli.
@@ -132,18 +132,18 @@ senza = {"MAE": base[base.space == "score"].MAE.iloc[0], "entro 20": 100 * base[
          "F1": base[base.space == "levels"]["F1 macro"].iloc[0]}
 fig, assi = plt.subplots(1, 4, figsize=(18, 5.2))
 for ax, (mis, titolo) in zip(assi, [("Spearman", "Spearman sul voto"), ("MAE", "Errore medio sul voto (punti)"),
-                                    ("entro 20", "Testate entro 20 punti (%)"), ("F1", "Livelli l1-l5: F1 macro")]):
+                                    ("entro 20", "% testate con errore ≤ 20"), ("F1", "Livelli l1-l5: F1 macro")]):
     for m in MODELLI:
         d = curve[curve.modello == m].set_index("k").reindex([str(k) for k in K])
-        ax.plot(X, d[f"reg {mis}"], "o-", ms=4, lw=1.8, color=COLORE[m], label=m)
-        ax.plot(X, d[f"cls {mis}"], "o--", ms=4, lw=1.5, color=COLORE[m])
+        ax.plot(X, d[f"cls {mis}"], "o-", ms=4, lw=1.8, color=COLORE[m], label=m)
+        ax.plot(X, d[f"reg {mis}"], "o--", ms=4, lw=1.5, color=COLORE[m])
     if mis in senza:
-        ax.axhline(senza[mis], color=GRIGIO, ls=":", lw=1.2); ax.text(1, senza[mis], " senza testo", va="bottom", fontsize=9, color=GRIGIO)
+        ax.axhline(senza[mis], color=GRIGIO, ls=":", lw=1.2); ax.text(1, senza[mis], " baseline: voto medio", va="bottom", fontsize=9, color=GRIGIO)
     ax.set_xscale("log"); ax.set_xticks(X, [str(k) for k in K]); ax.minorticks_off()
     ax.set_xlabel("articoli letti per testata"); ax.set_title(titolo)
 assi[0].legend(frameon=False, fontsize=9, loc="lower right")
 from matplotlib.lines import Line2D   # noqa: E402
-assi[3].legend(handles=[Line2D([], [], color="k", ls="-", label="regressore (stirato)"), Line2D([], [], color="k", ls="--", label="classificatore")],
+assi[3].legend(handles=[Line2D([], [], color="k", ls="-", label="classificatore"), Line2D([], [], color="k", ls="--", label="regressore (stirato)")],
                frameon=False, fontsize=9, loc="lower right")
 plt.tight_layout(); plt.savefig(OUT / "curve_cls_reg.png", bbox_inches="tight"); plt.close()
 
