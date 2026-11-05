@@ -1,4 +1,5 @@
-"""Aggiorna FinalState.odp (il file modificato a mano da John) senza toccare le sue modifiche: cambia solo i punti
+"""SUPERATO dal 5 novembre: per le revisioni successive si usa aggiorna_regressori.py (con stile_slide.py).
+Aggiorna FinalState.odp (il file modificato a mano da John) senza toccare le sue modifiche: cambia solo i punti
 indicati dai suoi commenti, toglie i commenti risolti e aggiunge slide nuove nel suo stile (titolo rosso, sottotitolo
 verde, testo 24 o 20 pt, un punto per clic). Le slide nuove usano gli stili già presenti nel suo file.
 Uso:  python aggiorna_slide.py <file di John.odp> <file in uscita.odp>"""

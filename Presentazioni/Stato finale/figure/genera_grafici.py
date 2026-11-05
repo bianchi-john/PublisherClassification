@@ -128,15 +128,13 @@ for c in nbformat.read(T20 / "03_anonymization.ipynb", 4).cells:
             righe = o.data["text/plain"].splitlines()[1:]
 tab = pd.DataFrame([r.split() for r in righe], columns=["regola", "testo", "sostituzioni", "titoli"]).set_index("regola")
 tab = tab.astype(float).rename(index=REGOLE)
-fig, ax = plt.subplots(figsize=(11, 3.6))
+fig, ax = plt.subplots(figsize=(11, 3.4))
 y = np.arange(len(tab))
-ax.barh(y - 0.2, tab.testo, height=0.38, color=BLU, label="articoli (testo)")
-ax.barh(y + 0.2, tab.titoli, height=0.38, color="#eb6834", label="titoli")
-for i, (a_, t_) in enumerate(zip(tab.testo, tab.titoli)):
-    ax.text(a_, i - 0.2, f" {a_:.1f}%".replace(".", ","), va="center", fontsize=9)
-    ax.text(t_, i + 0.2, f" {t_:.1f}%".replace(".", ","), va="center", fontsize=9)
+ax.barh(y, tab.testo, height=0.6, color=BLU)
+for i, a_ in enumerate(tab.testo):
+    ax.text(a_, i, f" {a_:.1f}%".replace(".", ","), va="center", fontsize=10)
 ax.set_yticks(y, tab.index); ax.invert_yaxis(); ax.grid(axis="y", visible=False)
-ax.set_xlabel("articoli con almeno una sostituzione (%)"); ax.legend(frameon=False, loc="lower right")
+ax.set_xlabel("articoli con almeno una sostituzione nel testo (%)")
 ax.set_title("Quanto tocca ogni regola")
 plt.tight_layout(); plt.savefig(QUI / "anonimizzazione.png", bbox_inches="tight"); plt.close()
 
@@ -162,4 +160,42 @@ for k in range(5):
 b.set_yticks(conta.index, [f"fold {f}" for f in conta.index]); b.invert_yaxis(); b.grid(False)
 b.set_title("Testate per livello in ogni fold"); b.legend(ncol=5, fontsize=8, frameon=False, loc="lower center", bbox_to_anchor=(0.5, -0.25))
 plt.tight_layout(); plt.savefig(QUI / "split.png", bbox_inches="tight"); plt.close()
+
+# --------------------------------------------------------------------------- 7. split per voto e split per livello (tentativo 16) a confronto
+livello16 = pd.read_csv(D / "tentativi/16_DataPreparation/testate.csv", index_col="domain").fold.reindex(testate.index)
+fig, assi = plt.subplots(1, 2, figsize=(14, 4.2), sharey=True)
+for ax, (fold, titolo) in zip(assi, [(livello16, "Per livello (tentativo 16)"), (split, "Per voto (quello usato)")]):
+    r = np.random.default_rng(0)
+    for f in range(1, 6):
+        t = testate[fold == f]
+        ax.scatter(f + r.uniform(-0.25, 0.25, len(t)), t.score, s=12, color=[COLORI[k] for k in t.label], alpha=0.85)
+        ax.plot([f - 0.32, f + 0.32], [t.score.mean()] * 2, color="#111111", lw=2)
+        l1 = t.score[t.label == 0].mean()
+        ax.plot([f - 0.32, f + 0.32], [l1] * 2, color=COLORI[0], lw=2.5)
+        ax.text(f + 0.34, l1, f"{l1:.0f}", va="center", fontsize=9, color=COLORI[0], fontweight="bold")
+    medie = testate.score[testate.label == 0].groupby(fold[testate.label == 0]).mean()
+    ax.set_title(f"{titolo}: voto medio delle l1 da {medie.min():.0f} a {medie.max():.0f}")
+    ax.set_xticks(range(1, 6), [f"fold {f}" for f in range(1, 6)]); ax.grid(axis="x", visible=False)
+assi[0].set_ylabel("voto NewsGuard")
+assi[1].plot([], [], color="#111111", lw=2, label="voto medio del fold"); assi[1].plot([], [], color=COLORI[0], lw=2.5, label="voto medio delle l1")
+fig.legend(frameon=False, fontsize=10, ncol=2, loc="lower center", bbox_to_anchor=(0.5, -0.06))
+plt.tight_layout(); plt.savefig(QUI / "split_confronto.png", bbox_inches="tight"); plt.close()
 print("anonimizzazione e split fatti")
+
+# --------------------------------------------------------------------------- 8. le testate mandate allo scraper (solo il dataset di partenza, niente imbuto)
+v = ng.Score.reindex(politiche).astype(float)
+fig, (a, b) = plt.subplots(1, 2, figsize=(14, 4.2), gridspec_kw={"width_ratios": [1.6, 1]})
+a.hist([v[livello(v) == k] for k in range(5)], np.arange(0, 102.6, 2.5), stacked=True, color=COLORI, label=LIVELLI)
+a.axvline(59.5, color=GRIGIO, ls="--", lw=1); a.text(61, a.get_ylim()[1] * 0.9, "affidabile →", color=GRIGIO)
+a.set_xlabel("voto NewsGuard 2026"); a.set_ylabel("testate"); a.legend(ncol=5, fontsize=9, frameon=False, loc="upper left")
+a.set_title("Il voto delle testate")
+conta = pd.Series(livello(v)).value_counts().reindex(range(5), fill_value=0)
+b.bar(LIVELLI, conta, color=COLORI)
+for k, c_ in enumerate(conta):
+    b.text(k, c_, f"{c_:,}".replace(",", "."), ha="center", va="bottom", fontsize=10)
+b.set_xticks(range(5), [f"{l}\n{r}" for l, r in zip(LIVELLI, ["0-39", "40-59", "60-74", "75-99", "100"])])
+b.set_title("Testate per livello"); b.grid(axis="x", visible=False)
+fig.suptitle(f"Le {len(v):,} testate mandate allo scraper".replace(",", ".") + ": solo politiche, con un voto NewsGuard 2026",
+             x=0.01, ha="left", fontweight="bold")
+plt.tight_layout(); plt.savefig(QUI / "selezione_scraping.png", bbox_inches="tight"); plt.close()
+print("testate mandate allo scraper:", len(v), conta.to_dict())

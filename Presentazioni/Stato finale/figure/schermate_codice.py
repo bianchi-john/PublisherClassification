@@ -64,4 +64,20 @@ immagine(funzione("metrics.py", "outlets_classifier", da="g = pa.groupby") + "\n
 immagine(funzione("metrics.py", "levels_quotas", da="predicted, fold, true_level ="), "quote")
 immagine(funzione("metrics.py", "expected_score", da="out = pd.Series"), "voto_atteso")
 immagine(funzione("metrics.py", "bootstrap", da="y, p = np.asarray"), "bootstrap")
+
+# ------------------------------------------------------------------------------------------------ solo regressori (5 novembre)
+fit = funzione("models.py", "_fit").splitlines()
+immagine("\n".join([fit[0], "    ...", next(r for r in fit if "return Ridge" in r)]), "ridge")
+immagine(funzione("models.py", "bert_fold", da="model = AutoModelForSequenceClassification", a="reference_compile")
+         + "\n...\n" + funzione("models.py", "bert_fold", da="loss = ((z[:, 0]", a="** 2).mean()"), "modernbert_reg")
+immagine("\n".join(r for r in funzione("models.py", "GRIDS").splitlines() if "classification" not in r), "griglie_reg")
+immagine(funzione("metrics.py", "outlets_regressor"), "articoli_testata_reg")
+immagine(funzione("metrics.py", "remapped_score"), "stirare")
+immagine(funzione("models.py", "bert_fold", da="reproducible(SEED + k)", a="reproducible(SEED + k)") + "\n...\n"
+         + funzione("models.py", "bert_fold", da="def batches", a="return groups"), "seme_bert")
+immagine(funzione("mbfc.py", "quotas") + "\n\n" + funzione("mbfc.py", "medians"), "mbfc_quote_mediane")
+immagine(funzione("mbfc.py", "thresholds"), "mbfc_soglie")
+immagine(funzione("mbfc.py", "by_fold"), "mbfc_fold")
+immagine(funzione("models.py", "bert_fold", da="accumulate = max", a="steps = epochs") + "\n...\n"
+         + funzione("models.py", "bert_fold", da="scaler.scale(loss", a="sched.step()"), "addestramento_bert_reg")
 print(sorted(p.name for p in OUT.glob("*.png")))

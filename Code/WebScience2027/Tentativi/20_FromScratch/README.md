@@ -17,6 +17,7 @@ And is it better to predict the level (classification) or the exact score (regre
 | 7 | `07_regression` | `models.py` | the exact score: the same four models (+ ridge) |
 | 8 | `08_evaluation` | `metrics.py` | every metric per outlet, classifier and regressor in the same two spaces (levels and score), 95% bootstrap intervals, paired comparison |
 | 9 | `09_results` | | all results on one page |
+| – | | `mbfc.py` | comparison with Media Bias/Fact Check (4 Factual Reporting classes): the score, true or predicted, becomes an MBFC class with quotas, medians or thresholds learned on the other folds (used by the final-state deck) |
 
 **Fixed before the results.**
 - The dataset rules are those of attempt 16; the split is the first one of attempt 18; so steps 2 and 4 must give the
