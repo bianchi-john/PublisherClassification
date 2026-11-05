@@ -6,6 +6,7 @@ sera 6), con il voto del regressore STIRATO:
 - curve_cls_reg.png: classificatore (pieno) e regressore stirato (tratteggiato, come lo stirato nelle altre slide), stessi articoli estratti per entrambi:
   Spearman e errore sul voto (classificatore: voto atteso), entro 20 punti, F1 macro sui livelli (classificatore:
   livello più votato; regressore: quote del training).
+- curve_cls_reg_tol.png: le stesse curve per la tolleranza ½ e ±1 sui livelli (slide in più).
 Per ogni k: k articoli a caso per testata, 20 volte, poi la media; «tutti» = tutti gli articoli.
 Uso, da questa cartella:  python grafici_finali.py"""
 import sys
@@ -54,6 +55,12 @@ def tabella(m):
     return r, c[PROBS], c.prediction
 
 
+def tolleranza_mezzo(y, p):
+    """Tolleranza ½ (come nei tentativi 14 e 16): livello giusto = 1, sbagliato di uno = ½, altrimenti 0."""
+    d = np.abs(np.asarray(y) - np.asarray(p))
+    return np.where(d == 0, 1, np.where(d == 1, 0.5, 0)).mean()
+
+
 rng = np.random.default_rng(42)
 righe, mbfc_vettori = [], {}
 for m in MODELLI:
@@ -72,7 +79,9 @@ for m in MODELLI:
                           "reg MAE": np.mean(np.abs(stir - vero)), "cls MAE": np.mean(np.abs(atteso - vero)),
                           "reg entro 20": 100 * np.mean(np.abs(stir - vero) <= 20), "cls entro 20": 100 * np.mean(np.abs(atteso - vero) <= 20),
                           "reg F1": f1_score(livello, liv_reg, average="macro", labels=range(5), zero_division=0),
-                          "cls F1": f1_score(livello, liv_cls, average="macro", labels=range(5), zero_division=0)})
+                          "cls F1": f1_score(livello, liv_cls, average="macro", labels=range(5), zero_division=0),
+                          "reg tol½": tolleranza_mezzo(livello, liv_reg), "cls tol½": tolleranza_mezzo(livello, liv_cls),
+                          "reg tol±1": np.mean(np.abs(livello - liv_reg) <= 1), "cls tol±1": np.mean(np.abs(livello - liv_cls) <= 1)})
             mbfc_vettori.setdefault((m, str(k)), []).append(stir[comuni])
 curve = pd.DataFrame(righe).drop(columns="r").groupby(["modello", "k"], sort=False).mean().reset_index()
 curve.to_csv(OUT / "curve_cls_reg.csv", index=False)
@@ -146,6 +155,26 @@ from matplotlib.lines import Line2D   # noqa: E402
 assi[3].legend(handles=[Line2D([], [], color="k", ls="-", label="classificatore"), Line2D([], [], color="k", ls="--", label="regressore (stirato)")],
                frameon=False, fontsize=9, loc="lower right")
 plt.tight_layout(); plt.savefig(OUT / "curve_cls_reg.png", bbox_inches="tight"); plt.close()
+
+# le due tolleranze sui livelli, in una figura a parte (slide in più)
+frequente = np.array([np.bincount(livello[fold != f], minlength=5).argmax() for f in fold])   # baseline: livello più frequente del training
+base_tol = {"tol½": tolleranza_mezzo(livello, frequente), "tol±1": np.mean(np.abs(livello - frequente) <= 1)}
+fig, assi = plt.subplots(1, 2, figsize=(15, 5.2))
+for ax, (mis, titolo) in zip(assi, [("tol½", "Livelli: tolleranza ½ (giusto = 1, di un livello = ½)"),
+                                    ("tol±1", "Livelli: tolleranza ±1 (giusto se sbaglia al massimo di uno)")]):
+    for m in MODELLI:
+        d = curve[curve.modello == m].set_index("k").reindex([str(k) for k in K])
+        ax.plot(X, d[f"cls {mis}"], "o-", ms=4, lw=1.8, color=COLORE[m], label=m)
+        ax.plot(X, d[f"reg {mis}"], "o--", ms=4, lw=1.5, color=COLORE[m])
+    ax.axhline(base_tol[mis], color=GRIGIO, ls=":", lw=1.2)
+    ax.text(1, base_tol[mis], " baseline: livello più frequente", va="bottom", fontsize=9, color=GRIGIO)
+    ax.set_xscale("log"); ax.set_xticks(X, [str(k) for k in K]); ax.minorticks_off()
+    ax.set_xlabel("articoli letti per testata"); ax.set_title(titolo)
+assi[0].legend(frameon=False, fontsize=9, loc="lower right")
+assi[1].legend(handles=[Line2D([], [], color="k", ls="-", label="classificatore"), Line2D([], [], color="k", ls="--", label="regressore (quote del training)")],
+               frameon=False, fontsize=9, loc="lower right")
+plt.tight_layout(); plt.savefig(OUT / "curve_cls_reg_tol.png", bbox_inches="tight"); plt.close()
+print("baseline tolleranze:", {k: round(v, 3) for k, v in base_tol.items()})
 
 pd.set_option("display.width", 220)
 print("esperti:", round(esperti, 3))
