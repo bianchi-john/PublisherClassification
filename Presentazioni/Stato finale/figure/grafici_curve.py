@@ -103,7 +103,7 @@ def disegna(voti, nome):
                 if voto not in voti:
                     continue
                 d = curve[(curve.modello == m) & (curve.voto == voto)].set_index("k").reindex([str(k) for k in K])
-                ax.plot(X, d[misura], stile, lw=1.8, color=COLORE[m], label=m if voto == "normale" else None)
+                ax.plot(X, d[misura], stile, lw=1.8, color=COLORE[m], label=m if voto == voti[0] else None)
                 ax.scatter(X, d[misura], s=14, color=COLORE[m], zorder=3)
                 if m != "TF-IDF":
                     s = sig[(sig.modello == m) & (sig.voto == voto) & (sig.misura == misura)].set_index("k").reindex([str(k) for k in K])
@@ -125,6 +125,7 @@ def disegna(voti, nome):
 
 disegna(["normale"], "curve_normale.png")
 disegna(["normale", "stirato"], "curve_confronto.png")
+disegna(["stirato"], "curve_stirato.png")
 pd.set_option("display.width", 200)
 print(curve[curve.k.isin(["1", "5", "tutti"])].round(3).to_string(index=False))
 t = sig.pivot_table(index=["voto", "modello", "misura"], columns="k", values="batte TF-IDF", aggfunc="first")[[str(k) for k in K]]
