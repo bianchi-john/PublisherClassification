@@ -17,6 +17,9 @@ And is it better to predict the level (classification) or the exact score (regre
 | 7 | `07_regression` | `models.py` | the exact score: the same four models (+ ridge) |
 | 8 | `08_evaluation` | `metrics.py` | every metric per outlet, classifier and regressor in the same two spaces (levels and score), 95% bootstrap intervals, paired comparison |
 | 9 | `09_results` | | all results on one page |
+| 10 | `10_boost` | `boost.py`, `boost_eval.py`, `boost_run.py`, `run_boost.sh` | added 6/11: more strategies on the frozen embeddings only (TF-IDF and ModernBERT untouched): outlet and rare-score weights, quantile target, outlet models (mean vector, random bags, mixup), RBF kernel ridge, small neural network, attention over the articles, Qwen ⊕ Mistral and Mistral layer 40, averages and «auto» (method chosen on the inner folds); curves over the articles per outlet, paired bootstrap vs TF-IDF and vs the ridge of step 7 |
+| 11 | `11_meta` | `meta.py`, `meta_run.py`, `run_meta.sh` | added 8/11: meta-articles (leads of ~20 articles of one outlet in one text, 10 per outlet, the same number for every outlet) for TF-IDF, Qwen3-8B, Mistral-24B and ModernBERT (fine-tuned with fresh meta-articles every epoch and early stopping on training outlets kept apart), compared with the same models on single articles |
+| 12 | `12_more_outlets` | `more_outlets.py`, `run_more.sh` | added 8/11, all in one notebook: the non-political NewsGuard outlets we scraped are cleaned and anonymized with the rules of steps 2-3 (copies of political articles removed, ownership groups isolated, ≤ 30 articles per outlet) and added to the TRAINING only; the test stays the 226 political outlets; TF-IDF, Qwen3-8B and Mistral-24B (ridge, outlet-weighted ridge, small neural network) with and without them |
 | – | | `mbfc.py` | comparison with Media Bias/Fact Check (4 Factual Reporting classes): the score, true or predicted, becomes an MBFC class with quotas, medians or thresholds learned on the other folds (used by the final-state deck) |
 
 **Fixed before the results.**
@@ -33,6 +36,15 @@ And is it better to predict the level (classification) or the exact score (regre
 **Where the data are.** Everything produced goes to `Dataset/tentativi/20_FromScratch/` (outside git: NewsGuard labels
 are not redistributed); trained models to `Modelli/20_FromScratch/`. `common.py` finds `Dataset/` by walking up from
 the working directory (on the server `~/John/Dataset`).
+
+**Step 10** runs on its own: `screen -dmS t20_boost ./run_boost.sh` on the server (one process per representation and
+method, 3 h limit each, failures retried once at the end; everything resumes from the saved folds), `./status_boost.sh`
+from the PC (`./status_boost.sh download` brings back the notebook and the tables). Outputs in `boost/`.
+
+**Step 12**: `screen -dmS t20_more ./run_more.sh` (its GPU part waits for the step 11 queue), `./status_more.sh [download]`;
+ModernBERT on meta-articles with the extra outlets only with `-p RUN_BERT True`. Outputs in `more_outlets/`.
+**Step 11** the same way: `screen -dmS t20_meta ./run_meta.sh` on the server, `./status_meta.sh [download]` from the PC.
+Outputs in `meta/`.
 
 **How to run.** From the PC: `./check_server.sh`, `./upload.sh`. On the server, in `~/John/Tentativo20`:
 `screen -dmS t20_cpu ./run_cpu.sh` and `screen -dmS t20_gpu ./run_gpu.sh`. Then from the PC `./status.sh` and
@@ -53,3 +65,15 @@ the working directory (on the server `~/John/Dataset`).
 - Classifier vs regressor (paired): on the score they are equivalent; on the levels the regressor with training quotas
   is equal or better (Spearman and quadratic kappa significantly higher for Mistral, TF-IDF and ModernBERT); 31 of 100
   paired differences are not chance.
+
+**Step 10 results** (`10_boost.ipynb`, run 6-7/11; 14 methods × 5 representations, 70 of 70 runs, no errors; per outlet,
+stretched score, all articles; paired bootstrap, 1,000 resamples):
+- No big jump. Mistral ridge (step 7) Spearman 0.735, Kendall 0.554, MAE 15.2; «auto» (method chosen on the inner folds,
+  the honest number) 0.743 / 0.572 / 14.6, not significantly different from the ridge; TF-IDF 0.696 / 0.518 / 16.3.
+- Best row: Mistral + small neural network 0.749 / 0.575 / 14.2 (also among the best on the inner folds). Against the
+  ridge: not significant on the stretched score; on the predicted score MAE 14.8 vs 15.7 and within 20 points 73.9% vs
+  68.6%, significant. With few articles it lowers the error a little (5 articles: MAE 15.2 vs 16.0), the order stays.
+- No help from outlet or rare-score weights, mixup, Mistral layer 40, concatenations (Qwen ⊕ Mistral, 27 ⊕ 40) or
+  outlet-level models; nearest outlets (`outlet_knn`) are clearly worse (Spearman 0.49-0.62).
+- On the inner folds every good method is between 0.72 and 0.73: with these frozen vectors the ceiling is about 0.75.
+  The advantage over TF-IDF does not depend on the choice of the regressor.

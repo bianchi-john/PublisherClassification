@@ -420,3 +420,329 @@ print("\\n".join([best("levels", "F1 macro"), best("levels", "tolerant (±1 leve
                  best("score", "MAE", lower=True), best("score", "Spearman"), best("score", "within 10 points")]))
 print(f"classifier/regressor differences that are not chance: {pairs['not chance'].sum()} of {len(pairs)}")'''),
 ], "09_results.ipynb")
+
+# ------------------------------------------------------------------------------------------------ 10. more strategies on the frozen embeddings
+notebook([
+    md("""# 10. More strategies on the frozen embeddings (added 6/11)
+
+**Question.** Starting from the same frozen vectors (Qwen3-Embedding-8B, Mistral-Small-24B), can another regressor or
+another way of training predict the NewsGuard score better than the ridge of step 7? TF-IDF stays as it is (step 7) and
+is the reference; ModernBERT is not touched.
+
+**Fixed before the results** (details in `boost.py`):
+- same outlets, same 5 outer folds, same 3 inner folds and inner criterion (Spearman per outlet) as step 7;
+- representations: Qwen3-8B, Mistral-24B layer 27 (step 7), layer 40, Qwen ⊕ Mistral, Mistral 27 ⊕ 40;
+- methods: ridge (step 7), ridge with every outlet counting the same, with rare scores counting more (LDS), on the
+  score quantile; ridge, mixup and RBF kernel ridge on the outlet (mean vector and random bags of articles); RBF kernel
+  ridge and a small neural network on the articles; attention over the articles of an outlet (multiple-instance);
+  then the mean of Qwen and Mistral and «auto» (the method with the best inner score, fold by fold);
+- every setting chosen on the inner folds only; the stretched score uses the training scores only; every outlet is
+  predicted from all its articles and from k random articles (20 draws, the same for all, TF-IDF included);
+- paired bootstrap over outlets (1,000, seed 7) against TF-IDF and against the ridge of step 7.
+
+**Honest reading.** Many rows are compared: the best row of a table is optimistic. The numbers to quote are those of
+«auto», which choose the method without looking at the test outlets.
+
+Run on the server: `run_boost.sh` (one process per representation and method, with a time limit). This notebook only
+reads the saved predictions."""),
+    code(SETUP + '''
+import matplotlib.pyplot as plt
+
+import boost as BO
+import boost_eval as BE
+
+art, outlets, rows = BO.load()'''),
+    md("## What has been computed"),
+    code('''done = BO.collect().groupby(["embedding", "method"]).domain.nunique().unstack()
+print("outlets predicted (226 = all 5 folds):"); display(done.reindex(columns=BO.METHODS))
+err = BO.OUT / "errors.txt"
+print(open(err).read()[-3000:] if err.exists() else "no errors")'''),
+    md("## Settings chosen on the inner folds (best inner Spearman, mean over the 5 outer folds)"),
+    code('''inner = BE.inner_choices()
+inner.pivot_table(index="method", columns="embedding", values="inner Spearman").reindex(BO.METHODS).round(3)'''),
+    code('''inner.sort_values(["embedding", "method", "fold"])[["embedding", "method", "fold", "inner Spearman", "chosen"]]'''),
+    md("## Results"),
+    code('''S = BE.sources(outlets, art, rows)
+R = BE.evaluate(S, outlets)
+R.to_csv(BO.OUT / "results.csv", index=False)
+print(S.source.nunique(), "sources")'''),
+    code('''def table(k="all", score="stretched"):
+    """✓ = significantly better than TF-IDF; ▲ = significantly better than the ridge of step 7 (same representation;
+    Mistral-24B for the averages and auto)."""
+    d = R[(R.k == k) & (R.score == score)].copy()
+    d["text"] = [f"{v:.3f}" if m in ("Spearman", "Kendall") else f"{v:.1f}" for v, m in zip(d.value, d.measure)]
+    d["text"] += np.where(d.get("beats TF-IDF", False) == True, " ✓", "") + np.where(d.get("beats ridge", False) == True, " ▲", "")
+    t = d.pivot_table(index="source", columns="measure", values="text", aggfunc="first")[BE.MEASURES]
+    order = d[d.measure == "Spearman"].set_index("source").value.sort_values(ascending=False).index
+    return t.reindex(order)'''),
+    md("### All articles, stretched score"),
+    code('''table("all", "stretched")'''),
+    md("### All articles, predicted score (not stretched)"),
+    code('''table("all", "normal")'''),
+    md("### 5 articles per outlet, stretched score"),
+    code('''table("5", "stretched")'''),
+    md("### 1 article per outlet, stretched score"),
+    code('''table("1", "stretched")'''),
+    md("## Every source with all articles (stretched)"),
+    code('''d = R[(R.k == "all") & (R.score == "stretched")]
+fig, axes = plt.subplots(1, 2, figsize=(14, 0.22 * d.source.nunique() + 1.5), sharey=True)
+order = d[d.measure == "Spearman"].set_index("source").value.sort_values().index
+for ax, m in zip(axes, ["Spearman", "MAE"]):
+    x = d[d.measure == m].set_index("source").reindex(order)
+    colour = np.where(x["beats TF-IDF"] == True, "#1d4f91", np.where(x.index == "TF-IDF", "#eb6834", "#8a8983"))
+    ax.scatter(x.value, range(len(x)), c=colour, s=25)
+    tf = x.loc["TF-IDF", "value"]; ax.axvline(tf, color="#eb6834", lw=1, ls="--")
+    ax.set_title(f"{m} (blue: better than TF-IDF, significant)", loc="left", fontsize=10, fontweight="bold")
+    ax.grid(axis="x", color="#e1e0d9")
+axes[0].set_yticks(range(len(order)), order, fontsize=7)
+plt.tight_layout(); plt.savefig(BO.OUT / "all_sources.png", dpi=150, bbox_inches="tight"); plt.show()'''),
+    md("## Curves: TF-IDF, the ridge of step 7, auto and the three methods with the best inner score"),
+    code('''top = inner.groupby(["embedding", "method"])["inner Spearman"].mean().sort_values(ascending=False).head(3)
+show = ["TF-IDF", "Qwen3-8B · ridge", "Mistral-24B · ridge", "auto · all"] + [f"{e} · {m}" for e, m in top.index]
+X = [1, 2, 3, 5, 10, 20, 50, 160]
+fig, axes = plt.subplots(1, 4, figsize=(19, 5))
+for ax, m in zip(axes, BE.MEASURES):
+    for s in show:
+        d = R[(R.source == s) & (R.score == "stretched") & (R.measure == m)].set_index("k").reindex([str(k) for k in BO.K])
+        if d.value.isna().all():
+            continue
+        ax.plot(X, d.value, "o-", ms=3, lw=1.6, label=s)
+        win = d["beats TF-IDF"].fillna(False).to_numpy(bool)
+        ax.scatter(np.array(X)[win], d.value.to_numpy()[win], s=70, facecolor="none", edgecolor="k", zorder=4)
+    ax.set_xscale("log"); ax.set_xticks(X, [str(k) for k in BO.K]); ax.minorticks_off()
+    ax.set_title(f"{m} (stretched)", loc="left", fontsize=11, fontweight="bold"); ax.set_xlabel("articles per outlet")
+    ax.grid(color="#e1e0d9")
+axes[0].legend(fontsize=8, frameon=False)
+plt.tight_layout(); plt.savefig(BO.OUT / "curves.png", dpi=150, bbox_inches="tight"); plt.show()'''),
+    md("## In short"),
+    code('''for k in ["all", "5", "1"]:
+    for score in ["stretched", "normal"]:
+        d = R[(R.k == k) & (R.score == score)]
+        line = []
+        for s in ["TF-IDF", "Mistral-24B · ridge", "auto · Mistral-24B", "auto · all"]:
+            x = d[d.source == s].set_index("measure").value
+            if len(x):
+                line.append(f"{s}: ρ {x['Spearman']:.3f}, MAE {x['MAE']:.1f}")
+        print(f"k={k:>3}, {score:9}  " + " | ".join(line))
+print()
+for name in ["TF-IDF", "ridge"]:
+    col = f"beats {name}"
+    n = R[(R.k == "all") & (R[col] == True)].groupby(["score", "measure"]).size()
+    print(f"sources significantly better than {name} with all articles:"); print(n.to_string(), "\\n")'''),
+], "10_boost.ipynb")
+
+# ------------------------------------------------------------------------------------------------ 11. meta-articles
+notebook([
+    md("""# 11. Meta-articles (added 8/11)
+
+**Question.** If every training example is a *meta-article* (the leads of many articles of ONE outlet in one text) and
+every outlet has the same number of them, do the main models (TF-IDF, Qwen3-8B, Mistral-24B, ModernBERT) predict the
+NewsGuard score better than when they read single articles?
+
+**Fixed before the results** (details in `meta.py`): a meta-article = leads (first 120 words) of articles of the outlet in
+random order up to 2,400 words; 10 per outlet, built from the outlet's own articles only, the same way for training and
+test outlets. Same outer folds, inner folds and inner criterion as before. Frozen models: ridge and the small neural
+network of step 10. ModernBERT: fresh meta-articles every epoch (6 per outlet), mean pooling, Huber loss, lr 3e-5,
+at most 10 epochs, epoch chosen on 20% of the training outlets kept apart. Outlet score = mean over its 10 meta-articles.
+
+**Compared with** the same model on whole articles (steps 7 and 10), all articles, on the same 226 outlets; paired
+bootstrap over outlets (1,000, seed 7). Note: meta-articles read only the leads (about 2,400 words per meta-article,
+24,000 per outlet), single articles are read in full."""),
+    code(SETUP + '''
+import matplotlib.pyplot as plt
+
+import boost as BO
+import boost_eval as BE
+import meta as ME
+
+art, outlets, rows = BO.load()
+M, mrows = ME.load_meta()
+print(f"{len(M):,} meta-articles; articles per meta-article: median {M.articles.median():.0f}; words: median {M.words.median():.0f}")
+done = {m: len(list((ME.PRED / m).glob("fold*.csv.gz"))) for m in ME.MODELS}
+print("folds saved:", done)
+err = ME.OUT / "errors.txt"
+print(open(err).read()[-3000:] if err.exists() else "no errors")'''),
+    md("## Meta-articles against single articles (all articles / all 10 meta-articles)"),
+    code('''idx = np.vstack([np.arange(len(outlets))[None, :], np.random.default_rng(7).integers(0, len(outlets), (BE.B, len(outlets)))])
+V = {}
+for name in [m for m in ME.MODELS if done[m] == 5]:
+    V[(name, "meta")] = BE._one(ME.meta_matrix(name, outlets, "all"), name, "all", outlets, idx)[2]
+    V[(name, "articles")] = BE._one(ME.article_matrix(name, outlets, art, rows), name, "all", outlets, idx)[2]
+rows_out = []
+for (name, how), res in V.items():
+    for (score, mes), v in res.items():
+        r = {"model": name, "input": how, "score": score, "measure": mes, "value": v[0]}
+        other = V.get((name, "articles"))
+        if how == "meta" and other is not None:
+            d = v - other[(score, mes)]; lo, hi = np.percentile(d[1:], [2.5, 97.5])
+            r.update({"meta − articles": d[0], "low": lo, "high": hi,
+                      "better": bool(hi < 0) if mes in BE.LOWER else bool(lo > 0), "worse": bool(lo > 0) if mes in BE.LOWER else bool(hi < 0)})
+        tf = V.get(("TF-IDF", "articles"))
+        if tf is not None and (name, how) != ("TF-IDF", "articles"):
+            d = v - tf[(score, mes)]; lo, hi = np.percentile(d[1:], [2.5, 97.5])
+            r["beats TF-IDF (articles)"] = bool(hi < 0) if mes in BE.LOWER else bool(lo > 0)
+        rows_out.append(r)
+T = pd.DataFrame(rows_out); T.to_csv(ME.OUT / "results.csv", index=False)'''),
+    code('''def table(score):
+    """✓ = meta-articles significantly better than the same model on articles, ✗ = significantly worse."""
+    d = T[T.score == score].copy()
+    d["text"] = [f"{v:.3f}" if m in ("Spearman", "Kendall") else f"{v:.1f}" for v, m in zip(d.value, d.measure)]
+    d["text"] += np.where(d.get("better", False) == True, " ✓", "") + np.where(d.get("worse", False) == True, " ✗", "")
+    return d.pivot_table(index=["model", "input"], columns="measure", values="text", aggfunc="first")[BE.MEASURES]
+
+
+table("stretched")'''),
+    code('''table("normal")'''),
+    code('''T[(T.input == "meta") & T["meta − articles"].notna()].round(3)[["model", "score", "measure", "meta − articles", "low", "high", "better", "worse"]]'''),
+    md("## How many meta-articles are needed (stretched score; 1 meta-article ≈ 20 leads)"),
+    code('''rows_k = []
+for name in [m for m in ME.MODELS if done[m] == 5]:
+    for k in ME.K_META:
+        res = BE._one(ME.meta_matrix(name, outlets, k), name, str(k), outlets, idx[:1])[2]
+        rows_k.append({"model": name, "meta-articles": str(k), **{m: res[("stretched", m)][0] for m in BE.MEASURES}})
+pd.DataFrame(rows_k).pivot_table(index="model", columns="meta-articles", values="Spearman")[[str(k) for k in ME.K_META]].round(3)'''),
+    md("## ModernBERT: Spearman on the outlets kept apart, epoch by epoch"),
+    code('''curves = [pd.read_csv(f) for f in sorted((ME.PRED / "ModernBERT").glob("curve_fold*.csv"))]
+if curves:
+    C_ = pd.concat(curves)
+    fig, ax = plt.subplots(figsize=(8, 4))
+    for f, d in C_.groupby("fold"):
+        ax.plot(d.epoch, d["validation Spearman"], "o-", label=f"fold {f}")
+    ax.set_xlabel("epoch"); ax.set_ylabel("Spearman (outlets kept apart)"); ax.legend(fontsize=8); ax.grid(color="#e1e0d9")
+    plt.show()
+    display(C_.pivot_table(index="epoch", columns="fold", values="validation Spearman").round(3))'''),
+    md("## Settings chosen on the inner folds"),
+    code('''for m in ME.MODELS[:-1]:
+    for f in sorted((ME.PRED / m).glob("inner_fold*.csv")):
+        d = pd.read_csv(f); print(m, f.stem, d.loc[d.chosen].drop(columns=["chosen"]).to_dict("records"))'''),
+    md("## In short"),
+    code('''for score in ["stretched", "normal"]:
+    d = T[(T.score == score) & (T.measure.isin(["Spearman", "MAE"]))].pivot_table(index="model", columns=["measure", "input"], values="value")
+    print(score); print(d.round(3).to_string(), "\\n")
+s = T[(T.input == "meta") & T["meta − articles"].notna()]
+print("meta better than articles (significant):", s.better.sum(), "| worse:", s.worse.sum(), "| of", len(s))'''),
+], "11_meta.ipynb")
+
+# ------------------------------------------------------------------------------------------------ 12. more outlets in training
+notebook([
+    md("""# 12. More outlets in training (added 8/11)
+
+**Question.** The limit seems to be the number of independent outlets (about 180 per fold). If the non-political
+NewsGuard outlets we scraped are added to the TRAINING (the test stays the 226 political outlets, same folds and same
+draws), do the models predict the political outlets better?
+
+Everything is in this notebook: the extra dataset (same cleaning and anonymization rules as steps 2-3, copies of political
+articles removed, ownership groups kept isolated, at most 30 articles per extra outlet), the frozen vectors of the extra
+articles, the models (TF-IDF, Qwen3-8B and Mistral-24B with ridge, outlet-weighted ridge and the small neural network),
+the comparison with the same models without extra outlets (steps 7 and 10). Rules and reasons in `more_outlets.py`.
+The GPU part waits for the step 11 queue to finish (`WAIT_FOR`). Every piece is saved, so a re-run resumes."""),
+    code('''N_JOBS = 48
+RUN_BERT = False                      # ModernBERT on meta-articles with the extra outlets (as step 11), only on request
+WAIT_FOR = "Results/meta_done"        # the GPU part starts after this file exists (step 11 queue finished)'''),
+    code(SETUP + '''
+import time
+import traceback
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+
+import anonymization as AN
+import boost as BO
+import boost_eval as BE
+import more_outlets as MX
+
+MX.OUT.mkdir(parents=True, exist_ok=True)
+def safely(label, f, *a):
+    """A failing piece is logged and the notebook goes on (a re-run retries only what is missing)."""
+    try:
+        f(*a)
+    except Exception as e:
+        C.log(f"ERROR {label}: {type(e).__name__}: {e}", MX.LOG)
+        with open(MX.OUT / "errors.txt", "a") as fh:
+            fh.write(f"==== {label}\\n{traceback.format_exc()}\\n")'''),
+    md("## 12.1 The extra dataset"),
+    code('''steps = []
+def step(name, df):
+    steps.append({"step": name, "articles": len(df), "outlets": df.domain.nunique()})
+    print(f"{name}: {len(df):,} articles, {df.domain.nunique():,} outlets")
+
+final = MX.OUT / "articles_extra_anonymous.csv.gz"
+if not final.exists():
+    ng, cand = MX.candidates()
+    print(f"candidate outlets (NewsGuard score, not political-only): {len(cand):,}")
+    raw = MX.extract(cand, N_JOBS); step("scraped articles of the candidates", raw)
+    art = MX.filters(raw, N_JOBS, step)
+    political = pd.read_csv(C.OUT / "articles.csv.gz")
+    art = MX.deduplicate(art, political, N_JOBS, step)
+    art = MX.groups_and_cap(art, sorted(political.domain.unique()), ng, step)
+    anon, counts, found = AN.anonymize(art)
+    left = AN.leftovers(anon, found)
+    RULES = ["signature", "email", "url", "account", "author", "name"]
+    print(f"anonymization: articles touched {(counts[RULES].sum(axis=1) > 0).mean():.1%}; "
+          f"distinctive names left as a word: {left[~left.common_word].left_as_word.sum()}")
+    anon[["article_id", "domain", "title", "date", "text", "score", "label"]].to_csv(final, index=False)
+    pd.DataFrame(steps).to_csv(MX.OUT / "steps.csv", index=False)
+pd.read_csv(MX.OUT / "steps.csv").set_index("step")'''),
+    code('''extra = pd.read_csv(final)
+U, O, rows, outlets, extra_outlets = MX.union()
+eo = O.loc[extra_outlets]
+print(f"extra: {len(extra_outlets)} outlets, {len(extra):,} articles; political: {len(outlets)} outlets, {(U.article_id < MX.EXTRA_ID).sum():,} articles")
+pd.DataFrame({"political outlets": outlets.label.value_counts(), "extra outlets": eo.label.value_counts()}).reindex(range(5)).rename(index=dict(enumerate(C.LEVELS))).T'''),
+    md("## 12.2 TF-IDF (CPU)"),
+    code('''for f in range(1, 6):
+    safely(f"TF-IDF fold {f}", MX.fit_tfidf, f, U, rows, outlets, extra_outlets, N_JOBS)'''),
+    md("## 12.3 Frozen vectors and models (GPU, after the step 11 queue)"),
+    code('''while not Path(WAIT_FOR).exists():
+    time.sleep(300)
+for name in ["Qwen3-8B", "Mistral-24B"]:
+    holder = {}
+    safely(f"embed {name}", lambda: holder.update(X=MX.embed(name, U)))
+    if "X" not in holder:
+        continue
+    X = holder["X"]
+    for method in ["ridge", "ridge_outlet", "mlp"]:
+        for f in range(1, 6):
+            safely(f"{name} · {method} fold {f}", MX.fit_embedding, name, method, f, X, U, O, rows, outlets, extra_outlets)
+    del X'''),
+    code('''if RUN_BERT:
+    import meta as ME
+    M, _ = ME.load_meta()
+    art_pol, _, _ = BO.load()
+    for f in range(1, 6):
+        safely(f"ModernBERT fold {f}", ME.fit_bert, f, M, art_pol, outlets, extra, extra.groupby("domain").score.first(), MX.PRED)'''),
+    md("## 12.4 With and without the extra outlets"),
+    code('''done = [m for m in MX.MODELS if len(list((MX.PRED / m).glob("fold*.csv.gz"))) == 5]
+print("complete:", done)
+err = MX.OUT / "errors.txt"
+print(open(err).read()[-3000:] if err.exists() else "no errors")
+idx = np.vstack([np.arange(len(outlets))[None, :], np.random.default_rng(7).integers(0, len(outlets), (BE.B, len(outlets)))])
+rows_out = []
+for m in done:
+    for k in ["1", "5", "all"]:
+        with_ = BE._one(MX.matrix(m, outlets, k, True), m, k, outlets, idx)[2]
+        without = BE._one(MX.matrix(m, outlets, k, False), m, k, outlets, idx)[2]
+        for (score, mes), v in with_.items():
+            d = v - without[(score, mes)]; lo, hi = np.percentile(d[1:], [2.5, 97.5])
+            rows_out.append({"model": m, "k": k, "score": score, "measure": mes, "without": without[(score, mes)][0],
+                             "with extra": v[0], "difference": d[0], "low": lo, "high": hi,
+                             "better": bool(hi < 0) if mes in BE.LOWER else bool(lo > 0),
+                             "worse": bool(lo > 0) if mes in BE.LOWER else bool(hi < 0)})
+T = pd.DataFrame(rows_out); T.to_csv(MX.OUT / "results.csv", index=False)'''),
+    code('''def table(k="all", score="stretched"):
+    """without → with extra outlets; ✓ significantly better, ✗ significantly worse (paired bootstrap)."""
+    d = T[(T.k == k) & (T.score == score)].copy()
+    f = lambda v, m: f"{v:.3f}" if m in ("Spearman", "Kendall") else f"{v:.1f}"
+    d["text"] = [f"{f(a, m)} → {f(b, m)}" + (" ✓" if g else " ✗" if w else "") for a, b, m, g, w in
+                 zip(d.without, d["with extra"], d.measure, d.better, d.worse)]
+    return d.pivot_table(index="model", columns="measure", values="text", aggfunc="first")[BE.MEASURES].reindex(done)
+
+
+table("all", "stretched")'''),
+    code('''table("all", "normal")'''),
+    code('''table("5", "stretched")'''),
+    code('''table("1", "stretched")'''),
+    md("## In short"),
+    code('''d = T[(T.k == "all") & (T.score == "stretched")]
+print(d.pivot_table(index="model", columns="measure", values=["without", "with extra"]).round(3).to_string())
+print("\\nsignificantly better with extra outlets:", d.better.sum(), "| worse:", d.worse.sum(), "| of", len(d))'''),
+], "12_more_outlets.ipynb")

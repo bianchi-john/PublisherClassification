@@ -1,13 +1,14 @@
-"""Attempt 21: can the frozen embeddings (Qwen3-Embedding-8B, Mistral-Small-24B) predict the NewsGuard score better
-than with the ridge of attempt 20? The TF-IDF model stays as it is (attempt 20) and is the reference.
+"""Step 10 (added 6/11): can the frozen embeddings (Qwen3-Embedding-8B, Mistral-Small-24B) predict the NewsGuard score
+better than the ridge of step 7? The TF-IDF model stays as it is (step 7) and is the reference; ModernBERT is not touched.
 
-Same data, same 5 outer folds and same inner protocol as attempt 20 (3 inner folds of the training outlets, split by
+Same data, same 5 outer folds and same inner protocol as step 7 (3 inner folds of the training outlets, split by
 score; a setting is judged by the Spearman between true score and predicted outlet score on the inner outlets).
 Every method is fitted on the training outlets only and predicts, for every test outlet, its score from ALL its articles
 and from k random articles (k = 1, 2, 3, 5, 10, 20, 50; 20 draws, the same draws for every method and for TF-IDF), so
 the results are curves like in the final-state deck.
 
-Representations (`EMBEDDINGS`): Qwen3-8B; Mistral-24B layer 27 (attempt 20); Mistral-24B layer 40; Qwen ⊕ Mistral-27.
+Representations (`EMBEDDINGS`): Qwen3-8B; Mistral-24B layer 27 (step 7); Mistral-24B layer 40; Qwen ⊕ Mistral-27;
+Mistral layers 27 ⊕ 40.
 Every feature is standardised on the training articles.
 
 Methods (`METHODS`), three ideas:
@@ -16,6 +17,11 @@ Methods (`METHODS`), three ideas:
    - ridge_outlet   every outlet counts the same (outlets with 200 articles no longer dominate);
    - ridge_lds      as ridge_outlet, and outlets with rare scores count more (label distribution smoothing, LDS:
                     weight = 1 / sqrt(density of the training scores, Gaussian kernel of 5 points));
+   - ridge_median   as ridge_outlet, but the outlet score is the MEDIAN of its article predictions (robust to odd
+                    articles);
+   - ridge_quantile as ridge_outlet, but it learns the position of the score among the training scores (0-1, uniform)
+                    and turns it back into a score with the training quantiles: the rare extremes are no longer
+                    squeezed by the loss;
    - krr            kernel ridge with an RBF kernel (non-linear), weights none / outlet / LDS chosen inside;
    - mlp            a small neural network (1 hidden layer), training batches drawn with outlet or LDS weights
                     (oversampling of the rare scores); 3 seeds averaged.
@@ -25,39 +31,44 @@ Methods (`METHODS`), three ideas:
    - outlet_mixup   outlet_bags plus 20 synthetic outlets each, mixing two outlets with close scores (C-Mixup):
                     more examples where scores are rare;
    - outlet_krr     RBF kernel ridge on the bags;
+   - outlet_knn     the mean score of the k training outlets most similar to the outlet (cosine of mean vectors);
    - mil            attention over the articles of a bag (multiple-instance learning): the network learns which
                     articles matter; bags drawn at random every epoch (k = 1..64), outlets drawn uniformly or with LDS
-                    weights; 3 seeds averaged.
+                    weights; 3 seeds averaged;
+   - mil_rank       the same network trained mainly to put the outlets IN ORDER (pairwise ranking loss, plus a small
+                    score loss to keep the scale): what Spearman, Kendall and the stretched score measure.
 3. combinations, computed afterwards from the saved predictions (no new training): the mean of the Qwen and Mistral
-   predictions of the same method; "auto" = in every outer fold the method with the best inner Spearman.
+   predictions of the same method; the mean of all the methods of a representation; "auto" = in every outer fold the method with the best inner Spearman.
 
-Everything is seeded (SEED of attempt 20). Outputs: Dataset/tentativi/21_FeatureBoost/predictions/<embedding>/<method>/
-fold<k>.csv.gz (domain, k, draw, prediction) and inner_fold<k>.csv (every setting tried and its inner score)."""
-import sys
+Nothing is chosen on the test outlets: every setting is chosen on the inner folds, the stretched score uses only the
+training scores, and "auto" picks the method with the inner folds too.
+Everything is seeded (SEED). Outputs: Dataset/tentativi/20_FromScratch/boost/predictions/<embedding>/<method>/
+fold<k>.csv.gz (domain, k, draw, prediction) and inner_fold<k>.csv (every setting tried and its inner score).
+Run: run_boost.sh (one process per embedding and method, with a time limit: a crash or a hang skips to the next)."""
 import time
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-HERE = Path(__file__).resolve().parent
-for _name in ("20_FromScratch", "Tentativo20"):          # attempt 20 next to this folder (PC) or on the server
-    if (HERE.parent / _name / "models.py").exists():
-        sys.path.insert(0, str(HERE.parent / _name)); break
-from common import DATA, SEED, log   # noqa: E402
-import models as MO20                # noqa: E402
+import models as MO20
+from common import OUT as SOURCE
+from common import SEED, log
 
-SOURCE = DATA / "tentativi" / "20_FromScratch"
-OUT = DATA / "tentativi" / "21_FeatureBoost"
+OUT = SOURCE / "boost"
 PRED = OUT / "predictions"
 LOG = OUT / "log.txt"
 K = [1, 2, 3, 5, 10, 20, 50, "all"]
 DRAWS = 20
 EMBEDDINGS = {"Qwen3-8B": ["qwen3_embedding_8b.npy"], "Mistral-24B": ["mistral_small_24b_layer27.npy"],
               "Mistral-24B-L40": ["mistral_small_24b_layer40.npy"],
-              "Qwen+Mistral": ["qwen3_embedding_8b.npy", "mistral_small_24b_layer27.npy"]}
-METHODS = ["ridge", "ridge_outlet", "ridge_lds", "outlet_mean", "outlet_bags", "outlet_mixup", "outlet_krr", "krr", "mlp", "mil"]
-ALPHAS = [1, 10, 100, 1_000, 10_000, 100_000, 1_000_000, 10_000_000]
+              "Qwen+Mistral": ["qwen3_embedding_8b.npy", "mistral_small_24b_layer27.npy"],
+              "Mistral-24B-L27+L40": ["mistral_small_24b_layer27.npy", "mistral_small_24b_layer40.npy"]}
+METHODS = ["ridge", "ridge_outlet", "ridge_lds", "ridge_median", "ridge_quantile", "outlet_mean", "outlet_bags", "outlet_mixup",
+           "outlet_krr", "outlet_knn", "krr", "mlp", "mil", "mil_rank"]
+RIDGES = ("ridge", "ridge_outlet", "ridge_lds", "ridge_median", "ridge_quantile")
+ALPHAS = [0.01, 0.1, 1, 10, 100, 1_000, 10_000, 100_000, 1_000_000, 10_000_000]
+KRR_G, KRR_A = (0.125, 0.25, 0.5, 1), (0.01, 0.1, 1, 10)                  # kernel ridge on the articles
+KRR_OUTLET_G, KRR_OUTLET_A = (0.125, 0.25, 0.5, 1), (0.0001, 0.001, 0.01, 0.1)  # kernel ridge on the outlets
 BAG_SIZES = [1, 2, 3, 5, 10, 20, 50]
 
 
@@ -106,6 +117,21 @@ def article_weights(scheme, dom, score, train_outlet_scores):
     if scheme == "lds":
         w = w * lds_weight(train_outlet_scores, score)
     return w / w.mean()
+
+
+def to_quantile(train_scores, s):
+    """Position of a score among the training outlet scores, 0-1 (ties: the middle)."""
+    t = np.sort(train_scores)
+    return (np.searchsorted(t, s, "left") + np.searchsorted(t, s, "right")) / (2 * len(t))
+
+
+def from_quantile(train_scores, q):
+    return np.quantile(train_scores, np.clip(q, 0, 1))
+
+
+def ridge_target(F, setting):
+    y = F.y_art[F.tr]
+    return to_quantile(F.train_scores, y) if setting.get("target") == "quantile" else y
 
 
 # ------------------------------------------------------------------------- linear algebra on the GPU
@@ -185,8 +211,8 @@ class Fold:
         return torch.stack([self.X[torch.as_tensor(b, device=self.dev)].mean(0) for b in bags])
 
 
-def predictor_articles(F, predict_rows):
-    """Outlet score = mean of the predictions of its articles; predictions of each row computed once."""
+def predictor_articles(F, predict_rows, agg=np.mean):
+    """Outlet score = mean (or `agg`) of the predictions of its articles; predictions of each row computed once."""
     cache = np.full(F.X.shape[0], np.nan)
 
     def predict(bags):
@@ -194,7 +220,7 @@ def predictor_articles(F, predict_rows):
         new = need[np.isnan(cache[need])]
         if len(new):
             cache[new] = predict_rows(new)
-        return np.array([cache[b].mean() for b in bags])
+        return np.array([agg(cache[b]) for b in bags])
     return predict
 
 
@@ -228,9 +254,12 @@ def mixup_rows(F, rng, n_per_outlet, sigma=10.0):
 
 def fit_ridge_articles(F, setting, seed):
     w = article_weights(setting["weights"], F.dom_art[F.tr], F.y_art[F.tr], F.train_scores)
-    path = ridge_path(F.X[F.tr], F.y_art[F.tr], w, [setting["alpha"]])
-    beta, b0 = path[0]
-    return predictor_articles(F, lambda r: (F.X[r] @ beta + b0).cpu().numpy())
+    beta, b0 = ridge_path(F.X[F.tr], ridge_target(F, setting), w, [setting["alpha"]])[0]
+    base = predictor_articles(F, lambda r: (F.X[r] @ beta + b0).cpu().numpy(),
+                              np.median if setting.get("aggregate") == "median" else np.mean)
+    if setting.get("target") == "quantile":
+        return lambda bags: from_quantile(F.train_scores, base(bags))
+    return base
 
 
 def fit_outlet_ridge(F, setting, seed):
@@ -303,6 +332,15 @@ def mlp_predictor(F, net, states_list):
     return predictor_articles(F, rows)
 
 
+def knn_predict(F, n, V):
+    """Mean score of the n training outlets whose mean vector is most similar (cosine) to each row of V."""
+    import torch
+    T = F.bag_means([F.rows[d] for d in F.train_outlets])
+    sim = torch.nn.functional.normalize(V, dim=1) @ torch.nn.functional.normalize(T, dim=1).T
+    top = sim.topk(min(n, T.shape[0]), dim=1).indices.cpu().numpy()
+    return F.train_scores[top].mean(1)
+
+
 class MIL:
     """Attention pooling over the articles of a bag."""
 
@@ -356,7 +394,12 @@ def train_mil(F, setting, seed, epochs, bags_per_outlet=8):
         ys = (np.array(ys) - 50) / 25
         for s in range(0, len(bags), 32):
             x, m = MIL.batch(F, bags[s:s + 32])
-            loss = nn.functional.smooth_l1_loss(net(x, m), torch.as_tensor(ys[s:s + 32], dtype=torch.float32, device=F.dev))
+            out, t = net(x, m), torch.as_tensor(ys[s:s + 32], dtype=torch.float32, device=F.dev)
+            loss = nn.functional.smooth_l1_loss(out, t)
+            if setting.get("loss") == "rank":                  # pairwise: the higher score must come out higher
+                sign = torch.sign(t[:, None] - t[None, :])
+                pair = nn.functional.softplus(-sign * (out[:, None] - out[None, :]) * 4)
+                loss = (pair * (sign != 0)).sum() / (sign != 0).sum().clamp(min=1) + 0.1 * loss
             opt.zero_grad(); loss.backward(); opt.step()
         if e in epochs:
             states[e] = {k: v.detach().clone() for k, v in net.state_dict().items()}
@@ -389,6 +432,12 @@ def grid(method):
     if method in ("ridge", "ridge_outlet", "ridge_lds"):
         w = {"ridge": "none", "ridge_outlet": "outlet", "ridge_lds": "lds"}[method]
         return [{"weights": w, "alpha": a} for a in ALPHAS]
+    if method == "ridge_median":
+        return [{"weights": "outlet", "aggregate": "median", "alpha": a} for a in ALPHAS]
+    if method == "outlet_knn":
+        return [{"neighbours": n} for n in (3, 5, 10, 20, 40)]
+    if method == "ridge_quantile":
+        return [{"weights": "outlet", "target": "quantile", "alpha": a} for a in ALPHAS]
     if method == "outlet_mean":
         return [{"weights": "none", "bags": 0, "alpha": a} for a in ALPHAS]
     if method == "outlet_bags":
@@ -396,17 +445,17 @@ def grid(method):
     if method == "outlet_mixup":
         return [{"weights": w, "bags": 20, "mixup": 20, "alpha": a} for w in ("none", "lds") for a in ALPHAS]
     if method == "outlet_krr":
-        return [{"weights": w, "bags": 20, "gamma": g, "alpha": a} for w in ("none", "lds") for g in (0.25, 0.5, 1, 2)
-                for a in (0.01, 0.1, 1, 10)]
+        return [{"weights": w, "bags": 20, "gamma": g, "alpha": a} for w in ("none", "lds") for g in KRR_OUTLET_G
+                for a in KRR_OUTLET_A]
     if method == "krr":
-        return [{"weights": w, "gamma": g, "alpha": a} for w in ("none", "outlet", "lds") for g in (0.5, 1, 2)
-                for a in (0.1, 1, 10, 100)]
+        return [{"weights": w, "gamma": g, "alpha": a} for w in ("none", "outlet", "lds") for g in KRR_G for a in KRR_A]
     if method == "mlp":
         return [{"weights": w, "dropout": p, "wd": wd, "hidden": 512, "epoch": e} for w in ("outlet", "lds")
-                for p in (0.25, 0.5) for wd in (0.01, 0.1) for e in (3, 6, 10, 20)]
-    if method == "mil":
-        return [{"weights": w, "dropout": p, "wd": 0.01, "epoch": e} for w in ("none", "lds") for p in (0.25, 0.5)
-                for e in (10, 20, 40)]
+                for p in (0.25, 0.5, 0.7) for wd in (0.01, 0.1, 1.0) for e in (3, 6, 10, 20)]
+    if method in ("mil", "mil_rank"):
+        loss = "rank" if method == "mil_rank" else "huber"
+        return [{"weights": w, "dropout": p, "wd": 0.01, "loss": loss, "epoch": e} for w in ("none", "lds") for p in (0.25, 0.5)
+                for e in (10, 20, 40, 80)]
     raise ValueError(method)
 
 
@@ -427,11 +476,12 @@ def inner_scores(method, X, art, outlets, rows, train_outlets, fold):
         y = outlets.score.reindex(val_out).to_numpy()
         rho = lambda p: spearmanr(y, p).correlation
         seed = SEED + 10 * fold + j
-        if method in ("ridge", "ridge_outlet", "ridge_lds"):
+        if method in RIDGES:
             w = article_weights(settings[0]["weights"], F.dom_art[F.tr], F.y_art[F.tr], F.train_scores)
-            path = ridge_path(F.X[F.tr], F.y_art[F.tr], w, ALPHAS)
+            path = ridge_path(F.X[F.tr], ridge_target(F, settings[0]), w, ALPHAS)
+            agg = np.median if settings[0].get("aggregate") == "median" else np.mean
             for i, (beta, b0) in enumerate(path):
-                res[i].append(rho(predictor_articles(F, lambda r: (F.X[r] @ beta + b0).cpu().numpy())(bags)))
+                res[i].append(rho(predictor_articles(F, lambda r: (F.X[r] @ beta + b0).cpu().numpy(), agg)(bags)))
         elif method in ("outlet_mean", "outlet_bags", "outlet_mixup"):
             import torch
             groups = {}
@@ -454,7 +504,7 @@ def inner_scores(method, X, art, outlets, rows, train_outlets, fold):
                 rng = np.random.default_rng(seed)
                 bb, yy, _ = make_bags(F, rng, 20)
                 w = lds_weight(F.train_scores, yy) if wsch == "lds" else np.ones(len(yy))
-                out = krr_fit_predict(F.bag_means(bb), yy, w / w.mean(), [F.bag_means(bags)], (0.25, 0.5, 1, 2), (0.01, 0.1, 1, 10))
+                out = krr_fit_predict(F.bag_means(bb), yy, w / w.mean(), [F.bag_means(bags)], KRR_OUTLET_G, KRR_OUTLET_A)
                 for i, s in enumerate(settings):
                     if s["weights"] == wsch:
                         res[i].append(rho(out[(s["gamma"], s["alpha"])][0]))
@@ -462,12 +512,16 @@ def inner_scores(method, X, art, outlets, rows, train_outlets, fold):
             allrows = np.concatenate(bags)
             for wsch in ("none", "outlet", "lds"):
                 w = article_weights(wsch, F.dom_art[F.tr], F.y_art[F.tr], F.train_scores)
-                out = krr_fit_predict(F.X[F.tr], F.y_art[F.tr], w, [F.X[allrows]], (0.5, 1, 2), (0.1, 1, 10, 100))
+                out = krr_fit_predict(F.X[F.tr], F.y_art[F.tr], w, [F.X[allrows]], KRR_G, KRR_A)
                 ends = np.cumsum([len(b) for b in bags])[:-1]
                 for i, s in enumerate(settings):
                     if s["weights"] == wsch:
                         res[i].append(rho([p.mean() for p in np.split(out[(s["gamma"], s["alpha"])][0], ends)]))
-        elif method in ("mlp", "mil"):
+        elif method == "outlet_knn":
+            V = F.bag_means(bags)
+            for i, s in enumerate(settings):
+                res[i].append(rho(knn_predict(F, s["neighbours"], V)))
+        elif method in ("mlp", "mil", "mil_rank"):
             groups = {}
             for i, s in enumerate(settings):
                 groups.setdefault(_key(s, ("epoch",)), []).append(i)
@@ -488,7 +542,7 @@ def inner_scores(method, X, art, outlets, rows, train_outlets, fold):
 
 def final_predictor(method, setting, F, fold):
     seed = SEED + 10 * fold
-    if method in ("ridge", "ridge_outlet", "ridge_lds"):
+    if method in RIDGES:
         return fit_ridge_articles(F, setting, seed)
     if method in ("outlet_mean", "outlet_bags", "outlet_mixup"):
         return fit_outlet_ridge(F, setting, seed)
@@ -496,6 +550,8 @@ def final_predictor(method, setting, F, fold):
         return fit_outlet_krr(F, setting, seed)
     if method == "krr":
         return fit_krr_articles(F, setting, seed)
+    if method == "outlet_knn":
+        return lambda bags: knn_predict(F, setting["neighbours"], F.bag_means(bags))
     seeds = [seed, seed + 1, seed + 2]                       # neural networks: 3 seeds, predictions averaged
     if method == "mlp":
         nets = [train_mlp(F, setting, s, [setting["epoch"]]) for s in seeds]
@@ -515,7 +571,7 @@ def run(emb_name, method, fold, X, art, outlets, rows):
     scores = inner_scores(method, X, art, outlets, rows, train_outlets, fold)
     best = scores.loc[scores["inner Spearman"].idxmax()].drop("inner Spearman").to_dict()
     best = {k: v for k, v in best.items() if not (isinstance(v, float) and np.isnan(v))}
-    for k in ("bags", "mixup", "epoch", "hidden"):
+    for k in ("bags", "mixup", "epoch", "hidden", "neighbours"):
         if k in best:
             best[k] = int(best[k])
     F = Fold(X, art, outlets, rows, train_outlets)
