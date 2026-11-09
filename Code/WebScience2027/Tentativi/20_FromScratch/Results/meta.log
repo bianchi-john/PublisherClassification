@@ -1,0 +1,25 @@
+2026-11-08 12:30:59  round 1: build
+2026-11-08 12:31:36  round 1: embed Qwen3-8B
+2026-11-08 12:33:28  FAILED (1): embed Qwen3-8B, next one (see errors.txt)
+2026-11-08 12:33:28  round 1: embed Mistral-24B
+2026-11-08 11:39:45  STOPPED by hand: Mistral restarted with smaller batches
+2026-11-08 12:39:46  round 1: build
+2026-11-08 12:39:48  round 1: embed Qwen3-8B
+2026-11-08 13:09:34  round 1: embed Mistral-24B
+2026-11-08 14:31:39  round 1: fit TF-IDF
+2026-11-08 14:37:18  round 1: fit Qwen3-8B · ridge
+2026-11-08 14:37:31  round 1: fit Qwen3-8B · mlp
+2026-11-08 14:38:37  round 1: fit Mistral-24B · ridge
+2026-11-08 14:38:55  round 1: fit Mistral-24B · mlp
+2026-11-08 14:40:06  round 1: bert
+2026-11-08 17:50:37  round 2: build
+2026-11-08 17:50:39  round 2: embed Qwen3-8B
+2026-11-08 17:50:41  round 2: embed Mistral-24B
+2026-11-08 17:50:43  round 2: fit TF-IDF
+2026-11-08 17:50:46  round 2: fit Qwen3-8B · ridge
+2026-11-08 17:50:49  round 2: fit Qwen3-8B · mlp
+2026-11-08 17:50:51  round 2: fit Mistral-24B · ridge
+2026-11-08 17:50:53  round 2: fit Mistral-24B · mlp
+2026-11-08 17:50:56  round 2: bert
+2026-11-08 17:51:01  results notebook
+2026-11-08 17:51:27  <<< FINISHED

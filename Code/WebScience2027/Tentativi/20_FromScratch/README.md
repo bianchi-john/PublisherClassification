@@ -77,3 +77,17 @@ stretched score, all articles; paired bootstrap, 1,000 resamples):
   outlet-level models; nearest outlets (`outlet_knn`) are clearly worse (Spearman 0.49-0.62).
 - On the inner folds every good method is between 0.72 and 0.73: with these frozen vectors the ceiling is about 0.75.
   The advantage over TF-IDF does not depend on the choice of the regressor.
+
+**Step 11 results** (`11_meta.ipynb`, 8/11; all 10 meta-articles per outlet vs the same model on whole articles, stretched
+score, paired bootstrap): meta-articles never help. Spearman meta vs articles: TF-IDF 0.644 vs 0.696, Qwen ridge 0.596 vs
+0.726, Qwen network 0.620 vs 0.718, Mistral ridge 0.712 vs 0.735, Mistral network 0.669 vs 0.749, ModernBERT 0.570 vs
+0.602 (significantly worse for Qwen and the Mistral network; the others not significant). ModernBERT on meta-articles
+looked better on the outlets kept apart in fold 1 (0.66) but not overall.
+
+**Step 12 results** (`12_more_outlets.ipynb`, 8/11; extra dataset: 1,700 candidate outlets → 232 after cleaning, copies
+and ownership groups, mostly large networks such as Natural News (537 sites) or Newsquest (147) → 6,534 articles; training
+≈ 181 political + 232 extra outlets per fold; test unchanged, checked): small and mostly not significant changes. All
+articles, stretched: TF-IDF Spearman 0.696 → 0.710, Qwen ridge 0.726 → 0.739 (MAE 15.3 → 14.6), Mistral ridge 0.735 →
+0.736 (MAE 15.2 → 14.6), Mistral network 0.749 → 0.730; the only significant changes are «within 20 points» for the
+Mistral ridge on the predicted score (68.6% → 73.4%). With few articles the same picture. More outlets of other kinds do
+not move the ceiling.
