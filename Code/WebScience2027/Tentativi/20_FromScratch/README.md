@@ -10,7 +10,9 @@ And is it better to predict the level (classification) or the exact score (regre
 |---|---|---|---|
 | 1 | `01_scraping` | `scraper.py`, `run_scraper.sh` | the October 2026 scraping (not re-run: the notebook reads its output) |
 | 2 | `02_cleaning` | `cleaning.py` | political outlets, text from the HTML (trafilatura precision), English, 100–1,500 words, from 2025, no duplicates across outlets, ≥ 10 articles, one outlet per ownership group, NewsGuard score and level |
-| 3 | `03_anonymization` | `anonymization.py` | six rules remove the outlet signature, e-mails, links, accounts, own authors and outlet name; automatic check that nothing is left |
+| 3 | `03_anonymization` | `anonymization.py` | anonymization, part 1: six rules remove the outlet signature, e-mails, links, accounts, own authors and outlet name; automatic check that nothing is left (→ `articles_rules.csv.gz`) |
+| 3b | `03b_anonymization_llm` | `anonymization_llm.py` | anonymization, part 2 (added 10/11): sentences repeated in ≥ 15% of an outlet's articles removed; a local language model (Qwen2.5-7B-Instruct) lists the phrases that reveal the outlet (name in any form, own staff), replaced by code with `[OUTLET]` / `[AUTHOR]` (never rewritten) → `articles_anonymous.csv.gz`, the text of every later step |
+| 3c | `03c_anonymization_checks` | `anonymization_llm.py` | checks on the original, part-1 and final text: LLM attacker (Mistral-Small-24B-Instruct) naming the website, outlet-recognition classifier, agreement with the larger model, sheet of 100 articles for a check by hand |
 | 4 | `04_split` | `models.py` | one split for both tasks: 5 folds of outlets stratified by exact score (balanced by level too) |
 | 5 | `05_embeddings` | `models.py` | token counts (no article truncated) and frozen vectors of Qwen3-Embedding-8B and Mistral-Small-24B |
 | 6 | `06_classification` | `models.py` | the 5 levels: TF-IDF, Qwen3-8B, Mistral-24B (+ logistic regression), ModernBERT |
@@ -19,7 +21,7 @@ And is it better to predict the level (classification) or the exact score (regre
 | 9 | `09_results` | | all results on one page |
 | 10 | `10_boost` | `boost.py`, `boost_eval.py`, `boost_run.py`, `run_boost.sh` | added 6/11: more strategies on the frozen embeddings only (TF-IDF and ModernBERT untouched): outlet and rare-score weights, quantile target, outlet models (mean vector, random bags, mixup), RBF kernel ridge, small neural network, attention over the articles, Qwen ⊕ Mistral and Mistral layer 40, averages and «auto» (method chosen on the inner folds); curves over the articles per outlet, paired bootstrap vs TF-IDF and vs the ridge of step 7 |
 | 11 | `11_meta` | `meta.py`, `meta_run.py`, `run_meta.sh` | added 8/11: meta-articles (leads of ~20 articles of one outlet in one text, 10 per outlet, the same number for every outlet) for TF-IDF, Qwen3-8B, Mistral-24B and ModernBERT (fine-tuned with fresh meta-articles every epoch and early stopping on training outlets kept apart), compared with the same models on single articles |
-| 12 | `12_more_outlets` | `more_outlets.py`, `run_more.sh` | added 8/11, all in one notebook: the non-political NewsGuard outlets we scraped are cleaned and anonymized with the rules of steps 2-3 (copies of political articles removed, ownership groups isolated, ≤ 30 articles per outlet) and added to the TRAINING only; the test stays the 226 political outlets; TF-IDF, Qwen3-8B and Mistral-24B (ridge, outlet-weighted ridge, small neural network) with and without them |
+| 12 | `12_anonymization_effect` | | the regressors on the final text against the same regressors on the part-1 text (first run of the pipeline, outputs kept in `rules_only/`) |
 | – | | `mbfc.py` | comparison with Media Bias/Fact Check (4 Factual Reporting classes): the score, true or predicted, becomes an MBFC class with quotas, medians or thresholds learned on the other folds (used by the final-state deck) |
 
 **Fixed before the results.**
@@ -41,10 +43,12 @@ the working directory (on the server `~/John/Dataset`).
 method, 3 h limit each, failures retried once at the end; everything resumes from the saved folds), `./status_boost.sh`
 from the PC (`./status_boost.sh download` brings back the notebook and the tables). Outputs in `boost/`.
 
-**Step 12**: `screen -dmS t20_more ./run_more.sh` (its GPU part waits for the step 11 queue), `./status_more.sh [download]`;
-ModernBERT on meta-articles with the extra outlets only with `-p RUN_BERT True`. Outputs in `more_outlets/`.
 **Step 11** the same way: `screen -dmS t20_meta ./run_meta.sh` on the server, `./status_meta.sh [download]` from the PC.
 Outputs in `meta/`.
+
+**Re-run of 10/11** (the anonymization got its part 2): the outputs of the first run (rules only) are kept in
+`Dataset/tentativi/20_FromScratch/rules_only/` and `Modelli/20_FromScratch/rules_only/`; the results below refer to that
+first run until they are updated.
 
 **How to run.** From the PC: `./check_server.sh`, `./upload.sh`. On the server, in `~/John/Tentativo20`:
 `screen -dmS t20_cpu ./run_cpu.sh` and `screen -dmS t20_gpu ./run_gpu.sh`. Then from the PC `./status.sh` and
@@ -84,10 +88,3 @@ score, paired bootstrap): meta-articles never help. Spearman meta vs articles: T
 0.602 (significantly worse for Qwen and the Mistral network; the others not significant). ModernBERT on meta-articles
 looked better on the outlets kept apart in fold 1 (0.66) but not overall.
 
-**Step 12 results** (`12_more_outlets.ipynb`, 8/11; extra dataset: 1,700 candidate outlets → 232 after cleaning, copies
-and ownership groups, mostly large networks such as Natural News (537 sites) or Newsquest (147) → 6,534 articles; training
-≈ 181 political + 232 extra outlets per fold; test unchanged, checked): small and mostly not significant changes. All
-articles, stretched: TF-IDF Spearman 0.696 → 0.710, Qwen ridge 0.726 → 0.739 (MAE 15.3 → 14.6), Mistral ridge 0.735 →
-0.736 (MAE 15.2 → 14.6), Mistral network 0.749 → 0.730; the only significant changes are «within 20 points» for the
-Mistral ridge on the predicted score (68.6% → 73.4%). With few articles the same picture. More outlets of other kinds do
-not move the ceiling.

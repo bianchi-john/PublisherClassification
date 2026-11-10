@@ -1,6 +1,5 @@
-"""Revisione del 9 novembre di FinalState.odp: dopo «Il migliore: una piccola rete neurale», due slide NUOVE sulle
-ultime prove del tentativo 20 (passo 11, meta-articoli; passo 12, testate in più nel training; grafici da
-figure/grafici_passi11_12.py). Le slide di John restano com'erano.
+"""Revisione del 9 novembre di FinalState.odp: dopo «Il migliore: una piccola rete neurale», una slide NUOVA sui
+meta-articoli (tentativo 20, passo 11; grafico da figure/grafici_passi11_12.py). Le slide di John restano com'erano.
 Uso:  python aggiorna_passi11_12.py <file di John.odp> <file in uscita.odp>"""
 import re
 import sys
@@ -24,10 +23,6 @@ nuove = [
         "L'attacco di ~20 articoli della stessa testata in un testo, 10 per testata",
         "Peggio o uguale per **tutti** i modelli, anche per ModernBERT",
     ], V / "meta_confronto.png"),
-    con_grafico("Regressori", "Più testate nel training", [
-        "+232 testate non politiche **solo nel training**; test identico",
-        "Piccoli guadagni, quasi mai significativi: il tetto resta **≈ 0,75**",
-    ], V / "piu_testate.png"),
 ]
 pagine[i + 1:i + 1] = nuove
 S.scrivi(IN, OUT, c, manifest, pagine)

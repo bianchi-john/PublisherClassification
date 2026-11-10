@@ -167,8 +167,8 @@ def fit_tfidf(fold, M, outlets):
 
 # ------------------------------------------------------------------------- ModernBERT
 def fit_bert(fold, M, art, outlets, extra_art=None, extra_scores=None, pred_dir=None):
-    """ModernBERT fine-tuned on meta-articles (see the module docstring for every choice). Step 12 passes extra
-    outlets (`extra_art`, `extra_scores`): they are always in training, never in the validation or the test."""
+    """ModernBERT fine-tuned on meta-articles (see the module docstring for every choice). Optional extra training
+    outlets (`extra_art`, `extra_scores`) are always in training, never in the validation or the test."""
     import torch
     from scipy.stats import spearmanr
     from transformers import AutoModelForSequenceClassification, AutoTokenizer, get_linear_schedule_with_warmup

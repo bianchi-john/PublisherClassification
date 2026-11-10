@@ -146,9 +146,10 @@ if old.exists():
 
 # ------------------------------------------------------------------------------------------------ 3. anonymization
 notebook([
-    md("""# 3. Anonymization
+    md("""# 3. Anonymization, part 1: rules
 
-Six rules, in order: outlet signature in the titles → `[OUTLET]`; e-mails → `[EMAIL]`; links → `[URL]`;
+The first of two parts (the second, with boilerplate and a language model, is `03b_anonymization_llm`; the checks are
+in `03c_anonymization_checks`). Six rules, in order: outlet signature in the titles → `[OUTLET]`; e-mails → `[EMAIL]`; links → `[URL]`;
 @accounts → `[ACCOUNT]`; the outlet's own authors → `[AUTHOR]`; the outlet name from its domain → `[OUTLET]`
 (see `anonymization.py`). The checks are automatic."""),
     code(SETUP + '''
@@ -175,9 +176,9 @@ print(f"distinctive names ({len(distinct)} outlets): articles with the name as a
       f"inside other words {distinct.left_inside_words.sum()}")
 assert distinct.left_as_word.sum() == 0
 left[left.common_word | (left.left_inside_words > 0)]'''),
-    code('''anon[["article_id", "domain", "title", "date", "text", "score", "label", "level"]].to_csv(C.OUT / "articles_anonymous.csv.gz", index=False)
+    code('''anon[["article_id", "domain", "title", "date", "text", "score", "label", "level"]].to_csv(C.OUT / "articles_rules.csv.gz", index=False)
 left.to_csv(C.OUT / "anonymization_check.csv", index=False)
-print("saved", C.OUT / "articles_anonymous.csv.gz")'''),
+print("saved", C.OUT / "articles_rules.csv.gz", "(part 1; the final text is written by 03b)")'''),
 ], "03_anonymization.ipynb")
 
 # ------------------------------------------------------------------------------------------------ 4. split
@@ -623,117 +624,176 @@ s = T[(T.input == "meta") & T["meta − articles"].notna()]
 print("meta better than articles (significant):", s.better.sum(), "| worse:", s.worse.sum(), "| of", len(s))'''),
 ], "11_meta.ipynb")
 
-# ------------------------------------------------------------------------------------------------ 12. more outlets in training
+
+# ------------------------------------------------------------------------------------------------ 3b. anonymization, part 2
 notebook([
-    md("""# 12. More outlets in training (added 8/11)
+    md("""# 3b. Anonymization, part 2: boilerplate and a language model
 
-**Question.** The limit seems to be the number of independent outlets (about 180 per fold). If the non-political
-NewsGuard outlets we scraped are added to the TRAINING (the test stays the 226 political outlets, same folds and same
-draws), do the models predict the political outlets better?
-
-Everything is in this notebook: the extra dataset (same cleaning and anonymization rules as steps 2-3, copies of political
-articles removed, ownership groups kept isolated, at most 30 articles per extra outlet), the frozen vectors of the extra
-articles, the models (TF-IDF, Qwen3-8B and Mistral-24B with ridge, outlet-weighted ridge and the small neural network),
-the comparison with the same models without extra outlets (steps 7 and 10). Rules and reasons in `more_outlets.py`.
-The GPU part waits for the step 11 queue to finish (`WAIT_FOR`). Every piece is saved, so a re-run resumes."""),
-    code('''N_JOBS = 48
-RUN_BERT = False                      # ModernBERT on meta-articles with the extra outlets (as step 11), only on request
-WAIT_FOR = "Results/meta_done"        # the GPU part starts after this file exists (step 11 queue finished)'''),
+On the text of part 1 (`articles_rules.csv.gz`), two more passes, so that "the models do not see who published the
+article" is hard to attack (details and reasons in `anonymization_llm.py`):
+1. **boilerplate**: a sentence repeated in at least 15% of the articles of an outlet (and in at least 3) is removed from
+   that outlet (newsletter and donation calls, disclaimers, fixed sign-offs);
+2. **language model**: a local instruction model (Qwen2.5-7B-Instruct, greedy) lists, article by article, the phrases that
+   reveal the outlet (its name in any form, its own staff). The phrases really in the text that are not common words or
+   public names (frequent in OTHER outlets) form a lexicon per outlet, replaced in ALL its articles with `[OUTLET]` /
+   `[AUTHOR]`. The model never rewrites the text: every change is a deletion or an exact replacement, listed in files.
+The result, `articles_anonymous.csv.gz`, is the text every later step reads. Checks: `03c_anonymization_checks`."""),
+    code('''DETECTOR_BUDGET = 24000        # tokens per batch (prompt + answer)'''),
     code(SETUP + '''
-import time
-import traceback
-from pathlib import Path
+import json
+import re
 
-import matplotlib.pyplot as plt
+import anonymization_llm as AL
+
+AL.WORK.mkdir(parents=True, exist_ok=True)
+art = pd.read_csv(C.OUT / "articles_rules.csv.gz")               # part 1
+part1 = art.text.fillna("").copy()'''),
+    md("## Boilerplate"),
+    code('''art["text"], removed = AL.boilerplate(art)
+removed.to_csv(AL.WORK / "boilerplate.csv", index=False)
+w0, w1 = part1.str.split().str.len(), art.text.str.split().str.len()
+print(f"sentences removed: {len(removed):,} in {removed.domain.nunique()} outlets; articles touched {(w1 < w0).mean():.1%}; "
+      f"words removed {1 - w1.sum() / w0.sum():.2%}; articles under 50 words after: {(w1 < 50).sum()}")
+removed.sort_values("articles", ascending=False).head(15)[["sentence", "articles", "of"]]'''),
+    md("## The language model lists the phrases that reveal the outlet"),
+    code('''f = AL.WORK / "detector_answers.json"
+answers = {int(k): v for k, v in json.load(open(f)).items()} if f.exists() else {}
+if len(answers) < len(art):
+    import models as MO
+    MO.wait_for_gpu(18, AL.LOG)
+    tok, m = AL.load_llm(AL.DETECTOR)
+    save = lambda d: json.dump({str(k): v for k, v in d.items()}, open(f, "w"))
+    answers = AL.generate(tok, m, AL.detection_prompts(art), 160, budget=DETECTOR_BUDGET, done=answers, save=save, logfile=AL.LOG)
+    del m; import torch; torch.cuda.empty_cache()
+bad = sum(1 for a in answers.values() if not re.search(r"\\{.*\\}", a, flags=re.S))
+print(f"answers: {len(answers):,}; without JSON: {bad}")'''),
+    code('''L = AL.lexicon(art, answers)
+L.to_csv(AL.WORK / "lexicon.csv", index=False)
+print(f"phrases proposed: {L.phrase.nunique():,} in {L.domain.nunique()} outlets; kept: {L[L.kept].groupby(['domain', 'phrase']).ngroups:,} "
+      f"(outlet {L[L.kept & (L.kind == 'outlet')].phrase.nunique()}, staff {L[L.kept & (L.kind == 'staff')].phrase.nunique()})")
+L[~L.kept].sort_values("elsewhere", ascending=False).drop_duplicates("phrase").head(15)[["kind", "phrase", "elsewhere"]]'''),
+    code('''art["text"], art["title"], n_llm = AL.apply_lexicon(art, L)
+print(f"replacements from the lexicon: {n_llm.sum():,} in {(n_llm > 0).mean():.1%} of the articles")
+art[["article_id", "domain", "title", "date", "text", "score", "label", "level"]].to_csv(C.OUT / "articles_anonymous.csv.gz", index=False)
+print("saved", C.OUT / "articles_anonymous.csv.gz", "(the text of every later step)")'''),
+], "03b_anonymization_llm.ipynb")
+
+# ------------------------------------------------------------------------------------------------ 3c. anonymization checks
+notebook([
+    md("""# 3c. Anonymization checks
+
+On the original text (step 2), after part 1 (rules) and after part 2 (final text):
+- distinctive outlet names left as a word (as in step 3);
+- an **LLM attacker** (Mistral-Small-24B-Instruct, 4 bit; larger than the detector) asked which website published the
+  article, on 3 articles per outlet (678): share of right domains;
+- a **classifier** that tries to recognize the outlet among the 226 (TF-IDF + linear SVM, 80/20 of every outlet's
+  articles). The writing style stays (it is what the paper studies), so this does not go to zero;
+- the **agreement** of the detector with the larger model on 400 articles: outlet phrases the larger one finds that are
+  still in the final text;
+- a **sheet for a check by hand** of 100 random articles (`anonymization/audit.html`, to fill `audit.csv`)."""),
+    code(SETUP + '''
+import json
 
 import anonymization as AN
+import anonymization_llm as AL
+
+raw = pd.read_csv(C.OUT / "articles.csv.gz")
+part1 = pd.read_csv(C.OUT / "articles_rules.csv.gz")
+art = pd.read_csv(C.OUT / "articles_anonymous.csv.gz")
+assert (raw.article_id.to_numpy() == art.article_id.to_numpy()).all() and (part1.article_id.to_numpy() == art.article_id.to_numpy()).all()
+versions = {"original": raw, "rules (part 1)": part1, "final (part 2)": art}'''),
+    code('''_, _, found = AN.anonymize(raw)
+for v, d in versions.items():
+    left = AN.leftovers(d, found)
+    print(f"{v}: distinctive names left as a word: {left[~left.common_word].left_as_word.sum()}")'''),
+    code('''S = AL.sample(art)
+f = AL.WORK / "attack_answers.json"
+att = json.load(open(f)) if f.exists() else {}
+if any(v not in att for v in versions):
+    import models as MO
+    MO.wait_for_gpu(18, AL.LOG)
+    try:                               # the attacker is the larger model (stronger); the detector if it is missing
+        tok, m = AL.load_llm(AL.CHECKER, four_bit=True); att["attacker"] = AL.CHECKER; budget, mb = 12000, 8
+    except Exception as e:
+        print("larger model missing, the attacker is the detector:", e)
+        tok, m = AL.load_llm(AL.DETECTOR); att["attacker"] = AL.DETECTOR; budget, mb = 24000, 32
+    for v, d in versions.items():
+        if v not in att:
+            prompts = [AL.ATTACK.format(title=str(d.title.fillna("")[i]), text=" ".join(str(d.text.fillna("")[i]).split()[:1500])) for i in S]
+            att[v] = [a for _, a in sorted(AL.generate(tok, m, prompts, 12, budget=budget, max_batch=mb).items())]
+            json.dump(att, open(f, "w"))
+    del m; import torch; torch.cuda.empty_cache()
+print("attacker:", att.get("attacker"))
+checks = {"LLM attacker names the website": {v: AL.attack_accuracy(att[v], art.domain[S]) for v in versions},
+          "classifier recognizes the outlet (226)": {v: AL.outlet_classifier(d.text.fillna("").to_numpy(), art.domain.to_numpy())
+                                                     for v, d in versions.items()}}
+T = pd.DataFrame(checks).T; T.to_csv(AL.WORK / "checks.csv"); T.round(3)'''),
+    code('''f = AL.WORK / "checker_answers.json"
+idx = art.sample(n=AL.CHECK_SAMPLE, random_state=C.SEED).index
+try:                                   # the larger model is only a check: if it is missing, the step goes on
+    if not f.exists():
+        import models as MO
+        MO.wait_for_gpu(18, AL.LOG)
+        tok, m = AL.load_llm(AL.CHECKER, four_bit=True)
+        ch = AL.generate(tok, m, AL.detection_prompts(part1.loc[idx].reset_index(drop=True)), 160, budget=12000, max_batch=8)
+        json.dump({str(int(idx[k])): v for k, v in ch.items()}, open(f, "w"))
+        del m; import torch; torch.cuda.empty_cache()
+    checker = {int(k): v for k, v in json.load(open(f)).items()}
+    Lc = AL.lexicon(part1, checker)
+    phrases = set(map(tuple, Lc[Lc.kept & (Lc.kind == "outlet")][["domain", "phrase"]].to_numpy()))
+    left = sorted(p for d, p in phrases if any(AL._word_re(p, True).search(t) for t in art.text[art.domain == d].fillna("")))
+    print(f"on {len(idx)} articles the larger model finds {len(phrases)} outlet phrases; still in the final text: {len(left)}")
+    pd.DataFrame({"phrase": left}).to_csv(AL.WORK / "checker_left.csv", index=False); print(left[:40])
+except Exception as e:
+    print("check with the larger model not done:", type(e).__name__, e)'''),
+    code('''A = art.sample(n=AL.AUDIT, random_state=C.SEED + 1)
+AL.audit_sheet(part1.text.fillna("")[A.index], A.text.fillna(""), A.article_id, A.domain, AL.WORK / "audit.html")
+pd.DataFrame({"article_id": A.article_id, "identifiers left": "", "wrong replacements": ""}).to_csv(AL.WORK / "audit.csv", index=False)
+print("for the check by hand:", AL.WORK / "audit.html", "and", AL.WORK / "audit.csv")'''),
+], "03c_anonymization_checks.ipynb")
+
+# ------------------------------------------------------------------------------------------------ 12. effect of the anonymization
+notebook([
+    md("""# 12. Does the stronger anonymization change the results?
+
+The pipeline was first run with the rules of part 1 only (outputs kept in `rules_only/`). Here the regressors of step 7
+on the final text (parts 1 + 2) are compared with the same regressors on the part-1 text: same outlets, folds,
+settings and draws of k articles; paired bootstrap over outlets (1,000, seed 7)."""),
+    code(SETUP + '''
 import boost as BO
 import boost_eval as BE
-import more_outlets as MX
 
-MX.OUT.mkdir(parents=True, exist_ok=True)
-def safely(label, f, *a):
-    """A failing piece is logged and the notebook goes on (a re-run retries only what is missing)."""
-    try:
-        f(*a)
-    except Exception as e:
-        C.log(f"ERROR {label}: {type(e).__name__}: {e}", MX.LOG)
-        with open(MX.OUT / "errors.txt", "a") as fh:
-            fh.write(f"==== {label}\\n{traceback.format_exc()}\\n")'''),
-    md("## 12.1 The extra dataset"),
-    code('''steps = []
-def step(name, df):
-    steps.append({"step": name, "articles": len(df), "outlets": df.domain.nunique()})
-    print(f"{name}: {len(df):,} articles, {df.domain.nunique():,} outlets")
+art, outlets, rows = BO.load()
+NEW = C.PREDICTIONS / "regression"
+OLD = C.OUT / "rules_only" / "predictions" / "regression"
+MODELS = ["TF-IDF", "Qwen3-8B", "Mistral-24B", "ModernBERT"]
+done = [m for m in MODELS if len(list((NEW / m).glob("fold*.csv.gz"))) == 5 and len(list((OLD / m).glob("fold*.csv.gz"))) == 5]
+print("compared:", done)'''),
+    code('''def matrix(folder, name, k):
+    p = pd.concat([pd.read_csv(f) for f in sorted((folder / name).glob("fold*.csv.gz"))]).set_index("article_id").prediction
+    p = p.reindex(art.article_id).to_numpy()
+    draws = [d for f in range(1, 6) for d in BO.test_draws(outlets, rows, f) if d[1] == str(k)]
+    t = pd.DataFrame([(d, j, p[b].mean()) for d, _, j, b in draws], columns=["domain", "draw", "prediction"])
+    return t.pivot_table(index="draw", columns="domain", values="prediction").reindex(columns=outlets.index).to_numpy()
 
-final = MX.OUT / "articles_extra_anonymous.csv.gz"
-if not final.exists():
-    ng, cand = MX.candidates()
-    print(f"candidate outlets (NewsGuard score, not political-only): {len(cand):,}")
-    raw = MX.extract(cand, N_JOBS); step("scraped articles of the candidates", raw)
-    art = MX.filters(raw, N_JOBS, step)
-    political = pd.read_csv(C.OUT / "articles.csv.gz")
-    art = MX.deduplicate(art, political, N_JOBS, step)
-    art = MX.groups_and_cap(art, sorted(political.domain.unique()), ng, step)
-    anon, counts, found = AN.anonymize(art)
-    left = AN.leftovers(anon, found)
-    RULES = ["signature", "email", "url", "account", "author", "name"]
-    print(f"anonymization: articles touched {(counts[RULES].sum(axis=1) > 0).mean():.1%}; "
-          f"distinctive names left as a word: {left[~left.common_word].left_as_word.sum()}")
-    anon[["article_id", "domain", "title", "date", "text", "score", "label"]].to_csv(final, index=False)
-    pd.DataFrame(steps).to_csv(MX.OUT / "steps.csv", index=False)
-pd.read_csv(MX.OUT / "steps.csv").set_index("step")'''),
-    code('''extra = pd.read_csv(final)
-U, O, rows, outlets, extra_outlets = MX.union()
-eo = O.loc[extra_outlets]
-print(f"extra: {len(extra_outlets)} outlets, {len(extra):,} articles; political: {len(outlets)} outlets, {(U.article_id < MX.EXTRA_ID).sum():,} articles")
-pd.DataFrame({"political outlets": outlets.label.value_counts(), "extra outlets": eo.label.value_counts()}).reindex(range(5)).rename(index=dict(enumerate(C.LEVELS))).T'''),
-    md("## 12.2 TF-IDF (CPU)"),
-    code('''for f in range(1, 6):
-    safely(f"TF-IDF fold {f}", MX.fit_tfidf, f, U, rows, outlets, extra_outlets, N_JOBS)'''),
-    md("## 12.3 Frozen vectors and models (GPU, after the step 11 queue)"),
-    code('''while not Path(WAIT_FOR).exists():
-    time.sleep(300)
-for name in ["Qwen3-8B", "Mistral-24B"]:
-    holder = {}
-    safely(f"embed {name}", lambda: holder.update(X=MX.embed(name, U)))
-    if "X" not in holder:
-        continue
-    X = holder["X"]
-    for method in ["ridge", "ridge_outlet", "mlp"]:
-        for f in range(1, 6):
-            safely(f"{name} · {method} fold {f}", MX.fit_embedding, name, method, f, X, U, O, rows, outlets, extra_outlets)
-    del X'''),
-    code('''if RUN_BERT:
-    import meta as ME
-    M, _ = ME.load_meta()
-    art_pol, _, _ = BO.load()
-    for f in range(1, 6):
-        safely(f"ModernBERT fold {f}", ME.fit_bert, f, M, art_pol, outlets, extra, extra.groupby("domain").score.first(), MX.PRED)'''),
-    md("## 12.4 With and without the extra outlets"),
-    code('''done = [m for m in MX.MODELS if len(list((MX.PRED / m).glob("fold*.csv.gz"))) == 5]
-print("complete:", done)
-err = MX.OUT / "errors.txt"
-print(open(err).read()[-3000:] if err.exists() else "no errors")
+
 idx = np.vstack([np.arange(len(outlets))[None, :], np.random.default_rng(7).integers(0, len(outlets), (BE.B, len(outlets)))])
-rows_out = []
+out = []
 for m in done:
     for k in ["1", "5", "all"]:
-        with_ = BE._one(MX.matrix(m, outlets, k, True), m, k, outlets, idx)[2]
-        without = BE._one(MX.matrix(m, outlets, k, False), m, k, outlets, idx)[2]
-        for (score, mes), v in with_.items():
-            d = v - without[(score, mes)]; lo, hi = np.percentile(d[1:], [2.5, 97.5])
-            rows_out.append({"model": m, "k": k, "score": score, "measure": mes, "without": without[(score, mes)][0],
-                             "with extra": v[0], "difference": d[0], "low": lo, "high": hi,
-                             "better": bool(hi < 0) if mes in BE.LOWER else bool(lo > 0),
-                             "worse": bool(lo > 0) if mes in BE.LOWER else bool(hi < 0)})
-T = pd.DataFrame(rows_out); T.to_csv(MX.OUT / "results.csv", index=False)'''),
+        a = BE._one(matrix(OLD, m, k), m, k, outlets, idx)[2]
+        b = BE._one(matrix(NEW, m, k), m, k, outlets, idx)[2]
+        for (score, mes), v in b.items():
+            d = v - a[(score, mes)]; lo, hi = np.percentile(d[1:], [2.5, 97.5])
+            out.append({"model": m, "k": k, "score": score, "measure": mes, "rules only": a[(score, mes)][0], "final": v[0],
+                        "difference": d[0], "low": lo, "high": hi,
+                        "better": bool(hi < 0) if mes in BE.LOWER else bool(lo > 0), "worse": bool(lo > 0) if mes in BE.LOWER else bool(hi < 0)})
+T = pd.DataFrame(out); T.to_csv(C.OUT / "anonymization_effect.csv", index=False)'''),
     code('''def table(k="all", score="stretched"):
-    """without → with extra outlets; ✓ significantly better, ✗ significantly worse (paired bootstrap)."""
     d = T[(T.k == k) & (T.score == score)].copy()
     f = lambda v, m: f"{v:.3f}" if m in ("Spearman", "Kendall") else f"{v:.1f}"
     d["text"] = [f"{f(a, m)} → {f(b, m)}" + (" ✓" if g else " ✗" if w else "") for a, b, m, g, w in
-                 zip(d.without, d["with extra"], d.measure, d.better, d.worse)]
+                 zip(d["rules only"], d["final"], d.measure, d.better, d.worse)]
     return d.pivot_table(index="model", columns="measure", values="text", aggfunc="first")[BE.MEASURES].reindex(done)
 
 
@@ -741,8 +801,4 @@ table("all", "stretched")'''),
     code('''table("all", "normal")'''),
     code('''table("5", "stretched")'''),
     code('''table("1", "stretched")'''),
-    md("## In short"),
-    code('''d = T[(T.k == "all") & (T.score == "stretched")]
-print(d.pivot_table(index="model", columns="measure", values=["without", "with extra"]).round(3).to_string())
-print("\\nsignificantly better with extra outlets:", d.better.sum(), "| worse:", d.worse.sum(), "| of", len(d))'''),
-], "12_more_outlets.ipynb")
+], "12_anonymization_effect.ipynb")

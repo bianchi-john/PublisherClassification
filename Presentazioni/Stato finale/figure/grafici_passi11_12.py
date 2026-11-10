@@ -1,8 +1,6 @@
-"""Le ultime due prove del tentativo 20 per FinalState.odp (revisione del 9 novembre), dai risultati già calcolati:
+"""L'ultima prova del tentativo 20 per FinalState.odp (revisione del 9 novembre), dai risultati già calcolati:
 - meta_confronto.png (passo 11): Spearman ed errore medio, tutti gli articoli, voto stirato, di ogni modello sugli
-  articoli singoli e sui meta-articoli (Dataset/tentativi/20_FromScratch/meta/results.csv);
-- piu_testate.png (passo 12): gli stessi modelli senza e con le 232 testate non politiche in più nel training
-  (Dataset/tentativi/20_FromScratch/more_outlets/results.csv).
+  articoli singoli e sui meta-articoli (Dataset/tentativi/20_FromScratch/meta/results.csv).
 Contornati: differenze significative (bootstrap appaiato sulle testate, intervallo al 95%).
 Uso, da questa cartella:  python grafici_passi11_12.py"""
 from pathlib import Path
@@ -53,19 +51,4 @@ fig.legend(*assi[1].get_legend_handles_labels(), frameon=False, fontsize=10, loc
 fig.suptitle("Tutti gli articoli, voto stirato: articoli singoli e meta-articoli", x=0.01, ha="left", fontweight="bold", fontsize=13)
 plt.tight_layout(); plt.savefig(OUT / "meta_confronto.png", bbox_inches="tight"); plt.close()
 
-# ------------------------------------------------------------------------------------------------ passo 12
-T = pd.read_csv(D / "more_outlets/results.csv", dtype={"k": str})
-T = T[(T.score == "stretched") & (T.k == "all")]
-modelli = ["TF-IDF", "Qwen3-8B · ridge", "Qwen3-8B · ridge_outlet", "Qwen3-8B · mlp", "Mistral-24B · ridge",
-           "Mistral-24B · ridge_outlet", "Mistral-24B · mlp"]
-fig, assi = plt.subplots(1, 2, figsize=(15, 4.8), sharey=True)
-for ax, misura, titolo in [(assi[0], "Spearman", "Spearman (più alto è meglio)"), (assi[1], "MAE", "Errore medio, punti (più basso è meglio)")]:
-    d = T[T.measure == misura].set_index("model").reindex(modelli)
-    coppie(ax, modelli, d.without.to_numpy(), d["with extra"].to_numpy(), (d.better | d.worse).to_numpy(bool), misura,
-           ["solo testate politiche", "+ 232 testate non politiche"])
-    ax.set_title(titolo)
-fig.legend(*assi[1].get_legend_handles_labels(), frameon=False, fontsize=10, loc="lower center", ncol=3, bbox_to_anchor=(0.5, -0.07))
-fig.suptitle("Tutti gli articoli, voto stirato: training senza e con le testate in più (test identico)", x=0.01, ha="left",
-             fontweight="bold", fontsize=13)
-plt.tight_layout(); plt.savefig(OUT / "piu_testate.png", bbox_inches="tight"); plt.close()
 print("ok")

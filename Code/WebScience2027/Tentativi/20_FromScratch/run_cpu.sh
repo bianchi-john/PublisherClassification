@@ -1,6 +1,7 @@
 #!/bin/bash
-# Server, CPU queue: steps 1-4 (scraping summary, cleaning, anonymization, split), then the linear models: TF-IDF at
-# once, Qwen and Mistral as soon as the GPU queue has written their vectors.
+# Server, CPU queue of the whole pipeline: steps 1-4 (scraping summary, cleaning, anonymization part 1, split); then,
+# when the GPU queue has written the final text (anonymization part 2), TF-IDF for classification and regression; then,
+# when the frozen vectors exist (step 5), Qwen and Mistral with the linear models.
 # Start:  screen -dmS t20_cpu ./run_cpu.sh        Progress from the PC: ./status.sh
 export TZ=Europe/Rome
 export OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 RAYON_NUM_THREADS=2 TOKENIZERS_PARALLELISM=false   # shared server
@@ -13,6 +14,7 @@ for nb in 01_scraping 02_cleaning 03_anonymization 04_split; do
     note "CPU: $nb"; pm $nb.ipynb $nb.ipynb || { note "ERROR in $nb: queue stopped"; exit 1; }
 done
 touch Results/data_ready
+until [ -f Results/anonymized_ready ]; do sleep 120; done
 for nb in 06_classification 07_regression; do
     for i in 1 2; do note "CPU: $nb, TF-IDF (attempt $i)"; pm -p MODELS "TF-IDF" $nb.ipynb Results/${nb}_tfidf.ipynb && break; done
 done
