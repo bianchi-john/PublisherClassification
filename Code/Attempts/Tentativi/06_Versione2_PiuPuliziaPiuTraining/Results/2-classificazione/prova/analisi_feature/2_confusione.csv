@@ -1,0 +1,6 @@
+,pred l1,pred l2,pred l3,pred l4,pred l5
+vero l1,2,3,0,2,1
+vero l2,1,3,1,3,0
+vero l3,0,2,5,1,0
+vero l4,1,3,3,1,0
+vero l5,0,3,0,5,0

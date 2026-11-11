@@ -1,0 +1,11 @@
+Scope of Coverage,l1,l2,l3,l4,l5
+(vuoto),0.0,0.12,0.0,0.0,0.0
+International,0.12,0.0,0.12,0.0,0.12
+"International,National",0.0,0.12,0.0,0.0,0.0
+"Local,Regional",0.0,0.12,0.0,0.12,0.38
+"Local,Regional,National",0.0,0.0,0.12,0.0,0.0
+National,0.88,0.38,0.38,0.62,0.25
+"National,International",0.0,0.25,0.25,0.0,0.25
+"National,Local,Regional",0.0,0.0,0.0,0.12,0.0
+Regional,0.0,0.0,0.12,0.0,0.0
+"Regional,Local",0.0,0.0,0.0,0.12,0.0

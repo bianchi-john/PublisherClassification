@@ -84,3 +84,101 @@ Code/WebScience2027/Tentativi/18_PunteggioEsatto/Results/**/*.csv.gz
 Code/WebScience2027/Tentativi/18_PunteggioEsatto/Results/**/fold*.csv
 Code/WebScience2027/Tentativi/18_PunteggioEsatto/Results/lineari/lavori/
 Code/WebScience2027/Tentativi/18_PunteggioEsatto/Results/cpu_fatto
+
+# =====================================================================
+# Code/Attempts: outputs not to publish -- per-article / per-outlet predictions with NewsGuard labels,
+# caches with article text, embeddings and pickles (some over GitHub's 100 MB limit). Kept locally.
+# =====================================================================
+/Code/Attempts/Tentativi/02_ScrapingConPagine/Results/2-classificazione/03_analisi/coef_due_blocchi.pkl
+/Code/Attempts/Tentativi/02_ScrapingConPagine/Results/2-classificazione/03_analisi/embedding_modernbert_A.npy
+/Code/Attempts/Tentativi/02_ScrapingConPagine/Results/2-classificazione/03_analisi/embedding_modernbert_C.npy
+/Code/Attempts/Tentativi/05_Versione1_Pipeline304Testate/Results/2-classificazione/embedding/
+/Code/Attempts/Tentativi/05_Versione1_Pipeline304Testate/Results/2-classificazione/prova/embedding/
+/Code/Attempts/Tentativi/05_Versione1_Pipeline304Testate/Results/2-classificazione/prova/feature_tuned_FATTO
+/Code/Attempts/Tentativi/05_Versione1_Pipeline304Testate/Results/2-classificazione/prova/feature_tuned_fold_gruppo_articoli.csv
+/Code/Attempts/Tentativi/05_Versione1_Pipeline304Testate/Results/2-classificazione/prova/feature_tuned_fold_testata_articoli.csv
+/Code/Attempts/Tentativi/05_Versione1_Pipeline304Testate/Results/2-classificazione/prova/transformer/bge_large_v15/FATTO
+/Code/Attempts/Tentativi/05_Versione1_Pipeline304Testate/Results/2-classificazione/prova/transformer/bge_large_v15/articoli.csv
+/Code/Attempts/Tentativi/05_Versione1_Pipeline304Testate/Results/2-classificazione/prova/transformer/bge_large_v15/testate.csv
+/Code/Attempts/Tentativi/05_Versione1_Pipeline304Testate/Results/2-classificazione/prova/transformer/e5_large_v2/FATTO
+/Code/Attempts/Tentativi/05_Versione1_Pipeline304Testate/Results/2-classificazione/prova/transformer/e5_large_v2/articoli.csv
+/Code/Attempts/Tentativi/05_Versione1_Pipeline304Testate/Results/2-classificazione/prova/transformer/e5_large_v2/testate.csv
+/Code/Attempts/Tentativi/05_Versione1_Pipeline304Testate/Results/2-classificazione/prova/transformer/mb_ep_prova/fold1_test.csv
+/Code/Attempts/Tentativi/05_Versione1_Pipeline304Testate/Results/2-classificazione/prova/transformer/mb_ep_prova/fold1_val.csv
+/Code/Attempts/Tentativi/06_Versione2_PiuPuliziaPiuTraining/Results/2-classificazione/embedding/
+/Code/Attempts/Tentativi/06_Versione2_PiuPuliziaPiuTraining/Results/2-classificazione/prova/analisi_feature/2_riferimento_articoli.csv
+/Code/Attempts/Tentativi/06_Versione2_PiuPuliziaPiuTraining/Results/2-classificazione/prova/analisi_feature/4_parole_decisive_per_testata.csv
+/Code/Attempts/Tentativi/06_Versione2_PiuPuliziaPiuTraining/Results/2-classificazione/prova/analisi_feature/8_testate.csv
+/Code/Attempts/Tentativi/06_Versione2_PiuPuliziaPiuTraining/Results/2-classificazione/prova/analisi_feature/FATTO
+/Code/Attempts/Tentativi/06_Versione2_PiuPuliziaPiuTraining/Results/2-classificazione/prova/embedding/
+/Code/Attempts/Tentativi/06_Versione2_PiuPuliziaPiuTraining/Results/2-classificazione/prova/esecuzioni/FINITO
+/Code/Attempts/Tentativi/06_Versione2_PiuPuliziaPiuTraining/Results/2-classificazione/prova/prova_feature_FATTO
+/Code/Attempts/Tentativi/06_Versione2_PiuPuliziaPiuTraining/Results/2-classificazione/prova/prova_feature_fold_gruppo_articoli.csv
+/Code/Attempts/Tentativi/06_Versione2_PiuPuliziaPiuTraining/Results/2-classificazione/prova/prova_feature_fold_testata_articoli.csv
+/Code/Attempts/Tentativi/06_Versione2_PiuPuliziaPiuTraining/Results/2-classificazione/prova/transformer/prova_base/fold1_test.csv
+/Code/Attempts/Tentativi/06_Versione2_PiuPuliziaPiuTraining/Results/2-classificazione/prova/transformer/prova_base/fold1_val.csv
+/Code/Attempts/Tentativi/06_Versione2_PiuPuliziaPiuTraining/Results/2-classificazione/prova/transformer/prova_base_tetto5/fold1_test.csv
+/Code/Attempts/Tentativi/06_Versione2_PiuPuliziaPiuTraining/Results/2-classificazione/prova/transformer/prova_base_tetto5/fold1_val.csv
+/Code/Attempts/Tentativi/06_Versione2_PiuPuliziaPiuTraining/Results/2-classificazione/prova/transformer/prova_e5/FATTO
+/Code/Attempts/Tentativi/06_Versione2_PiuPuliziaPiuTraining/Results/2-classificazione/prova/transformer/prova_e5/articoli.csv
+/Code/Attempts/Tentativi/06_Versione2_PiuPuliziaPiuTraining/Results/2-classificazione/prova/transformer/prova_e5/testate.csv
+/Code/Attempts/Tentativi/07_Versione3_PariGenere/Results/2-classificazione/embedding/
+/Code/Attempts/Tentativi/14_DatasetRipensatoChunk/Results/cache/
+/Code/Attempts/Tentativi/14_DatasetRipensatoChunk/Results/dataset/prova/articoli.csv.gz
+/Code/Attempts/Tentativi/14_DatasetRipensatoChunk/Results/dataset/prova/testate.csv
+/Code/Attempts/Tentativi/14_DatasetRipensatoChunk/Results/prova/01_prova.ipynb
+/Code/Attempts/Tentativi/14_DatasetRipensatoChunk/Results/prova/02_prova.ipynb
+/Code/Attempts/Tentativi/14_DatasetRipensatoChunk/Results/prova/cache/
+/Code/Attempts/Tentativi/16_DataPreparation/Results/analisi_embedding/articoli_previsioni.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/analisi_embedding/media_testate_8B.npy
+/Code/Attempts/Tentativi/16_DataPreparation/Results/analisi_embedding/media_testate_8B_domini.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/analisi_embedding/stile_articoli_previsioni.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/analisi_embedding/stile_testate_previsioni.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/analisi_embedding/testate_previsioni.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/dataset/prova/articoli.csv.gz
+/Code/Attempts/Tentativi/16_DataPreparation/Results/dataset/prova/cache/
+/Code/Attempts/Tentativi/16_DataPreparation/Results/embedding/Mistral-Small-24B-Base-2501_strato27/previsioni_testate.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/embedding/Mistral-Small-24B-Base-2501_strato40/previsioni_testate.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/embedding/Qwen3-Embedding-0.6B/previsioni_testate.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/embedding/Qwen3-Embedding-8B/previsioni_testate.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/embedding/Qwen3-Embedding-8B_stile/previsioni_testate.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/feature/previsioni_testate.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/modernbert/5 classi/fold1.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/modernbert/5 classi/fold2.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/modernbert/5 classi/fold3.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/modernbert/5 classi/fold4.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/modernbert/5 classi/fold5.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/modernbert/diagnostica/fold2.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/modernbert/previsioni_testate.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/modernbert/regressione/fold1.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/modernbert/regressione/fold2.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/modernbert/regressione/fold3.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/modernbert/regressione/fold4.csv
+/Code/Attempts/Tentativi/16_DataPreparation/Results/modernbert/regressione/fold5.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/DeBERTa_B/fold1.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/DeBERTa_B/fold2.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/DeBERTa_B/fold3.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/DeBERTa_B/fold4.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/DeBERTa_B/fold5.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/DeBERTa_B/previsioni.csv.gz
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/ModernBERT_A/fold1.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/ModernBERT_A/fold2.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/ModernBERT_A/fold3.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/ModernBERT_A/fold4.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/ModernBERT_A/fold5.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/ModernBERT_A/previsioni.csv.gz
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/ModernBERT_B/fold1.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/ModernBERT_B/fold2.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/ModernBERT_B/fold3.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/ModernBERT_B/fold4.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/ModernBERT_B/fold5.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/ModernBERT_B/previsioni.csv.gz
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/ModernBERT_C/fold1.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/ModernBERT_C/fold2.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/ModernBERT_C/fold3.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/ModernBERT_C/fold4.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/ModernBERT_C/fold5.csv
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/bert/ModernBERT_C/previsioni.csv.gz
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/cpu_fatto
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/lineari/previsioni_articoli.csv.gz
+/Code/Attempts/Tentativi/18_PunteggioEsatto/Results/lineari/previsioni_testate_E.csv.gz

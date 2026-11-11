@@ -1,0 +1,230 @@
+{
+ "articolo": {
+  "n": 6477,
+  "accuratezza": 0.1610313416705265,
+  "f1_macro": 0.16294253918469723,
+  "f1_pesata": 0.164088314917329,
+  "tolerant_0.5": 0.3514744480469353,
+  "tolerant_1": 0.5419175544233441,
+  "errore_medio_livelli": 1.4965261695229273,
+  "confusione": [
+   [
+    162,
+    390,
+    265,
+    72,
+    162
+   ],
+   [
+    342,
+    277,
+    352,
+    140,
+    321
+   ],
+   [
+    223,
+    202,
+    258,
+    150,
+    482
+   ],
+   [
+    145,
+    189,
+    378,
+    207,
+    463
+   ],
+   [
+    66,
+    298,
+    604,
+    190,
+    139
+   ]
+  ],
+  "l1_precisione": 0.17270788912579957,
+  "l1_recall": 0.15413891531874405,
+  "l1_f1": 0.16289592760180996,
+  "l1_supporto": 1051,
+  "l2_precisione": 0.2042772861356932,
+  "l2_recall": 0.19343575418994413,
+  "l2_f1": 0.19870875179340028,
+  "l2_supporto": 1432,
+  "l3_precisione": 0.13893376413570274,
+  "l3_recall": 0.1961977186311787,
+  "l3_f1": 0.1626733921815889,
+  "l3_supporto": 1315,
+  "l4_precisione": 0.2727272727272727,
+  "l4_recall": 0.14978292329956586,
+  "l4_f1": 0.1933675852405418,
+  "l4_supporto": 1382,
+  "l5_precisione": 0.08870453095086152,
+  "l5_recall": 0.10717039321511179,
+  "l5_f1": 0.09706703910614525,
+  "l5_supporto": 1297,
+  "bin_accuratezza": 0.624054346147908,
+  "bin_tp": 2871,
+  "bin_tn": 1171,
+  "bin_fp": 1312,
+  "bin_fn": 1123,
+  "bin_precisione_affidabile": 0.6863495099211092,
+  "bin_recall_affidabile": 0.7188282423635454,
+  "bin_f1_affidabile": 0.7022135257429375,
+  "bin_f1_inaffidabile": 0.49026585723257277,
+  "bin_f1_macro": 0.5962396914877551
+ },
+ "testata_voto": {
+  "n": 40,
+  "accuratezza": 0.15,
+  "f1_macro": 0.15936507936507938,
+  "f1_pesata": 0.15936507936507938,
+  "tolerant_0.5": 0.3625,
+  "tolerant_1": 0.575,
+  "errore_medio_livelli": 1.45,
+  "confusione": [
+   [
+    2,
+    4,
+    1,
+    0,
+    1
+   ],
+   [
+    3,
+    1,
+    1,
+    0,
+    3
+   ],
+   [
+    1,
+    2,
+    2,
+    0,
+    3
+   ],
+   [
+    0,
+    1,
+    3,
+    1,
+    3
+   ],
+   [
+    0,
+    2,
+    5,
+    1,
+    0
+   ]
+  ],
+  "l1_precisione": 0.3333333333333333,
+  "l1_recall": 0.25,
+  "l1_f1": 0.2857142857142857,
+  "l1_supporto": 8,
+  "l2_precisione": 0.1,
+  "l2_recall": 0.125,
+  "l2_f1": 0.1111111111111111,
+  "l2_supporto": 8,
+  "l3_precisione": 0.16666666666666666,
+  "l3_recall": 0.25,
+  "l3_f1": 0.2,
+  "l3_supporto": 8,
+  "l4_precisione": 0.5,
+  "l4_recall": 0.125,
+  "l4_f1": 0.2,
+  "l4_supporto": 8,
+  "l5_precisione": 0.0,
+  "l5_recall": 0.0,
+  "l5_f1": 0.0,
+  "l5_supporto": 8,
+  "bin_accuratezza": 0.7,
+  "bin_tp": 18,
+  "bin_tn": 10,
+  "bin_fp": 6,
+  "bin_fn": 6,
+  "bin_precisione_affidabile": 0.75,
+  "bin_recall_affidabile": 0.75,
+  "bin_f1_affidabile": 0.75,
+  "bin_f1_inaffidabile": 0.625,
+  "bin_f1_macro": 0.6875
+ },
+ "testata_media": {
+  "n": 40,
+  "accuratezza": 0.15,
+  "f1_macro": 0.15936507936507938,
+  "f1_pesata": 0.15936507936507938,
+  "tolerant_0.5": 0.3625,
+  "tolerant_1": 0.575,
+  "errore_medio_livelli": 1.45,
+  "confusione": [
+   [
+    2,
+    4,
+    1,
+    0,
+    1
+   ],
+   [
+    3,
+    1,
+    1,
+    0,
+    3
+   ],
+   [
+    1,
+    2,
+    2,
+    0,
+    3
+   ],
+   [
+    0,
+    1,
+    3,
+    1,
+    3
+   ],
+   [
+    0,
+    2,
+    5,
+    1,
+    0
+   ]
+  ],
+  "l1_precisione": 0.3333333333333333,
+  "l1_recall": 0.25,
+  "l1_f1": 0.2857142857142857,
+  "l1_supporto": 8,
+  "l2_precisione": 0.1,
+  "l2_recall": 0.125,
+  "l2_f1": 0.1111111111111111,
+  "l2_supporto": 8,
+  "l3_precisione": 0.16666666666666666,
+  "l3_recall": 0.25,
+  "l3_f1": 0.2,
+  "l3_supporto": 8,
+  "l4_precisione": 0.5,
+  "l4_recall": 0.125,
+  "l4_f1": 0.2,
+  "l4_supporto": 8,
+  "l5_precisione": 0.0,
+  "l5_recall": 0.0,
+  "l5_f1": 0.0,
+  "l5_supporto": 8,
+  "bin_accuratezza": 0.7,
+  "bin_tp": 18,
+  "bin_tn": 10,
+  "bin_fp": 6,
+  "bin_fn": 6,
+  "bin_precisione_affidabile": 0.75,
+  "bin_recall_affidabile": 0.75,
+  "bin_f1_affidabile": 0.75,
+  "bin_f1_inaffidabile": 0.625,
+  "bin_f1_macro": 0.6875
+ }
+}

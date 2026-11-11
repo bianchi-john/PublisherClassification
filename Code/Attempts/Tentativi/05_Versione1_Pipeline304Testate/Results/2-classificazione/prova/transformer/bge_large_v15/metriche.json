@@ -1,0 +1,230 @@
+{
+ "articolo": {
+  "n": 6477,
+  "accuratezza": 0.09433379651073028,
+  "f1_macro": 0.10858306757042732,
+  "f1_pesata": 0.10430699914123974,
+  "tolerant_0.5": 0.36343986413463025,
+  "tolerant_1": 0.6325459317585301,
+  "errore_medio_livelli": 1.3419793114096032,
+  "confusione": [
+   [
+    213,
+    633,
+    163,
+    0,
+    42
+   ],
+   [
+    280,
+    199,
+    599,
+    192,
+    162
+   ],
+   [
+    199,
+    520,
+    0,
+    0,
+    596
+   ],
+   [
+    0,
+    233,
+    199,
+    199,
+    751
+   ],
+   [
+    0,
+    200,
+    593,
+    504,
+    0
+   ]
+  ],
+  "l1_precisione": 0.3078034682080925,
+  "l1_recall": 0.20266412940057088,
+  "l1_f1": 0.24440619621342513,
+  "l1_supporto": 1051,
+  "l2_precisione": 0.11148459383753502,
+  "l2_recall": 0.1389664804469274,
+  "l2_f1": 0.12371774945601492,
+  "l2_supporto": 1432,
+  "l3_precisione": 0.0,
+  "l3_recall": 0.0,
+  "l3_f1": 0.0,
+  "l3_supporto": 1315,
+  "l4_precisione": 0.2223463687150838,
+  "l4_recall": 0.14399421128798842,
+  "l4_f1": 0.17479139218269654,
+  "l4_supporto": 1382,
+  "l5_precisione": 0.0,
+  "l5_recall": 0.0,
+  "l5_f1": 0.0,
+  "l5_supporto": 1297,
+  "bin_accuratezza": 0.6433534043538676,
+  "bin_tp": 2842,
+  "bin_tn": 1325,
+  "bin_fp": 1158,
+  "bin_fn": 1152,
+  "bin_precisione_affidabile": 0.7105,
+  "bin_recall_affidabile": 0.7115673510265398,
+  "bin_f1_affidabile": 0.7110332749562172,
+  "bin_f1_inaffidabile": 0.5342741935483871,
+  "bin_f1_macro": 0.6226537342523022
+ },
+ "testata_voto": {
+  "n": 40,
+  "accuratezza": 0.1,
+  "f1_macro": 0.1123076923076923,
+  "f1_pesata": 0.1123076923076923,
+  "tolerant_0.5": 0.3625,
+  "tolerant_1": 0.625,
+  "errore_medio_livelli": 1.375,
+  "confusione": [
+   [
+    2,
+    4,
+    1,
+    0,
+    1
+   ],
+   [
+    2,
+    1,
+    3,
+    1,
+    1
+   ],
+   [
+    1,
+    4,
+    0,
+    0,
+    3
+   ],
+   [
+    0,
+    2,
+    1,
+    1,
+    4
+   ],
+   [
+    0,
+    1,
+    4,
+    3,
+    0
+   ]
+  ],
+  "l1_precisione": 0.4,
+  "l1_recall": 0.25,
+  "l1_f1": 0.3076923076923077,
+  "l1_supporto": 8,
+  "l2_precisione": 0.08333333333333333,
+  "l2_recall": 0.125,
+  "l2_f1": 0.1,
+  "l2_supporto": 8,
+  "l3_precisione": 0.0,
+  "l3_recall": 0.0,
+  "l3_f1": 0.0,
+  "l3_supporto": 8,
+  "l4_precisione": 0.2,
+  "l4_recall": 0.125,
+  "l4_f1": 0.15384615384615385,
+  "l4_supporto": 8,
+  "l5_precisione": 0.0,
+  "l5_recall": 0.0,
+  "l5_f1": 0.0,
+  "l5_supporto": 8,
+  "bin_accuratezza": 0.625,
+  "bin_tp": 16,
+  "bin_tn": 9,
+  "bin_fp": 7,
+  "bin_fn": 8,
+  "bin_precisione_affidabile": 0.6956521739130435,
+  "bin_recall_affidabile": 0.6666666666666666,
+  "bin_f1_affidabile": 0.6808510638297872,
+  "bin_f1_inaffidabile": 0.5454545454545454,
+  "bin_f1_macro": 0.6131528046421664
+ },
+ "testata_media": {
+  "n": 40,
+  "accuratezza": 0.1,
+  "f1_macro": 0.1123076923076923,
+  "f1_pesata": 0.1123076923076923,
+  "tolerant_0.5": 0.3625,
+  "tolerant_1": 0.625,
+  "errore_medio_livelli": 1.375,
+  "confusione": [
+   [
+    2,
+    4,
+    1,
+    0,
+    1
+   ],
+   [
+    2,
+    1,
+    3,
+    1,
+    1
+   ],
+   [
+    1,
+    4,
+    0,
+    0,
+    3
+   ],
+   [
+    0,
+    2,
+    1,
+    1,
+    4
+   ],
+   [
+    0,
+    1,
+    4,
+    3,
+    0
+   ]
+  ],
+  "l1_precisione": 0.4,
+  "l1_recall": 0.25,
+  "l1_f1": 0.3076923076923077,
+  "l1_supporto": 8,
+  "l2_precisione": 0.08333333333333333,
+  "l2_recall": 0.125,
+  "l2_f1": 0.1,
+  "l2_supporto": 8,
+  "l3_precisione": 0.0,
+  "l3_recall": 0.0,
+  "l3_f1": 0.0,
+  "l3_supporto": 8,
+  "l4_precisione": 0.2,
+  "l4_recall": 0.125,
+  "l4_f1": 0.15384615384615385,
+  "l4_supporto": 8,
+  "l5_precisione": 0.0,
+  "l5_recall": 0.0,
+  "l5_f1": 0.0,
+  "l5_supporto": 8,
+  "bin_accuratezza": 0.625,
+  "bin_tp": 16,
+  "bin_tn": 9,
+  "bin_fp": 7,
+  "bin_fn": 8,
+  "bin_precisione_affidabile": 0.6956521739130435,
+  "bin_recall_affidabile": 0.6666666666666666,
+  "bin_f1_affidabile": 0.6808510638297872,
+  "bin_f1_inaffidabile": 0.5454545454545454,
+  "bin_f1_macro": 0.6131528046421664
+ }
+}

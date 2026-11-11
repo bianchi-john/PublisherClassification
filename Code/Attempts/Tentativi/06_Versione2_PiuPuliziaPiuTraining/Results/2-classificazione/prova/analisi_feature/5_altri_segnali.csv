@@ -1,0 +1,5 @@
+,F1 macro,accuratezza,binario
+solo stile (12 misure),0.149,0.15,0.575
+solo date,0.253,0.325,0.625
+solo metadati NewsGuard (non testo),0.33,0.35,0.825
+TF-IDF (riferimento),0.259,0.275,0.6

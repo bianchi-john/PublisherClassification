@@ -1,0 +1,19 @@
+,testate,accuratezza,errore_medio_livelli
+livello: l1,8,0.25,1.62
+livello: l2,8,0.38,1.0
+livello: l3,8,0.62,0.38
+livello: l4,8,0.12,1.5
+livello: l5,8,0.0,1.75
+in_gruppo: False,23,0.26,1.3
+in_gruppo: True,17,0.29,1.18
+articoli (fasce): 20-50,4,0.25,1.75
+articoli (fasce): 51-100,7,0.14,2.43
+articoli (fasce): >150,29,0.31,0.9
+paese: AU,1,0.0,1.0
+paese: GB,4,0.75,0.25
+paese: US,35,0.23,1.37
+Orientation: (vuoto),7,0.14,1.43
+Orientation: Far Left,2,0.0,1.5
+Orientation: Far Right,11,0.27,1.55
+Orientation: Slightly Left,6,0.17,0.83
+Orientation: Slightly Right,14,0.43,1.07

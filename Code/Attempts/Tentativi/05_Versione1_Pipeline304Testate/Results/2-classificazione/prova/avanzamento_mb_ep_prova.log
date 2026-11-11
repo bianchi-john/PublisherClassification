@@ -1,0 +1,6 @@
+2026-10-18 12:28:51  === mb_ep_prova: answerdotai/ModernBERT-base, 1024 token, seed 42, su Tesla V100S-PCIE-32GB ===
+2026-10-18 12:28:56  6477 articoli tokenizzati in 3 s; token per articolo: mediana 769, al massimo 1024 nel 30% dei casi
+2026-10-18 12:28:56  fold 1: 27 testate di training, 5 di validazione, 8 di test; pesi di classe [0.8999999761581421, 1.0800000429153442, 0.8999999761581421, 0.8999999761581421, 1.350000023841858]
+2026-10-18 12:29:24  fold 1 epoca 1/2: loss 1.6296, val loss 1.6066, val F1 testate 0.233, val acc articoli 0.309 (25 s)
+2026-10-18 12:29:51  fold 1 epoca 2/2: loss 1.4726, val loss 1.5577, val F1 testate 0.467, val acc articoli 0.277 (27 s)
+2026-10-18 12:30:01  fold 1: finito in 1 min, test acc articoli 0.155, F1 testate 0.100, memoria GPU massima 12.7 GB
