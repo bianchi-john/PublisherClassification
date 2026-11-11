@@ -1,7 +1,7 @@
 # =====================================================================
 # Proprietary NewsGuard data -- licensed to the authors, NOT redistributable.
 # Also far too large for GitHub (single files up to 127 MB; limit is 100 MB).
-# WebScience2027 keeps all its data in Dataset/ at the repo root (only Dataset/LEGGIMI.md is tracked);
+# Code/Pipeline and Code/Attempts keep all their data in Dataset/ at the repo root (only Dataset/LEGGIMI.md is tracked);
 # IrForGood and RejectedTCSS keep their own Code/<version>/Dataset/. This pattern matches them all.
 # =====================================================================
 **/Dataset/*

@@ -1,58 +1,104 @@
-# Attempt 20: from scratch
+# Pipeline of the paper (journal version)
 
-**Question.** Can the text of its articles alone tell how reliable a news outlet is (NewsGuard 2026 score 0–100 and its
-five levels), for outlets never seen in training, once every trace of the outlet's identity is removed from the text?
-And is it better to predict the level (classification) or the exact score (regression)?
+**Question.** Can the text of its articles alone tell how reliable a news outlet is (NewsGuard 2026 score, 0-100), for
+outlets never seen in training, once the explicit traces of the outlet's identity are removed from the text? Do large
+language models used as frozen encoders do better than TF-IDF?
 
-**The whole pipeline, in order**, one notebook per step (built by `build_notebooks.py`):
+Born as attempt 20 ("from scratch", `Code/Attempts` has the 19 attempts before it). One notebook per step, built by
+`build_notebooks.py` (a notebook whose code does not change is left untouched, outputs included). Everything is in
+English, seeded and reproducible. The paper draft is in `Paper/Journal/`.
+
+**Status (11/11/2026).** The whole pipeline is being re-run with the anonymization of step 3 (rules + GLiNER); the
+outputs of the first run (anonymization made of six rules) are kept in `rules_only/` (see Results).
+
+## Steps used in the paper
 
 | step | notebook | code | what it does |
 |---|---|---|---|
-| 1 | `01_scraping` | `scraper.py`, `run_scraper.sh` | the October 2026 scraping (not re-run: the notebook reads its output) |
-| 2 | `02_cleaning` | `cleaning.py` | political outlets, text from the HTML (trafilatura precision), English, 100–1,500 words, from 2025, no duplicates across outlets, ≥ 10 articles, one outlet per ownership group, NewsGuard score and level |
-| 3 | `03_anonymization` | `anonymization_ner.py`, `anonymization.py` | three passes: links and e-mails → `[URL]`, `[EMAIL]`; the outlet's own name from its domain → `[OUTLET]`; GLiNER (zero-shot NER, `urchade/gliner_large-v2.1`) with "news outlet" → `[OUTLET]` and "journalist" → `[AUTHOR]` (every outlet and journalist); check: articles still containing their own outlet's name |
-| 4 | `04_split` | `models.py` | one split for both tasks: 5 folds of outlets stratified by exact score (balanced by level too) |
+| 1 | `01_scraping` | `scraper.py`, `run_scraper.sh` | the October 2026 scraping of the NewsGuard outlets, raw HTML saved (not re-run: the notebook reads its output) |
+| 2 | `02_cleaning` | `cleaning.py` | political outlets only, text re-extracted from the HTML (trafilatura, precision mode), English, 100-1,500 words, from 2025, exact and near duplicates removed across outlets, >= 10 articles, one outlet per ownership group, NewsGuard score and level: 226 outlets, 25,524 articles |
+| 3 | `03_anonymization` | `anonymization_ner.py`, `anonymization.py` | links and e-mails → `[URL]`, `[EMAIL]`; the outlet's own name from its domain → `[OUTLET]`; GLiNER (zero-shot NER, `urchade/gliner_large-v2.1`) with "news outlet" → `[OUTLET]` and "journalist" → `[AUTHOR]` (every outlet and journalist); check: articles still containing their own outlet's name |
+| 4 | `04_split` | `models.py` | 5 folds of outlets stratified by the exact score |
 | 5 | `05_embeddings` | `models.py` | token counts (no article truncated) and frozen vectors of Qwen3-Embedding-8B and Mistral-Small-24B |
-| 6 | `06_classification` | `models.py` | the 5 levels: TF-IDF, Qwen3-8B, Mistral-24B (+ logistic regression), ModernBERT |
-| 7 | `07_regression` | `models.py` | the exact score: the same four models (+ ridge) |
-| 8 | `08_evaluation` | `metrics.py` | every metric per outlet, classifier and regressor in the same two spaces (levels and score), 95% bootstrap intervals, paired comparison |
-| 9 | `09_results` | | all results on one page |
-| 10 | `10_boost` | `boost.py`, `boost_eval.py`, `boost_run.py`, `run_boost.sh` | added 6/11: more strategies on the frozen embeddings only (TF-IDF and ModernBERT untouched): outlet and rare-score weights, quantile target, outlet models (mean vector, random bags, mixup), RBF kernel ridge, small neural network, attention over the articles, Qwen ⊕ Mistral and Mistral layer 40, averages and «auto» (method chosen on the inner folds); curves over the articles per outlet, paired bootstrap vs TF-IDF and vs the ridge of step 7 |
-| 11 | `11_meta` | `meta.py`, `meta_run.py`, `run_meta.sh` | added 8/11: meta-articles (leads of ~20 articles of one outlet in one text, 10 per outlet, the same number for every outlet) for TF-IDF, Qwen3-8B, Mistral-24B and ModernBERT (fine-tuned with fresh meta-articles every epoch and early stopping on training outlets kept apart), compared with the same models on single articles |
-| 12 | `12_anonymization_effect` | | the regressors on the GLiNER text against the same regressors on the text of the first run (six rules, `anonymization.py`; outputs kept in `rules_only/`) |
-| – | | `mbfc.py` | comparison with Media Bias/Fact Check (4 Factual Reporting classes): the score, true or predicted, becomes an MBFC class with quotas, medians or thresholds learned on the other folds (used by the final-state deck) |
+| 7 | `07_regression` | `models.py` | the score of every article: TF-IDF, Qwen3-8B, Mistral-24B (+ ridge), fine-tuned ModernBERT |
+| 8-9 | `08_evaluation`, `09_results` | `metrics.py` | per outlet (mean of the article predictions): Spearman, Kendall, MAE, within 20 points; 95% bootstrap intervals; paired comparisons. For the paper: regressor rows, predicted score |
+| 12 | `12_anonymization_effect` | `boost.py`, `boost_eval.py` | the regressors on the final text against the same regressors of the first run (rules-only anonymization), same draws, paired bootstrap |
 
-**Fixed before the results.**
-- The dataset rules are those of attempt 16; the split is the first one of attempt 18; so steps 2 and 4 must give the
-  same 226 outlets, 25,524 articles and folds.
-- Every model reads every article in full (`MAX_TOKENS` = 4,096, above the longest article for every tokenizer).
-- Linear models: penalty chosen with 3 inner folds of the training outlets (macro F1 for classification, Spearman for
-  regression). ModernBERT: 5 epochs, lr 3e-5, effective batch 32, last epoch.
-- For every test article of every fold the logits or the predicted score are saved (`predictions/`), and the model of
-  every fold (`Modelli/20_FromScratch/`), so every metric can be recomputed.
-- Fully reproducible: one seed (`SEED` = 42; `SPLIT_SEED` = 1), `random_state` in every model, deterministic GPU
-  algorithms, library versions printed in every notebook.
+## Side analyses (not in the paper)
 
-**Where the data are.** Everything produced goes to `Dataset/tentativi/20_FromScratch/` (outside git: NewsGuard labels
-are not redistributed); trained models to `Modelli/20_FromScratch/`. `common.py` finds `Dataset/` by walking up from
-the working directory (on the server `~/John/Dataset`).
+| step | notebook | code | what it does |
+|---|---|---|---|
+| 6 | `06_classification` | `models.py` | the 5 NewsGuard levels with the same models (classifier vs regressor in 08-09) |
+| 10 | `10_boost` | `boost*.py`, `run_boost.sh` | 14 more regressors on the frozen embeddings (weights, kernels, small network, attention over articles, ...) |
+| 11 | `11_meta` | `meta*.py`, `run_meta.sh` | meta-articles: the leads of ~20 articles of one outlet in one text |
+| - | | `mbfc.py` | comparison with Media Bias/Fact Check (used by the slides) |
 
-**Step 10** runs on its own: `screen -dmS t20_boost ./run_boost.sh` on the server (one process per representation and
-method, 3 h limit each, failures retried once at the end; everything resumes from the saved folds), `./status_boost.sh`
-from the PC (`./status_boost.sh download` brings back the notebook and the tables). Outputs in `boost/`.
+The slides also use the "stretched" score (predictions re-mapped to the training score quantiles, `metrics.py`); the
+paper does not.
 
-**Step 11** the same way: `screen -dmS t20_meta ./run_meta.sh` on the server, `./status_meta.sh [download]` from the PC.
-Outputs in `meta/`.
+## Fixed before the results
+- The dataset rules are those of attempt 16 and the split is the first one of attempt 18: steps 2 and 4 give the same
+  226 outlets, 25,524 articles and folds (checked at every run).
+- Every model reads every article in full (`MAX_TOKENS` = 4,096; the longest article has about 3,000 tokens).
+- Linear models: penalty chosen with 3 inner folds of the training outlets (Spearman per outlet for regression).
+  ModernBERT: 5 epochs, lr 3e-5, effective batch 32, last epoch.
+- For every test article of every fold the predicted score is saved (`predictions/`), and the model of every fold
+  (`Modelli/20_FromScratch/`), so every metric can be recomputed.
+- One seed (`SEED` = 42; `SPLIT_SEED` = 1), `random_state` in every model, deterministic GPU algorithms, library versions
+  printed in every notebook.
 
-**Re-run of 11/11** (the anonymization is now GLiNER instead of six rules): the outputs of the first run are kept in
-`Dataset/tentativi/20_FromScratch/rules_only/` and `Modelli/20_FromScratch/rules_only/`; the results below refer to that
-first run until they are updated.
+## Data and outputs
 
-**How to run.** From the PC: `./check_server.sh`, `./upload.sh`. On the server, in `~/John/Tentativo20`:
-`screen -dmS t20_cpu ./run_cpu.sh` and `screen -dmS t20_gpu ./run_gpu.sh`. Then from the PC `./status.sh` and
-`./download.sh` (`./download.sh all` also brings the article outputs).
+Everything goes to `Dataset/tentativi/20_FromScratch/` (outside git: NewsGuard labels are not redistributed; the
+folder keeps the attempt's name so that the server and the local copy match); `common.py` finds `Dataset/` by walking
+up from the working directory (on the server `~/John/Dataset`).
 
-**Results** (`09_results.ipynb`; per outlet, 95% bootstrap intervals; 226 outlets, 25,524 articles).
+```
+articles.csv.gz, extracted.csv.gz   step 2: the clean articles (original text) and the trafilatura cache
+outlets.csv, split.csv              step 2 and 4: the 226 outlets (score, level, orientation) and their fold
+articles_anonymous.csv.gz           step 3: the text every model reads; anonymization/ the GLiNER spans
+embeddings/                         step 5: frozen vectors (one row per article, order in article_order.csv)
+predictions/<task>/<model>/         steps 6-7: one file per fold, one row per test article
+all_metrics.csv, intervals.csv      step 8
+anonymization_effect.csv            step 12
+boost/, meta/                       side analyses 10 and 11
+rules_only/                         the first run (anonymization made of six rules), kept for step 12
+```
+Trained models: `Modelli/20_FromScratch/` (first run in `Modelli/20_FromScratch/rules_only/`).
+
+## How to run
+
+On the server (artes4, GPU V100 32 GB shared with others; the code lives in `~/John/Tentativo20`):
+- from the PC: `./check_server.sh` (models, libraries, data, GPU), `./upload.sh` (code; `./upload.sh notebooks` also the
+  notebooks);
+- on the server: `screen -dmS t20_gpu ./run_gpu.sh` and `screen -dmS t20_cpu ./run_cpu.sh` (the whole pipeline, in
+  order; every step resumes from what is saved);
+- from the PC: `./status.sh` (progress), `./download.sh` (notebooks and tables; `./download.sh all` also predictions).
+Steps 10 and 11 have their own queues (`run_boost.sh`, `run_meta.sh`; `status_boost.sh`, `status_meta.sh`).
+
+## Code
+
+| file | content |
+|---|---|
+| `common.py` | data folders, seeds, NewsGuard levels, logging |
+| `scraper.py` | the scraper (step 1) |
+| `cleaning.py` | text extraction, language, duplicates, ownership groups (step 2) |
+| `anonymization_ner.py` | step 3: the two rules and GLiNER |
+| `anonymization.py` | the six rules of the first run; its name rule and link/e-mail patterns are reused by step 3 |
+| `models.py` | split, frozen vectors, linear models, ModernBERT |
+| `metrics.py` | from articles to outlet, metrics, bootstrap |
+| `boost.py`, `boost_eval.py`, `boost_run.py` | step 10; `boost.py` also gives the test draws of k articles and `boost_eval.py` the paired bootstrap used by step 12 and by the paper figures |
+| `meta.py`, `meta_run.py` | step 11 |
+| `mbfc.py` | Media Bias/Fact Check (slides) |
+| `build_notebooks.py` | all the notebooks |
+| `run_*.sh`, `status*.sh`, `upload.sh`, `download.sh`, `check_server.sh` | server queues and helpers |
+
+## Results
+
+### Current run (rules + GLiNER anonymization)
+To be filled when the re-run of 11/11 ends (`08_evaluation`, `09_results`, `12_anonymization_effect`).
+
+### First run (anonymization made of six rules; kept in `rules_only/`)
 - Steps 2 and 4 reproduce attempt 16 (same 25,524 articles, texts and labels) and the first split of attempt 18;
   re-running steps 1-5 gives identical files. No article is truncated (longest: 3,000 tokens).
 - Anonymization touches 54.6% of the articles; no distinctive outlet name is left as a word. Known leftovers: acronyms
@@ -68,6 +114,7 @@ first run until they are updated.
   is equal or better (Spearman and quadratic kappa significantly higher for Mistral, TF-IDF and ModernBERT); 31 of 100
   paired differences are not chance.
 
+### Side analyses
 **Step 10 results** (`10_boost.ipynb`, run 6-7/11; 14 methods × 5 representations, 70 of 70 runs, no errors; per outlet,
 stretched score, all articles; paired bootstrap, 1,000 resamples):
 - No big jump. Mistral ridge (step 7) Spearman 0.735, Kendall 0.554, MAE 15.2; «auto» (method chosen on the inner folds,
@@ -85,4 +132,3 @@ score, paired bootstrap): meta-articles never help. Spearman meta vs articles: T
 0.726, Qwen network 0.620 vs 0.718, Mistral ridge 0.712 vs 0.735, Mistral network 0.669 vs 0.749, ModernBERT 0.570 vs
 0.602 (significantly worse for Qwen and the Mistral network; the others not significant). ModernBERT on meta-articles
 looked better on the outlets kept apart in fold 1 (0.66) but not overall.
-

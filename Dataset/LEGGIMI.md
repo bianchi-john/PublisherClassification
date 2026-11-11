@@ -1,6 +1,6 @@
-# Dataset: la cartella unica dei dati di WebScience2027
+# Dataset: la cartella unica dei dati
 
-Tutti i dati dei tentativi in `Code/Attempts/Tentativi/` stanno qui, fuori da git. Il codice li trova da solo, a
+Tutti i dati della pipeline del paper (`Code/Pipeline`) e dei tentativi in `Code/Attempts/Tentativi/` stanno qui, fuori da git. Il codice li trova da solo, a
 patto che questa cartella stia nella **radice del repo** (accanto a `Code/`), con questo file dentro: i tentativi 14–16
 cercano `Dataset/LEGGIMI.md` salendo dalla cartella di lavoro, gli altri usano percorsi relativi alla radice del repo.
 
@@ -12,6 +12,7 @@ cercano `Dataset/LEGGIMI.md` salendo dalla cartella di lavoro, gli altri usano p
 | `etichette/newsguard_2022.csv` | l'esportazione NewsGuard di agosto 2022 | 01–12 |
 | `etichette/newsguard_2026.csv`, `etichette/NewsGuard2026/` | NewsGuard 2026 (il feed del 23 ottobre 2026; `newsguard_2026.csv` è il suo `metadata-2026102308.csv`) | 11–16 |
 | `risorse/lessici` | lessici NRC (emozioni, VAD) | 13, 15, 16 |
+| `tentativi/20_FromScratch/` | la **pipeline del paper** (`Code/Pipeline`): dataset, testo anonimo, vettori, previsioni, metriche; `rules_only/` la prima esecuzione (anonimizzazione a sole regole). Struttura nel README di `Code/Pipeline` | la pipeline |
 | `tentativi/<tentativo>/` | quello che produce ogni tentativo: `derived/`, `versioni/`, il dataset finale (`articoli.csv.gz`, `testate.csv`), dati propri (MBFC nel 10, segnali nel 09…) | il tentativo stesso |
 
 I modelli addestrati non sono qui ma in `Modelli/` (radice del repo), anche quella fuori da git.

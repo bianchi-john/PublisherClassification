@@ -1,8 +1,9 @@
-# Web Science 2027 — affidabilità delle testate dal solo testo
+# Tentativi 01–19 — la strada verso la pipeline del paper
 
-Questa cartella contiene tutto il lavoro sperimentale verso Web Science 2027. È organizzata in **tentativi**
-(`Tentativi/01…08`), in ordine di tempo: ognuno è una catena completa e autonoma, dallo scraping ai risultati.
-Questo README spiega il problema, come lo valutiamo, che cosa ha detto ogni tentativo e come si rilancia tutto.
+Questa cartella è la **storia** del lavoro di ottobre-novembre 2026 (allora pensato per Web Science 2027): 19 tentativi
+in ordine di tempo (`Tentativi/01…19`), ognuno una catena completa e autonoma, dallo scraping ai risultati, in italiano.
+Il punto d'arrivo è **`Code/Pipeline`** (nato come tentativo 20), che è il codice del paper. Questo README spiega il
+problema, come lo valutavamo e che cosa ha detto ogni tentativo.
 
 ---
 
