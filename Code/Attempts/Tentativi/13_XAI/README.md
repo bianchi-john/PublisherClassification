@@ -1,7 +1,7 @@
 # Tentativo 13 — Spiegare i modelli (XAI)
 
 > **Tentativo autonomo**: `1-dataset` → `2-modelli` → `3-xai` (fase 2, in preparazione), dati in `Dataset/` e modelli in
-> `Modelli/` (fuori da git), risultati in `Results/`. Il percorso di tutti i tentativi è nel README di `Code/WebScience2027`.
+> `Modelli/` (fuori da git), risultati in `Results/`. Il percorso di tutti i tentativi è nel README di `Code/Attempts`.
 
 **La domanda.** Il classificatore a feature (TF-IDF) non si batte: ModernBERT va pari o peggio in tutte le
 configurazioni. Ma *per quali ragioni* decidono i due modelli? Se il transformer, anche con un'accuratezza pari o

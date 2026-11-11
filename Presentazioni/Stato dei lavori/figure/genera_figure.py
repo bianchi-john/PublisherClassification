@@ -3,7 +3,7 @@
     cd "Riunioni/Stato dei lavori/figure"
     ~/.cache/irgood-venv/bin/python genera_figure.py
 
-Legge i risultati salvati in Code/WebScience2027 (primo dataset: EsperimentiPreliminari/1-PrimoDataset;
+Legge i risultati salvati in Code/Attempts (primo dataset: EsperimentiPreliminari/1-PrimoDataset;
 dataset nuovo: Results/ e Dataset/ scaricati dal server) e scrive i PDF qui accanto.
 """
 import json

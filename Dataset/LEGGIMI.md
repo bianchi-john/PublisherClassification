@@ -1,6 +1,6 @@
 # Dataset: la cartella unica dei dati di WebScience2027
 
-Tutti i dati dei tentativi in `Code/WebScience2027/Tentativi/` stanno qui, fuori da git. Il codice li trova da solo, a
+Tutti i dati dei tentativi in `Code/Attempts/Tentativi/` stanno qui, fuori da git. Il codice li trova da solo, a
 patto che questa cartella stia nella **radice del repo** (accanto a `Code/`), con questo file dentro: i tentativi 14–16
 cercano `Dataset/LEGGIMI.md` salendo dalla cartella di lavoro, gli altri usano percorsi relativi alla radice del repo.
 
@@ -21,7 +21,7 @@ passa solo a chi lavora al progetto.
 
 ## L'archivio leggero `Dataset.zip` (meno di 1 GB)
 
-Si crea con `python Code/WebScience2027/crea_archivio_dataset.py` e si estrae **nella radice del repo**
+Si crea con `python Code/Attempts/crea_archivio_dataset.py` e si estrae **nella radice del repo**
 (`unzip Dataset.zip` accanto a `Code/`): nasce questa cartella, con solo quello che serve al protocollo attuale.
 
 | tentativo | che cosa si può rifare con l'archivio |

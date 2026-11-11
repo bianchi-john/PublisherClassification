@@ -1,6 +1,6 @@
 # 2 — Classificazione
 
-> **Versione 1** (18 ottobre). Le versioni successive sono i tentativi 06–08; il percorso completo è nel README di `Code/WebScience2027`.
+> **Versione 1** (18 ottobre). Le versioni successive sono i tentativi 06–08; il percorso completo è nel README di `Code/Attempts`.
 
 Sul dataset finale (`../Dataset/versioni/dataset_finale.csv`), solo il testo degli articoli. Valutazione **per
 testata**, fold **per gruppo** (principale) e per testata (confronto), stratificati per livello. Metriche

@@ -3,7 +3,7 @@
 > **Tentativo autonomo**: `0-scraping` → `1-data-cleaning` → `2-classificazione`, dati in `Dataset/` (fuori da git),
 > risultati in `Results/`. Qui la catena è stata davvero eseguita tutta, scraping compreso (`esegui_tutto.py`, 18
 > ottobre). I dati grezzi dello scraping (`Dataset/NuovoScraping/`) sono quelli copiati poi nei tentativi 06–08. Il
-> percorso di tutti i tentativi è nel README di `Code/WebScience2027`.
+> percorso di tutti i tentativi è nel README di `Code/Attempts`.
 
 **La domanda.** Dopo i tentativi 01–04: con uno scraping solo ma allargato, una pulizia rigorosa ma non eccessiva, le
 reti di testate parenti trovate senza NewsGuard e la valutazione per gruppo, un transformer batte il TF-IDF?

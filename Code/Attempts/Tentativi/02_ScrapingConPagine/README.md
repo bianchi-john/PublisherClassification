@@ -1,6 +1,6 @@
 # Tentativo 02 — Nuovo scraping con le pagine del sito (272 testate)
 
-> **Tentativo autonomo**: `0-scraping` → `1-data-cleaning` → `2-classificazione`, dati in `Dataset/` (fuori da git), risultati in `Results/`. `0-scraping/` è lo scraper del **primo giro** (13 ottobre), come allora: argomento NewsGuard *esattamente* "Political news or commentary", articoli **e pagine del sito** (recuperato dalla storia di git, commit `4548932`). Lo scraping è stato fatto una volta sola; i suoi dati grezzi sono in `Dataset/NuovoScraping/` (le pagine in `Dataset/NuovoScraping_pagine/`). Il percorso di tutti i tentativi è nel README di `Code/WebScience2027`.
+> **Tentativo autonomo**: `0-scraping` → `1-data-cleaning` → `2-classificazione`, dati in `Dataset/` (fuori da git), risultati in `Results/`. `0-scraping/` è lo scraper del **primo giro** (13 ottobre), come allora: argomento NewsGuard *esattamente* "Political news or commentary", articoli **e pagine del sito** (recuperato dalla storia di git, commit `4548932`). Lo scraping è stato fatto una volta sola; i suoi dati grezzi sono in `Dataset/NuovoScraping/` (le pagine in `Dataset/NuovoScraping_pagine/`). Il percorso di tutti i tentativi è nel README di `Code/Attempts`.
 
 Il lavoro del 2026-10-14/16 sul nuovo scraping (`0-scraping/`), con due input: solo articoli (A) e
 articoli + pagine del sito (about, ownership, corrections…; C).

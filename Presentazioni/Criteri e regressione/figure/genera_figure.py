@@ -9,7 +9,7 @@ import pandas as pd
 
 QUI = Path(__file__).resolve().parent
 RADICE = QUI.parents[2]
-T16 = RADICE / "Code/WebScience2027/Tentativi/16_DataPreparation"
+T16 = RADICE / "Code/Attempts/Tentativi/16_DataPreparation"
 BLU, GRIGIO, CHIARO, ROSSO, VERDE = "#2a78d6", "#52514e", "#b5b3ab", "#c0392b", "#1baf7a"
 plt.rcParams.update({"figure.dpi": 150, "font.size": 10, "axes.spines.top": False, "axes.spines.right": False,
                      "axes.edgecolor": "#c3c2b7", "axes.grid": True, "grid.color": "#e1e0d9", "grid.linewidth": 0.6,

@@ -1,7 +1,7 @@
 #!/bin/bash
-# Server, CPU queue of the whole pipeline: steps 1-4 (scraping summary, cleaning, anonymization part 1, split); then,
-# when the GPU queue has written the final text (anonymization part 2), TF-IDF for classification and regression; then,
-# when the frozen vectors exist (step 5), Qwen and Mistral with the linear models.
+# Server, CPU queue of the whole pipeline: steps 1, 2 and 4 (scraping summary, cleaning, split); then, when the GPU
+# queue has written the anonymous text (step 3, GLiNER), TF-IDF for classification and regression; then, when the
+# frozen vectors exist (step 5), Qwen and Mistral with the linear models.
 # Start:  screen -dmS t20_cpu ./run_cpu.sh        Progress from the PC: ./status.sh
 export TZ=Europe/Rome
 export OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 RAYON_NUM_THREADS=2 TOKENIZERS_PARALLELISM=false   # shared server
@@ -10,7 +10,7 @@ mkdir -p Results; note() { echo "$(date '+%Y-%m-%d %H:%M:%S')  $1" | tee -a Resu
 pm() { python -m papermill -k johnvenv "$@" >> Results/run_cpu.out 2>&1; }
 OUT=~/John/Dataset/tentativi/20_FromScratch
 rm -f Results/data_ready Results/cpu_done
-for nb in 01_scraping 02_cleaning 03_anonymization 04_split; do
+for nb in 01_scraping 02_cleaning 04_split; do
     note "CPU: $nb"; pm $nb.ipynb $nb.ipynb || { note "ERROR in $nb: queue stopped"; exit 1; }
 done
 touch Results/data_ready

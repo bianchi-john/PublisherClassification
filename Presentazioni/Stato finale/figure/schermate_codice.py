@@ -10,7 +10,7 @@ from pygments.formatters import ImageFormatter
 from pygments.lexers import PythonLexer, TextLexer
 
 QUI = Path(__file__).resolve().parent
-T20 = QUI.parents[2] / "Code/WebScience2027/Tentativi/20_FromScratch"
+T20 = QUI.parents[2] / "Code/Pipeline"
 D20 = QUI.parents[2] / "Dataset/tentativi/20_FromScratch"
 OUT = QUI / "codice"; OUT.mkdir(exist_ok=True)
 

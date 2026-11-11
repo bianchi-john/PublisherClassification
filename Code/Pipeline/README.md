@@ -10,9 +10,7 @@ And is it better to predict the level (classification) or the exact score (regre
 |---|---|---|---|
 | 1 | `01_scraping` | `scraper.py`, `run_scraper.sh` | the October 2026 scraping (not re-run: the notebook reads its output) |
 | 2 | `02_cleaning` | `cleaning.py` | political outlets, text from the HTML (trafilatura precision), English, 100–1,500 words, from 2025, no duplicates across outlets, ≥ 10 articles, one outlet per ownership group, NewsGuard score and level |
-| 3 | `03_anonymization` | `anonymization.py` | anonymization, part 1: six rules remove the outlet signature, e-mails, links, accounts, own authors and outlet name; automatic check that nothing is left (→ `articles_rules.csv.gz`) |
-| 3b | `03b_anonymization_llm` | `anonymization_llm.py` | anonymization, part 2 (added 10/11): sentences repeated in ≥ 15% of an outlet's articles removed; a local language model (Qwen2.5-7B-Instruct) lists the phrases that reveal the outlet (name in any form, own staff), replaced by code with `[OUTLET]` / `[AUTHOR]` (never rewritten) → `articles_anonymous.csv.gz`, the text of every later step |
-| 3c | `03c_anonymization_checks` | `anonymization_llm.py` | checks on the original, part-1 and final text: LLM attacker (Mistral-Small-24B-Instruct) naming the website, outlet-recognition classifier, agreement with the larger model, sheet of 100 articles for a check by hand |
+| 3 | `03_anonymization` | `anonymization_ner.py`, `anonymization.py` | three passes: links and e-mails → `[URL]`, `[EMAIL]`; the outlet's own name from its domain → `[OUTLET]`; GLiNER (zero-shot NER, `urchade/gliner_large-v2.1`) with "news outlet" → `[OUTLET]` and "journalist" → `[AUTHOR]` (every outlet and journalist); check: articles still containing their own outlet's name |
 | 4 | `04_split` | `models.py` | one split for both tasks: 5 folds of outlets stratified by exact score (balanced by level too) |
 | 5 | `05_embeddings` | `models.py` | token counts (no article truncated) and frozen vectors of Qwen3-Embedding-8B and Mistral-Small-24B |
 | 6 | `06_classification` | `models.py` | the 5 levels: TF-IDF, Qwen3-8B, Mistral-24B (+ logistic regression), ModernBERT |
@@ -21,7 +19,7 @@ And is it better to predict the level (classification) or the exact score (regre
 | 9 | `09_results` | | all results on one page |
 | 10 | `10_boost` | `boost.py`, `boost_eval.py`, `boost_run.py`, `run_boost.sh` | added 6/11: more strategies on the frozen embeddings only (TF-IDF and ModernBERT untouched): outlet and rare-score weights, quantile target, outlet models (mean vector, random bags, mixup), RBF kernel ridge, small neural network, attention over the articles, Qwen ⊕ Mistral and Mistral layer 40, averages and «auto» (method chosen on the inner folds); curves over the articles per outlet, paired bootstrap vs TF-IDF and vs the ridge of step 7 |
 | 11 | `11_meta` | `meta.py`, `meta_run.py`, `run_meta.sh` | added 8/11: meta-articles (leads of ~20 articles of one outlet in one text, 10 per outlet, the same number for every outlet) for TF-IDF, Qwen3-8B, Mistral-24B and ModernBERT (fine-tuned with fresh meta-articles every epoch and early stopping on training outlets kept apart), compared with the same models on single articles |
-| 12 | `12_anonymization_effect` | | the regressors on the final text against the same regressors on the part-1 text (first run of the pipeline, outputs kept in `rules_only/`) |
+| 12 | `12_anonymization_effect` | | the regressors on the GLiNER text against the same regressors on the text of the first run (six rules, `anonymization.py`; outputs kept in `rules_only/`) |
 | – | | `mbfc.py` | comparison with Media Bias/Fact Check (4 Factual Reporting classes): the score, true or predicted, becomes an MBFC class with quotas, medians or thresholds learned on the other folds (used by the final-state deck) |
 
 **Fixed before the results.**
@@ -46,7 +44,7 @@ from the PC (`./status_boost.sh download` brings back the notebook and the table
 **Step 11** the same way: `screen -dmS t20_meta ./run_meta.sh` on the server, `./status_meta.sh [download]` from the PC.
 Outputs in `meta/`.
 
-**Re-run of 10/11** (the anonymization got its part 2): the outputs of the first run (rules only) are kept in
+**Re-run of 11/11** (the anonymization is now GLiNER instead of six rules): the outputs of the first run are kept in
 `Dataset/tentativi/20_FromScratch/rules_only/` and `Modelli/20_FromScratch/rules_only/`; the results below refer to that
 first run until they are updated.
 

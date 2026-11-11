@@ -1,42 +1,45 @@
 # Guida al repo (per chi arriva, anche un'altra istanza di Claude)
 
-**Il problema.** Prevedere l'affidabilità di una testata giornalistica online (il punteggio NewsGuard 0–100, o i 5 livelli
-l1–l5, o affidabile sì/no = punteggio ≥ 60) **solo dal testo dei suoi articoli**, su testate mai viste in addestramento.
-La domanda del lavoro attuale (Web Science 2027): un transformer fa meglio di un classificatore TF-IDF?
+**Il problema.** Prevedere l'affidabilità di una testata giornalistica online (il punteggio NewsGuard 0–100) **solo dal
+testo dei suoi articoli**, su testate mai viste in addestramento, con il testo anonimizzato. La domanda: i grandi modelli
+linguistici usati come encoder congelati fanno meglio di un modello TF-IDF? Il prossimo invio sarà a una rivista (non
+ancora scelta, probabilmente non Web Science): la bozza è in `Paper/Journal/`.
 
-Codice, notebook, commenti e README dei tentativi 01–19 sono **in italiano**. **Dal tentativo 20 tutto è in inglese**
-(codice, commenti, notebook, segnaposto dell'anonimizzazione), per scelta di John.
+Il codice del paper (`Code/Pipeline`) è **in inglese**; i tentativi che ci hanno portato (`Code/Attempts`, 01–19) sono in
+italiano.
 
 ## Dove guardare
 
 ```
-Code/WebScience2027/                il lavoro attuale
-  README.md                         il problema, come valutiamo, la storia dei tentativi: leggerlo per primo
-  Tentativi/NN_nome/                un esperimento per cartella, in ordine di tempo (01 … 20), ognuno col suo README
-  crea_archivio_dataset.py          crea Dataset.zip (i dati del protocollo attuale, < 1 GB)
+Code/Pipeline/                      la pipeline del paper: un notebook per passo (01–12), generati da build_notebooks.py
+  README.md                         passi, regole, risultati: leggerlo per primo
+Code/Attempts/                      i 19 tentativi di ottobre-novembre 2026 (in italiano), uno per cartella in Tentativi/
+  README.md                         che cosa ha detto ogni tentativo
 Code/IrForGood/, Code/RejectedTCSS/ versioni precedenti del paper (con i loro dati in Code/<versione>/Dataset/)
-Dataset/                            i dati di WebScience2027: fuori da git, vedi Dataset/LEGGIMI.md
+Paper/Journal/                      bozza LaTeX del paper per rivista (template generico; risultati da riempire)
+Dataset/                            tutti i dati: fuori da git, vedi Dataset/LEGGIMI.md
 Modelli/                            i modelli addestrati: fuori da git
-Paper/, Presentazioni/              paper e slide
+Presentazioni/                      slide (la più recente: Stato finale/FinalState.odp)
 TODO.md, UTILI.md                   appunti di John (fuori da git)
 ```
 
-**Il punto d'arrivo è `Tentativi/20_FromScratch`**: tutta la pipeline rifatta da zero, in ordine e in inglese
-(scraping → pulizia → anonimizzazione → split → classificazione e regressione → valutazione → risultati), un notebook per
-passo (01–09, generati da `build_notebooks.py`), tutto riproducibile; i risultati in `09_results.ipynb`. Riprende le
-regole del 16 (dataset), l'anonimizzazione del 19 e lo split per voto del 18.
+**La pipeline** (`Code/Pipeline`, nata come tentativo 20 «from scratch»):
+1. scraping (ottobre 2026, HTML grezzo);
+2. pulizia: testo dall'HTML con trafilatura in modalità precisione; solo testate politiche (unico argomento NewsGuard
+   «Political news or commentary»); inglese; 100–1.500 parole; dal 2025; doppioni tolti tra tutte le testate; almeno 10
+   articoli; una testata per gruppo di proprietà → 226 testate, 25.524 articoli;
+3. anonimizzazione: link ed e-mail, il nome della testata dal suo dominio, e con GLiNER (NER zero-shot) tutte le testate
+   e tutti i giornalisti → segnaposto;
+4. split: 5 fold di testate stratificati sul voto esatto;
+5. embedding congelati (Qwen3-Embedding-8B, Mistral-Small-24B strato 27);
+7. regressione del voto: TF-IDF, Qwen, Mistral (+ ridge) e ModernBERT addestrato; voto della testata = media degli
+   articoli;
+8–9. valutazione per testata (Spearman, Kendall, MAE, entro 20 punti; bootstrap); 12: confronto con un'anonimizzazione
+   più semplice (solo regole, prima esecuzione, conservata in `Dataset/tentativi/20_FromScratch/rules_only/`).
+I passi 6 (classificazione), 10 (altri regressori sugli embedding) e 11 (meta-articoli) sono analisi laterali, non nel
+paper. Lo stiramento dei voti e il confronto con MBFC non vanno nel paper.
 
-Il **tentativo 16** (`Tentativi/16_DataPreparation`) è il dataset su cui si basa: regole semplici, 226 testate politiche,
-25.524 articoli, NewsGuard 2026.
-- **Notebook 01–07:** sono salvati già eseguiti, con gli output.
-- **`06_confronto.ipynb`:** la pagina dei risultati.
-- **`07_analisi_embedding.ipynb`:** le varianti con gli embedding.
-- **Risultato attuale:**
-  - Qwen3-Embedding-8B congelato + un modello lineare batte il TF-IDF: F1 sui 5 livelli fino a 0,44 contro 0,33–0,35;
-  - ModernBERT addestrato lo eguaglia soltanto: impara le testate di training e non generalizza.
-
-I tentativi 17–19 sono l'accordo tra annotatori, il punteggio esatto e la prima versione anonima; 14 e 15 il protocollo
-precedente e le analisi del dataset; 01–13 la storia (il README di WebScience2027 riassume che cosa ha detto ognuno).
+I dati della pipeline restano in `Dataset/tentativi/20_FromScratch/` (nome storico, uguale sul server).
 
 ## I dati
 

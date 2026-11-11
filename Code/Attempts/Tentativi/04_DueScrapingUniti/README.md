@@ -1,6 +1,6 @@
 # Tentativo 04 — I due scraping uniti (269 testate)
 
-> **Tentativo autonomo**: `0-scraping` → `1-data-cleaning` → `2-classificazione`, dati in `Dataset/` (fuori da git), risultati in `Results/`. `0-scraping/` è lo scraper del **primo giro** (13 ottobre). Il vecchio scraping di IrForGood è in `Dataset/VecchioScraping/`; `1-data-cleaning/00_unione_dataset` li unisce. Dati grezzi non riscaricati. Il percorso di tutti i tentativi è nel README di `Code/WebScience2027`.
+> **Tentativo autonomo**: `0-scraping` → `1-data-cleaning` → `2-classificazione`, dati in `Dataset/` (fuori da git), risultati in `Results/`. `0-scraping/` è lo scraper del **primo giro** (13 ottobre). Il vecchio scraping di IrForGood è in `Dataset/VecchioScraping/`; `1-data-cleaning/00_unione_dataset` li unisce. Dati grezzi non riscaricati. Il percorso di tutti i tentativi è nel README di `Code/Attempts`.
 
 Il lavoro del 2026-10-18 mattina: il vecchio scraping di IrForGood (marzo 2025, grezzo) unito al nuovo
 (ottobre 2026), con gli stessi filtri e la stessa pulizia moderata (`1-data-cleaning/00_unione_dataset` + 01–03).

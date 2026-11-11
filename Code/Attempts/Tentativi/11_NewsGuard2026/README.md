@@ -1,7 +1,7 @@
 # Tentativo 11 — Le etichette NewsGuard aggiornate (2026)
 
 > **Tentativo autonomo**: dati in `Dataset/` (fuori da git), risultati in `Results/`. Il percorso di tutti i tentativi è
-> nel README di `Code/WebScience2027`.
+> nel README di `Code/Attempts`.
 
 **La domanda.** Fino al tentativo 10 le etichette erano un'esportazione NewsGuard di **agosto 2022**: per i nostri
 articoli (2025–2026) avevano in mediana 4,2 anni, e i 5 livelli si erano spostati (tentativo 10: confronto con MBFC).

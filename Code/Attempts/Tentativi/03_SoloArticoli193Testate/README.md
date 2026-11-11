@@ -1,6 +1,6 @@
 # Tentativo 03 — Solo articoli, pulizia moderata (193 testate)
 
-> **Tentativo autonomo**: `0-scraping` → `1-data-cleaning` → `2-classificazione`, dati in `Dataset/` (fuori da git), risultati in `Results/`. `0-scraping/` è lo scraper del **primo giro** (13 ottobre), come allora (argomento esatto; le pagine del sito raccolte ma non usate). I dati grezzi in `Dataset/NuovoScraping/` sono gli stessi del tentativo 02, non riscaricati. Il percorso di tutti i tentativi è nel README di `Code/WebScience2027`.
+> **Tentativo autonomo**: `0-scraping` → `1-data-cleaning` → `2-classificazione`, dati in `Dataset/` (fuori da git), risultati in `Results/`. `0-scraping/` è lo scraper del **primo giro** (13 ottobre), come allora (argomento esatto; le pagine del sito raccolte ma non usate). I dati grezzi in `Dataset/NuovoScraping/` sono gli stessi del tentativo 02, non riscaricati. Il percorso di tutti i tentativi è nel README di `Code/Attempts`.
 
 Il lavoro del 2026-10-16/17: solo il testo degli articoli del nuovo scraping, pulizia "rigorosa ma non
 eccessiva", reti di testate parenti da cinque segnali ciechi (copie e autori sistematici, codici di account

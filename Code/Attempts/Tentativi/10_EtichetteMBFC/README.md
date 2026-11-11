@@ -10,7 +10,7 @@
 
 > **Tentativo autonomo**: `1-etichette` → `2-dataset` → `3-classificazione`, dati in `Dataset/` (fuori da git),
 > risultati in `Results/`. Il percorso di
-> tutti i tentativi è nel README di `Code/WebScience2027`.
+> tutti i tentativi è nel README di `Code/Attempts`.
 
 **La domanda.** Le etichette NewsGuard che usiamo sono un'esportazione di **agosto 2022** (ultimo aggiornamento delle
 schede tra il 2020 e il 2022), mentre gli articoli sono del 2025–2026: in mediana l'etichetta ha 4,4 anni più

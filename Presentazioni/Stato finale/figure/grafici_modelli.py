@@ -93,7 +93,7 @@ fig.suptitle("Per ogni giro la curva della griglia; cerchiata la penalità scelt
 plt.tight_layout(); plt.savefig(OUT / "penalita.png", bbox_inches="tight"); plt.close()
 
 # 5. ModernBERT: l'errore sul training scende fino a ~4 punti, sul test resta ~18
-sys.path.insert(0, str(QUI.parents[2] / "Code/WebScience2027/Tentativi/20_FromScratch"))
+sys.path.insert(0, str(QUI.parents[2] / "Code/Pipeline"))
 import models as MO    # noqa: E402
 art, _ = MO.load()
 pb = MO.predictions("regression", "ModernBERT").merge(art[["article_id", "score"]], on="article_id")

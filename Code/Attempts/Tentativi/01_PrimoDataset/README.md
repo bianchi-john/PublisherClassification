@@ -1,6 +1,6 @@
 # Tentativo 01 — Primo dataset (IrForGood)
 
-> **Tentativo autonomo**: `0-scraping` → `1-data-cleaning` → `2-classificazione`, dati in `Dataset/` (fuori da git), risultati in `Results/`. Il dataset di IrForGood, già raccolto per il paper (`0-scraping/` ha i notebook di scraping di allora, in copia). Dati in `Dataset/`. Il percorso di tutti i tentativi è nel README di `Code/WebScience2027`.
+> **Tentativo autonomo**: `0-scraping` → `1-data-cleaning` → `2-classificazione`, dati in `Dataset/` (fuori da git), risultati in `Results/`. Il dataset di IrForGood, già raccolto per il paper (`0-scraping/` ha i notebook di scraping di allora, in copia). Dati in `Dataset/`. Il percorso di tutti i tentativi è nel README di `Code/Attempts`.
 
 Il lavoro del 2026-10-13 sul **dataset di IrForGood** (439 testate): ricerca delle testate parenti, pulizia,
 classificatore a feature e BERT con i fold per testata e per gruppo.

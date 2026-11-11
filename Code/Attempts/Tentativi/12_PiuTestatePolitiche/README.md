@@ -1,7 +1,7 @@
 # Tentativo 12 — Più testate politiche (terzo giro di scraping)
 
 > **Tentativo autonomo**: `0-scraping` → `1-data-cleaning` → `2-dataset` → `3-classificazione`, dati in `Dataset/`
-> (fuori da git), risultati in `Results/`. Il percorso di tutti i tentativi è nel README di `Code/WebScience2027`.
+> (fuori da git), risultati in `Results/`. Il percorso di tutti i tentativi è nel README di `Code/Attempts`.
 
 **La domanda.** Nel tentativo 11 l'esperimento "solo politici" (testate con il solo argomento politico per NewsGuard
 2026) aveva solo 187 testate (143 valutate), e addestrare solo su quelle andava peggio che addestrare su tutte.

@@ -1,6 +1,6 @@
 # Tentativo 06 — Versione 2: più pulizia, training allargato
 
-> **Tentativo autonomo**: `0-scraping` → `1-data-cleaning` → `2-classificazione`, dati in `Dataset/` (fuori da git), risultati in `Results/`. Tutta la catena è qui: `0-scraping/` è lo scraper finale (copiato dal tentativo 05: lo scraping **non** è stato rifatto, i dati grezzi in `Dataset/NuovoScraping/` sono quelli del tentativo 05); `1-data-cleaning/` è stata rieseguita da zero con la regola nuova. Il percorso di tutti i tentativi è nel README di `Code/WebScience2027`.
+> **Tentativo autonomo**: `0-scraping` → `1-data-cleaning` → `2-classificazione`, dati in `Dataset/` (fuori da git), risultati in `Results/`. Tutta la catena è qui: `0-scraping/` è lo scraper finale (copiato dal tentativo 05: lo scraping **non** è stato rifatto, i dati grezzi in `Dataset/NuovoScraping/` sono quelli del tentativo 05); `1-data-cleaning/` è stata rieseguita da zero con la regola nuova. Il percorso di tutti i tentativi è nel README di `Code/Attempts`.
 
 Stessa pipeline della Versione 1 (tentativo 05), stesso scraping (`Dataset/NuovoScraping`, non si rifà), con tre
 cambiamenti decisi il 19 ottobre 2026, **prima** di vedere i

@@ -21,7 +21,7 @@ plt.rcParams.update({"figure.dpi": 150, "font.size": 10, "axes.spines.top": Fals
 
 t = pd.read_csv(D / "16_DataPreparation" / "testate.csv", index_col="domain")
 split = pd.read_csv(D / "18_PunteggioEsatto" / "split.csv", index_col=0).reindex(t.index)
-pa = pd.read_csv(R / "Code/WebScience2027/Tentativi/18_PunteggioEsatto/Results/lineari/previsioni_articoli.csv.gz")
+pa = pd.read_csv(R / "Code/Attempts/Tentativi/18_PunteggioEsatto/Results/lineari/previsioni_articoli.csv.gz")
 pa = pa[(pa.modello == "Mistral 24B") & (pa.split == "split1") & (pa.condizione == "A") & (pa.tipo == "regressore")]
 T = pd.DataFrame({"vero": t.label, "score": t.score, "fold": split.split1, "media": pa.groupby("domain").previsione.mean()})
 

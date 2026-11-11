@@ -1,39 +1,70 @@
 # Publisher Classification
 
-Inferring the reliability of **news publishers the model has never seen** from
-collections of their articles. Language models rate individual articles; those
-ratings are aggregated per publisher.
+Predicting the **reliability of a news outlet the model has never seen, from the text of its articles alone**: the
+NewsGuard score (0-100) of an outlet is estimated from its articles, with all traces of the outlet's identity removed
+from the text. The question of the current work: do large language models used as frozen text encoders predict it
+better than a TF-IDF model?
 
-The work has gone through several paper versions. Each has its own code, data and
-results under `Code/`; the papers themselves are under `Paper/`.
+**Start here:** `Code/Pipeline/README.md` (the pipeline of the paper in preparation) and `Paper/Journal/` (the draft).
+`CLAUDE.md` is a short guide to the repository in Italian, also meant for another Claude instance.
 
-**Start here:** `CLAUDE.md` is a short guide to the repository (in Italian, also meant for another Claude
-instance); the current work is `Code/WebScience2027/Tentativi/16_DataPreparation`. Its data come as `Dataset.zip`
-(to unzip at the repository root, see `Dataset/LEGGIMI.md`).
+## Layout
 
 ```
 Code/
-  RejectedTCSS/    code of the version rejected by IEEE TCSS
+  Pipeline/        the pipeline of the paper in preparation (journal version): one notebook per step, in English
+  Attempts/        the 19 attempts that led to it (Oct-Nov 2026, in Italian), with the history in its README
   IrForGood/       code of the ECIR 2027 IR for Good submission
-  WebScience2027/  work in progress for Web Science 2027
-Paper/             the rejected TCSS paper and the IR for Good submission
-Riunioni/          slides and notes of the group meetings
+  RejectedTCSS/    code of the version rejected by IEEE TCSS
+Paper/
+  Journal/         LaTeX draft of the journal paper (generic template; results to be filled in)
+  NewIRForGood/    the IR for Good submission
+  OldPaperRejected/  the rejected TCSS paper
+Presentazioni/     slides of the group meetings (Italian)
+Dataset/, Modelli/ data and trained models: NOT in git (see Data)
 ```
 
-Every version follows the same layout:
+## The pipeline (`Code/Pipeline`)
+
+| step | notebook | what it does |
+|---|---|---|
+| 1 | `01_scraping` | October 2026 scraping of the NewsGuard political outlets (raw HTML; not re-run) |
+| 2 | `02_cleaning` | text from the HTML (trafilatura, precision mode), English, 100-1,500 words, from 2025, duplicates removed across outlets, >= 10 articles per outlet, one outlet per ownership group: 226 outlets, 25,524 articles |
+| 3 | `03_anonymization` | links and e-mails, the outlet's own name, and every news outlet and journalist found by GLiNER (zero-shot NER) become placeholders |
+| 4 | `04_split` | 5 folds of outlets, stratified by the exact score |
+| 5 | `05_embeddings` | frozen vectors of Qwen3-Embedding-8B and Mistral-Small-24B |
+| 7 | `07_regression` | the score of every article with TF-IDF, Qwen and Mistral (+ ridge) and fine-tuned ModernBERT; the outlet score is the mean |
+| 8-9 | `08_evaluation`, `09_results` | per outlet: Spearman, Kendall, MAE, within 20 points; bootstrap intervals |
+| 12 | `12_anonymization_effect` | results with this anonymization against a simpler one (rules only) |
+
+Steps 6, 10 and 11 (classification, more regressors on the embeddings, meta-articles) are side analyses not used in
+the paper. The heavy steps run on the server (`run_cpu.sh`, `run_gpu.sh`; progress with `status.sh`).
+
+## Data
+
+Reliability and political-orientation labels come from **NewsGuard** and are licensed to the authors. They are
+proprietary and **not redistributable**: they are not in git, not even inside results.
+
+All data (scraping, labels, the intermediate and final datasets) are in a single `Dataset/` folder at the repository
+root, trained models in `Modelli/`; both are outside git and shared separately (`Dataset/LEGGIMI.md`, tracked,
+describes the layout). The pipeline writes to `Dataset/tentativi/20_FromScratch/` (the name of the attempt it comes
+from, kept so that the server and the local copy match). `Code/Attempts/crea_archivio_dataset.py` builds the
+`Dataset.zip` of the earlier protocol.
+
+## Earlier versions
+
+`Code/Attempts/` holds the 19 attempts (Oct 2026) on the way to the pipeline; its README says what each one found.
+The older paper versions keep their own layout:
 
 | | |
 |---|---|
 | `0-scraping/` | collect and clean the corpus |
 | `1-…/` | the version's experiments (classification, data cleaning, …) |
 | `2-analysis/` | figures and tables of the paper |
-| `Dataset/` | NewsGuard labels and scraped articles (**not in git**; for WebScience2027 the single `Dataset/` at the repo root) |
+| `Dataset/` | NewsGuard labels and scraped articles (**not in git**) |
 | `Results/` | predictions, figures, tables |
 
-`WebScience2027/` starts from the same scraped dataset as the other versions:
-its `0-scraping/` notebooks are a copy of the ones in `IrForGood/`.
-
-## IrForGood version
+### IrForGood
 
 Stages 0 and 1 need scraping access and a GPU, so they are kept **with their cell
 outputs** and are not meant to be re-run. Stage 2 is cheap and reproduces
@@ -56,7 +87,7 @@ Code/IrForGood/Results/
 
 `Code/IrForGood/HANDOFF.md` is the context document of the IR for Good revision.
 
-### Correction to the published numbers
+#### Correction to the published numbers
 
 The original plotting code loaded `llama.csv` into the RoBERTa variable and vice
 versa, so the article-level F1 and tolerant-accuracy figures in the rejected
@@ -64,7 +95,7 @@ paper **attribute each of those two models' scores to the other**. Publisher-lev
 results are unaffected. The first cells of `paper_results.ipynb` explain this and
 the two other defects found, all verified by recomputation.
 
-### Rendering delle figure
+#### Rendering delle figure
 
 Le figure sono composte da LaTeX (backend PGF di matplotlib, `text.usetex=True`),
 come nel paper originale. Serve quindi un `pdflatex` nel PATH. Senza sudo:
@@ -78,15 +109,6 @@ tlmgr install pgf type1cm cm-super underscore ucs preview
 Senza `pdflatex`, `plots.set_style()` avvisa e ripiega su mathtext: il layout
 resta corretto ma i font non coincidono con quelli del paper.
 
-## Data
 
-Reliability and political-orientation labels come from **NewsGuard** and are
-licensed to the authors. They are proprietary and **not redistributable**, so no
-`Dataset/` folder is part of this repository.
-
-WebScience2027 keeps all its data (scraping, labels, the intermediate and final datasets of every attempt) in a
-single `Dataset/` folder at the repository root, and its trained models in `Modelli/`; both are outside git and are
-shared separately. `Dataset/LEGGIMI.md` (tracked) describes its layout.
-
-The IrForGood analysis runs from `Code/IrForGood/Results/predictions/`, which
-holds article ids, URLs, domains and labels but **no article text**.
+The IrForGood analysis runs from `Code/IrForGood/Results/predictions/`, which holds article ids, URLs, domains and
+labels but **no article text**.

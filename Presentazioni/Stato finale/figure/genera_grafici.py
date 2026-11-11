@@ -13,7 +13,7 @@ import pandas as pd
 QUI = Path(__file__).resolve().parent
 REPO = QUI.parents[2]
 D = REPO / "Dataset"
-T20 = REPO / "Code/WebScience2027/Tentativi/20_FromScratch"
+T20 = REPO / "Code/Pipeline"
 LIVELLI = ["l1", "l2", "l3", "l4", "l5"]
 COLORI = ["#b02a2a", "#ee8f8f", "#a8a69c", "#5b9be0", "#1d4f91"]      # l1 … l5: due poli e il grigio in mezzo
 BLU, GRIGIO = "#2a78d6", "#52514e"

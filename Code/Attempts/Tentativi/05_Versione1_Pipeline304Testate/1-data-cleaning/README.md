@@ -1,6 +1,6 @@
 # 1 — Data cleaning
 
-> **Versione 1** (18 ottobre). Le versioni successive sono i tentativi 06–08; il percorso completo è nel README di `Code/WebScience2027`.
+> **Versione 1** (18 ottobre). Le versioni successive sono i tentativi 06–08; il percorso completo è nel README di `Code/Attempts`.
 
 Dal dataset dello scraping al dataset finale. Pulizia **rigorosa ma non eccessiva**: si toglie ciò che non è testo
 dell'articolo o che metterebbe lo stesso testo nel training e nel test; ciò che c'è in uno scenario reale

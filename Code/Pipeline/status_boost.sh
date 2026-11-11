@@ -19,7 +19,7 @@ source ~/John/johnVenv/bin/activate && python -c "import torch; f,t=torch.cuda.m
 REMOTE
 if [ "$1" = "download" ]; then
     rsync -av -e "$R" $S:John/Tentativo20/10_boost.ipynb ./ | tail -n 1
-    D=../../../../Dataset/tentativi/20_FromScratch/boost; mkdir -p $D
+    D=../../Dataset/tentativi/20_FromScratch/boost; mkdir -p $D
     rsync -av -e "$R" --include "*/" --include "*.csv" --include "*.png" --include "*.txt" --exclude "*" \
           $S:John/Dataset/tentativi/20_FromScratch/boost/ $D/ | tail -n 1
 fi

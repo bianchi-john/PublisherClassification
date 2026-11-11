@@ -5,7 +5,7 @@ Restano fuori, perché pesano decine di GB e servono solo ai tentativi vecchi o 
 grezzi dello scraping, gli embedding salvati, il feed NewsGuard completo, i dati intermedi dei tentativi 01-13. Sono sul
 server, in ~/John/Dataset, e nel Dataset/ completo sul PC di John.
 
-Uso, dalla radice del repo:   python Code/WebScience2027/crea_archivio_dataset.py
+Uso, dalla radice del repo:   python Code/Attempts/crea_archivio_dataset.py
 """
 import zipfile
 from pathlib import Path

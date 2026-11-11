@@ -16,7 +16,7 @@ from scipy.stats import rankdata, spearmanr
 
 QUI = Path(__file__).resolve().parent
 REPO = QUI.parents[2]
-sys.path.insert(0, str(REPO / "Code/WebScience2027/Tentativi/20_FromScratch"))
+sys.path.insert(0, str(REPO / "Code/Pipeline"))
 import mbfc as MB      # noqa: E402
 import metrics as ME   # noqa: E402
 import models as MO    # noqa: E402

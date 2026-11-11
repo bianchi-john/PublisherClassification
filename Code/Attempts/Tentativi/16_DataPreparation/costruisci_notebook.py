@@ -6,7 +6,7 @@ from pathlib import Path
 
 import nbformat as nbf
 
-CARTELLA = "/home/john/Repos/PublisherClassification/Code/WebScience2027/Tentativi/16_DataPreparation/"
+CARTELLA = "/home/john/Repos/PublisherClassification/Code/Attempts/Tentativi/16_DataPreparation/"
 
 TABELLA = """| | che cosa impara | su quali articoli | come si decide la testata |
 |---|---|---|---|

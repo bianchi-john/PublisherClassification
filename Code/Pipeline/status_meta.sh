@@ -18,6 +18,6 @@ source ~/John/johnVenv/bin/activate && python -c "import torch; f,t=torch.cuda.m
 REMOTE
 if [ "$1" = "download" ]; then
     rsync -av -e "$R" $S:John/Tentativo20/11_meta.ipynb ./ | tail -n 1; rsync -a -e "$R" $S:John/Tentativo20/Results/meta.log Results/
-    D=../../../../Dataset/tentativi/20_FromScratch/meta; mkdir -p $D
+    D=../../Dataset/tentativi/20_FromScratch/meta; mkdir -p $D
     rsync -av -e "$R" --exclude "embeddings/" $S:John/Dataset/tentativi/20_FromScratch/meta/ $D/ | tail -n 1
 fi

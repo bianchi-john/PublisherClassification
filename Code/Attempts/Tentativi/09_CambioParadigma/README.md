@@ -4,7 +4,7 @@
 > (fuori da git), risultati in `Results/`. `0-scraping` e `1-data-cleaning` sono copie di quelli del tentativo 06: lo
 > scraping non è stato rifatto, i passi 01–02 della pulizia non sono stati rieseguiti (le loro uscite, deterministiche,
 > sono riusate); il passo 03 è stato rieseguito con i gruppi nuovi. Il percorso di tutti i tentativi è nel README di
-> `Code/WebScience2027`.
+> `Code/Attempts`.
 
 **La domanda.** Dai tentativi 05–08: sul solo testo un TF-IDF è vicino al massimo (F1 ≈ 0,40) e i transformer non
 aggiungono nulla, perché il segnale è lessicale e segue il genere della testata. Qui si cambia paradigma: non solo
