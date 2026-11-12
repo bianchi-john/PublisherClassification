@@ -2,7 +2,7 @@
 % (IEEEtran, acmart, llncs, ...), keep the body and replace the preamble and the front matter.
 % Build:  latexmk -pdf main.tex
 % Figures: figures/paper_figures.ipynb (style: figures/paper_style.py; dataset_construction.py runs on the server)
-% Notes for the authors are in \todo{...} (red). The previous draft is in _da_cancellare/.
+% Notes for the authors would be in \todo{...} (red). The previous draft is in _da_cancellare/.
 \documentclass[11pt,a4paper]{article}
 \usepackage[margin=2.5cm]{geometry}
 \usepackage[T1]{fontenc}
@@ -16,13 +16,25 @@
 \usetikzlibrary{arrows.meta,positioning,shapes.misc}
 \usepackage[numbers,sort&compress]{natbib}
 \usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+\def\UrlBreaks{\do\/\do-\do\_\do.}
+\usepackage{authblk}
+\usepackage{orcidlink}
+\renewcommand\Affilfont{\small}
 
 \newcommand{\todo}[1]{\textcolor{red}{[\textbf{TODO:} #1]}}
 \newcommand{\anon}{\operatorname{anon}}
 
-\title{Reading the Source: Predicting the Reliability of Unseen News Publishers\\from the Anonymized Text of Their
-Articles}
-\author{John Bianchi \and \todo{co-authors and affiliations}}
+\title{Reading the Source: Predicting the Reliability of Unseen News Publishers from the Anonymized Text
+of Their Articles}
+\author[1]{John Bianchi\,\orcidlink{0009-0006-2582-1480}\thanks{Corresponding author: John Bianchi
+(\texttt{john.bianchi@imtlucca.it}).}}
+\author[2]{Manuel Pratelli\,\orcidlink{0000-0002-9978-791X}}
+\author[1]{Fabio Pinelli\,\orcidlink{0000-0003-1058-6917}}
+\author[2,1]{Marinella Petrocchi\,\orcidlink{0000-0003-0591-877X}}
+\affil[1]{IMT School for Advanced Studies Lucca, 55100 Lucca, Italy\\
+\texttt{\{john.bianchi, fabio.pinelli\}@imtlucca.it}}
+\affil[2]{Institute of Informatics and Telematics, National Research Council (IIT-CNR), 56124 Pisa, Italy\\
+\texttt{\{manuel.pratelli, marinella.petrocchi\}@iit.cnr.it}}
 \date{}
 
 \begin{document}
@@ -682,37 +694,65 @@ and it calls for bias-aware evaluation of automated reliability assessment.
 \section{Released Resources and Demonstration Tool}\label{sec:tool}
 
 \paragraph{What we release.}
-Table~\ref{tab:release} lists the resources released with this paper \todo{repository URLs and licences}. The
-NewsGuard scores and levels are licensed and are not included anywhere, not even indirectly in the result files; the
-text of the articles is not redistributed either (only their URLs).
+Table~\ref{tab:release} lists the resources released with this paper, where they are and under which licence. Two
+repositories hold them: the repository of the study,
+\url{https://github.com/bianchi-john/PublisherClassification}, with the pipeline of
+Sections~\ref{sec:data}--\ref{sec:experiments} and the code of every table and figure, and the repository of the tool,
+\url{https://github.com/bianchi-john/publisher-evaluation}, with the trained models, the released predictions and the
+split. The NewsGuard scores and levels are licensed and are not included anywhere, not even indirectly in the result
+files; the text of the articles is not redistributed either, only their URLs, from which the articles can be collected
+again and passed through the released pipeline.
 
 \begin{table}[t]
 \centering\small
-\caption{Resources released with the paper. Nothing released contains NewsGuard scores or article text.}\label{tab:release}
-\begin{tabular}{p{0.24\linewidth}p{0.68\linewidth}}
+\caption{Resources released with the paper. Nothing released contains NewsGuard scores, NewsGuard levels or article
+text. \emph{Study}: \url{https://github.com/bianchi-john/PublisherClassification}; \emph{tool}:
+\url{https://github.com/bianchi-john/publisher-evaluation}.}\label{tab:release}
+\begin{tabular}{p{0.15\linewidth}p{0.52\linewidth}p{0.11\linewidth}p{0.12\linewidth}}
 \toprule
-resource & content \\
+resource & content & repository & licence \\
 \midrule
-pipeline code & every step of Sections~\ref{sec:data}--\ref{sec:experiments}, from the raw HTML to the tables and figures \\
-models & the four models of Table~\ref{tab:main}, each in its five fold versions (one per held-out fold of outlets) \\
-predictions & for each of the 25,524 articles: id, URL, outlet, fold and the out-of-fold score of the four models \\
-split & the 226 outlets and their fold \\
-tool & \emph{Publisher Evaluation}: scores new articles with the released models (below) \\
+pipeline code & every step of Sections~\ref{sec:data}--\ref{sec:experiments}: scraping, cleaning, anonymization,
+  split, models, evaluation, tables and figures & study & Apache-2.0 \\
+models & the four models of Table~\ref{tab:main}, each in its five fold versions (one per held-out fold of outlets):
+  TF-IDF and the ridge heads as arrays, ModernBERT as ONNX & tool & Apache-2.0 \\
+predictions & for each of the 25,524 articles: id, URL, outlet domain, fold and the out-of-fold score of the four
+  models & tool & CC BY 4.0 \\
+split & the 226 outlet domains and their fold & tool & CC BY 4.0 \\
+tool & \emph{Publisher Evaluation}: scores new articles with the released models (below) & tool & Apache-2.0 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
+The released models derive from base models distributed under the Apache-2.0 licence: ModernBERT-base for the
+fine-tuned encoder, Qwen3-Embedding-8B and Mistral-Small-24B-Base-2501 for the two frozen representations, whose
+weights are not redistributed but downloaded from Hugging Face by the tool. The anonymization uses the large
+GLiNER model of Section~\ref{sec:anon} (Apache-2.0), also downloaded on first use.
+
 \paragraph{The tool.}
 \emph{Publisher Evaluation} runs on the user's machine, with a web interface and a command line
-(\todo{screenshot of the Evaluate page as a figure}). Given a URL or a pasted text with the domain of its outlet, it
-extracts the text as in Section~\ref{sec:cleaning} and refuses what is outside the training data rather than
-extrapolating: pages that are not a single article, texts that are not in English or not between 100 and 1,500 words.
-It then anonymizes the text with the procedure of Section~\ref{sec:anon} and shows it with the placeholders
-highlighted, so that the user sees exactly what the models read. The user chooses which of the available models to
-run; each predicts the score of the outlet from this one article, and the score of an outlet is the mean over its
-stored articles, with the standard deviation and a bootstrap interval. The released predictions are loaded from the
-start, so the 226 outlets of the paper can be browsed, compared across models and exported. Every number is presented
-as a model prediction, not as a rating: one article is a weak signal (Section~\ref{sec:stage1}).
+(Figure~\ref{fig:tool}). Given a URL or a pasted text with the domain of its outlet, it extracts the text as in
+Section~\ref{sec:cleaning} and refuses what is outside the training data rather than extrapolating: pages that are not
+a single article, texts that are not in English or not between 100 and 1,500 words. A pasted text gets an identifier
+that marks it as given by the user, so that it is never mistaken for a downloaded page. The tool then anonymizes the
+text with the procedure of Section~\ref{sec:anon} and shows it with the placeholders highlighted and the list of the
+names the recognizer replaced, so that the user sees exactly what the models read. The user chooses which of the
+available models to run; each predicts the score of the outlet from this one article, and the score of an outlet is
+the mean over its stored articles, with the standard deviation and a bootstrap interval. The released predictions are
+loaded from the start, so the 226 outlets of the paper can be browsed, compared across models and exported, and a
+page lists the models found on disk with their status (ready, missing a GPU, invalid with the reason). Every number is
+presented as a model prediction, not as a rating: one article is a weak signal (Section~\ref{sec:stage1}). The tool
+can also be started in a read-only public mode, which shows the released data and evaluates nothing.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.92\linewidth]{figures/tool.pdf}
+\caption{The Evaluate page of \emph{Publisher Evaluation}, on an invented test article (not a real outlet) and with
+the two models that run on a CPU (the frozen language models need a GPU). Top: the predicted score of the outlet from
+this article, for each model; the outlet is new, so each score is the mean of the five fold models. Bottom: the text
+the models read, with the placeholders of the anonymization highlighted and the names replaced by the recognizer.}
+\label{fig:tool}
+\end{figure}
 
 \paragraph{Models and fidelity.}
 The models are shipped in formats that execute no code from the model files: TF-IDF and the ridge heads as plain
@@ -780,13 +820,29 @@ could be collected automatically, with at least 10 articles after cleaning; very
 underrepresented.
 
 \paragraph{Ethics and data availability.}
-The NewsGuard labels are licensed and are not redistributed: the released files (Table~\ref{tab:release}) contain
-article ids and URLs, folds, model predictions and models, but no scores, levels or article text. The method, and the
-tool built on it, are meant to support human raters, for instance by ranking unrated outlets for review, not to replace
-them: the tool presents its outputs as model predictions, scores an outlet only with models that never saw it, and runs
-locally, so that the articles it evaluates are not sent to any third party. Given the orientation gap of
-Section~\ref{sec:orientation}, predictions should never be used to sanction an outlet without human review.
-\todo{licences of the released models (derived from Apache-2.0 base models).}
+\emph{Data.} The NewsGuard ratings were licensed to the authors for research and cannot be redistributed; they can be
+obtained from NewsGuard under its own terms. The articles were collected from the public web pages of the outlets,
+without bypassing paywalls or logins, and are used only to compute features and predictions; their text is not
+redistributed. The released files (Table~\ref{tab:release}) contain article ids and URLs, outlet domains, folds, model
+predictions and models, but no NewsGuard score or level and no article text, so that the study can be reproduced by
+collecting the articles again from their URLs and obtaining the ratings from NewsGuard.
+
+\emph{People.} The study involves no human participants and no personal data beyond what the outlets publish: the
+names of journalists that appear in the articles are masked before any model reads them, and no analysis is made at the
+level of individual people. The released files contain no names of people.
+
+\emph{Use of the predictions.} The predictions concern organizations, not individuals, but they can still harm an outlet
+if they are used as ratings. The method, and the tool built on it, are meant to support human raters, for instance by
+ranking unrated outlets so that the least reliable are reviewed first, not to replace them: a prediction is not a
+rating, is not a fact-check of an article, and does not reflect criteria that the text does not show, such as ownership
+transparency or correction practices. The tool presents its outputs as model predictions, scores an outlet only with
+models that never saw it, refuses texts outside the training data, and runs locally, so that the articles it evaluates
+are not sent to any third party. Given the compression of the predictions (Section~\ref{sec:errors}) and the
+orientation gap (Section~\ref{sec:orientation}), predictions should never be used to sanction, demote or label an outlet
+without human review, and any deployment should monitor errors across political orientations.
+
+\emph{Licences.} The code and the models are released under the Apache-2.0 licence, consistent with the licences of
+the base models from which the models derive; the predictions and the split under CC BY 4.0.
 
 \paragraph{Future work.}
 Future research should extend the framework to other languages and topics and to other raters, calibrate the
@@ -795,6 +851,10 @@ the text reflects and which it does not, and reduce the orientation gap, for ins
 objectives. More broadly, combining content-based inference with signals that the text does not carry, such as
 ownership transparency, correction policies or citation networks, may provide a more complete and robust framework
 for scalable news source reliability assessment.
+
+\section*{Acknowledgments}
+This work is partially supported by IIT-CNR internal project SIMULARE `SIMULAzione delle Reazioni alla
+disinformazionE con LLM'.
 
 \bibliographystyle{plainnat}
 \bibliography{references}

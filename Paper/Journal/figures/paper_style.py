@@ -5,14 +5,13 @@ From the first version: LaTeX text (Computer Modern), bars with black edges and 
 with a title, light grey grid behind the bars, baselines as dashed lines (red: no-text / majority, violet: second
 baseline).
 
-Readable without colour: every series has a second channel that is not colour. Bars and patches have a hatch per
-series, lines have their own marker and dash pattern, points their own marker shape, and the categories are named on
-the axes or in a legend. The colours only add to these channels:
-- models: the four categorical slots of the validated palette (blue, orange, aqua, yellow), in a fixed order; adjacent
-  pairs are separable for colour-blind readers (CVD Delta E >= 9.1), and each model also has its hatch and marker;
-- NewsGuard levels: a diverging red - grey - blue scale (unreliable - middle - reliable), with the hatches of the
-  first version;
-- the other categorical figures use the same first slots, with hatches or marker shapes.
+Colours: matplotlib's "tab" palette, as in the first version (models and NewsGuard levels in the first version's
+order: tab:blue, tab:orange, tab:green, tab:red, tab:purple).
+
+Readable without colour: every series has a second channel that is not colour, because tab:green and tab:red (and
+tab:blue and tab:purple) are hard to tell apart for colour-blind readers. Bars and patches have a hatch per series,
+lines have their own marker and dash pattern, points their own marker shape, and the categories are named on the axes
+or in a legend; the colours only add to these channels.
 """
 from __future__ import annotations
 
@@ -31,7 +30,7 @@ HERE = Path(__file__).resolve().parent
 MODELS = ["TF-IDF", "Qwen3-8B", "Mistral-24B", "ModernBERT"]            # keys of the pipeline outputs
 MODEL_NAMES = {"TF-IDF": "TF-IDF", "Qwen3-8B": "Qwen3-Embedding-8B", "Mistral-24B": "Mistral-Small-24B",
                "ModernBERT": "ModernBERT"}
-MODEL_COLORS = {"TF-IDF": "#2a78d6", "Qwen3-8B": "#eb6834", "Mistral-24B": "#1baf7a", "ModernBERT": "#eda100"}
+MODEL_COLORS = {"TF-IDF": "tab:blue", "Qwen3-8B": "tab:orange", "Mistral-24B": "tab:green", "ModernBERT": "tab:red"}
 MODEL_HATCHES = {"TF-IDF": "//", "Qwen3-8B": "\\\\", "Mistral-24B": "xx", "ModernBERT": "||"}
 MODEL_MARKERS = {"TF-IDF": "o", "Qwen3-8B": "s", "Mistral-24B": "^", "ModernBERT": "D"}
 MODEL_DASHES = {"TF-IDF": "-", "Qwen3-8B": "--", "Mistral-24B": "-.", "ModernBERT": ":"}
@@ -39,12 +38,12 @@ MODEL_DASHES = {"TF-IDF": "-", "Qwen3-8B": "--", "Mistral-24B": "-.", "ModernBER
 # ------------------------------------------------------------------------------------------------ NewsGuard levels
 LEVELS = ["l1", "l2", "l3", "l4", "l5"]
 LEVEL_BANDS = ["0--39", "40--59", "60--74", "75--99", "100"]
-LEVEL_COLORS = ["#a9302f", "#ec9a99", "#e4e2dc", "#86b6ef", "#1c5cab"]   # diverging: red - grey - blue
+LEVEL_COLORS = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple"]   # the first version's class colours
 LEVEL_HATCHES = ["///", "\\\\\\", "xxx", "---", "+++"]                    # the first version's class hatches
 LEVEL_MARKERS = ["v", "<", "o", ">", "^"]
 
 # ------------------------------------------------------------------------------------------------ other categories
-SLOTS = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4"]          # validated categorical order
+SLOTS = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple"]   # the tab palette, in its order
 HATCHES = ["//", "\\\\", "xx", "..", "oo"]
 BASELINE_RED, BASELINE_VIOLET = "#B22222", "#6A3D9A"                   # the first version's baseline colours
 INK, MUTED, GRID = "black", "#55544f", "#c8c8c8"

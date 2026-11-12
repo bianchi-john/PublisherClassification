@@ -3,6 +3,8 @@
 Draft of the journal version (venue not chosen yet). Generic template: the plain `article` class, so that the body can
 be moved to any journal class (elsarticle, svjour3, acmart, IEEEtran, ...) by replacing preamble and front matter.
 
+- `PIANO_REVISIONE.md`: the plan to make the paper reviewer-proof (status of every experiment and writing task; update it
+  as work is done).
 - `main.tex`: the whole paper; author notes are `\todo{...}` (red).
 - `references.bib`: the entries of the first version (checked then) and the new ones; entries with `note = {verify}`
   still need checking.
