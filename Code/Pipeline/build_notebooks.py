@@ -171,6 +171,10 @@ spans["span"] = [text[(a, f)][s:e] for a, f, s, e in zip(spans.article_id, spans
 for label, g in spans.groupby("label"):
     print(f"{label}: {len(g):,}; most frequent", g.span.value_counts().head(15).index.tolist())'''),
     code('''anon = AX.apply(ruled, spans)
+print("spans kept (no placeholder, a capitalized name):"); print(spans.groupby("label").kept.agg(["sum", "size"]).to_string())
+for label, g in spans[spans.kept].groupby("label"):
+    print(f"{label}: most frequent kept", g.span.value_counts().head(15).index.tolist())
+print(f"articles touched by GLiNER: {spans[spans.kept].article_id.nunique() / len(art):.1%}")
 before, after = AX.own_name_left(art), AX.own_name_left(anon)
 print(f"articles with the name of their own outlet: before {before['own name left'].mean():.1%}, after {after['own name left'].mean():.1%} "
       f"({after['own name left'].sum():,} articles)")

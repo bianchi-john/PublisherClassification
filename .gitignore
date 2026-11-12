@@ -63,7 +63,7 @@ Code/WebScience2027/**/Results/**/prova/
 # Modelli addestrati (dal tentativo 13): TF-IDF e ModernBERT per fold e finali, circa 3,5 GB;
 # si scaricano dal server con lo script del tentativo e restano solo in locale
 # =====================================================================
-Code/WebScience2027/Tentativi/*/Modelli/
+Code/Attempts/Tentativi/*/Modelli/
 # tentativi 14-15: dataset con etichette NewsGuard e previsioni per articolo (dati riservati, restano fuori da git)
 Code/WebScience2027/Tentativi/*/Results/dataset/*.csv*
 Code/WebScience2027/Tentativi/*/Results/cache/

@@ -6,7 +6,9 @@
    "news outlet" and "journalist": every span with score >= `THRESHOLD` -> [OUTLET] / [AUTHOR] (every outlet and every
    journalist, not only the publisher and its staff).
 Nothing else is changed: no rewriting. GLiNER reads at most 384 tokens, so the text is read in windows of `WINDOW`
-words overlapping by `OVERLAP` words; overlapping spans: the one with the higher score wins. Passes 1-2 are needed
+words overlapping by `OVERLAP` words; overlapping spans: the one with the higher score wins. A span is replaced only if
+it does not touch a placeholder of passes 1-2 and contains a capitalized word that is not a pronoun (`keep`: GLiNER
+also tags "I", "she", "reporters" and the placeholders themselves). Passes 1-2 are needed
 because GLiNER alone leaves the outlet's own name in about 1 article in 4 (e.g. "AmmoLand previously covered").
 Check: how many articles still contain the name of their own outlet."""
 import re
@@ -113,8 +115,28 @@ def rules(art):
     return new, counts
 
 
+PRONOUNS = {"i", "me", "my", "mine", "we", "us", "our", "you", "your", "he", "him", "his", "she", "her", "they", "them",
+            "their", "it", "its", "the", "a", "an"}
+PLACEHOLDER = re.compile(r"\[?(?:OUTLET|AUTHOR|EMAIL|URL)\]?")
+
+
+def keep(text, start, end, label):
+    """GLiNER also tags placeholders already in the text, pronouns ("I", "she") and common nouns ("reporters"): a span
+    is kept only if it does not touch a placeholder of passes 1-2 and contains a capitalized word that is not a
+    pronoun (a name: "Megyn Kelly", "JVL", "Fox News")."""
+    span = text[start:end]
+    if PLACEHOLDER.search(text[max(0, start - 1):end + 1]):
+        return False
+    words = re.findall(r"[^\W\d_][\w'’.-]*", span)
+    return any(w[0].isupper() and len(w) >= 2 and w.lower() not in PRONOUNS for w in words)
+
+
 def apply(art, spans):
-    """Titles and texts with the spans replaced."""
+    """Titles and texts with the kept spans replaced (see `keep`). Adds the column `kept` to `spans`."""
+    text = {(a, f): t for f in ["title", "text"] for a, t in zip(art.article_id, art[f].fillna(""))}
+    spans["kept"] = [keep(text[(a, f)], s, e, lab) for a, f, s, e, lab in
+                     zip(spans.article_id, spans.field, spans.start, spans.end, spans.label)]
+    spans = spans[spans.kept]
     out = art.copy()
     for field in ["title", "text"]:
         g = spans[spans.field == field].groupby("article_id")

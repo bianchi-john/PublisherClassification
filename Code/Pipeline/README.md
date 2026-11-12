@@ -95,8 +95,25 @@ Steps 10 and 11 have their own queues (`run_boost.sh`, `run_meta.sh`; `status_bo
 
 ## Results
 
-### Current run (rules + GLiNER anonymization)
-To be filled when the re-run of 11/11 ends (`08_evaluation`, `09_results`, `12_anonymization_effect`).
+### Current run (rules + GLiNER anonymization; 11-12/11)
+Per outlet, predicted score (not stretched), all articles; 95% bootstrap intervals; paired bootstrap against TF-IDF
+(1,000 resamples). Tables: `paper_main_table.csv`, `paper_curves.csv`, `anonymization_effect.csv` in the data folder.
+- Anonymization (`03`): own name 17,780, links 8,559, e-mails 398; GLiNER 41,278 outlet and 33,816 journalist spans
+  kept (no pronouns, no placeholders) in 71.8% of the articles; own outlet name left in 1.6% of the articles (37.8%
+  before).
+- No text: MAE 22.6, within 20 points 50.9%.
+- TF-IDF: Spearman 0.674 [0.60; 0.74], Kendall 0.480, MAE 17.8, within 20 61.5%.
+- Qwen3-8B: 0.711 [0.64; 0.76], 0.514, 16.3, 69.9% (better than TF-IDF on MAE and within 20; Spearman +0.037, not
+  significant).
+- Mistral-24B: 0.735 [0.67; 0.79], 0.540, 15.8, 68.1% (better than TF-IDF on every measure: Spearman +0.060
+  [0.022; 0.105], MAE -2.0 [-2.8; -1.2]).
+- ModernBERT: 0.610 [0.52; 0.68], 0.435, 17.5, 63.7% (not different from TF-IDF).
+- Articles per outlet: Mistral beats TF-IDF at every k (1 article: Spearman 0.62 vs 0.39; 5 articles 0.71, already
+  above TF-IDF with all articles); Qwen on the error at every k and on the ranking up to 50 articles; ModernBERT never.
+- Anonymization effect (`12`, rules only → rules + GLiNER, all articles): Mistral 0.735 → 0.735, Qwen 0.722 → 0.711,
+  ModernBERT 0.605 → 0.610, TF-IDF 0.691 → 0.674 (the only significant change); over all k and measures 18 of 24
+  TF-IDF comparisons are significantly worse, 5 of 24 for Mistral, none for Qwen and ModernBERT.
+- Errors by level (Mistral): l1 +31 points, l3 -3, l5 -19 (TF-IDF +37, -2, -25): predictions compressed to the centre.
 
 ### First run (anonymization made of six rules; kept in `rules_only/`)
 - Steps 2 and 4 reproduce attempt 16 (same 25,524 articles, texts and labels) and the first split of attempt 18;

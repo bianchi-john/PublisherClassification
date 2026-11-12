@@ -28,3 +28,55 @@
 2026-11-02 12:44:03  08_evaluation
 2026-11-02 12:49:37  09_results
 2026-11-02 12:49:41  <<< ALL DONE
+2026-11-10 13:53:44  ==== RE-RUN of the whole pipeline (anonymization part 2 added)
+2026-11-10 13:53:44  GPU: 03b_anonymization_llm (attempt 1)
+2026-11-10 13:53:44  CPU: 01_scraping
+2026-11-10 13:53:53  CPU: 02_cleaning
+2026-11-10 13:55:08  CPU: 03_anonymization
+2026-11-10 13:57:43  CPU: 04_split
+2026-11-10 13:58:26  GPU: 03b_anonymization_llm (attempt 1)
+2026-11-10 18:54:16  GPU: 05_embeddings (attempt 1)
+2026-11-10 18:55:51  CPU: 06_classification, TF-IDF (attempt 1)
+2026-11-10 19:07:07  CPU: 07_regression, TF-IDF (attempt 1)
+2026-11-11 01:44:56  GPU: 07_regression, ModernBERT (attempt 1)
+2026-11-11 01:48:05  CPU: 06_classification, Qwen3-8B and Mistral-24B (attempt 1)
+2026-11-11 02:04:05  CPU: 07_regression, Qwen3-8B and Mistral-24B (attempt 1)
+2026-11-11 02:08:00  CPU: done
+2026-11-11 11:51:51  STOPPED by hand: lexicon too broad, step 3b re-done with confirmed phrases only
+2026-11-11 11:52:46  ==== RE-RUN from step 3b (confirmed lexicon)
+2026-11-11 11:52:48  CPU: 01_scraping
+2026-11-11 11:52:56  CPU: 02_cleaning
+2026-11-11 11:54:08  CPU: 03_anonymization
+2026-11-11 11:56:36  CPU: 04_split
+2026-11-11 11:56:46  GPU: 03b_anonymization_llm (attempt 1)
+2026-11-11 12:33:52  GPU: 05_embeddings (attempt 1)
+2026-11-11 12:34:44  CPU: 06_classification, TF-IDF (attempt 1)
+2026-11-11 12:46:04  CPU: 07_regression, TF-IDF (attempt 1)
+2026-11-11 14:26:43  STOPPED by hand: anonymization part 2 redone with GLiNER only
+2026-11-11 14:37:15  ==== RE-RUN of the whole pipeline (anonymization = links/e-mails + own name + GLiNER)
+2026-11-11 14:37:17  CPU: 01_scraping
+2026-11-11 14:37:25  CPU: 02_cleaning
+2026-11-11 14:38:39  CPU: 04_split
+2026-11-11 14:39:15  GPU: 03_anonymization (attempt 1)
+2026-11-11 15:51:47  GPU: 05_embeddings (attempt 1)
+2026-11-11 15:52:48  CPU: 06_classification, TF-IDF (attempt 1)
+2026-11-11 15:53:25  STOPPED by hand: GLiNER spans filtered (placeholders, pronouns)
+2026-11-11 15:53:54  ==== RE-RUN from step 3 (GLiNER spans filtered)
+2026-11-11 15:53:56  CPU: 01_scraping
+2026-11-11 15:54:05  CPU: 02_cleaning
+2026-11-11 15:55:20  CPU: 04_split
+2026-11-11 15:55:54  GPU: 03_anonymization (attempt 1)
+2026-11-11 15:58:01  GPU: 05_embeddings (attempt 1)
+2026-11-11 15:59:28  CPU: 06_classification, TF-IDF (attempt 1)
+2026-11-11 16:10:27  CPU: 07_regression, TF-IDF (attempt 1)
+2026-11-11 23:14:59  GPU: 07_regression, ModernBERT (attempt 1)
+2026-11-11 23:15:51  CPU: 06_classification, Qwen3-8B and Mistral-24B (attempt 1)
+2026-11-11 23:33:41  CPU: 07_regression, Qwen3-8B and Mistral-24B (attempt 1)
+2026-11-11 23:36:54  CPU: done
+2026-11-12 06:31:54  GPU: 07_regression summary
+2026-11-12 06:32:06  GPU: 08_evaluation
+2026-11-12 06:36:52  GPU: 09_results
+2026-11-12 06:36:56  GPU: 12_anonymization_effect
+2026-11-12 06:42:26  GPU: main results ready (regression)
+2026-11-12 06:42:26  GPU: 06_classification, ModernBERT (attempt 1)
+2026-11-12 10:33:54  STOPPED by hand after the main results (classification and steps 10-11 not needed for the paper)
