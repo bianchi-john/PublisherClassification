@@ -8,8 +8,8 @@ Born as attempt 20 ("from scratch", `Code/Attempts` has the 19 attempts before i
 `build_notebooks.py` (a notebook whose code does not change is left untouched, outputs included). Everything is in
 English, seeded and reproducible. The paper draft is in `Paper/Journal/`.
 
-**Status (11/11/2026).** The whole pipeline is being re-run with the anonymization of step 3 (rules + GLiNER); the
-outputs of the first run (anonymization made of six rules) are kept in `rules_only/` (see Results).
+**Status (12/11/2026).** Final run done with the anonymization of step 3 (rules + GLiNER); the predictions of the first
+run (anonymization made of six rules) are kept in `rules_only/` for step 12 (see Results).
 
 ## Steps used in the paper
 
@@ -64,7 +64,8 @@ anonymization_effect.csv            step 12
 boost/, meta/                       side analyses 10 and 11
 rules_only/                         the first run (anonymization made of six rules), kept for step 12
 ```
-Trained models: `Modelli/20_FromScratch/` (first run in `Modelli/20_FromScratch/rules_only/`).
+Trained models: `Modelli/20_FromScratch/regression/` (the 5 fold models of each regressor, 2.9 GB; also on the PC). The
+models of the first run and the classifiers were deleted on 12/11 (their predictions are kept).
 
 ## How to run
 
