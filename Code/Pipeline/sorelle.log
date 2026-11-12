@@ -1,0 +1,22 @@
+{'passo': 'scaricate (1.293)', 'articoli': None, 'testate': 1293, 'gruppi': 589, 'sorelle (testate - gruppi)': 704, 'testate in gruppi con >1 testata': 797}
+{'passo': 'almeno un articolo', 'articoli': 86225, 'testate': 674, 'gruppi': 384, 'sorelle (testate - gruppi)': 290, 'testate in gruppi con >1 testata': 338}
+{'passo': 'con testo estratto', 'articoli': 85303, 'testate': 668, 'gruppi': 378, 'sorelle (testate - gruppi)': 290, 'testate in gruppi con >1 testata': 338}
+{'passo': 'inglese', 'articoli': 67231, 'testate': 577, 'gruppi': 302, 'sorelle (testate - gruppi)': 275, 'testate in gruppi con >1 testata': 315}
+{'passo': '100-1.500 parole', 'articoli': 52027, 'testate': 565, 'gruppi': 293, 'sorelle (testate - gruppi)': 272, 'testate in gruppi con >1 testata': 312}
+{'passo': 'dal 2025', 'articoli': 40232, 'testate': 531, 'gruppi': 268, 'sorelle (testate - gruppi)': 263, 'testate in gruppi con >1 testata': 299}
+{'passo': 'senza doppioni', 'articoli': 34799, 'testate': 361, 'gruppi': 267, 'sorelle (testate - gruppi)': 94, 'testate in gruppi con >1 testata': 120}
+{'passo': 'senza quasi doppioni', 'articoli': 33694, 'testate': 347, 'gruppi': 266, 'sorelle (testate - gruppi)': 81, 'testate in gruppi con >1 testata': 107}
+{'passo': 'almeno 10 articoli', 'articoli': 33443, 'testate': 287, 'gruppi': 226, 'sorelle (testate - gruppi)': 61, 'testate in gruppi con >1 testata': 81}
+{'passo': 'una per gruppo', 'articoli': 25524, 'testate': 226, 'gruppi': 226, 'sorelle (testate - gruppi)': 0, 'testate in gruppi con >1 testata': 0}
+               passo  articoli  testate  gruppi  sorelle (testate - gruppi)  testate in gruppi con >1 testata
+   scaricate (1.293)       NaN     1293     589                         704                               797
+  almeno un articolo   86225.0      674     384                         290                               338
+  con testo estratto   85303.0      668     378                         290                               338
+             inglese   67231.0      577     302                         275                               315
+    100-1.500 parole   52027.0      565     293                         272                               312
+            dal 2025   40232.0      531     268                         263                               299
+      senza doppioni   34799.0      361     267                          94                               120
+senza quasi doppioni   33694.0      347     266                          81                               107
+  almeno 10 articoli   33443.0      287     226                          61                                81
+      una per gruppo   25524.0      226     226                           0                                 0
+FINE

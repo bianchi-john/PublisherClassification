@@ -2,8 +2,10 @@
 *.bbl
 *.blg
 *.fdb_latexmk
+figures/_greyscale/
+figures/__pycache__/
 *.fls
 *.log
+main.pdf
 *.out
 *.synctex.gz
-main.pdf

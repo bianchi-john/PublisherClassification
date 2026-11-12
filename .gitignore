@@ -182,3 +182,7 @@ Code/WebScience2027/Tentativi/18_PunteggioEsatto/Results/cpu_fatto
 /Code/Attempts/Tentativi/18_PunteggioEsatto/Results/cpu_fatto
 /Code/Attempts/Tentativi/18_PunteggioEsatto/Results/lineari/previsioni_articoli.csv.gz
 /Code/Attempts/Tentativi/18_PunteggioEsatto/Results/lineari/previsioni_testate_E.csv.gz
+
+# demo/: the demo tools, each with its own git repository (vecchio_tool = the tool of the earlier paper, with models,
+# .venv and private files with credentials; the new tool is published from its own repository): never in this repo
+/demo/
