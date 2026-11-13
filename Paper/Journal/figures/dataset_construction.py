@@ -2,7 +2,7 @@
 
 Runs where the pipeline data are (the server), from Code/Pipeline:
     cd ~/John/Tentativo20 && python ~/John/paper_figures/dataset_construction.py
-It repeats the cleaning of step 2 with the same functions and constants (no new rule) and records, along the way,
+It repeats the cleaning of step 2 (cleaning.chain: the same functions and rules) and records, along the way,
 what the figures need. Output in Dataset/tentativi/20_FromScratch/paper_figures/ (outside git: the ownership groups
 come from NewsGuard; outlets are numbered, never named):
   steps.csv          outlets, ownership groups, sister outlets and articles after every cleaning step
@@ -13,7 +13,6 @@ come from NewsGuard; outlets are numbered, never named):
   anonymization.csv  per article of the final dataset: level, words, placeholders by kind and pass, own name left
   summary.json       counts quoted in the captions
 """
-import hashlib
 import json
 import sys
 from collections import Counter
@@ -23,7 +22,6 @@ from pathlib import Path
 import networkx as nx
 import numpy as np
 import pandas as pd
-from joblib import Parallel, delayed
 
 sys.path.insert(0, ".")
 import anonymization_ner as AX  # noqa: E402
@@ -31,8 +29,6 @@ import cleaning as CL  # noqa: E402
 import common as C  # noqa: E402
 
 N_JOBS = 16
-NEAR_DUPLICATE, CANDIDATES = 0.5, 0.3
-MIN_WORDS, MAX_WORDS, MIN_ARTICLES, FROM_DATE = 100, 1500, 10, "2025-01-01"
 OUT = C.OUT / "paper_figures"
 OUT.mkdir(exist_ok=True)
 ng = CL.read_newsguard(C.NEWSGUARD)
@@ -49,46 +45,21 @@ def step(name, df):
     print(steps[-1], flush=True)
 
 
-# ---------------------------------------------------------------------------------------------- step 2, as in 02
+# ---------------------------------------------------------------------------------------------- step 2, again
 status = CL.read_status(C.SCRAPING)
 political = CL.political_outlets(status, ng)
 steps.append({"step": "sent to the scraper", "articles": None, "outlets": len(political),
               "groups": len(set(CL.ownership_groups(political, ng).values())), "sister_outlets": None,
               "outlets_in_shared_groups": None})
 steps[-1]["sister_outlets"] = steps[-1]["outlets"] - steps[-1]["groups"]
-raw = pd.read_csv(C.OUT / "extracted.csv.gz")
-step("at least one article", raw)
-art = raw[raw.text.notna()].reset_index(drop=True)
-step("text extracted", art)
-art["language"] = Parallel(n_jobs=N_JOBS, batch_size=200)(delayed(CL.language)(t) for t in art.text)
-art = art[art.language == "en"]
-step("English", art)
-art["words"] = art.text.str.split().str.len()
-art = art[art.words.between(MIN_WORDS, MAX_WORDS)]
-step("100-1,500 words", art)
-art["date"] = pd.to_datetime(art.date, errors="coerce")
-art = art[art.date >= FROM_DATE].reset_index(drop=True).rename_axis("article_id").reset_index()
-step("from 2025", art)
-stage = art.copy()                                                   # the outlets of the network figure
-
-art["norm"] = art.text.map(CL.normalize)
-art["fingerprint"] = art.norm.map(lambda s: hashlib.md5(s.encode()).hexdigest())
-exact = art.groupby("fingerprint").domain.apply(lambda s: sorted(set(s)))
-art = art.sort_values(["date", "article_id"]).drop_duplicates("fingerprint").sort_values("article_id")
-step("no exact duplicates", art)
-pairs = CL.similar_pairs(art.reset_index(drop=True), CANDIDATES, N_JOBS)
-pairs = pairs[pairs.jaccard >= NEAR_DUPLICATE]
-art = art[~art.article_id.isin(CL.copies_to_drop(pairs, art.set_index("article_id").date))]
-step("no near duplicates", art)
-n = art.groupby("domain").size()
-art = art[art.domain.isin(n.index[n >= MIN_ARTICLES])]
-step(">= 10 articles", art)
-at10 = art.copy()
-art["group"] = art.domain.map(CL.ownership_groups(sorted(art.domain.unique()), ng))
-kept = (art.groupby("domain").agg(group=("group", "first"), n=("article_id", "size")).reset_index()
-        .sort_values(["n", "domain"], ascending=[False, True]).groupby("group").head(1).domain)
-art = art[art.domain.isin(kept)]
-step("one outlet per group", art)
+info = {}
+for name, art in CL.chain(pd.read_csv(C.OUT / "extracted.csv.gz"), ng, N_JOBS, info):
+    step(name, art)
+    if name == "from 2025":
+        stage = art.copy()                                           # the outlets of the network figure
+    elif name == ">= 10 articles":
+        at10 = art.copy()
+exact, pairs = info["exact"], info["pairs"]
 final = pd.read_csv(C.OUT / "outlets.csv", index_col="domain")
 assert set(art.domain) == set(final.index) and len(art) == final.articles.sum(), "not the paper's dataset"
 pd.DataFrame(steps).to_csv(OUT / "steps.csv", index=False)

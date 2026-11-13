@@ -207,14 +207,17 @@ if old.exists():
 notebook([
     md("""# 5. Frozen text representations (GPU)
 
-Every article must fit whole: token counts for every tokenizer, no article above the limit. Then the vectors of
-Qwen3-Embedding-8B (instruction + article, last token) and Mistral-Small-24B Base (4 bit, mean of the tokens, layers 27
-and 40; the linear models use 27)."""),
+Every article must fit whole: token counts for every tokenizer, no article above the limit. Then the frozen vectors:
+Qwen3-Embedding-8B and its small version Qwen3-Embedding-0.6B (same instruction + article, last token), Mistral-Small-24B
+Base (4 bit, mean of the tokens, layers 27 and 40: step 7 chooses between them on the inner folds), and ModernBERT-base
+used as it is (mean of its last layer), the frozen counterpart of the ModernBERT trained in step 7."""),
     code('''QWEN = "Qwen/Qwen3-Embedding-8B"
+QWEN_SMALL = "Qwen/Qwen3-Embedding-0.6B"
 MISTRAL = "mistralai/Mistral-Small-24B-Base-2501"
 BERT = "answerdotai/ModernBERT-base"
 QWEN_BUDGET = 32768           # tokens per batch
 MISTRAL_BUDGET = 8192         # smaller: all hidden states stay in memory
+BERT_BUDGET = 32768
 GPU_GB = 22'''),
     code(SETUP + '''
 
@@ -232,19 +235,26 @@ for name, model, prefix in [("ModernBERT", BERT, ""), ("Qwen3-8B", QWEN, f"Instr
 tokens = pd.DataFrame(rows).set_index("model"); tokens.to_csv(C.OUT / "token_lengths.csv")
 assert tokens.truncated.sum() == 0
 tokens'''),
-    code('''f = C.EMBEDDINGS / MO.EMBEDDING_FILES["Qwen3-8B"]
-if not f.exists():
+    code('''for name, model in [("Qwen3-8B", QWEN), ("Qwen3-0.6B", QWEN_SMALL)]:
+    f = C.EMBEDDINGS / MO.EMBEDDING_FILES[name]
+    if not f.exists():
+        MO.wait_for_gpu(GPU_GB, LOG)
+        np.save(f, MO.qwen_embeddings(texts, model, QWEN_BUDGET, LOG))
+files = MO.EMBEDDING_FILES["Mistral-24B"]
+if not all((C.EMBEDDINGS / f).exists() for f in files.values()):
     MO.wait_for_gpu(GPU_GB, LOG)
-    np.save(f, MO.qwen_embeddings(texts, QWEN, QWEN_BUDGET, LOG))
-f = C.EMBEDDINGS / MO.EMBEDDING_FILES["Mistral-24B"]
-if not f.exists():
-    MO.wait_for_gpu(GPU_GB, LOG)
-    E = MO.mistral_embeddings(texts, MISTRAL, [27, 40], MISTRAL_BUDGET, LOG, C.EMBEDDINGS / "mistral_partial.npy")
-    np.save(C.EMBEDDINGS / "mistral_small_24b_layer40.npy", E[40]); np.save(f, E[27])
+    E = MO.mistral_embeddings(texts, MISTRAL, list(files), MISTRAL_BUDGET, LOG, C.EMBEDDINGS / "mistral_partial.npy")
+    for layer, f in files.items():
+        np.save(C.EMBEDDINGS / f, E[layer])
     (C.EMBEDDINGS / "mistral_partial.npy").unlink(missing_ok=True)
+f = C.EMBEDDINGS / MO.EMBEDDING_FILES["ModernBERT-frozen"]
+if not f.exists():
+    MO.wait_for_gpu(GPU_GB, LOG)
+    np.save(f, MO.encoder_embeddings(texts, BERT, BERT_BUDGET, LOG))
 art[["article_id"]].to_csv(C.EMBEDDINGS / "article_order.csv", index=False)
-for name, file in MO.EMBEDDING_FILES.items():
-    E = np.load(C.EMBEDDINGS / file); print(name, E.shape, "finite:", np.isfinite(E).all())'''),
+for name, files in MO.EMBEDDING_FILES.items():
+    for file in (files.values() if isinstance(files, dict) else [files]):
+        E = np.load(C.EMBEDDINGS / file, mmap_mode="r"); print(name, file, E.shape, "finite:", np.isfinite(E).all())'''),
 ], "05_embeddings.ipynb")
 
 # ------------------------------------------------------------------------------------------------ 6-7. classification and regression
@@ -256,10 +266,10 @@ for number, task, what in [(6, "classification", "the 5 NewsGuard levels (logist
         md(f"""# {number}. {task.capitalize()}
 
 Predict {what}. Same split, same models for both tasks. Linear models: the penalty is chosen with 3 inner folds of the
-training outlets. ModernBERT: 5 epochs, lr 3e-5, effective batch 32, last epoch kept. For every test article the
+training outlets{' (for Mistral-24B, the layer too: 27 or 40)' if task == 'regression' else ''}. ModernBERT: 5 epochs, lr 3e-5, effective batch 32, last epoch kept. For every test article the
 outputs are saved in `predictions/{task}/<model>/`, and every fold model in `Modelli/20_FromScratch/`."""),
         code(f'''TASK = "{task}"
-MODELS = "TF-IDF,Qwen3-8B,Mistral-24B"     # "ModernBERT" runs on the GPU
+MODELS = "{'TF-IDF,Qwen3-8B,Mistral-24B' if task == 'classification' else 'TF-IDF,Qwen3-0.6B,Qwen3-8B,Mistral-24B,ModernBERT-frozen'}"     # "ModernBERT" runs on the GPU
 N_JOBS = 16'''),
         code(SETUP + '''
 
@@ -281,7 +291,11 @@ art, outlets = MO.load()'''),
     else:
         p = pd.concat([pd.read_csv(f) for f in sorted(folder.glob("penalty_fold*.csv"))])
         print(name, "chosen penalty per fold:", p[p.chosen].set_index("fold").penalty.to_dict())'''),
-    ], f"0{number}_{task}.ipynb")
+    ] + ([code('''p = pd.concat([pd.read_csv(f) for f in sorted((C.PREDICTIONS / TASK / "Mistral-24B").glob("penalty_fold*.csv"))])
+if "layer" in p:
+    print("Mistral-24B, layer chosen on the inner folds:", p[p.chosen].set_index("fold").layer.to_dict())
+    display(p.pivot_table(index=["layer", "penalty"], columns="fold", values="inner score").round(3))''')] if task == "regression" else []),
+        f"0{number}_{task}.ipynb")
 
 # ------------------------------------------------------------------------------------------------ 8. evaluation
 notebook([
@@ -296,7 +310,7 @@ Per outlet, from the saved article outputs. The two approaches in the same two s
 | no text | most frequent level | mean training score |
 
 95% intervals: bootstrap over outlets (fixed seed). Classifier vs regressor: paired, on the same outlets."""),
-    code('''MODELS = "TF-IDF,Qwen3-8B,Mistral-24B,ModernBERT"
+    code('''MODELS = "TF-IDF,Qwen3-0.6B,Qwen3-8B,Mistral-24B,ModernBERT-frozen,ModernBERT,LLM-zero-shot"
 B = 2000'''),
     code(SETUP + '''
 
@@ -678,3 +692,152 @@ table("all", "stretched")'''),
     code('''table("5", "stretched")'''),
     code('''table("1", "stretched")'''),
 ], "12_anonymization_effect.ipynb")
+
+# ------------------------------------------------------------------------------------------------ 13. zero-shot (GPU)
+notebook([
+    md("""# 13. Asking a language model directly (zero-shot, GPU)
+
+The baseline for "just ask the model": Mistral-Small-24B **Instruct** (the instruct version of the frozen model of step
+7, 4 bit) reads each anonymous article with a description of NewsGuard's nine criteria and answers with the score
+(0–100) of the outlet that published it. Nothing is trained; greedy decoding; the outlet score is the mean over its
+articles, as for every model (prompt and parsing in `zeroshot.py`). Outputs in `predictions/regression/LLM-zero-shot/`,
+so steps 8, 9 and 15 include it like the models of step 7."""),
+    code('''LIMIT = 0                     # > 0: only the first LIMIT articles, to test the prompt (nothing is saved)
+GPU_GB = 20'''),
+    code(SETUP + '''
+
+import models as MO
+import zeroshot as ZS
+
+art, outlets = MO.load()
+print(ZS.SYSTEM, "\\n\\n" + ZS.USER.format(text="<article>"))'''),
+    code('''MO.wait_for_gpu(GPU_GB, LOG)
+res = ZS.run(art, LOG, limit=LIMIT or None)
+print(f"{len(res):,} answers; without an integer: {res.prediction.isna().sum()}; not just an integer: "
+      f"{(~res.answer.map(ZS.exact)).sum()}")
+res.answer.value_counts().head(15)'''),
+    code('''res.prediction.describe().round(1).to_frame("predicted score per article").T'''),
+], "13_zero_shot.ipynb")
+
+# ------------------------------------------------------------------------------------------------ 14. leakage ladder
+notebook([
+    md("""# 14. How much each protection matters (the leakage ladder)
+
+The ridge models of step 7 (TF-IDF, Qwen3-Embedding-8B, Mistral-Small-24B) under weaker protocols, one protection
+added at a time, always tested on the **same** 25,524 articles of the 226 outlets of the paper, in the same folds:
+
+| rung | training outlets and articles | text |
+|---|---|---|
+| article split | the 226 outlets, folds of articles (an outlet is on both sides) | anonymous |
+| L0 | every outlet with ≥ 10 articles at "published from 2025": sisters and copies included | original |
+| L1 | + duplicates removed across outlets: sisters still included | original |
+| L2 | + one outlet per ownership group (the 226) | original |
+| L3 | the 226 | + links, e-mails, the outlet's own name |
+| L4 | the 226 | + GLiNER (the paper, step 7) |
+
+Sisters and copies come back from the step-2 cache with the same functions and constants (checked against the paper's
+articles); details in `ladder.py`. Order of the work: the stages, TF-IDF on every rung, the frozen models on the article
+split (vectors of step 5), then the new vectors (rules text: 226 outlets; original text: all L0 articles) on the GPU and
+the frozen models on L0–L3."""),
+    code('''N_JOBS = 16
+GPU_GB = 19
+QWEN_BUDGET = 16384
+MISTRAL_BUDGET = 8192'''),
+    code(SETUP + '''
+
+import ladder as LA
+import paper as PA
+
+A, by_step = LA.stages(N_JOBS, LOG)
+print(f"L0: {A.domain.nunique()} outlets, {len(A):,} articles | L1: {A[A.s1].domain.nunique()} outlets, "
+      f"{A.s1.sum():,} | L2-L4: {A[A.s2].domain.nunique()} outlets, {A.s2.sum():,}")
+by_step["last step"].value_counts()'''),
+    md("## TF-IDF on every rung, the frozen models on the article split"),
+    code('''for rung in LA.RUNGS:
+    LA.run(rung, A, ["TF-IDF"], N_JOBS, LOG)
+LA.run("article split", A, ["Qwen3-8B", "Mistral-24B"], N_JOBS, LOG)'''),
+    md("## New frozen vectors (GPU) and the frozen models on L0–L3"),
+    code('''LA.embed("rules", A, LOG, GPU_GB, QWEN_BUDGET, MISTRAL_BUDGET)
+LA.run("L3", A, ["Qwen3-8B", "Mistral-24B"], N_JOBS, LOG)
+LA.embed("original", A, LOG, GPU_GB, QWEN_BUDGET, MISTRAL_BUDGET)
+for rung in ["L0", "L1", "L2"]:
+    LA.run(rung, A, ["Qwen3-8B", "Mistral-24B"], N_JOBS, LOG)'''),
+    md("## Results (the same outlets and test articles for every rung)"),
+    code('''art, outlets, rows = PA.load()
+L = PA.ladder_results(art, outlets)
+L.to_csv(C.OUT / "paper_ladder.csv", index=False)
+L.assign(text=[f"{v:.3f}" if m == "Spearman" else f"{v:.1f}" for v, m in zip(L.value, L.measure)]) \\
+    .pivot_table(index="rung", columns=["measure", "model"], values="text", aggfunc="first").reindex(LA.RUNGS)'''),
+], "14_leakage_ladder.ipynb")
+
+# ------------------------------------------------------------------------------------------------ 15. the numbers of the paper
+notebook([
+    md("""# 15. The numbers of the paper
+
+From the saved predictions only (`paper.py`): the main table (B = 10,000) and the curves by number of articles (B =
+2,000) for every regressor and three baselines without a model of the text; paired comparisons with Holm correction
+(main table and curves against TF-IDF; the claims of the text in one family); then the robustness analyses: notoriety
+of the outlets (Tranco rank), political orientation (gap at equal score, the gap the compression alone would produce,
+calibration by group), who is left out by the cleaning, and the leakage ladder of step 14."""),
+    code(SETUP + '''
+
+import paper as PA
+
+art, outlets, rows = PA.load()
+models = PA.available()
+print("models:", models)'''),
+    md("## Main table"),
+    code('''T, V_main = PA.main_table(art, outlets, rows, models=models)
+T.to_csv(C.OUT / "paper_main_table.csv", index=False)
+T.assign(text=[f"{v:.3f} [{a:.3f}; {b:.3f}]" if m in ("Spearman", "Kendall") else f"{v:.1f} [{a:.1f}; {b:.1f}]"
+               for v, a, b, m in zip(T.value, T.low, T.high, T.measure)]) \\
+ .pivot_table(index="model", columns="measure", values="text", aggfunc="first")[PA.MEASURES]'''),
+    code('''T[T.p.notna()][["model", "measure", "diff", "dlo", "dhi", "p", "p_holm", "sig"]].round(4)'''),
+    md("## Curves by number of articles"),
+    code('''Cv, V_curves = PA.curves(art, outlets, rows, models=models)
+Cv.to_csv(C.OUT / "paper_curves.csv", index=False)
+Cv.pivot_table(index="model", columns=["measure", "k"], values="value").round(3)[[("Spearman", k) for k in PA.K] + [("MAE", k) for k in PA.K]]'''),
+    code('''Cv[Cv.p.notna()].pivot_table(index="model", columns=["measure", "k"], values="beats_tfidf", aggfunc="first")'''),
+    md("## The claims of the text (one Holm family)"),
+    code('''Cl = PA.claims(V_main, V_curves, models)
+Cl.to_csv(C.OUT / "paper_claims.csv", index=False)
+Cl.round(4)'''),
+    md("## Where the models err: levels and political orientation"),
+    code('''E = PA.errors(art, outlets, rows, models=models)
+E.to_csv(C.OUT / "paper_errors.csv", index=False)
+E[E.quantity.isin(["signed error", "signed error at equal score", "Spearman inside the group"])] \\
+ .pivot_table(index="model", columns=["quantity", "group"], values="value").round(2)'''),
+    code('''E[E.group == "all"].pivot_table(index="model", columns="quantity", values="value")'''),
+    md("## Per article and per outlet"),
+    code('''AO = PA.article_vs_outlet(art, outlets, rows, models=models)
+AO.to_csv(C.OUT / "paper_article_vs_outlet.csv", index=False)
+AO.set_index(["model", "unit"]).round(3)'''),
+    md("## Notoriety of the outlets (Tranco rank)"),
+    code('''f = C.DATA / "risorse" / "tranco" / "top-1m.csv"
+if f.exists():
+    N = PA.notoriety(art, outlets, rows)
+    N.to_csv(C.OUT / "paper_notoriety.csv", index=False)
+    display(N.round(3))
+else:
+    print("no Tranco list in", f)'''),
+    md("## Political orientation"),
+    code('''O = PA.orientation(art, outlets, rows, models=models)
+O.to_csv(C.OUT / "paper_orientation.csv", index=False)
+O.assign(text=[f"{v:+.1f} [{a:+.1f}; {b:+.1f}]" for v, a, b in zip(O.value, O.low, O.high)]) \\
+ .pivot_table(index="model", columns="quantity", values="text", aggfunc="first")'''),
+    md("## Who is left out by the cleaning"),
+    code('''f = C.OUT / "ladder" / "outlets_by_step.csv"
+if f.exists():
+    S, tests = PA.selection(pd.read_csv(f, index_col="domain"))
+    S.to_csv(C.OUT / "paper_selection.csv", index=False)
+    display(S.round(1)); print(tests)
+else:
+    print("run step 14 first")'''),
+    md("## The leakage ladder (step 14)"),
+    code('''f = C.OUT / "paper_ladder.csv"
+if f.exists():
+    L = pd.read_csv(f)
+    display(L.pivot_table(index="rung", columns=["measure", "model"], values="value").round(3))
+else:
+    print("run step 14 first")'''),
+], "15_paper_results.ipynb")

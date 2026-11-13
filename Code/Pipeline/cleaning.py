@@ -144,3 +144,55 @@ def ownership_groups(domains, ng):
         for _, same in v.groupby(v):
             G.add_edges_from(zip(same.index, same.index[1:]))
     return {d: i for i, c in enumerate(sorted(nx.connected_components(G), key=len, reverse=True)) for d in c}
+
+
+# ------------------------------------------------------------------------- the chain again, one step at a time
+# the rules of step 2 (02_cleaning.ipynb sets the same values in its first cell)
+NEAR_DUPLICATE = 0.5          # Jaccard of word 5-grams
+CANDIDATES = 0.3              # MinHash looks for candidate pairs from this similarity (approximate), then >= NEAR_DUPLICATE
+MIN_WORDS, MAX_WORDS = 100, 1500
+MIN_ARTICLES = 10
+FROM_DATE = "2025-01-01"
+STEPS = ["sent to the scraper", "at least one article", "text extracted", "English", "100-1,500 words", "from 2025",
+         "no exact duplicates", "no near duplicates", ">= 10 articles", "one outlet per group"]
+
+
+def chain(raw, ng, n_jobs=16, info=None):
+    """The cleaning of step 2 again, with its functions and rules, one step at a time: yields (step, articles after it)
+    for STEPS[1:], from `raw` (the cache of the extracted texts) to one outlet per group; article_id is given at "from
+    2025", as in step 2. `info` (a dict) receives, along the way, "exact" (the outlets of every exact text, before the
+    deduplication) and "pairs" (the near-duplicate pairs). Used by step 14 and by the figures on the dataset; step 2
+    keeps its own code (changing it would mean running it again and rewriting the dataset). The yielded tables are
+    the ones the chain goes on with: copy them before changing them."""
+    import hashlib
+
+    from joblib import Parallel, delayed
+    info = {} if info is None else info
+    yield STEPS[1], raw
+    art = raw[raw.text.notna()].reset_index(drop=True)
+    yield STEPS[2], art
+    art = art.assign(language=Parallel(n_jobs=n_jobs, batch_size=200)(delayed(language)(t) for t in art.text))
+    art = art[art.language == "en"]
+    yield STEPS[3], art
+    art = art.assign(words=art.text.str.split().str.len())
+    art = art[art.words.between(MIN_WORDS, MAX_WORDS)]
+    yield STEPS[4], art
+    art = art.assign(date=pd.to_datetime(art.date, errors="coerce"))
+    art = art[art.date >= FROM_DATE].reset_index(drop=True).rename_axis("article_id").reset_index()
+    yield STEPS[5], art
+    art = art.assign(norm=art.text.map(normalize))
+    art["fingerprint"] = art.norm.map(lambda s: hashlib.md5(s.encode()).hexdigest())
+    info["exact"] = art.groupby("fingerprint").domain.apply(lambda s: sorted(set(s)))
+    art = art.sort_values(["date", "article_id"]).drop_duplicates("fingerprint").sort_values("article_id")
+    yield STEPS[6], art
+    pairs = similar_pairs(art.reset_index(drop=True), CANDIDATES, n_jobs)
+    info["pairs"] = pairs = pairs[pairs.jaccard >= NEAR_DUPLICATE]
+    art = art[~art.article_id.isin(copies_to_drop(pairs, art.set_index("article_id").date))]
+    yield STEPS[7], art
+    n = art.groupby("domain").size()
+    art = art[art.domain.isin(n.index[n >= MIN_ARTICLES])]
+    yield STEPS[8], art
+    group = art.domain.map(ownership_groups(sorted(art.domain.unique()), ng))
+    kept = (art.assign(group=group).groupby("domain").agg(group=("group", "first"), n=("article_id", "size"))
+            .reset_index().sort_values(["n", "domain"], ascending=[False, True]).groupby("group").head(1).domain)
+    yield STEPS[9], art[art.domain.isin(kept)]

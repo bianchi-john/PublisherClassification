@@ -16,13 +16,11 @@ times (seed 7), the same resamples and draws for both; "significant" = 95% inter
 import numpy as np
 import pandas as pd
 from joblib import Parallel, delayed
-from scipy.stats import kendalltau, rankdata
 
 import boost as BO
 import metrics as ME
 
-MEASURES = ["Spearman", "Kendall", "MAE", "within 20"]
-LOWER = {"MAE"}
+MEASURES, LOWER = ME.MEASURES, ME.LOWER       # the measures (in metrics.py, shared with step 15)
 B = 1000
 
 
@@ -68,26 +66,13 @@ def sources(outlets, art, rows):
 
 
 
-def _spearman_rows(Y, P):
-    ry, rp = rankdata(Y, axis=1), rankdata(P, axis=1)
-    ry -= ry.mean(1, keepdims=True); rp -= rp.mean(1, keepdims=True)
-    return (ry * rp).sum(1) / np.sqrt((ry ** 2).sum(1) * (rp ** 2).sum(1))
-
-
-def _measures(p, y, idx):
-    """The 4 measures on the real outlets (position 0) and on every bootstrap resample (1..B)."""
-    Y, P = y[idx], p[idx]
-    return {"Spearman": _spearman_rows(Y, P), "Kendall": np.array([kendalltau(a, b).correlation for a, b in zip(Y, P)]),
-            "MAE": np.abs(P - Y).mean(1), "within 20": 100 * (np.abs(P - Y) <= 20).mean(1)}
-
-
 def _one(M, src, k, outlets, idx):
     """M: matrix draws × outlets of the predictions of a source at k."""
     y, fold = outlets.score.to_numpy(), outlets.fold.to_numpy()
     out = {}
     for draw in M:
         for score, p in [("normal", draw), ("stretched", ME.remapped_score(draw, fold, y))]:
-            for mes, v in _measures(p, y, idx).items():
+            for mes, v in ME.resampled_measures(p, y, idx).items():
                 out.setdefault((score, mes), []).append(v)
     return src, k, {key: np.mean(v, axis=0) for key, v in out.items()}
 
@@ -113,6 +98,6 @@ def evaluate(S, outlets, n_jobs=32):
                 d = v - V[ref]
                 lo, hi = np.percentile(d[1:], [2.5, 97.5])
                 r.update({f"vs {name}": d[0], f"vs {name} low": lo, f"vs {name} high": hi,
-                          f"beats {name}": bool(hi < 0) if mes in LOWER else bool(lo > 0)})
+                          f"beats {name}": ME.better(lo, hi, mes)})
         rows.append(r)
     return pd.DataFrame(rows)

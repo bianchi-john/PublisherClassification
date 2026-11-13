@@ -221,3 +221,36 @@ def bootstrap_difference(view1, view2, key, B=2000, seed=SEED):
         diff.append(one_metric(s1, key, y1[i], p1[i]) - one_metric(s2, key, y2[i], p2[i]))
     d = one_metric(s1, key, y1, p1) - one_metric(s2, key, y2, p2)
     return d, (np.nanpercentile(diff, 2.5), np.nanpercentile(diff, 97.5))
+
+
+# ------------------------------------------------------------------------- 6. the four measures on many resamples at once
+MEASURES = ["Spearman", "Kendall", "MAE", "within 20"]     # per outlet, as in the paper (steps 10 and 15)
+LOWER = {"MAE"}                                            # the measures where lower is better
+
+
+def spearman_rows(Y, P):
+    """Spearman correlation of every row of Y with the same row of P."""
+    from scipy.stats import rankdata
+    ry, rp = rankdata(Y, axis=1), rankdata(P, axis=1)
+    ry -= ry.mean(1, keepdims=True); rp -= rp.mean(1, keepdims=True)
+    return (ry * rp).sum(1) / np.sqrt((ry ** 2).sum(1) * (rp ** 2).sum(1))
+
+
+def resampled_measures(p, y, idx, which=MEASURES):
+    """The measures on every row of idx (row 0 = the real outlets, then the bootstrap resamples)."""
+    Y, P = y[idx], p[idx]
+    out = {}
+    if "Spearman" in which:
+        out["Spearman"] = spearman_rows(Y, P)
+    if "Kendall" in which:
+        out["Kendall"] = np.array([kendalltau(a, b).correlation for a, b in zip(Y, P)])
+    if "MAE" in which:
+        out["MAE"] = np.abs(P - Y).mean(1)
+    if "within 20" in which:
+        out["within 20"] = 100 * (np.abs(P - Y) <= 20).mean(1)
+    return out
+
+
+def better(low, high, measure):
+    """A difference is significant in favour of the first when its 95% interval is entirely on the better side."""
+    return bool(high < 0) if measure in LOWER else bool(low > 0)

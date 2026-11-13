@@ -1,9 +1,10 @@
-"""Steps 4-6: the outlet split, the frozen text representations, and the models for classification (5 levels) and
+"""Steps 4-7: the outlet split, the frozen text representations, and the models for classification (5 levels) and
 regression (exact NewsGuard score 0-100). Both tasks use the same split and the same models, each able to read every
 article in full:
 - TF-IDF + linear model (no length limit);
-- Qwen3-Embedding-8B, frozen, + linear model;
-- Mistral-Small-24B (Base), frozen, + linear model;
+- frozen representations + linear model: Qwen3-Embedding-8B and its small version Qwen3-Embedding-0.6B (same
+  instruction), Mistral-Small-24B (Base; the layer, 27 or 40, is chosen on the inner folds with the penalty), and
+  ModernBERT-base used as it is (mean of its last layer), the frozen counterpart of the trained ModernBERT;
 - ModernBERT, fully trained (up to 8,192 tokens).
 For every article of every fold we save the logits (classification) or the predicted score (regression), so every
 metric can be recomputed; the model of every fold is saved too.
@@ -26,7 +27,12 @@ GRIDS = {                             # penalties tried with inner cross-validat
     ("regression", "TF-IDF"): (0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1),        # alpha of the ridge
     ("regression", "embedding"): (10, 100, 1_000, 10_000, 100_000, 1_000_000),
 }
-EMBEDDING_FILES = {"Qwen3-8B": "qwen3_embedding_8b.npy", "Mistral-24B": "mistral_small_24b_layer27.npy"}
+EMBEDDING_FILES = {                   # frozen vectors, one row per article (order in embeddings/article_order.csv)
+    "Qwen3-8B": "qwen3_embedding_8b.npy",
+    "Qwen3-0.6B": "qwen3_embedding_0_6b.npy",
+    "Mistral-24B": {27: "mistral_small_24b_layer27.npy", 40: "mistral_small_24b_layer40.npy"},   # layer chosen inside
+    "ModernBERT-frozen": "modernbert_base_mean.npy",
+}
 
 
 # ------------------------------------------------------------------------- data and split
@@ -121,20 +127,27 @@ def qwen_embeddings(texts, model, budget, logfile, max_size=16):
     return E
 
 
-def mistral_embeddings(texts, model, layers, budget, logfile, partial_file, max_size=8, save_every=100):
-    """Mistral-Small-24B Base in 4 bit (NF4, fp16 compute): per layer, the mean of the hidden states of the article
-    tokens (no padding). Resumes from the saved partial work if interrupted."""
+def load_4bit(model, padding_side):
+    """A causal language model in 4 bit (NF4, double quantization, fp16 compute) on the GPU, with its tokenizer."""
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
-
-    from common import log
-    reproducible(SEED)
     tok = AutoTokenizer.from_pretrained(model)
-    tok.pad_token = tok.pad_token or tok.eos_token; tok.padding_side = "right"
+    tok.pad_token = tok.pad_token or tok.eos_token; tok.padding_side = padding_side
     quant = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16,
                                bnb_4bit_use_double_quant=True)
     m = AutoModelForCausalLM.from_pretrained(model, quantization_config=quant, torch_dtype=torch.float16,
                                              device_map={"": 0}).eval()
+    return tok, m
+
+
+def mistral_embeddings(texts, model, layers, budget, logfile, partial_file, max_size=8, save_every=100):
+    """Mistral-Small-24B Base in 4 bit (NF4, fp16 compute): per layer, the mean of the hidden states of the article
+    tokens (no padding). Resumes from the saved partial work if interrupted."""
+    import torch
+
+    from common import log
+    reproducible(SEED)
+    tok, m = load_4bit(model, "right")
     lengths = np.array([len(x) for x in tok(texts, add_special_tokens=True)["input_ids"]])
     E, done = None, np.zeros(len(texts), bool)
     if partial_file.exists():
@@ -162,11 +175,44 @@ def mistral_embeddings(texts, model, layers, budget, logfile, partial_file, max_
     return E
 
 
-def load_embeddings(name, art):
-    """The frozen vectors of a model, checking that their rows follow the article order."""
-    order = pd.read_csv(EMBEDDINGS / "article_order.csv").article_id.to_numpy()
+def encoder_embeddings(texts, model, budget, logfile, max_size=32):
+    """A bidirectional encoder used as it is (ModernBERT-base): mean of the last hidden states of the article tokens."""
+    import torch
+    from transformers import AutoModel, AutoTokenizer
+
+    from common import log
+    reproducible(SEED)
+    tok = AutoTokenizer.from_pretrained(model)
+    m = AutoModel.from_pretrained(model, reference_compile=False).cuda().eval()
+    lengths = np.array([len(x) for x in tok(texts, add_special_tokens=True)["input_ids"]])
+    E = None
+    with torch.no_grad():
+        for b, idx in enumerate(batches_by_tokens(lengths, budget, max_size)):
+            enc = tok([texts[i] for i in idx], padding=True, truncation=True, max_length=MAX_TOKENS,
+                      return_tensors="pt").to("cuda")
+            with torch.autocast("cuda", dtype=torch.float16):
+                h = m(**enc).last_hidden_state.float()
+            mask = enc["attention_mask"].unsqueeze(-1).float()
+            v = ((h * mask).sum(1) / mask.sum(1)).cpu().numpy()
+            if E is None:
+                E = np.zeros((len(texts), v.shape[1]), dtype=np.float32)
+            E[idx] = v
+            if b % 200 == 0:
+                log(f"{model}: batch {b}", logfile)
+    del m; torch.cuda.empty_cache()
+    return E
+
+
+def load_embeddings(name, art, folder=None):
+    """The frozen vectors of a model, checking that their rows follow the article order: an array, or {layer: array}
+    for a model whose layer is chosen on the inner folds."""
+    folder = folder or EMBEDDINGS
+    order = pd.read_csv(folder / "article_order.csv").article_id.to_numpy()
     assert (order == art.article_id.to_numpy()).all()
-    return np.load(EMBEDDINGS / EMBEDDING_FILES[name])
+    files = EMBEDDING_FILES[name]
+    if isinstance(files, dict):
+        return {layer: np.load(folder / f) for layer, f in files.items()}
+    return np.load(folder / files)
 
 
 # ------------------------------------------------------------------------- linear models
@@ -225,38 +271,53 @@ def _save_outputs(task, art, te, k, U):
     return out
 
 
-def linear_fold(task, name, art, k, X=None, n_jobs=16, logfile=None):
-    """One outer fold of a linear model."""
+def linear_fold(task, name, art, k, X=None, n_jobs=16, logfile=None, folder=None, models_dest=None, inner=None):
+    """One outer fold of a linear model. X: the frozen vectors, or {layer: vectors} to choose the layer on the inner
+    folds together with the penalty. Defaults: outputs in predictions/<task>/<name>/, model in Modelli/, three inner
+    folds of the training outlets split by score. `folder`, `models_dest` (False = do not save the model) and `inner`
+    (inner fold, 1-3, of every article; used by step 14) change them."""
     import joblib
     from joblib import Parallel, delayed
 
     from common import log
-    folder = PREDICTIONS / task / name; folder.mkdir(parents=True, exist_ok=True)
+    folder = folder or PREDICTIONS / task / name; folder.mkdir(parents=True, exist_ok=True)
     if (folder / f"fold{k}.csv.gz").exists():
         log(f"{task}, {name}, fold {k}: already done", logfile); return
     start = time.time()
     y, domains = target(art, task), art.domain.to_numpy()
     texts = art.text.fillna("").to_numpy() if name == "TF-IDF" else None
+    Xs = X if isinstance(X, dict) else {0: X}                     # 0 = the only "layer" of a single representation
     tr, te = np.where(art.fold.to_numpy() != k)[0], np.where(art.fold.to_numpy() == k)[0]
-    # 1. three inner folds of the training outlets, split by score like the outer split
-    inner = score_split(art.score.iloc[tr].groupby(domains[tr]).first(), SEED + k, k=3)
-    fi = pd.Series(domains[tr]).map(inner).to_numpy()
-    # 2. every penalty on every inner fold; keep the best mean
+    # 1. three inner folds of the training outlets, split by score like the outer split (or the ones given)
+    if inner is None:
+        inner_fold = score_split(art.score.iloc[tr].groupby(domains[tr]).first(), SEED + k, k=3)
+        fi = pd.Series(domains[tr]).map(inner_fold).to_numpy()
+    else:
+        fi = np.asarray(inner)[tr]
+    # 2. every (layer, penalty) on every inner fold; keep the best mean
     grid = GRIDS[(task, "TF-IDF" if name == "TF-IDF" else "embedding")]
-    jobs = [(p, tr[fi != j], tr[fi == j]) for p in grid for j in (1, 2, 3)]
-    scores = Parallel(n_jobs=n_jobs)(delayed(_try_penalty)(task, name, p, a, b, texts, X, y, domains) for p, a, b in jobs)
-    means = pd.DataFrame({"penalty": [p for p, _, _ in jobs], "score": scores}).groupby("penalty").score.mean()
-    best = means.idxmax()
-    # 3. the model with the chosen penalty on all the training outlets; outputs on the test fold
-    Atr, Ate, prep = _matrices(name, tr, te, texts, X)
+    jobs = [(layer, p, tr[fi != j], tr[fi == j]) for layer in Xs for p in grid for j in (1, 2, 3)]
+    scores = Parallel(n_jobs=n_jobs)(delayed(_try_penalty)(task, name, p, a, b, texts, Xs[layer], y, domains)
+                                     for layer, p, a, b in jobs)
+    means = pd.DataFrame({"layer": [l for l, _, _, _ in jobs], "penalty": [p for _, p, _, _ in jobs],
+                          "score": scores}).groupby(["layer", "penalty"]).score.mean()
+    best_layer, best = means.idxmax()
+    # 3. the model with the chosen setting on all the training outlets; outputs on the test fold
+    Atr, Ate, prep = _matrices(name, tr, te, texts, Xs[best_layer])
     m = _fit(task, best, Atr, y[tr])
     _save_outputs(task, art, te, k, _outputs(task, m, Ate)).to_csv(folder / f"fold{k}.csv.gz", index=False)
-    pd.DataFrame({"fold": k, "penalty": means.index, "inner score": means.values, "chosen": means.index == best}) \
-        .to_csv(folder / f"penalty_fold{k}.csv", index=False)
-    dest = MODELS_DIR / task / name; dest.mkdir(parents=True, exist_ok=True)
-    joblib.dump({"transformer": prep, "model": m, "penalty": best}, dest / f"fold{k}.joblib", compress=3)
+    t = means.reset_index().rename(columns={"score": "inner score"})
+    t["chosen"] = (t.layer == best_layer) & (t.penalty == best)
+    if len(Xs) == 1:
+        t = t.drop(columns="layer")
+    t.insert(0, "fold", k); t.to_csv(folder / f"penalty_fold{k}.csv", index=False)
+    if models_dest is not False:
+        dest = models_dest or MODELS_DIR / task / name; dest.mkdir(parents=True, exist_ok=True)
+        joblib.dump({"transformer": prep, "model": m, "penalty": best, "layer": best_layer if len(Xs) > 1 else None},
+                    dest / f"fold{k}.joblib", compress=3)
     edge = "on the grid edge" if best in (grid[0], grid[-1]) else "inside the grid"
-    log(f"{task}, {name}, fold {k}: penalty {best} ({edge}), {time.time() - start:.0f} s", logfile)
+    layer = f", layer {best_layer}" if len(Xs) > 1 else ""
+    log(f"{task}, {name}, fold {k}: penalty {best} ({edge}){layer}, {time.time() - start:.0f} s", logfile)
 
 
 # ------------------------------------------------------------------------- ModernBERT, fully trained
@@ -343,7 +404,7 @@ def bert_fold(task, art, k, model_name, name, logfile, max_tokens=MAX_TOKENS, ep
     del model, opt; torch.cuda.empty_cache()
 
 
-def predictions(task, name):
+def predictions(task, name, folder=None):
     """All the article outputs of a model (5 folds), or None if some fold is missing."""
-    files = sorted((PREDICTIONS / task / name).glob("fold*.csv.gz"))
+    files = sorted((folder or PREDICTIONS / task / name).glob("fold*.csv.gz"))
     return pd.concat([pd.read_csv(f) for f in files], ignore_index=True) if len(files) == 5 else None

@@ -19,10 +19,13 @@ run (anonymization made of six rules) are kept in `rules_only/` for step 12 (see
 | 2 | `02_cleaning` | `cleaning.py` | political outlets only, text re-extracted from the HTML (trafilatura, precision mode), English, 100-1,500 words, from 2025, exact and near duplicates removed across outlets, >= 10 articles, one outlet per ownership group, NewsGuard score and level: 226 outlets, 25,524 articles |
 | 3 | `03_anonymization` | `anonymization_ner.py`, `anonymization.py` | links and e-mails → `[URL]`, `[EMAIL]`; the outlet's own name from its domain → `[OUTLET]`; GLiNER (zero-shot NER, `urchade/gliner_large-v2.1`) with "news outlet" → `[OUTLET]` and "journalist" → `[AUTHOR]` (every outlet and journalist); check: articles still containing their own outlet's name |
 | 4 | `04_split` | `models.py` | 5 folds of outlets stratified by the exact score |
-| 5 | `05_embeddings` | `models.py` | token counts (no article truncated) and frozen vectors of Qwen3-Embedding-8B and Mistral-Small-24B |
-| 7 | `07_regression` | `models.py` | the score of every article: TF-IDF, Qwen3-8B, Mistral-24B (+ ridge), fine-tuned ModernBERT |
+| 5 | `05_embeddings` | `models.py` | token counts (no article truncated) and frozen vectors: Qwen3-Embedding-8B and -0.6B, Mistral-Small-24B (layers 27 and 40), ModernBERT-base as it is |
+| 7 | `07_regression` | `models.py` | the score of every article: TF-IDF, Qwen3-0.6B, Qwen3-8B, Mistral-24B (layer chosen on the inner folds), ModernBERT frozen (+ ridge), fine-tuned ModernBERT |
 | 8-9 | `08_evaluation`, `09_results` | `metrics.py` | per outlet (mean of the article predictions): Spearman, Kendall, MAE, within 20 points; 95% bootstrap intervals; paired comparisons. For the paper: regressor rows, predicted score |
 | 12 | `12_anonymization_effect` | `boost.py`, `boost_eval.py` | the regressors on the final text against the same regressors of the first run (rules-only anonymization), same draws, paired bootstrap |
+| 13 | `13_zero_shot` | `zeroshot.py` | Mistral-Small-24B-Instruct asked directly for the score of each anonymous article (zero-shot), mean per outlet |
+| 14 | `14_leakage_ladder` | `ladder.py` | how much each protection matters: the ridge models under weaker protocols (split by article; sisters and copies; no deduplication; original text; only the rules), always tested on the paper's outlets and articles |
+| 15 | `15_paper_results` | `paper.py` | every number of the paper: main table and curves with baselines (mean, median, orientation only), Holm-corrected comparisons, the claims of the text, errors per level and per orientation (also at equal score, Kruskal-Wallis, correlation inside each orientation), per article against per outlet, notoriety (Tranco), orientation (gap, gap from compression, calibration by group), who is left out, the ladder |
 
 ## Side analyses (not in the paper)
 
@@ -61,6 +64,10 @@ embeddings/                         step 5: frozen vectors (one row per article,
 predictions/<task>/<model>/         steps 6-7: one file per fold, one row per test article
 all_metrics.csv, intervals.csv      step 8
 anonymization_effect.csv            step 12
+zero_shot_answers.csv.gz            step 13: the raw answers
+ladder/                             step 14: stages, outlets by step, vectors and predictions of every rung
+paper_*.csv                         step 15: main table, curves, claims, errors, article vs outlet, notoriety, orientation,
+                                    selection, ladder
 boost/, meta/                       side analyses 10 and 11
 rules_only/                         the first run (anonymization made of six rules), kept for step 12
 ```
@@ -76,6 +83,10 @@ On the server (artes4, GPU V100 32 GB shared with others; the code lives in `~/J
   order; every step resumes from what is saved);
 - from the PC: `./status.sh` (progress), `./download.sh` (notebooks and tables; `./download.sh all` also predictions).
 Steps 10 and 11 have their own queues (`run_boost.sh`, `run_meta.sh`; `status_boost.sh`, `status_meta.sh`).
+The additions of November 2026 (steps 5 and 7 for the new models, 13, 14, 8, 9, 15) run with `screen -dmS t20_review
+./run_review.sh` (progress: `./status_review.sh`); before step 7 it moves the Mistral-24B regression of the previous run
+(layer 27 fixed) to `_da_cancellare/`. Step 15 needs the Tranco list in `Dataset/risorse/tranco/` (id in its
+`README.txt`).
 
 ## Code
 
@@ -83,11 +94,14 @@ Steps 10 and 11 have their own queues (`run_boost.sh`, `run_meta.sh`; `status_bo
 |---|---|
 | `common.py` | data folders, seeds, NewsGuard levels, logging |
 | `scraper.py` | the scraper (step 1) |
-| `cleaning.py` | text extraction, language, duplicates, ownership groups (step 2) |
+| `cleaning.py` | text extraction, language, duplicates, ownership groups (step 2); `chain`, the whole step 2 again one step at a time, for step 14 and the dataset figures |
 | `anonymization_ner.py` | step 3: the two rules and GLiNER |
 | `anonymization.py` | the six rules of the first run; its name rule and link/e-mail patterns are reused by step 3 |
 | `models.py` | split, frozen vectors, linear models, ModernBERT |
-| `metrics.py` | from articles to outlet, metrics, bootstrap |
+| `metrics.py` | from articles to outlet, metrics, bootstrap; the four measures on many resamples at once (steps 10, 12, 15) |
+| `zeroshot.py` | step 13: prompt, greedy answers, parsing |
+| `ladder.py` | step 14: the stages of step 2 kept (`cleaning.chain`), the rungs, their texts and folds, the new vectors |
+| `paper.py` | step 15: main table, curves, Holm, claims, errors, article vs outlet, notoriety, orientation, selection, ladder results |
 | `boost.py`, `boost_eval.py`, `boost_run.py` | step 10; `boost.py` also gives the test draws of k articles and `boost_eval.py` the paired bootstrap used by step 12 and by the paper figures |
 | `meta.py`, `meta_run.py` | step 11 |
 | `mbfc.py` | Media Bias/Fact Check (slides) |
