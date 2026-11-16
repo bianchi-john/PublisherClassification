@@ -713,8 +713,7 @@ art, outlets = MO.load()
 print(ZS.SYSTEM, "\\n\\n" + ZS.USER.format(text="<article>"))'''),
     code('''MO.wait_for_gpu(GPU_GB, LOG)
 res = ZS.run(art, LOG, limit=LIMIT or None)
-print(f"{len(res):,} answers; without an integer: {res.prediction.isna().sum()}; not just an integer: "
-      f"{(~res.answer.map(ZS.exact)).sum()}")
+print(f"{len(res):,} answers; without a number (given the mean training score): {(~res.number).sum()}")
 res.answer.value_counts().head(15)'''),
     code('''res.prediction.describe().round(1).to_frame("predicted score per article").T'''),
 ], "13_zero_shot.ipynb")

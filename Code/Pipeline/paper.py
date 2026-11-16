@@ -93,6 +93,8 @@ def over_draws(M, y, idx, which):
 def compare(a, b, measure):
     """a - b with its 95% interval and two-sided bootstrap p-value."""
     d = a - b
+    if np.isnan(d).any():                          # a measure that cannot be computed: no comparison
+        return {"diff": np.nan, "dlo": np.nan, "dhi": np.nan, "p": np.nan}
     lo, hi = np.percentile(d[1:], [2.5, 97.5])
     p = min(1.0, 2 * min((d[1:] <= 0).mean(), (d[1:] >= 0).mean()))
     return {"diff": d[0], "dlo": lo, "dhi": hi, "p": p}

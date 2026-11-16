@@ -9,6 +9,7 @@ article in full:
 For every article of every fold we save the logits (classification) or the predicted score (regression), so every
 metric can be recomputed; the model of every fold is saved too.
 """
+import gc
 import time
 
 import numpy as np
@@ -123,7 +124,7 @@ def qwen_embeddings(texts, model, budget, logfile, max_size=16):
             E[idx] = h
             if b % 200 == 0:
                 log(f"Qwen: batch {b}", logfile)
-    del m; torch.cuda.empty_cache()
+    del m; gc.collect(); torch.cuda.empty_cache()     # gc: free the GPU now
     return E
 
 
@@ -171,7 +172,7 @@ def mistral_embeddings(texts, model, layers, budget, logfile, partial_file, max_
             if b % save_every == 0:
                 log(f"Mistral: {done.sum():,}/{len(texts):,} articles", logfile)
                 np.save(partial_file, {"n": len(texts), "E": E, "done": done}, allow_pickle=True)
-    del m; torch.cuda.empty_cache()
+    del m; gc.collect(); torch.cuda.empty_cache()     # gc: free the GPU now
     return E
 
 
@@ -199,7 +200,7 @@ def encoder_embeddings(texts, model, budget, logfile, max_size=32):
             E[idx] = v
             if b % 200 == 0:
                 log(f"{model}: batch {b}", logfile)
-    del m; torch.cuda.empty_cache()
+    del m; gc.collect(); torch.cuda.empty_cache()     # gc: free the GPU now
     return E
 
 

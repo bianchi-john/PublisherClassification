@@ -5,11 +5,13 @@ frozen Mistral-Small-24B Base of step 7, in its instruct version, reading the sa
 - Prompt: what NewsGuard is and its nine criteria, the placeholders of the anonymization, and the request to answer
   with one integer from 0 to 100 (`SYSTEM`, `USER`).
 - Decoding: greedy (deterministic), at most 6 new tokens; the first integer of the answer, clipped to 0-100. An answer
-  without an integer is kept as missing and counted.
+  without an integer (24 of 25,524: the model began a sentence) gets the mean score of the training outlets, what a
+  predictor that knows nothing about the article would say; the raw answer is kept.
 - The score of an outlet is the mean over its articles, as for every other model. Nothing is trained, so the folds only
   organize the outputs: predictions/regression/LLM-zero-shot/fold<k>.csv.gz, like the models of step 7.
 """
 import re
+import gc
 import time
 
 import numpy as np
@@ -47,11 +49,6 @@ def parse(answer):
     return float(min(100, max(0, int(m.group())))) if m else np.nan
 
 
-def exact(answer):
-    """True if the answer is just an integer (the parsing above did not have to guess)."""
-    return bool(re.fullmatch(r"\s*\d+\s*", answer or ""))
-
-
 def answers(texts, logfile, budget=24576, max_size=8, partial=None, save_every=50):
     """The raw answer of the model for every text (resumes from `partial`, a .csv.gz of done answers)."""
     import torch
@@ -82,19 +79,29 @@ def answers(texts, logfile, budget=24576, max_size=8, partial=None, save_every=5
                 log(f"zero-shot: {done.sum():,}/{len(texts):,} articles ({time.time() - start:.0f} s)", logfile)
                 if partial is not None:
                     pd.DataFrame({"row": np.where(done)[0], "answer": out[done]}).to_csv(partial, index=False)
-    del m; torch.cuda.empty_cache()
+    del m; gc.collect(); torch.cuda.empty_cache()     # gc: free the GPU now
     return out
 
 
+def fallback(art):
+    """Per fold, the mean score of its training outlets: the prediction of an answer without a number (the model began a
+    sentence instead of answering), i.e. what a predictor that knows nothing about the article would say."""
+    o = art.groupby("domain")[["score", "fold"]].first()
+    return {k: o.score[o.fold != k].mean() for k in range(1, 6)}
+
+
 def run(art, logfile, limit=None):
-    """Answers for every article (or the first `limit`, for a quick test), saved like the predictions of step 7; read
-    back if already done."""
-    if limit is None and ANSWERS.exists() and all((FOLDER / f"fold{k}.csv.gz").exists() for k in range(1, 6)):
-        log("zero-shot: already done", logfile)
-        return pd.read_csv(ANSWERS, keep_default_na=False, na_values={"prediction": [""]})
+    """Answers for every article (or the first `limit`, for a quick test), saved like the predictions of step 7. Answers
+    already saved are not asked again."""
     a = art if limit is None else art.iloc[:limit]
-    raw = answers(a.text.fillna("").tolist(), logfile, partial=None if limit else OUT / "zero_shot_partial.csv.gz")
+    if limit is None and ANSWERS.exists():
+        raw = pd.read_csv(ANSWERS, keep_default_na=False).set_index("article_id").answer.reindex(a.article_id).tolist()
+        log("zero-shot: answers already saved", logfile)
+    else:
+        raw = answers(a.text.fillna("").tolist(), logfile, partial=None if limit else OUT / "zero_shot_partial.csv.gz")
     res = a[["article_id", "domain", "fold"]].assign(answer=raw, prediction=[parse(x) for x in raw])
+    res["number"] = res.prediction.notna()
+    res.loc[~res.number, "prediction"] = res.fold[~res.number].map(fallback(art))
     if limit:
         return res
     res.to_csv(ANSWERS, index=False)
@@ -102,6 +109,5 @@ def run(art, logfile, limit=None):
     for k in range(1, 6):
         res[res.fold == k][["article_id", "domain", "fold", "prediction"]].to_csv(FOLDER / f"fold{k}.csv.gz", index=False)
     (OUT / "zero_shot_partial.csv.gz").unlink(missing_ok=True)
-    log(f"zero-shot: done, {res.prediction.isna().sum()} answers without an integer, "
-        f"{(~res.answer.map(exact)).sum()} not just an integer", logfile)
+    log(f"zero-shot: done, {(~res.number).sum()} answers without a number (given the mean training score)", logfile)
     return res
