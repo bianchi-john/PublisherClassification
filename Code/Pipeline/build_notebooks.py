@@ -891,3 +891,79 @@ S.to_csv(C.OUT / "paper_splits.csv", index=False)
 display(S.round(3))
 S.groupby("model")[["Spearman", "MAE", "Spearman - TF-IDF", "MAE - TF-IDF"]].agg(["mean", "std", "min", "max"]).round(3)'''),
 ], "16_other_splits.ipynb")
+
+# ------------------------------------------------------------------------------------------------ 17. robustness checks
+notebook([
+    md("""# 17. Four checks asked by the reviews
+
+1. **Recalibration**: the outlet scores re-mapped by a line fitted inside the training folds (inner folds, the setting
+   of step 7); the MAE before and after, and the difference from TF-IDF.
+2. **Another population**: the MAE per level re-weighted to the NewsGuard levels of the political outlets that could
+   not be collected.
+3. **Leftover names**: the comparison without the outlets whose NewsGuard brand name is still in their text.
+4. **Name only** (GPU): the frozen vector of the domain name alone, then a ridge over the outlets with the same folds.
+
+Details in `robustness.py`; the table of the paper is `paper_robustness.csv`."""),
+    code("""N_JOBS = 16
+GPU_GB = 19
+B = 10_000
+NAME_PROBE = True                 # False: only the three checks on the CPU"""),
+    code(SETUP + """
+
+import metrics as ME
+import paper as PA
+import robustness as RB
+
+art, outlets, rows = PA.load()
+y, n = outlets.score.to_numpy(), len(outlets)
+idx = PA.resamples(n, B)
+draws = PA.draw_index(outlets, rows)
+raw = {m: PA.matrix(PA.article_vector(m, art), draws, "all", n)[0] for m in RB.MODELS + ["LLM-zero-shot"]}
+med = PA.baselines(outlets)["no text (median)"]
+out = []                                   # one row per check, model, version and measure
+
+
+def add(check, model, version, measure, x, ref=None):
+    r = {"check": check, "model": model, "version": version, "measure": measure, "value": x[0],
+         "low": np.percentile(x[1:], 2.5), "high": np.percentile(x[1:], 97.5)}
+    if ref is not None:
+        r.update(PA.compare(x, ref, measure))
+    out.append(r)"""),
+    md("## 1. Recalibration inside the training folds"),
+    code("""cal = {m: RB.recalibrated(m, art, outlets, LOG).to_numpy() for m in raw}
+V = {(m, v): ME.resampled_measures(p, y, idx, ["MAE", "Spearman"]) for v, P in [("raw", raw), ("recalibrated", cal)]
+     for m, p in P.items()}
+add("recalibration", "no text (median)", "raw", "MAE", ME.resampled_measures(med, y, idx, ["MAE"])["MAE"])
+for (m, v), res in V.items():
+    for mes, x in res.items():
+        add("recalibration", m, v, mes, x, V[("TF-IDF", v)][mes] if m != "TF-IDF" else None)
+pd.DataFrame(out).query("check == 'recalibration'").round(3)"""),
+    md("## 2. The MAE on another population of outlets"),
+    code("""P2 = dict(raw, **{"no text (median)": med})
+for pop, w in RB.level_weights(pd.read_csv(C.OUT / "paper_selection.csv")).items():
+    R = {m: RB.reweighted_mae(p, outlets, w, idx[:2001]) for m, p in P2.items()}
+    for m, x in R.items():
+        add(f"MAE re-weighted: {pop}", m, "raw", "MAE", x, R["TF-IDF"] if m != "TF-IDF" else None)
+pd.DataFrame(out)[lambda d: d.check.str.startswith("MAE re-weighted")].round(2)"""),
+    md("## 3. Without the outlets whose brand name is left in the text"),
+    code("""leaky = RB.outlets_with_brand(art)
+ii = np.where(~outlets.index.isin(leaky))[0]
+idx3 = ii[PA.resamples(len(ii), B)]
+V3 = {m: ME.resampled_measures(p, y, idx3, ["MAE", "Spearman"]) for m, p in raw.items()}
+for m, res in V3.items():
+    for mes, x in res.items():
+        add(f"without the {len(leaky)} outlets with their brand name", m, "raw", mes, x,
+            V3["TF-IDF"][mes] if m != "TF-IDF" else None)
+print(len(leaky), "outlets left out")
+pd.DataFrame(out).to_csv(C.OUT / "paper_robustness.csv", index=False)      # saved now: the GPU may be busy
+pd.DataFrame(out)[lambda d: d.check.str.startswith("without")].round(3)"""),
+    md("## 4. Name only: the frozen vector of the domain name, no article (GPU)"),
+    code("""if NAME_PROBE:
+    for m, X in RB.name_vectors(outlets, LOG, GPU_GB).items():
+        for mes, x in ME.resampled_measures(RB.name_only(X, outlets), y, idx, ["MAE", "Spearman"]).items():
+            add("name only", m, "raw", mes, x)
+    display(pd.DataFrame(out).query("check == 'name only'").round(3))"""),
+    code("""R = pd.DataFrame(out)
+R.to_csv(C.OUT / "paper_robustness.csv", index=False)
+R.round(3)"""),
+], "17_robustness.ipynb")

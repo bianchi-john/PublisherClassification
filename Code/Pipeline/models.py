@@ -74,11 +74,20 @@ def reproducible(seed):
 
 
 def wait_for_gpu(gb, logfile):
-    """Wait until the shared GPU has at least `gb` GB free."""
+    """Wait until the shared GPU has at least `gb` GB free. The driver of the server sometimes does not answer: then
+    wait too."""
     import torch
     from common import log
-    while torch.cuda.mem_get_info()[0] / 2**30 < gb:
-        log(f"GPU: {torch.cuda.mem_get_info()[0] / 2**30:.1f} GB free, {gb} needed: waiting 5 minutes", logfile)
+    while True:
+        try:
+            free = torch.cuda.mem_get_info()[0] / 2**30
+        except RuntimeError as e:
+            free, why = 0.0, f"no answer from the driver ({str(e)[:50]})"
+        else:
+            why = f"{free:.1f} GB free"
+        if free >= gb:
+            return
+        log(f"GPU: {why}, {gb} needed: waiting 5 minutes", logfile)
         time.sleep(300)
 
 

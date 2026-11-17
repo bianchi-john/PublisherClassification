@@ -5,7 +5,8 @@ be moved to any journal class (elsarticle, svjour3, acmart, IEEEtran, ...) by re
 
 - `PIANO_REVISIONE.md`: the plan to make the paper reviewer-proof (status of every experiment and writing task; update it
   as work is done); `MODIFICHE_TESTO.md`: the changes made to the text for it, section by section.
-- `main.tex`: the whole paper; author notes are `\todo{...}` (red).
+- `main.tex`: the paper; author notes are `\todo{...}` (red). `supplementary.tex`: the supplementary material
+  (Sections S1-S8: details, extra tables and the tool), cross-referenced with `xr-hyper`.
 - `references.bib`: every entry checked against its source (ACL Anthology, Crossref, arXiv, PMLR, publishers) on
   17/11/2026.
 - `figures/`: `paper_figures.ipynb` draws every figure of the paper (`dataset`, `groups`, `network`, `anonymization`,
@@ -14,7 +15,8 @@ be moved to any journal class (elsarticle, svjour3, acmart, IEEEtran, ...) by re
   figures into `Dataset/tentativi/20_FromScratch/paper_figures/` (outside git).
 - `_da_cancellare/`: previous versions (the draft before the full rewrite, the old figure scripts), for John to decide.
 
-Build: run `figures/paper_figures.ipynb` (kernel `irgood-venv`; e.g. `papermill paper_figures.ipynb paper_figures.ipynb -k irgood-venv --cwd figures`), then `latexmk -pdf main.tex`. Figures follow the style of the first (rejected) version and stay readable without colour (hatches, markers, dash patterns; the notebook's last cell renders them in greyscale).
+Build: run `figures/paper_figures.ipynb` (kernel `irgood-venv`; e.g. `papermill paper_figures.ipynb paper_figures.ipynb -k irgood-venv --cwd figures`), then `pdflatex supplementary.tex`, `latexmk -pdf main.tex` and `pdflatex supplementary.tex` again (the two
+documents refer to each other). Figures follow the style of the first (rejected) version and stay readable without colour (hatches, markers, dash patterns; the notebook's last cell renders them in greyscale).
 
 Where the numbers come from: dataset and cleaning (`Code/Pipeline/02_cleaning.ipynb`), anonymization
 (`03_anonymization.ipynb`), every result table, comparison and analysis of Sections 5.2-5.7 and Appendices A-D
