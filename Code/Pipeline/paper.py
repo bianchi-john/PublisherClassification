@@ -10,8 +10,9 @@
   family (main table against TF-IDF; curves against TF-IDF, per model; the claims of the text).
 - Where the models err: signed error and MAE per NewsGuard level and per political orientation (also at equal score,
   and the correlation inside each orientation), and every measure per article against per outlet.
-- Robustness: notoriety of the outlets (Tranco rank), political orientation (the gap at equal score, the gap that the
-  compression alone would produce, calibration by group), who is left out by the cleaning, the leakage ladder (14).
+- Robustness: political orientation (the gap at equal score, the gap that the compression alone would produce,
+  calibration by group), who is left out by the cleaning, the leakage ladder of step 14 (with the similarity of test
+  and training articles, and how much the NewsGuard score changes inside an ownership group).
 """
 import numpy as np
 import pandas as pd
@@ -249,37 +250,6 @@ def errors(art, outlets, rows, models=None, B=2_000):
 
 
 # ------------------------------------------------------------------------- robustness
-def tranco_ranks(outlets, path=None):
-    """Tranco rank of every outlet's domain (exact match; NaN = not in the top million)."""
-    path = path or C.DATA / "risorse" / "tranco" / "top-1m.csv"
-    t = pd.read_csv(path, header=None, names=["rank", "domain"])
-    return outlets.index.map(t.drop_duplicates("domain").set_index("domain")["rank"]).astype(float)
-
-
-def notoriety(art, outlets, rows, models=("TF-IDF", "Qwen3-8B", "Mistral-24B"), B=10_000):
-    """Results in the more and in the less known half of the outlets (median Tranco rank; outside the top million =
-    less known), and the gain of the language models over TF-IDF in each half."""
-    rank = tranco_ranks(outlets).fillna(np.inf).to_numpy()
-    cut = np.median(rank)
-    assert np.isfinite(cut), "more than half of the outlets are outside the Tranco top million: split another way"
-    known = rank <= cut
-    y, n, draws = outlets.score.to_numpy(), len(outlets), draw_index(outlets, rows)
-    P = {m: matrix(article_vector(m, art), draws, "all", n)[0] for m in models}
-    out = []
-    for half, mask in [("more known", known), ("less known", ~known)]:
-        ii = np.where(mask)[0]
-        idx = ii[resamples(len(ii), B)]
-        V = {m: ME.resampled_measures(P[m], y, idx, ["Spearman", "MAE"]) for m in models}
-        for m in models:
-            for mes, v in V[m].items():
-                r = {"half": half, "outlets": len(ii), "median rank": float(np.median(rank[mask])), "model": m,
-                     "measure": mes, "value": v[0]}
-                if m != "TF-IDF":
-                    r.update(compare(v, V["TF-IDF"][mes], mes))
-                out.append(r)
-    return pd.DataFrame(out)
-
-
 def _residual_gap(err, s, o, how):
     """Left − right mean of the signed error at equal true score: residuals of err ~ f(s)."""
     if how == "linear":
@@ -351,21 +321,79 @@ def selection(outlets_by_step):
 
 
 def ladder_results(art, outlets, B=10_000):
-    """Per rung and model: Spearman and MAE on the paper's outlets and test articles, and the difference with L4."""
+    """Per rung and model: Spearman and MAE on the paper's outlets and test articles, and the difference with the rung
+    of reference (ladder.REFERENCE: the same text, one protection more). The sisters rung and its reference also on the
+    outlets with a sister and on those without."""
     import ladder as LA
-    articles = set(art.article_id)
-    y, idx = outlets.score.to_numpy(), resamples(len(outlets), B)
-    out, V = [], {}
-    for rung in LA.RUNGS:
-        for m in LA.MODELS:
-            p = LA.outlet_predictions(rung, m, outlets, articles)
-            if p is not None:
-                V[(rung, m)] = ME.resampled_measures(p.to_numpy(), y, idx, ["Spearman", "MAE"])
-    for (rung, m), res in V.items():
-        for mes, v in res.items():
-            r = {"rung": rung, "model": m, "measure": mes, "value": v[0],
-                 "low": np.percentile(v[1:], 2.5), "high": np.percentile(v[1:], 97.5)}
-            if rung != "L4" and ("L4", m) in V:
-                r.update(compare(v, V[("L4", m)][mes], mes))
-            out.append(r)
+    articles, y = set(art.article_id), outlets.score.to_numpy()
+    has = outlets.index.isin(LA.sisters(LA.stages()[0])[1])
+    P = {(r, m): LA.outlet_predictions(r, m, outlets, articles) for r in LA.RUNGS for m in LA.MODELS}
+    out = []
+    for group, mask in [("all", np.full(len(y), True)), ("with a sister", has), ("without a sister", ~has)]:
+        ii = np.where(mask)[0]
+        idx = ii[resamples(len(ii), B)]
+        rungs = LA.RUNGS if group == "all" else ["sisters", "L2"]
+        V = {(r, m): ME.resampled_measures(P[r, m].to_numpy(), y, idx, ["Spearman", "MAE"])
+             for r in rungs for m in LA.MODELS if P[r, m] is not None}
+        for (r, m), res in V.items():
+            ref = LA.REFERENCE.get(r)
+            for mes, v in res.items():
+                row = {"outlets": group, "n": len(ii), "rung": r, "model": m, "measure": mes, "value": v[0],
+                       "low": np.percentile(v[1:], 2.5), "high": np.percentile(v[1:], 97.5)}
+                if (ref, m) in V:
+                    row.update(compare(v, V[ref, m][mes], mes))
+                out.append(row)
     return pd.DataFrame(out)
+
+
+def sister_similarity(art, outlets, B=10_000):
+    """Being a sister is only a hint: what counts is how similar the texts are.
+    1. Per group of outlets (with a sister, without): how close the test articles get to the training ones without the
+       sisters (L2) and with them (mean over the outlets of the mean highest cosine, ladder.similarity), % of articles
+       whose closest training article is a sister's, % with a near copy among the sisters' articles.
+    2. Per model: Spearman, over the outlets, between how much closer the training gets with the sisters and how much
+       the absolute error of the outlet drops (L2 - sisters); on all the outlets and on those with a sister; 95%
+       interval over B resamples of the outlets."""
+    import ladder as LA
+    A = LA.stages()[0]
+    S = LA.similarity(A)
+    S = S[S.article_id.isin(art.article_id)]
+    S = S.assign(closest=S[["paper", "sisters"]].max(axis=1), sister_closest=S.sisters > S.paper)
+    o = S.groupby("domain").agg(without=("paper", "mean"), closest=("closest", "mean"),
+                                sister_closest=("sister_closest", "mean"), near_copy=("near copy", "mean"))
+    o = o.reindex(outlets.index)
+    has = outlets.index.isin(LA.sisters(A)[1])
+    T = pd.DataFrame([{"outlets": group, "n": int(mask.sum()), "similarity without the sisters": o.without[mask].mean(),
+                       "with the sisters": o.closest[mask].mean(),
+                       "% closest training article is a sister's": 100 * o.sister_closest[mask].mean(),
+                       "% near copy in a sister": 100 * o.near_copy[mask].mean()}
+                      for group, mask in [("with a sister", has), ("without a sister", ~has)]])
+    closer = (o.closest - o.without).to_numpy()
+    articles, y = set(art.article_id), outlets.score
+    R = []
+    for m in LA.MODELS:
+        drop = ((LA.outlet_predictions("L2", m, outlets, articles) - y).abs()
+                - (LA.outlet_predictions("sisters", m, outlets, articles) - y).abs()).to_numpy()
+        for group, mask in [("all", np.full(len(y), True)), ("with a sister", has)]:
+            ii = np.where(mask)[0]
+            idx = ii[resamples(len(ii), B)]
+            r = ME.spearman_rows(closer[idx], drop[idx])
+            R.append({"model": m, "outlets": group, "n": len(ii), "Spearman": r[0],
+                      "low": np.nanpercentile(r[1:], 2.5), "high": np.nanpercentile(r[1:], 97.5)})
+    return T, pd.DataFrame(R)
+
+
+def owner_scores():
+    """How much the NewsGuard score changes inside an ownership group: for every paper outlet with sisters, the mean
+    absolute difference from its sisters' scores; against any two outlets among the same ones."""
+    import ladder as LA
+    o = pd.read_csv(LA.DIR / "outlets_by_step.csv", index_col="domain")
+    sis, withs = LA.sisters(LA.stages()[0])
+    diff = pd.Series({p: (o.score[[x for x in sis if o.group[x] == o.group[p]]] - o.score[p]).abs().mean() for p in withs})
+    sc = o.score[sis + withs].to_numpy()
+    anyp = np.abs(sc[:, None] - sc[None, :])[np.triu_indices(len(sc), 1)]
+    return pd.DataFrame([
+        {"pairs": "the same owner (paper outlet and its sisters)", "outlets": len(withs), "mean |difference|": diff.mean(),
+         "median |difference|": diff.median(), "% the same score": 100 * (diff == 0).mean()},
+        {"pairs": "any two of these outlets", "outlets": len(sc), "mean |difference|": anyp.mean(),
+         "median |difference|": np.median(anyp), "% the same score": 100 * (anyp == 0).mean()}])

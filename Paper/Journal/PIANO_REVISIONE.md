@@ -10,12 +10,14 @@ Stato: ⬜ da fare · 🟡 in corso · ✅ fatto. Ultimo aggiornamento: 13/11/20
 
 ## Analisi
 
-**1. Quanto conta il protocollo ("scala delle fughe")** 🟡 passo 14
+**1. Quanto conta il protocollo ("scala delle fughe")** ✅ analisi (passo 14) · ⬜ testo
 - *Problema.* Diciamo che fughe di testata, sorelle, copie e identificativi gonfiano i risultati, ma non lo misuriamo.
-- *Soluzione.* TF-IDF, Qwen3-8B e Mistral con la ridge del passo 7, aggiungendo una protezione alla volta e testando
-  sempre sulle **stesse** 226 testate e sugli stessi articoli: split per articolo → L0 sorelle e copie, testo
-  originale → L1 + deduplicazione → L2 + una testata per gruppo → L3 + link, e-mail e nome della testata → L4 +
-  GLiNER (il paper). Sorelle e copie vengono ripescate dalla cache del passo 2 con le stesse funzioni.
+- *Soluzione.* TF-IDF, Qwen3-8B e Mistral con la ridge del passo 7, testando sempre sulle **stesse** 226 testate e
+  sugli stessi articoli: split per articolo; **sorelle** (le 89 testate dello stesso proprietario, con tutti i loro
+  articoli e le copie, messe apposta in addestramento in ogni fold); L2 testo originale; L3 solo regole; L4 GLiNER (il
+  paper). Le sorelle si leggono sulle 31 testate che ne hanno una, con la somiglianza tra test e addestramento (la
+  parentela è solo un indizio: conta che i testi siano simili) e lo scarto del voto NewsGuard dentro il gruppo.
+  L0/L1 sulle 226 tolti (decisione di John, 17/11): diluivano l'effetto. Risultati 17/11: vedi registro.
 
 **2. Cosa del voto NewsGuard vede il testo** ⬜ solo testo
 - *Decisione.* Nessuna analisi per criterio: anche i criteri apparentemente "testuali" richiedono verifiche esterne
@@ -41,7 +43,7 @@ Stato: ⬜ da fare · 🟡 in corso · ✅ fatto. Ultimo aggiornamento: 13/11/20
 - Lo strato di Mistral (27 o 40) ora si sceglie sui fold interni: esce il 27 in tutti i fold, i numeri di Mistral non cambiano.
 - Qwen3-0.6B e ModernBERT congelato scelgono spesso la penalità più bassa della griglia (10); allargandola fino a 0,01 la ρ cambia meno di 0,001: basta una frase.
 
-**5. Testate note e meno note** 🟡 passo 15
+**5. Testate note e meno note** ❌ tolta (decisione di John, 17/11)
 - *Soluzione.* Le 226 testate divise in due metà per rango Tranco (lista 947W2, 13/11/2026); il vantaggio sui modelli
   congelati in ciascuna metà, senza togliere dati. Per le date basta una frase: gli articoli sono dal 2025, Mistral-
   Small-24B-Base-2501 è di gennaio 2025.
@@ -80,3 +82,6 @@ Stato: ⬜ da fare · 🟡 in corso · ✅ fatto. Ultimo aggiornamento: 13/11/20
 | 12/11/2026 | Piano da due revisioni indipendenti, ridotto a 5 analisi e 5 correzioni di testo |
 | 13/11/2026 | Decisioni di John: scala delle fughe con "solo nomi", criteri solo testo + DNA, notorietà per metà, niente esperimenti politici in più, Qwen3-0.6B anche per il sito. Codice scritto nella pipeline (passi 13–15); il passo 15 riproduce esattamente i numeri attuali del paper. GPU utilizzabile (solo `nvidia-smi` rotto) |
 | 13/11/2026 | Coda partita alle 16:01 (passi 5 e 7 fatti in 20 minuti). Codice ripulito per leggibilità e provato sul server (risultati identici); resta in locale, si installa dopo la coda. Fine prevista sabato sera |
+| 17/11/2026 | Coda finita (17/11 03:10), risultati identici alla copia di prova, scala completa: lo split per articolo gonfia ρ di 0,17–0,23 (e mette TF-IDF davanti a Qwen), sorelle e copie ±0,02, L1–L3 entro 0,013 da L4. Decisione di John: la misura principale è il MAE (Mistral − TF-IDF −2,0, significativo anche con Holm); ρ come misura secondaria |
+| 17/11/2026 | Decisione di John: niente analisi della notorietà (punto 5) nel paper |
+| 17/11/2026 | Sorelle rifatte (screen t20_sisters, 11:46). Sulle 31 testate con una sorella in addestramento il MAE scende di 11,6 (TF-IDF), 6,9 (Qwen), 8,7 (Mistral) punti, quasi come lo split per articolo; sulle 195 senza non migliora (+0,4…+0,9); sulle 226 −0,3…−0,8 (n.s., diluito). Somiglianza con l'addestramento 0,19 → 0,60, 50% degli articoli con una quasi-copia tra le sorelle; il guadagno segue la somiglianza (ρ 0,60 per TF-IDF, 0,25–0,32 per gli LLM, n.s.). Stesso proprietario: 74% stesso voto identico, scarto medio 3,8 contro 29,6 a caso |

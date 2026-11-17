@@ -24,8 +24,8 @@ run (anonymization made of six rules) are kept in `rules_only/` for step 12 (see
 | 8-9 | `08_evaluation`, `09_results` | `metrics.py` | per outlet (mean of the article predictions): Spearman, Kendall, MAE, within 20 points; 95% bootstrap intervals; paired comparisons. For the paper: regressor rows, predicted score |
 | 12 | `12_anonymization_effect` | `boost.py`, `boost_eval.py` | the regressors on the final text against the same regressors of the first run (rules-only anonymization), same draws, paired bootstrap |
 | 13 | `13_zero_shot` | `zeroshot.py` | Mistral-Small-24B-Instruct asked directly for the score of each anonymous article (zero-shot), mean per outlet |
-| 14 | `14_leakage_ladder` | `ladder.py` | how much each protection matters: the ridge models under weaker protocols (split by article; sisters and copies; no deduplication; original text; only the rules), always tested on the paper's outlets and articles |
-| 15 | `15_paper_results` | `paper.py` | every number of the paper: main table and curves with baselines (mean, median, orientation only), Holm-corrected comparisons, the claims of the text, errors per level and per orientation (also at equal score, Kruskal-Wallis, correlation inside each orientation), per article against per outlet, notoriety (Tranco), orientation (gap, gap from compression, calibration by group), who is left out, the ladder |
+| 14 | `14_leakage_ladder` | `ladder.py` | how much each protection matters: the ridge models under weaker protocols (split by article; the sisters, outlets of the same owner, always in training; original text; only the rules), always tested on the paper's outlets and articles; similarity of test and training articles; NewsGuard score inside an ownership group |
+| 15 | `15_paper_results` | `paper.py` | every number of the paper: main table and curves with baselines (mean, median, orientation only), Holm-corrected comparisons, the claims of the text, errors per level and per orientation (also at equal score, Kruskal-Wallis, correlation inside each orientation), per article against per outlet, orientation (gap, gap from compression, calibration by group), who is left out, the ladder |
 
 ## Side analyses (not in the paper)
 
@@ -66,8 +66,8 @@ all_metrics.csv, intervals.csv      step 8
 anonymization_effect.csv            step 12
 zero_shot_answers.csv.gz            step 13: the raw answers
 ladder/                             step 14: stages, outlets by step, vectors and predictions of every rung
-paper_*.csv                         step 15: main table, curves, claims, errors, article vs outlet, notoriety, orientation,
-                                    selection, ladder
+paper_*.csv                         steps 14-15: main table, curves, claims, errors, article vs outlet, orientation,
+                                    selection, ladder, sisters (similarity, gain), owner scores
 boost/, meta/                       side analyses 10 and 11
 rules_only/                         the first run (anonymization made of six rules), kept for step 12
 ```
@@ -85,8 +85,11 @@ On the server (artes4, GPU V100 32 GB shared with others; the code lives in `~/J
 Steps 10 and 11 have their own queues (`run_boost.sh`, `run_meta.sh`; `status_boost.sh`, `status_meta.sh`).
 The additions of November 2026 (steps 5 and 7 for the new models, 13, 14, 8, 9, 15) run with `screen -dmS t20_review
 ./run_review.sh` (progress: `./status_review.sh`); before step 7 it moves the Mistral-24B regression of the previous run
-(layer 27 fixed) to `_da_cancellare/`. Step 15 needs the Tranco list in `Dataset/risorse/tranco/` (id in its
-`README.txt`).
+(layer 27 fixed) to `_da_cancellare/`. `run_rest.sh` (screen `t20_rest`) runs what is left from step 13 on, for a shared GPU: every step
+resumes from what is saved, a step stopped because the GPU memory ran out starts again after 10 minutes, any other error
+stops the queue after 3 tries. Do not start `run_review.sh` again from the beginning: steps 5-13 are done.
+`run_sisters.sh` (screen `t20_sisters`, 17/11/2026) runs steps 14 and 15 again after the sisters rung replaced L0-L1
+(CPU only: the frozen vectors were saved by `run_rest.sh`).
 
 ## Code
 
@@ -100,8 +103,8 @@ The additions of November 2026 (steps 5 and 7 for the new models, 13, 14, 8, 9, 
 | `models.py` | split, frozen vectors, linear models, ModernBERT |
 | `metrics.py` | from articles to outlet, metrics, bootstrap; the four measures on many resamples at once (steps 10, 12, 15) |
 | `zeroshot.py` | step 13: prompt, greedy answers, parsing |
-| `ladder.py` | step 14: the stages of step 2 kept (`cleaning.chain`), the rungs, their texts and folds, the new vectors |
-| `paper.py` | step 15: main table, curves, Holm, claims, errors, article vs outlet, notoriety, orientation, selection, ladder results |
+| `ladder.py` | step 14: the stages of step 2 kept (`cleaning.chain`), the sisters, the rungs, their texts and folds, the new vectors, the similarity of test and training articles |
+| `paper.py` | step 15: main table, curves, Holm, claims, errors, article vs outlet, orientation, selection, ladder results, sisters' similarity and gain, owner scores |
 | `boost.py`, `boost_eval.py`, `boost_run.py` | step 10; `boost.py` also gives the test draws of k articles and `boost_eval.py` the paired bootstrap used by step 12 and by the paper figures |
 | `meta.py`, `meta_run.py` | step 11 |
 | `mbfc.py` | Media Bias/Fact Check (slides) |

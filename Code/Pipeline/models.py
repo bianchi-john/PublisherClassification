@@ -92,7 +92,8 @@ def count_tokens(texts, model, prefix=""):
 
 def batches_by_tokens(lengths, budget, max_size):
     """Batches from the shortest to the longest article, each with at most `budget` tokens (longest × size) and at
-    most `max_size` articles."""
+    most `max_size` articles. The models go through them in reverse (longest first): the GPU memory they need is taken
+    at the start, so a shared GPU filled by others later cannot stop them halfway."""
     batches, current = [], []
     for i in np.argsort(lengths, kind="stable"):
         if (current and (len(current) + 1) * lengths[i] > budget) or len(current) >= max_size:
@@ -101,8 +102,9 @@ def batches_by_tokens(lengths, budget, max_size):
     return batches + ([current] if current else [])
 
 
-def qwen_embeddings(texts, model, budget, logfile, max_size=16):
-    """Qwen3-Embedding: instruction + full article; vector = last token (left padding), L2-normalised."""
+def qwen_embeddings(texts, model, budget, logfile, max_size=16, partial_file=None, save_every=200):
+    """Qwen3-Embedding: instruction + full article; vector = last token (left padding), L2-normalised. With
+    `partial_file`, the work done is saved along the way and taken up again if interrupted."""
     import torch
     import torch.nn.functional as F
     from transformers import AutoModel, AutoTokenizer
@@ -113,17 +115,26 @@ def qwen_embeddings(texts, model, budget, logfile, max_size=16):
     m = AutoModel.from_pretrained(model, torch_dtype=torch.float16).cuda().eval()
     texts = [f"Instruct: {QWEN_INSTRUCTION}\nQuery:{x}" for x in texts]
     lengths = np.array([len(x) for x in tok(texts, add_special_tokens=True)["input_ids"]])
-    E = None
+    E, done = None, np.zeros(len(texts), bool)
+    if partial_file is not None and partial_file.exists():
+        p = np.load(partial_file, allow_pickle=True).item()
+        if p["n"] == len(texts):
+            E, done = p["E"], p["done"]; log(f"Qwen: resuming, {done.sum():,} articles already done", logfile)
     with torch.no_grad():
-        for b, idx in enumerate(batches_by_tokens(lengths, budget, max_size)):
+        for b, idx in enumerate(reversed(batches_by_tokens(lengths, budget, max_size))):
+            if done[idx].all():
+                continue
             enc = tok([texts[i] for i in idx], padding=True, truncation=True, max_length=MAX_TOKENS + 64,
                       return_tensors="pt").to("cuda")
             h = F.normalize(m(**enc).last_hidden_state[:, -1].float(), p=2, dim=1).cpu().numpy()
             if E is None:
                 E = np.zeros((len(texts), h.shape[1]), dtype=np.float32)
             E[idx] = h
-            if b % 200 == 0:
-                log(f"Qwen: batch {b}", logfile)
+            done[idx] = True
+            if b % save_every == 0:
+                log(f"Qwen: {done.sum():,}/{len(texts):,} articles", logfile)
+                if partial_file is not None:
+                    np.save(partial_file, {"n": len(texts), "E": E, "done": done}, allow_pickle=True)
     del m; gc.collect(); torch.cuda.empty_cache()     # gc: free the GPU now
     return E
 
@@ -156,7 +167,7 @@ def mistral_embeddings(texts, model, layers, budget, logfile, partial_file, max_
         if p["n"] == len(texts):
             E, done = p["E"], p["done"]; log(f"Mistral: resuming, {done.sum():,} articles already done", logfile)
     with torch.no_grad():
-        for b, idx in enumerate(batches_by_tokens(lengths, budget, max_size)):
+        for b, idx in enumerate(reversed(batches_by_tokens(lengths, budget, max_size))):
             if done[idx].all():
                 continue
             enc = tok([texts[i] for i in idx], padding=True, truncation=True, max_length=MAX_TOKENS,

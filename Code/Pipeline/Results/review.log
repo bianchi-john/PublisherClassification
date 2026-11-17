@@ -1,0 +1,26 @@
+2026-11-13 16:01:42  >>> review queue started
+2026-11-13 16:01:42  05_embeddings (Qwen3-0.6B, ModernBERT frozen) (attempt 1)
+2026-11-13 16:22:55  previous Mistral-24B regression moved to /home/fabio.pinelli/John/Dataset/tentativi/20_FromScratch/_da_cancellare/mistral_layer27_fixed
+2026-11-13 16:22:55  07_regression (new frozen models, Mistral layer inside) (attempt 1)
+2026-11-13 16:25:26  13_zero_shot (attempt 1)
+2026-11-13 21:58:38  14_leakage_ladder (attempt 1)
+2026-11-16 10:31:24  14_leakage_ladder (attempt 2)
+09:42 queue stopped by hand (wait for the go)
+2026-11-16 14:00:28  >>> rest of the queue (run_rest.sh)
+2026-11-16 14:00:28  13_zero_shot (predictions from the saved answers)
+2026-11-16 14:00:38  13_zero_shot (predictions from the saved answers): done
+2026-11-16 14:00:38  14_leakage_ladder
+2026-11-17 03:00:02  14_leakage_ladder: done
+2026-11-17 03:00:02  08_evaluation
+2026-11-17 03:06:41  08_evaluation: done
+2026-11-17 03:06:41  09_results
+2026-11-17 03:06:45  09_results: done
+2026-11-17 03:06:45  15_paper_results
+2026-11-17 03:09:57  15_paper_results: done
+2026-11-17 03:09:57  <<< queue finished
+2026-11-17 10:59:02  >>> sisters rung (run_sisters.sh)
+2026-11-17 10:59:02  14_leakage_ladder
+2026-11-17 11:41:56  14_leakage_ladder: done
+2026-11-17 11:41:56  15_paper_results
+2026-11-17 11:45:40  15_paper_results: done
+2026-11-17 11:45:40  <<< sisters done

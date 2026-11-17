@@ -711,7 +711,8 @@ import zeroshot as ZS
 
 art, outlets = MO.load()
 print(ZS.SYSTEM, "\\n\\n" + ZS.USER.format(text="<article>"))'''),
-    code('''MO.wait_for_gpu(GPU_GB, LOG)
+    code('''if LIMIT or not ZS.ANSWERS.exists():                   # the GPU only to ask the model
+    MO.wait_for_gpu(GPU_GB, LOG)
 res = ZS.run(art, LOG, limit=LIMIT or None)
 print(f"{len(res):,} answers; without a number (given the mean training score): {(~res.number).sum()}")
 res.answer.value_counts().head(15)'''),
@@ -722,22 +723,24 @@ res.answer.value_counts().head(15)'''),
 notebook([
     md("""# 14. How much each protection matters (the leakage ladder)
 
-The ridge models of step 7 (TF-IDF, Qwen3-Embedding-8B, Mistral-Small-24B) under weaker protocols, one protection
-added at a time, always tested on the **same** 25,524 articles of the 226 outlets of the paper, in the same folds:
+The ridge models of step 7 (TF-IDF, Qwen3-Embedding-8B, Mistral-Small-24B) under weaker protocols, always tested on
+the **same** 25,524 articles of the 226 outlets of the paper, in the same folds:
 
-| rung | training outlets and articles | text |
-|---|---|---|
-| article split | the 226 outlets, folds of articles (an outlet is on both sides) | anonymous |
-| L0 | every outlet with ≥ 10 articles at "published from 2025": sisters and copies included | original |
-| L1 | + duplicates removed across outlets: sisters still included | original |
-| L2 | + one outlet per ownership group (the 226) | original |
-| L3 | the 226 | + links, e-mails, the outlet's own name |
-| L4 | the 226 | + GLiNER (the paper, step 7) |
+| rung | training outlets and articles | text | compared with |
+|---|---|---|---|
+| article split | the 226 outlets, folds of articles (an outlet is on both sides) | anonymous | L4 |
+| sisters | the 226 + always the sisters (outlets of the same owner), all their articles, copies included | original | L2 |
+| L2 | the 226 (one outlet per ownership group) | original | L4 |
+| L3 | the 226 | + links, e-mails, the outlet's own name | L4 |
+| L4 | the 226 | + GLiNER (the paper, step 7) | |
 
-Sisters and copies come back from the step-2 cache with the same functions and constants (checked against the paper's
-articles); details in `ladder.py`. Order of the work: the stages, TF-IDF on every rung, the frozen models on the article
-split (vectors of step 5), then the new vectors (rules text: 226 outlets; original text: all L0 articles) on the GPU and
-the frozen models on L0–L3."""),
+The sisters are put in training on purpose, in every fold: every paper outlet of their group is tested with a sister in
+training. Being a sister is only a hint that the texts are similar, so the similarity of test and training articles is
+measured too (TF-IDF cosine, near copies), with how much the NewsGuard score changes inside an ownership group. The
+sisters come back from the step-2 cache with the same functions and constants (checked against the paper's articles);
+details in `ladder.py`. Order of the work: the stages, TF-IDF on every rung, the frozen models on the article split
+(vectors of step 5), then the new vectors (rules text: 226 outlets; original text: the paper's and the sisters'
+articles) on the GPU and the frozen models on the other rungs."""),
     code('''N_JOBS = 16
 GPU_GB = 19
 QWEN_BUDGET = 16384
@@ -748,25 +751,39 @@ import ladder as LA
 import paper as PA
 
 A, by_step = LA.stages(N_JOBS, LOG)
-print(f"L0: {A.domain.nunique()} outlets, {len(A):,} articles | L1: {A[A.s1].domain.nunique()} outlets, "
-      f"{A.s1.sum():,} | L2-L4: {A[A.s2].domain.nunique()} outlets, {A.s2.sum():,}")
+sis, with_sister = LA.sisters(A)
+print(f"paper: {A[A.s2].domain.nunique()} outlets, {A.s2.sum():,} articles | sisters: {len(sis)} outlets, "
+      f"{A.domain.isin(sis).sum():,} articles | paper outlets with a sister: {len(with_sister)}")
 by_step["last step"].value_counts()'''),
     md("## TF-IDF on every rung, the frozen models on the article split"),
     code('''for rung in LA.RUNGS:
     LA.run(rung, A, ["TF-IDF"], N_JOBS, LOG)
 LA.run("article split", A, ["Qwen3-8B", "Mistral-24B"], N_JOBS, LOG)'''),
-    md("## New frozen vectors (GPU) and the frozen models on L0–L3"),
+    md("## New frozen vectors (GPU) and the frozen models on the other rungs"),
     code('''LA.embed("rules", A, LOG, GPU_GB, QWEN_BUDGET, MISTRAL_BUDGET)
 LA.run("L3", A, ["Qwen3-8B", "Mistral-24B"], N_JOBS, LOG)
 LA.embed("original", A, LOG, GPU_GB, QWEN_BUDGET, MISTRAL_BUDGET)
-for rung in ["L0", "L1", "L2"]:
+for rung in ["sisters", "L2"]:
     LA.run(rung, A, ["Qwen3-8B", "Mistral-24B"], N_JOBS, LOG)'''),
     md("## Results (the same outlets and test articles for every rung)"),
     code('''art, outlets, rows = PA.load()
 L = PA.ladder_results(art, outlets)
 L.to_csv(C.OUT / "paper_ladder.csv", index=False)
 L.assign(text=[f"{v:.3f}" if m == "Spearman" else f"{v:.1f}" for v, m in zip(L.value, L.measure)]) \\
-    .pivot_table(index="rung", columns=["measure", "model"], values="text", aggfunc="first").reindex(LA.RUNGS)'''),
+    .pivot_table(index=["outlets", "rung"], columns=["measure", "model"], values="text", aggfunc="first")'''),
+    code('''L[L.p.notna() & (L.measure == "MAE")][["outlets", "n", "rung", "model", "diff", "dlo", "dhi", "p"]].round(3)'''),
+    md("""## Similarity of test and training articles, and the NewsGuard score inside an ownership group
+
+For every test article, the highest TF-IDF cosine with a training article without the sisters and with them, and
+whether a sister has a near copy of it; then, per outlet, whether the drop of the error follows the similarity."""),
+    code('''LA.similarity(A, N_JOBS, LOG)
+T, R = PA.sister_similarity(art, outlets)
+T.to_csv(C.OUT / "paper_sisters_similarity.csv", index=False)
+R.to_csv(C.OUT / "paper_sisters_gain.csv", index=False)
+display(T.round(3)); display(R.round(3))'''),
+    code('''G = PA.owner_scores()
+G.to_csv(C.OUT / "paper_owner_scores.csv", index=False)
+G.round(1)'''),
 ], "14_leakage_ladder.ipynb")
 
 # ------------------------------------------------------------------------------------------------ 15. the numbers of the paper
@@ -775,9 +792,9 @@ notebook([
 
 From the saved predictions only (`paper.py`): the main table (B = 10,000) and the curves by number of articles (B =
 2,000) for every regressor and three baselines without a model of the text; paired comparisons with Holm correction
-(main table and curves against TF-IDF; the claims of the text in one family); then the robustness analyses: notoriety
-of the outlets (Tranco rank), political orientation (gap at equal score, the gap the compression alone would produce,
-calibration by group), who is left out by the cleaning, and the leakage ladder of step 14."""),
+(main table and curves against TF-IDF; the claims of the text in one family); then the robustness analyses: political
+orientation (gap at equal score, the gap the compression alone would produce, calibration by group), who is left out
+by the cleaning, and the leakage ladder of step 14."""),
     code(SETUP + '''
 
 import paper as PA
@@ -811,14 +828,6 @@ E[E.quantity.isin(["signed error", "signed error at equal score", "Spearman insi
     code('''AO = PA.article_vs_outlet(art, outlets, rows, models=models)
 AO.to_csv(C.OUT / "paper_article_vs_outlet.csv", index=False)
 AO.set_index(["model", "unit"]).round(3)'''),
-    md("## Notoriety of the outlets (Tranco rank)"),
-    code('''f = C.DATA / "risorse" / "tranco" / "top-1m.csv"
-if f.exists():
-    N = PA.notoriety(art, outlets, rows)
-    N.to_csv(C.OUT / "paper_notoriety.csv", index=False)
-    display(N.round(3))
-else:
-    print("no Tranco list in", f)'''),
     md("## Political orientation"),
     code('''O = PA.orientation(art, outlets, rows, models=models)
 O.to_csv(C.OUT / "paper_orientation.csv", index=False)
@@ -836,7 +845,9 @@ else:
     code('''f = C.OUT / "paper_ladder.csv"
 if f.exists():
     L = pd.read_csv(f)
-    display(L.pivot_table(index="rung", columns=["measure", "model"], values="value").round(3))
+    display(L.pivot_table(index=["outlets", "rung"], columns=["measure", "model"], values="value").round(3))
+    for name in ["paper_sisters_similarity", "paper_sisters_gain", "paper_owner_scores"]:
+        display(pd.read_csv(C.OUT / f"{name}.csv").round(3))
 else:
     print("run step 14 first")'''),
 ], "15_paper_results.ipynb")
