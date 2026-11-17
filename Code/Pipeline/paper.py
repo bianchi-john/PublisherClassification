@@ -3,7 +3,7 @@
 - Main table (all articles): Spearman, Kendall, MAE, % within 20 points per outlet, for every regressor of steps 7
   and 13 and three baselines without a model of the text: the training mean, the training median (the best constant
   for the MAE) and the training mean of the outlet's political orientation. 95% percentile intervals, B = 10,000
-  bootstrap resamples of the outlets.
+  bootstrap resamples of the outlets. For the appendix: R², RMSE and AUC of reliable (>= 60) against the others.
 - Curves: Spearman and MAE from k = 1, 2, 3, 5, 10, 20, 50 random articles per outlet and from all (the draws of step
   10, the same for every model; measure computed on every draw, then averaged), B = 2,000.
 - Comparisons: paired bootstrap on the same resampled outlets; two-sided bootstrap p-value; Holm correction inside each
@@ -145,6 +145,22 @@ def main_table(art, outlets, rows, B=10_000, models=None):
                 r.update(compare(v, V["TF-IDF"][mes], mes))
             out.append(r)
     return with_holm(pd.DataFrame(out), "sig"), V
+
+
+
+def more_measures(art, outlets, rows, B=10_000, models=None):
+    """For the appendix: R², RMSE and AUC of reliable (score >= 60) against the others (metrics.more_measures), for the
+    models and the baselines, with 95% intervals over B resamples of the outlets (the same as the main table)."""
+    models = models or available()
+    y, n = outlets.score.to_numpy(), len(outlets)
+    idx, draws = resamples(n, B), draw_index(outlets, rows)
+    P = {m: matrix(article_vector(m, art), draws, "all", n)[0] for m in models} | baselines(outlets)
+    out = []
+    for src, p in P.items():
+        for mes, v in ME.more_measures(p, y, idx).items():
+            out.append({"model": src, "measure": mes, "value": v[0], "low": np.nanpercentile(v[1:], 2.5),
+                        "high": np.nanpercentile(v[1:], 97.5)})
+    return pd.DataFrame(out)
 
 
 def curves(art, outlets, rows, B=2_000, models=None):

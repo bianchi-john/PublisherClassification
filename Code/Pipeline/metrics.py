@@ -254,3 +254,21 @@ def resampled_measures(p, y, idx, which=MEASURES):
 def better(low, high, measure):
     """A difference is significant in favour of the first when its 95% interval is entirely on the better side."""
     return bool(high < 0) if measure in LOWER else bool(low > 0)
+
+
+# ------------------------------------------------------------------------- 7. three more measures, for the appendix
+RELIABLE = 60       # NewsGuard: below 60 a site generally fails basic standards of credibility and transparency
+
+
+def more_measures(p, y, idx):
+    """On every row of idx (row 0 = the real outlets): R² (share of the variance of the score explained), RMSE (weighs
+    large errors more than the MAE) and the AUC of telling reliable outlets (score >= RELIABLE) from the others, which
+    only uses the order of the predictions and so is not affected by their compression (0.5 = chance)."""
+    from scipy.stats import rankdata
+    Y, P = y[idx], p[idx]
+    sse = ((P - Y) ** 2).sum(1)
+    pos = Y >= RELIABLE
+    n1 = pos.sum(1); n0 = Y.shape[1] - n1
+    auc = ((rankdata(P, axis=1) * pos).sum(1) - n1 * (n1 + 1) / 2) / (n1 * n0)     # Mann-Whitney U / (n1 n0)
+    return {"R2": 1 - sse / ((Y - Y.mean(1, keepdims=True)) ** 2).sum(1), "RMSE": np.sqrt(sse / Y.shape[1]),
+            "AUC (reliable)": auc}

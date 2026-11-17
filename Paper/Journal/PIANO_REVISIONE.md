@@ -4,13 +4,13 @@ Da due revisioni indipendenti della bozza (metodo e statistica; contributo e pos
 maggiore", teniamo i punti che un revisore userebbe davvero contro il paper. Decisioni prese con John il 13/11/2026.
 Il codice è nella pipeline (`Code/Pipeline`, passi 5, 7, 13, 14, 15), coda sul server `run_review.sh`.
 
-Stato: ⬜ da fare · 🟡 in corso · ✅ fatto. Ultimo aggiornamento: 13/11/2026.
+Stato: ⬜ da fare · 🟡 in corso · ✅ fatto. Ultimo aggiornamento: 17/11/2026. Le modifiche al testo, punto per punto, sono in `MODIFICHE_TESTO.md`.
 
 ---
 
 ## Analisi
 
-**1. Quanto conta il protocollo ("scala delle fughe")** ✅ analisi (passo 14) · ⬜ testo
+**1. Quanto conta il protocollo ("scala delle fughe")** ✅ passo 14, §5.5
 - *Problema.* Diciamo che fughe di testata, sorelle, copie e identificativi gonfiano i risultati, ma non lo misuriamo.
 - *Soluzione.* TF-IDF, Qwen3-8B e Mistral con la ridge del passo 7, testando sempre sulle **stesse** 226 testate e
   sugli stessi articoli: split per articolo; **sorelle** (le 89 testate dello stesso proprietario, con tutti i loro
@@ -19,14 +19,14 @@ Stato: ⬜ da fare · 🟡 in corso · ✅ fatto. Ultimo aggiornamento: 13/11/20
   parentela è solo un indizio: conta che i testi siano simili) e lo scarto del voto NewsGuard dentro il gruppo.
   L0/L1 sulle 226 tolti (decisione di John, 17/11): diluivano l'effetto. Risultati 17/11: vedi registro.
 
-**2. Cosa del voto NewsGuard vede il testo** ⬜ solo testo
+**2. Cosa del voto NewsGuard vede il testo** ✅ introduzione e discussione
 - *Decisione.* Nessuna analisi per criterio: anche i criteri apparentemente "testuali" richiedono verifiche esterne
   (altre fonti, pagine del sito, storico delle correzioni), e titoli e firme sono rimossi o mascherati. Lo spieghiamo
   e introduciamo la metafora del DNA: un capello non dice nulla a una persona, ma in laboratorio rivela **tratti**
   dell'individuo senza bisogno di sapere chi è (tratti, non identità). La curva per numero di articoli diventa "quanti
   capelli servono". In introduzione e discussione.
 
-**3. Il divario politico** 🟡 passo 15
+**3. Il divario politico** ✅ passo 15, §5.7
 - *Problema.* Le testate di destra hanno voti medi più bassi: un predittore schiacciato verso il centro dà comunque, a
   parità di voto, valori più bassi al gruppo con la media più bassa (Kleinberg et al. 2017; Chouldechova 2017).
 - *Soluzione.* Divario a parità di voto con retta, spline ed effetti fissi per livello; divario che produrrebbe la
@@ -35,7 +35,7 @@ Stato: ⬜ da fare · 🟡 in corso · ✅ fatto. Ultimo aggiornamento: 13/11/20
   di previsione sinistra e destra hanno lo stesso voto vero (+0,8 [−7,4; +8,9]). Non è un pregiudizio del modello ma
   la conseguenza delle base rate; ModernBERT addestrato invece non è calibrato (+12,8).
 
-**4. Le baseline che mancano** 🟡 passi 5, 7, 13
+**4. Le baseline che mancano** ✅ passi 5, 7, 13; §5.1–5.3
 - LLM zero-shot (Mistral-Small-24B-Instruct, stessa famiglia del modello congelato).
 - ModernBERT congelato + ridge (stesso modello di quello addestrato).
 - Qwen3-Embedding-0.6B congelato + ridge: separa la dimensione (0,6B contro 8B, stessa istruzione), ed è anche il
@@ -50,7 +50,7 @@ Stato: ⬜ da fare · 🟡 in corso · ✅ fatto. Ultimo aggiornamento: 13/11/20
 
 ## Testo
 
-**6. Affermazioni più forti dei dati** ⬜
+**6. Affermazioni più forti dei dati** ✅ MAE come misura principale, Holm; più metriche (appendice A) e altre divisioni (passo 16, appendice B)
 - Con la correzione di Holm (passo 15, già calcolato): "con 5 articoli Mistral ordina meglio di TF-IDF con tutti" **non
   è significativa** sul ρ (+0,038 [−0,005; 0,089]), lo è sul MAE (−1,7): l'abstract va corretto. 5 dei 31 confronti
   delle curve non sono più significativi.
@@ -59,19 +59,19 @@ Stato: ⬜ da fare · 🟡 in corso · ✅ fatto. Ultimo aggiornamento: 13/11/20
   invece di "invariato"; "nuove o piccole" e l'uso pratico come prospettiva.
 - Baseline nuove: mediana (MAE 22,1 invece di 22,6) e solo orientamento (ρ 0,36, MAE 18,5, entro 20 il 64%).
 
-**7. Dataset e limiti** 🟡 passo 14–15
+**7. Dataset e limiti** ✅ §4, limiti, appendice D
 - Chi resta fuori (tabella dal passo 15), "proprietario registrato da NewsGuard", fonte dell'orientamento (campo
   "Orientation" di NewsGuard), critiche di parzialità rivolte a NewsGuard.
 
-**8. Lavori più vicini** ⬜
+**8. Lavori più vicini** ✅ tabella di confronto, bibliografia verificata
 - Rashkin 2017, Baly 2018, Horne 2019, Bozarth & Budak 2020, Fairbanks 2018; confronto su: solo testo, editori
   separati, gruppi separati, anonimizzato, punteggio continuo. Bibliografia: niente "verify" stampati, doppione
   Przybyła & Soto unito.
 
-**9. Tool più corto** ⬜
+**9. Tool più corto** ✅ due paragrafi, il resto in appendice F
 - Un paragrafo di disponibilità; il resto nel supplemento; correggere "not even indirectly".
 
-**10. Incoerenze puntuali** ⬜
+**10. Incoerenze puntuali** ✅
 - 704 contro 797 sorelle; 81 contro 61; "fino a 200" contro "da 10 a 201"; "circa dieci punti" contro 6,7–9,6;
   "entro 20 ≈ un livello"; iperparametri di ModernBERT; grassetto di Qwen su "entro 20".
 
@@ -85,3 +85,4 @@ Stato: ⬜ da fare · 🟡 in corso · ✅ fatto. Ultimo aggiornamento: 13/11/20
 | 17/11/2026 | Coda finita (17/11 03:10), risultati identici alla copia di prova, scala completa: lo split per articolo gonfia ρ di 0,17–0,23 (e mette TF-IDF davanti a Qwen), sorelle e copie ±0,02, L1–L3 entro 0,013 da L4. Decisione di John: la misura principale è il MAE (Mistral − TF-IDF −2,0, significativo anche con Holm); ρ come misura secondaria |
 | 17/11/2026 | Decisione di John: niente analisi della notorietà (punto 5) nel paper |
 | 17/11/2026 | Sorelle rifatte (screen t20_sisters, 11:46). Sulle 31 testate con una sorella in addestramento il MAE scende di 11,6 (TF-IDF), 6,9 (Qwen), 8,7 (Mistral) punti, quasi come lo split per articolo; sulle 195 senza non migliora (+0,4…+0,9); sulle 226 −0,3…−0,8 (n.s., diluito). Somiglianza con l'addestramento 0,19 → 0,60, 50% degli articoli con una quasi-copia tra le sorelle; il guadagno segue la somiglianza (ρ 0,60 per TF-IDF, 0,25–0,32 per gli LLM, n.s.). Stesso proprietario: 74% stesso voto identico, scarto medio 3,8 contro 29,6 a caso |
+| 17/11/2026 | John: «ok a tutto come consigli». Passo 16 (altre 4 divisioni, CPU): stesso ordine dei modelli in ogni divisione, Mistral − TF-IDF da −2,0 a −2,3 di MAE. Metriche R², RMSE, AUC in appendice. Testo di `main.tex` aggiornato in tutti i punti (abstract, introduzione con il DNA, related work con tabella e bibliografia verificata, metriche, dataset, setup, risultati, scala, orientamento, discussione, appendici A–F); figure dalle tabelle del passo 15. PDF 30 pagine, nessun `\todo` |

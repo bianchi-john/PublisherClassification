@@ -24,3 +24,9 @@
 2026-11-17 11:41:56  15_paper_results
 2026-11-17 11:45:40  15_paper_results: done
 2026-11-17 11:45:40  <<< sisters done
+2026-11-17 12:09:38  >>> run_notebooks.sh 16_other_splits 15_paper_results
+2026-11-17 12:09:38  16_other_splits
+2026-11-17 13:23:10  16_other_splits: done
+2026-11-17 13:23:10  15_paper_results
+2026-11-17 13:26:00  15_paper_results: done
+2026-11-17 13:26:00  <<< done: 16_other_splits 15_paper_results

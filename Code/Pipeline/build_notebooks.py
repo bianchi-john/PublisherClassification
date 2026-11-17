@@ -809,6 +809,13 @@ T.assign(text=[f"{v:.3f} [{a:.3f}; {b:.3f}]" if m in ("Spearman", "Kendall") els
                for v, a, b, m in zip(T.value, T.low, T.high, T.measure)]) \\
  .pivot_table(index="model", columns="measure", values="text", aggfunc="first")[PA.MEASURES]'''),
     code('''T[T.p.notna()][["model", "measure", "diff", "dlo", "dhi", "p", "p_holm", "sig"]].round(4)'''),
+    md("## More measures, for the appendix: R², RMSE, AUC of reliable (score ≥ 60) against the others"),
+    code('''M = PA.more_measures(art, outlets, rows, models=models)
+M.to_csv(C.OUT / "paper_more_measures.csv", index=False)
+print(f"reliable outlets (score >= {PA.ME.RELIABLE}): {(outlets.score >= PA.ME.RELIABLE).mean():.1%}")
+M.assign(text=[f"{v:.3f} [{a:.3f}; {b:.3f}]" if m != "RMSE" else f"{v:.1f} [{a:.1f}; {b:.1f}]"
+               for v, a, b, m in zip(M.value, M.low, M.high, M.measure)]) \\
+ .pivot_table(index="model", columns="measure", values="text", aggfunc="first")'''),
     md("## Curves by number of articles"),
     code('''Cv, V_curves = PA.curves(art, outlets, rows, models=models)
 Cv.to_csv(C.OUT / "paper_curves.csv", index=False)
@@ -850,4 +857,37 @@ if f.exists():
         display(pd.read_csv(C.OUT / f"{name}.csv").round(3))
 else:
     print("run step 14 first")'''),
+    md("## Other splits of the outlets (step 16)"),
+    code('''f = C.OUT / "paper_splits.csv"
+if f.exists():
+    S = pd.read_csv(f)
+    display(S.groupby("model")[["Spearman", "MAE", "Spearman - TF-IDF", "MAE - TF-IDF"]].agg(["mean", "std", "min", "max"]).round(3))
+else:
+    print("run step 16 first")'''),
 ], "15_paper_results.ipynb")
+
+# ------------------------------------------------------------------------------------------------ 16. other splits
+notebook([
+    md("""# 16. Other splits of the outlets (CPU)
+
+How much the results depend on the split: the ridge models of step 7 (TF-IDF, Qwen3-Embedding-8B, Mistral-Small-24B)
+again with four more splits of the outlets, made with the procedure of step 4 (folds stratified on the exact score)
+and the seeds 2–5; the paper's split is seed 1. Same articles, frozen vectors of step 5 and inner folds as in step 7;
+only the predictions are saved (`splits/seed<s>/<model>/`). Details in `splits.py`."""),
+    code('''SEEDS = "2,3,4,5"
+N_JOBS = 16'''),
+    code(SETUP + '''
+
+import models as MO
+import splits as SP
+
+art, outlets = MO.load()
+assert (MO.score_split(outlets.score, C.SPLIT_SEED) == outlets.fold).all(), "the procedure does not give the paper's split"
+print("the procedure gives the paper's split with seed", C.SPLIT_SEED)'''),
+    code('''for seed in map(int, SEEDS.split(",")):
+    SP.run(seed, art, outlets, n_jobs=N_JOBS, logfile=LOG)'''),
+    code('''S = SP.results(outlets)
+S.to_csv(C.OUT / "paper_splits.csv", index=False)
+display(S.round(3))
+S.groupby("model")[["Spearman", "MAE", "Spearman - TF-IDF", "MAE - TF-IDF"]].agg(["mean", "std", "min", "max"]).round(3)'''),
+], "16_other_splits.ipynb")
