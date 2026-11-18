@@ -51,9 +51,21 @@ Costo: **T** solo testo · **C** analisi su CPU (minuti od ore) · **G** GPU.
     Qwen non più significativo;
   - **14, MAE ripesato** sulle testate non raccolte: Mistral 20,2, TF-IDF 22,9, costante 34,9;
   - **5, senza le 16 testate** con il nome rimasto: Mistral − TF-IDF −1,8.
-- **3, sonda «solo nome»**: in attesa della GPU sul server (screen `t20_probe`).
+- **3, sonda «solo nome»**, fatta (18/11, 01:10): dal solo nome di dominio ρ 0,39 (Mistral) e 0,35 (Qwen), MAE 20,4 e
+  21,7, quanto il solo orientamento e molto meno del testo (0,735); una frase nella scala e una nei limiti.
 - **Non fatte, per scelta** (il testo dichiara il limite): sorelle senza copie, Qwen 4B, semi di ModernBERT, Lin et al.,
   TF-IDF non lineare, testate nuove, TOST.
+
+## Stato (18/11): 10, 11 e 12 trattati solo nel testo (decisione di John)
+
+- **10, posizionamento.** Eldifrawi et al. 2026 letto per intero: 3 classi da MBFC su 300 domini, Llama-3.3-70B con
+  ricerca web e link, domini separati in un solo esperimento, nessun mascheramento; aggiunto alla tabella di confronto.
+  Citati e verificati Kiesel et al. 2019, Potthast et al. 2018, Gruppi et al. 2021, Buckmann et al. 2025. McElroy 2025
+  non citato (dall'abstract non si capisce come divide i dati).
+- **11, un solo valutatore.** Nei limiti: valutatore unico e proprietario; una replica pubblica potrebbe usare i voti
+  aperti di Lin et al., che includono NewsGuard. Nessuna analisi.
+- **12, etica.** Tolta dal supplementare la frase sulla modalità pubblica del tool. Restano a John: la licenza NewsGuard
+  per modelli e previsioni (`\todo` nel testo) e se tenere la modalità pubblica nel tool.
 
 ---
 

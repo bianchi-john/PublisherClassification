@@ -33,3 +33,11 @@
 2026-11-17 15:29:47  >>> run_notebooks.sh 17_robustness
 2026-11-17 15:29:47  17_robustness
 2026-11-17 16:10:10  STOPPED at 17_robustness: RuntimeError: NVML_SUCCESS == DriverAPI::get()->nvmlInit_v2_() INTERNAL ASSERT FAILED at "../c10/cuda/CUDACachingAllocator.cpp":963, please report a b
+2026-11-17 17:17:54  >>> run_notebooks.sh 17_robustness
+2026-11-17 17:17:54  17_robustness
+2026-11-17 17:21:37  >>> run_probe.sh: name-only probe of step 17, GPU checked every minute
+2026-11-17 17:33:00  17_robustness: GPU free, run 1
+2026-11-17 18:13:28  17_robustness: failed (RuntimeError: NVML_SUCCESS == DriverAPI::get()->nvmlInit_v2_() INTERNAL ASSERT FAILED at "../c10/cuda/CUDACachingAllocat)
+2026-11-17 18:22:45  17_robustness: GPU free, run 2
+2026-11-18 01:10:07  17_robustness: done
+2026-11-18 01:11:07  <<< done: name-only probe

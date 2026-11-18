@@ -125,7 +125,13 @@ leaves Mistral-Small-24B better than TF-IDF ($-1.5$ [$-2.7$, $-0.4$]) but not Qw
 that could not be collected (43\% in the lowest level, against 15\% in the dataset) or among all the political outlets
 sent to the scraper: the error to expect on a population of unrated outlets is about 20 points for Mistral-Small-24B.
 \emph{Without the 16 outlets} whose brand name, as recorded by NewsGuard, is still in the anonymized text of at least one
-article.
+article. Finally, \emph{name only}: the frozen vector of the outlet's domain name alone (for instance
+\texttt{example.com}), computed as for the articles, with a ridge over the 226 outlets and the same folds and inner
+selection of the penalty. It measures how much of the score the frozen models represent from the name of an outlet
+without reading it: Mistral-Small-24B reaches $\rho = 0.39 [0.27, 0.49]$ and an MAE of
+20.4 [18.5, 22.4], Qwen3-Embedding-8B $\rho = 0.35 [0.23, 0.45]$ and
+21.7 [19.8, 23.7], about as much as the orientation alone ($\rho = 0.36$, MAE 18.5) and far below the
+same models reading the articles (0.735 and 0.711).
 
 \begin{table}[h]
 \centering\small
@@ -245,7 +251,8 @@ can have adapted to the folds.
 \centering\small
 \caption{Resources released with the paper. Nothing released contains NewsGuard scores, NewsGuard levels or article
 text. \emph{Study}: \url{https://github.com/bianchi-john/PublisherClassification}; \emph{tool}:
-\url{https://github.com/bianchi-john/publisher-evaluation}.}\label{tab:release}
+\url{https://github.com/bianchi-john/publisher-evaluation}\todo{publish the tool repository and check the
+link}.}\label{tab:release}
 \begin{tabular}{p{0.15\linewidth}p{0.50\linewidth}p{0.11\linewidth}p{0.12\linewidth}}
 \toprule
 resource & content & repository & licence \\
@@ -283,7 +290,8 @@ Table~\ref{M-tab:main}). The released predictions are
 loaded from the start, so the 226 outlets of the paper can be browsed, compared across models and exported, and a
 page lists the models found on disk with their status (ready, missing a GPU, invalid with the reason). Every number is
 presented as a model prediction, not as a rating: one article is a weak signal (Section~\ref{M-sec:stage1}). The tool
-can also be started in a read-only public mode, which shows the released data and evaluates nothing.
+runs on the user's machine and is meant for researchers and raters, not for publishing predictions about named
+outlets.
 
 \begin{figure}[t]
 \centering

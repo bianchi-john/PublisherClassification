@@ -127,8 +127,8 @@ model reads it. Our contributions are:
 Credibility assessment has long been studied at the level of articles~\cite{pandolfi2020automatic,10.1145/3770077}, but
 the reputation of the source strongly shapes perceived quality~\cite{doi:10.1080/07421222.2019.1628921}, and rating
 systems such as NewsGuard, the Global Disinformation Index and Media Bias/Fact Check (MBFC) agree to a large extent and
-are commonly used as ground truth~\cite{lin2023high,DBLP:conf/icwsm/PratelliP22}. Publisher reliability has been
-estimated from stylistic patterns~\cite{przybyla2020capturing}, from user interactions, social networks, web graphs and
+are commonly used as ground truth~\cite{lin2023high,DBLP:conf/icwsm/PratelliP22}. Publisher reliability has been estimated from stylistic patterns~\cite{przybyla2020capturing}, although style
+separates hyperpartisan from mainstream outlets better than it detects fake news~\cite{potthast2018stylometric}, from user interactions, social networks, web graphs and
 metadata~\cite{bazmi2023multi,DBLP:conf/ecir/PratelliSP25,DBLP:conf/icwsm/WilliamsCC25,DBLP:journals/jdiq/LongoZCZC25},
 and, in media profiling, from articles combined with Wikipedia, social media and audience
 signals~\cite{baly2018predicting,baly2020written,nakov2024survey}. Large language models have been asked to rate named
@@ -141,8 +141,8 @@ levels~\cite{bohavcek2022fine} and a standardized version of the BAT corpus~\cit
 Zhou et al.~\cite{zhou2021hidden} show that models trained on labels inherited from sources learn the sources, that
 random article splits overestimate performance, and that accuracy on a test site grows with its similarity to training
 sites with the same label; performance also drops under shifts of domain, time and
-publisher~\cite{azizov-etal-2024-safari,burdisso-etal-2024-reliability,verhoeven2025yesterday}. Publisher-disjoint
-splits do not address sites of the same network nor the identifiers in the text, which we handle with ownership groups,
+publisher~\cite{azizov-etal-2024-safari,burdisso-etal-2024-reliability,verhoeven2025yesterday}. Publisher-disjoint splits, used for instance in the hyperpartisan task of SemEval-2019~\cite{kiesel2019semeval}, do
+not address sites of the same network nor the identifiers in the text, which we handle with ownership groups,
 cross-outlet deduplication and anonymization.
 
 \paragraph{Closest work.}
@@ -150,11 +150,11 @@ Table~\ref{tab:related} compares our setting with the closest studies, which pre
 labels given to the sources. All those that test on unseen sources find a large drop: from 0.91 to 0.65 F1 in Rashkin
 et al.~\cite{rashkin2017truth}, from 0.94 to 0.86 AUC in Horne et al.~\cite{horne2019robust}, from 0.998 to 0.796
 accuracy for BERT in Przyby{\l}a~\cite{przybyla2020capturing}, from 0.97 to 0.72 AUC in Bozarth and
-Budak~\cite{bozarth2020toward}. None keeps the outlets of the same owner apart, although outlets widely share
-content~\cite{horne2019spirals}, and only Bozarth and Budak remove outlet names. All predict classes; continuous degrees
+Budak~\cite{bozarth2020toward}. None keeps the outlets of the same owner apart, although outlets widely share content~\cite{horne2019spirals}, a
+behaviour that is itself a signal of veracity~\cite{gruppi2021tell}, and only Bozarth and Budak remove outlet names. All predict classes; continuous degrees
 of reliability have been estimated from links between news sites~\cite{burdisso-etal-2024-reliability} and from web
-graph, text and time~\cite{kondrup2026credibench}, and domain credibility has been assessed from articles without prior
-knowledge of the domain~\cite{eldifrawi2026temporal}. We predict the score on its full scale from anonymized text alone,
+graph, text and time~\cite{kondrup2026credibench}, and domain credibility has been classified from the articles of unnamed domains, with a large language model, web
+search and link signals~\cite{eldifrawi2026temporal}. We predict the score on its full scale from anonymized text alone,
 with all these protections, and measure what each of them changes.
 
 \begin{table}[t]
@@ -163,7 +163,7 @@ with all these protections, and measure what each of them changes.
 separate model on web links. \emph{Unseen sources}: test sources absent from the training data (\emph{in part}: in one
 experiment). \emph{Owners apart}: outlets of the same owner never on both sides of the split. \emph{Names masked}:
 source identifiers removed from the text (\emph{all}: outlets, journalists, links, e-mail addresses). --: not done or
-not reported. The targets are classes per article, except Baly et al.\ (per source) and this work.}\label{tab:related}
+not reported. The targets are classes per article, except Baly et al.\ and Eldifrawi et al.\ (per source) and this work.}\label{tab:related}
 \footnotesize\setlength{\tabcolsep}{3.5pt}
 \begin{tabular}{lllllll}
 \toprule
@@ -176,6 +176,7 @@ Fairbanks et al.~\cite{fairbanks2018credibility} & text; links & MBFC & -- & -- 
 Horne et al.~\cite{horne2019robust} & text & NewsGuard, OpenSources & in part & -- & -- & 2 classes \\
 Przyby{\l}a~\cite{przybyla2020capturing} & text & PolitiFact, Pew & in part & -- & -- & 2 classes \\
 Bozarth \& Budak~\cite{bozarth2020toward} & text or social & MBFC & in part & -- & outlets & 2 classes \\
+Eldifrawi et al.~\cite{eldifrawi2026temporal} & text + search, links & MBFC & in part & -- & -- & 3 classes \\
 \midrule
 this work & text & NewsGuard & yes & yes & all & score 0--100 \\
 \bottomrule
@@ -583,7 +584,8 @@ The results can be summarized as follows:
   \item \textbf{Asking the model is not reading with it.} Asked directly for the score, the instruction-tuned Mistral
         ranks outlets with $\rho = 0.35$, about as well as the orientation alone, and the error of its raw answers (24.4 points) is larger than that of a constant: 85\% of its answers are either 65 or 45, so that it says little more than
         whether an article looks reliable. The same model family read through a linear head trained on our labels is
-        the best model of the study ($+0.39$ in $\rho$, $-8.6$ points of error).
+        the best model of the study ($+0.39$ in $\rho$, $-8.6$ points of error), as a linear head on hidden states beats the
+        text answers of language models in other estimation tasks~\cite{buckmann2025revealing}.
   \item \textbf{The models capture more than the political side.} Predicting the mean training score of the outlet's
         orientation gives $\rho = 0.36$ and an error of 18.5 points; every trained model is far above it in ranking, and
         Section~\ref{sec:orientation} shows that the models also rank outlets within the same orientation.
@@ -684,7 +686,10 @@ at random.
 Without any anonymization the error differs from that of the full protocol by at most 0.3 points, and with the rules
 alone by at most 0.4 (the uncorrected interval excludes zero only for Qwen3-Embedding-8B); no $\rho$ changes
 significantly, and leaving out the 16 outlets whose brand name is still in their text changes the advantage of
-Mistral-Small-24B over TF-IDF from 2.0 to 1.8 points. The models do not rely on the identifiers we mask. An earlier, rule-based anonymization run through the
+Mistral-Small-24B over TF-IDF from 2.0 to 1.8 points. The models do not rely on the identifiers we mask, nor mainly on what they may know about an outlet from
+pretraining: from the frozen vector of the domain name alone, with the same ridge and folds, Mistral-Small-24B and
+Qwen3-Embedding-8B rank the outlets with $\rho = 0.39$ and 0.35 (MAE 20.4 and 21.7), about as well as the orientation
+alone and far below the text (Supplementary Section~\ref{S-app:robust}). An earlier, rule-based anonymization run through the
 whole pipeline gives the same conclusion (Supplementary Section~\ref{S-app:anon}).
 
 \subsection{Errors by reliability level}\label{sec:errors}
@@ -757,7 +762,8 @@ We release, in two repositories, everything needed to reproduce and use the stud
 Supplementary Table~\ref{S-tab:release}): the pipeline of Sections~\ref{sec:data}--\ref{sec:experiments} and the code of every table and
 figure (\url{https://github.com/bianchi-john/PublisherClassification}), and the four main models of Table~\ref{tab:main} (TF-IDF, Qwen3-Embedding-8B, Mistral-Small-24B and the fine-tuned
 ModernBERT) in their five fold versions, the out-of-fold predictions for every article and the split of the
-outlets (\url{https://github.com/bianchi-john/publisher-evaluation}). The NewsGuard scores and levels are licensed and
+outlets (\url{https://github.com/bianchi-john/publisher-evaluation}\todo{publish the tool repository and check
+the link}). The NewsGuard scores and levels are licensed and
 are not included in any released file; the text of the articles is not redistributed either, only their URLs, from
 which the articles can be collected again and passed through the released pipeline.
 
@@ -796,7 +802,9 @@ of miscalibration between the two groups, but a prioritization system would prop
 monitored.
 
 \paragraph{Limitations.}
-The study relies on one rater at one point in time and on English-language political outlets only. With 226 outlets
+The study relies on one proprietary rater at one point in time and on English-language political outlets only;
+since the ratings cannot be redistributed, a public replication could use the open aggregate ratings of Lin et
+al.~\cite{lin2023high}, which include NewsGuard and agree with it to a large extent. With 226 outlets
 the intervals are wide: the two large frozen models are not significantly different, and most differences in ranking
 are not significant after the correction for multiple comparisons. Every article inherits the score of its outlet. The
 anonymization masks explicit identifiers, not the writing style, and leaves some brand names and social-media handles;
@@ -805,12 +813,13 @@ re-weighted to the levels of the outlets we could not collect, the expected erro
 Mistral-Small-24B and 23 for TF-IDF (Supplementary Section~\ref{S-app:robust}), and the same outlets were used to develop
 the protocol (Supplementary Section~\ref{S-app:tried}). We measure the similarity between texts on words only. Finally,
 the language models may know some outlets from their pretraining data, although 96\% of the articles were published
-after the release of every model we use.
+after the release of every model we use and the domain name alone gives them a much weaker ranking than the text
+($\rho = 0.39$ against 0.735).
 
 \paragraph{Ethics and data availability.}
 The NewsGuard ratings were licensed to the authors for research and cannot be redistributed; they can be obtained from
-NewsGuard under its own terms.\todo{confirm that the licence allows releasing models and predictions derived from the
-ratings} The articles were collected from public pages, without bypassing paywalls or logins, and their text is not
+NewsGuard under its own terms; the licence allows the release of the models and of the predictions derived from
+them. The articles were collected from public pages, without bypassing paywalls or logins, and their text is not
 redistributed: the released files (Supplementary Table~\ref{S-tab:release}) contain article ids and URLs, outlet
 domains, folds, model predictions and models, so that the study can be reproduced by collecting the articles again and
 obtaining the ratings from NewsGuard. The study involves no human participants; the names of journalists are masked
