@@ -1,5 +1,10 @@
 # Step 19: replication on held-out outlets (pre-registration)
 
+> **Status, 23 November 2026, 17:27: stopped by decision of John, before any prediction.** The run started at 17:21
+> (commit 62865a0) only extracted the text of the candidate outlets of set A (`heldout/extracted_A.csv.gz` on the
+> server); no held-out set was finished, no model was applied and no result exists. The paper addresses the point in
+> the text instead. The plan below is unchanged and can be run later as it is.
+
 Written on 23 November 2026, **before** the held-out data were built and before any prediction was computed on them.
 This file and the code of step 19 (`heldout.py`, `19_heldout.ipynb`, `run_heldout.sh`) are committed to git before the
 run; the paper cites that commit. Nothing below is changed after the results are seen.

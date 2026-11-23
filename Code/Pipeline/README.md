@@ -29,7 +29,7 @@ run (anonymization made of six rules) are kept in `rules_only/` for step 12 (see
 | 16 | `16_other_splits` | `splits.py` | four more splits of the outlets (same procedure, seeds 2-5) for TF-IDF, Qwen3-8B and Mistral-24B: how much the results depend on the split (CPU) |
 | 17 | `17_robustness` | `robustness.py` | four checks asked by the reviews: recalibration of the outlet scores inside the training folds, the MAE re-weighted to the outlets that could not be collected, the comparison without the outlets whose brand name is left in the text, the frozen vector of the domain name alone (GPU) |
 | 18 | `18_boilerplate` | `boilerplate.py` | boilerplate (lines an outlet repeats in many articles): how much there is, TF-IDF retrained without it, the saved models on 1,000 articles with and without it (GPU), Mistral-24B token by token (GPU) |
-| 19 | `19_heldout` | `heldout.py` | pre-registered replication (`PREREGISTRATION_19.md`) on outlets never used as test outlets: A, non-political NewsGuard outlets; B, political outlets with fewer than 10 articles; the saved fold models of step 7 applied unchanged (GPU) |
+| 19 | `19_heldout` | `heldout.py` | **not run (stopped on 23/11 before any result)**: pre-registered replication (`PREREGISTRATION_19.md`) on outlets never used as test outlets: A, non-political NewsGuard outlets; B, political outlets with fewer than 10 articles; the saved fold models of step 7 applied unchanged (GPU) |
 
 ## Side analyses (not in the paper)
 
