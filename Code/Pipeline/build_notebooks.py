@@ -967,3 +967,93 @@ pd.DataFrame(out)[lambda d: d.check.str.startswith("without")].round(3)"""),
 R.to_csv(C.OUT / "paper_robustness.csv", index=False)
 R.round(3)"""),
 ], "17_robustness.ipynb")
+
+# ------------------------------------------------------------------------------------------------ 18. boilerplate
+notebook([
+    md("""# 18. Boilerplate: does the prediction come from the lines an outlet repeats?
+
+The anonymization leaves in the text the lines that an outlet repeats in many articles (newsletter invitations, donation
+appeals, disclaimers, captions). Following the idea of the explanation methods (look at which parts of the text drive a
+prediction), four checks:
+
+1. **Boilerplate**: a line that appears, digits ignored, in at least 3 articles and 5% of the articles of the outlet.
+2. **TF-IDF retrained** without boilerplate, and without boilerplate and dates (same folds and inner choice as step 7).
+3. **Saved models** (GPU): on 1,000 articles with boilerplate, the predictions on the original and on the cleaned text.
+4. **Mistral-24B token by token** (GPU): the prediction is linear in the mean of the token states, so it splits exactly
+   into one contribution per token; the part of the boilerplate tokens.
+
+Details in `boilerplate.py`; the numbers of the paper are in `paper_boilerplate.csv`."""),
+    code("""N_JOBS = 16
+GPU_GB = 19
+B = 10_000
+GPU = True                        # False: only the checks on the CPU (1 and 2)"""),
+    code(SETUP + """
+
+import boilerplate as BP
+import metrics as ME
+import models as MO
+import paper as PA
+
+art, outlets = MO.load()
+art["text"] = art.text.fillna("")
+y = outlets.score.to_numpy()
+idx = PA.resamples(len(outlets), B)
+out = []                                   # one row per check, model and measure
+
+
+def add(check, model, measure, x, ref=None):
+    x = np.atleast_1d(np.asarray(x, dtype=float))
+    r = {"check": check, "model": model, "measure": measure, "value": x[0]}
+    if len(x) > 1:
+        r.update(low=np.percentile(x[1:], 2.5), high=np.percentile(x[1:], 97.5))
+    if ref is not None:
+        r.update(PA.compare(x, ref, measure))
+    out.append(r)"""),
+    md("## 1. How much boilerplate"),
+    code("""bp = BP.find(art)
+clean = BP.strip(art, bp)
+for k, v in BP.summary(art, bp, clean).items():
+    add("boilerplate", "", k, v)
+    print(f"{k}: {v:,.3f}" if isinstance(v, float) else f"{k}: {v:,}")
+pd.Series(sorted({line for _, line in bp})).sample(15, random_state=C.SEED).to_frame("examples (normalized)")"""),
+    md("## 2. TF-IDF retrained without boilerplate"),
+    code("""paper = MO.predictions("regression", "TF-IDF").groupby("domain").prediction.mean().reindex(outlets.index).to_numpy()
+ref = ME.resampled_measures(paper, y, idx, ["MAE", "Spearman"])
+for mes, x in ref.items():
+    add("TF-IDF retrained", "as in the paper", mes, x)
+for version, texts in [("clean", clean), ("nodates", [BP.DATE.sub(" [DATE] ", t) for t in clean])]:
+    p = BP.retrain_tfidf(art, texts, version, N_JOBS, LOG).reindex(outlets.index).to_numpy()
+    for mes, x in ME.resampled_measures(p, y, idx, ["MAE", "Spearman"]).items():
+        add("TF-IDF retrained", "without boilerplate" + (" and dates" if version == "nodates" else ""), mes, x, ref[mes])
+pd.DataFrame(out).to_csv(C.OUT / "paper_boilerplate.csv", index=False)      # saved now: the GPU may be busy
+pd.DataFrame(out).query("check == 'TF-IDF retrained'").round(3)"""),
+    md("## 3. The saved models on 1,000 articles with boilerplate (GPU)"),
+    code("""if GPU:
+    S = BP.sample(art, clean)
+    P = BP.sample_predictions(S, GPU_GB, LOG)
+    add("sample", "", "articles", len(P))
+    add("sample", "", "share of words", P.share.mean())
+    for m in ["TF-IDF", "Qwen3-8B", "Mistral-24B"]:
+        o, c = P[f"{m} original"], P[f"{m} clean"]
+        add("sample", m, "MAE original", (o - P.score).abs().mean())
+        add("sample", m, "MAE without boilerplate", (c - P.score).abs().mean())
+        add("sample", m, "mean absolute change", (c - o).abs().mean())
+        add("sample", m, "mean change", (c - o).mean())
+        add("sample", m, "Pearson r", np.corrcoef(o, c)[0, 1])
+    display(pd.DataFrame(out).query("check == 'sample'").pivot(index="measure", columns="model", values="value").round(3))"""),
+    md("## 4. Mistral-24B token by token (GPU)"),
+    code("""if GPU:
+    T = BP.mistral_tokens(S, bp, 300, GPU_GB, LOG)
+    part, pred = T["boilerplate part"], T.prediction
+    add("tokens", "Mistral-24B", "articles", len(T))
+    add("tokens", "Mistral-24B", "max |rebuilt - saved prediction|", (pred - T.saved).abs().max())
+    add("tokens", "Mistral-24B", "share of boilerplate tokens", T["boilerplate tokens"].mean())
+    add("tokens", "Mistral-24B", "mean |boilerplate part|", part.abs().mean())
+    add("tokens", "Mistral-24B", "sd of the predictions", pred.std())
+    add("tokens", "Mistral-24B", "share of the variance (covariance)", np.cov(part, pred)[0, 1] / pred.var())
+    add("tokens", "Mistral-24B", "variance of the part / variance", part.var() / pred.var())
+    display(pd.DataFrame(out).query("check == 'tokens'").round(3))"""),
+    code("""R = pd.DataFrame(out)
+R.to_csv(C.OUT / "paper_boilerplate.csv", index=False)
+R.round(3)"""),
+], "18_boilerplate.ipynb")

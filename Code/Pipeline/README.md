@@ -28,6 +28,7 @@ run (anonymization made of six rules) are kept in `rules_only/` for step 12 (see
 | 15 | `15_paper_results` | `paper.py` | every number of the paper: main table and curves with baselines (mean, median, orientation only), Holm-corrected comparisons, the claims of the text, errors per level and per orientation (also at equal score, Kruskal-Wallis, correlation inside each orientation), per article against per outlet, R²/RMSE/AUC for the appendix, orientation (gap, gap from compression, calibration by group), who is left out, the ladder |
 | 16 | `16_other_splits` | `splits.py` | four more splits of the outlets (same procedure, seeds 2-5) for TF-IDF, Qwen3-8B and Mistral-24B: how much the results depend on the split (CPU) |
 | 17 | `17_robustness` | `robustness.py` | four checks asked by the reviews: recalibration of the outlet scores inside the training folds, the MAE re-weighted to the outlets that could not be collected, the comparison without the outlets whose brand name is left in the text, the frozen vector of the domain name alone (GPU) |
+| 18 | `18_boilerplate` | `boilerplate.py` | boilerplate (lines an outlet repeats in many articles): how much there is, TF-IDF retrained without it, the saved models on 1,000 articles with and without it (GPU), Mistral-24B token by token (GPU) |
 
 ## Side analyses (not in the paper)
 
@@ -70,7 +71,8 @@ zero_shot_answers.csv.gz            step 13: the raw answers
 ladder/                             step 14: stages, outlets by step, vectors and predictions of every rung
 splits/                             step 16: predictions with the other splits of the outlets
 robustness/                         step 17: recalibrated outlet scores, frozen vectors of the domain names
-paper_*.csv                         steps 14-17: main table, curves, claims, errors, article vs outlet, orientation,
+boilerplate/                        step 18: TF-IDF retrained, predictions and frozen vectors of the sample, tokens
+paper_*.csv                         steps 14-18: main table, curves, claims, errors, article vs outlet, orientation,
                                     selection, ladder, sisters (similarity, gain), owner scores
 boost/, meta/                       side analyses 10 and 11
 rules_only/                         the first run (anonymization made of six rules), kept for step 12
@@ -98,6 +100,8 @@ stops the queue after 3 tries. Do not start `run_review.sh` again from the begin
 ./run_notebooks.sh 16_other_splits 15_paper_results` (17/11/2026).
 `run_probe.sh` (screen `t20_probe`) runs the GPU part of step 17 when the shared GPU has 19 GB free, checking every
 minute and trying again after a failure, until the name-only rows are in `paper_robustness.csv`.
+`run_boilerplate.sh` (screen `t20_boilerplate`, 23/11/2026) runs step 18, trying again a minute after a failure (every
+part is cached); the GPU parts wait for 19 GB free.
 
 ## Code
 
@@ -115,6 +119,7 @@ minute and trying again after a failure, until the name-only rows are in `paper_
 | `paper.py` | step 15: main table, curves, Holm, claims, errors, article vs outlet, orientation, selection, ladder results, sisters' similarity and gain, owner scores |
 | `splits.py` | step 16: the other splits of the outlets and their results |
 | `robustness.py` | step 17: recalibration, re-weighted MAE, leftover brand names, name-only probe |
+| `boilerplate.py` | step 18: boilerplate lines, TF-IDF retrained without them, saved models on a sample, Mistral-24B token by token |
 | `boost.py`, `boost_eval.py`, `boost_run.py` | step 10; `boost.py` also gives the test draws of k articles and `boost_eval.py` the paired bootstrap used by step 12 and by the paper figures |
 | `meta.py`, `meta_run.py` | step 11 |
 | `mbfc.py` | Media Bias/Fact Check (slides) |

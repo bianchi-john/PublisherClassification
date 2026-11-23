@@ -52,13 +52,14 @@ NewsGuard score band of the outlet (mean over articles).}\label{fig:anonymizatio
 
 
 \section{More metrics}\label{app:measures}
-Table~\ref{tab:more} adds three metrics to Table~\ref{M-tab:main}, on the same outlets, predictions and resamples: the
-coefficient of determination $R^2$ (the share of the variance of the NewsGuard score explained by the predictions), the
-root mean squared error, which weighs large errors more than the MAE, and the area under the ROC curve for telling the
-reliable outlets (score $\geq 60$, NewsGuard's threshold; 65\% of the outlets) from the others. The AUC uses only the
-order of the predictions, so it is not affected by their compression. The order of the models is the same as with the MAE for $R^2$ and the RMSE. On the binary distinction, however, the large frozen models are only slightly ahead of TF-IDF (0.876 and 0.880
-against 0.860): their advantage lies more in how close the predicted score is to the rating than in which side of 60 an
-outlet falls on.
+Table~\ref{tab:more} adds three metrics to Table~\ref{M-tab:main}, computed on the same outlets, predictions and
+resamples. The coefficient of determination $R^2$ is the share of the variance of the NewsGuard score explained by the
+predictions, the root mean squared error weighs large errors more than the MAE, and the area under the ROC curve
+measures how well the predictions tell the reliable outlets (score $\geq 60$, the NewsGuard threshold, 65\% of the
+outlets) from the others. Since the AUC uses only the order of the predictions, it is not affected by their compression.
+The order of the models is the same as with the MAE for $R^2$ and the RMSE. On the binary distinction, however, the
+large frozen models are only slightly ahead of TF-IDF (0.876 and 0.880 against 0.860), which suggests that their
+advantage lies more in how close the predicted score is to the rating than in the side of 60 on which an outlet falls.
 
 \begin{table}[h]
 \centering
@@ -85,13 +86,13 @@ Mistral-Small-24B (frozen) + ridge & 0.475 [0.406, 0.533] & 19.6 [17.7, 21.5] & 
 
 \section{Other splits of the outlets}\label{app:splits}
 The results of Table~\ref{M-tab:main} come from a single split of the outlets into five folds. To see how much they
-depend on it, we repeated the three ridge models with four more splits, made with the same procedure (folds stratified
-on the exact score) and different random seeds; everything else is as in Section~\ref{M-sec:setup}
-(Table~\ref{tab:splits}). The models are ranked in the same order in every split, on both metrics. Mistral-Small-24B
-lowers the error of TF-IDF by 2.0--2.3 points in every split (2.2 on average) and raises $\rho$ by 0.03--0.07;
-Qwen3-Embedding-8B lowers it by 1.5--1.9 points and raises $\rho$ by 0.01--0.04. The error of each model varies by
-less than half a point across splits, and the split of the paper is the one where Mistral-Small-24B lowers the error of
-TF-IDF least.
+depend on this split, we repeated the three ridge models with four more splits, made with the same procedure (folds
+stratified on the exact score) and different random seeds, keeping everything else as in Section~\ref{M-sec:setup}
+(Table~\ref{tab:splits}). The models are ranked in the same order in every split and on both metrics.
+Mistral-Small-24B lowers the error of TF-IDF by 2.0--2.3 points in every split (2.2 on average) and raises $\rho$ by
+0.03--0.07, while Qwen3-Embedding-8B lowers the error by 1.5--1.9 points and raises $\rho$ by 0.01--0.04. The error of
+each model varies by less than half a point across splits, and the split used in the paper is the one in which
+Mistral-Small-24B lowers the error of TF-IDF least.
 
 \begin{table}[h]
 \centering
@@ -116,22 +117,24 @@ mean (SD) & 18.0 (0.17) & 0.674 (0.010) & 16.3 (0.15) & 0.700 (0.011) & 15.8 (0.
 \end{table}
 
 \section{Robustness checks}\label{app:robust}
-Table~\ref{tab:robust} reports three checks on the MAE of Table~\ref{M-tab:main}, on the same predictions; in
-parentheses the difference from TF-IDF in the same row. \emph{Recalibrated}: the outlet scores re-mapped by a straight
-line fitted, in every outer fold, on the training outlets only, with predictions from three inner folds (for the
-zero-shot model, on its answers for the training outlets); it removes most of the compression, lowers every error, and
-leaves Mistral-Small-24B better than TF-IDF ($-1.5$ [$-2.7$, $-0.4$]) but not Qwen3-Embedding-8B ($-0.9$ [$-2.0$,
-0.2]). \emph{Re-weighted}: the MAE per NewsGuard level weighted by the share of each level among the political outlets
+Table~\ref{tab:robust} reports three checks on the MAE of Table~\ref{M-tab:main}, computed on the same predictions,
+with the difference from TF-IDF in the same row in parentheses. In the \emph{recalibrated} row, the outlet scores are
+re-mapped by a straight line fitted in every outer fold on the training outlets only, with predictions from three inner
+folds (for the zero-shot model, the line is fitted on its answers for the training outlets). The recalibration removes
+most of the compression and lowers every error, and it leaves Mistral-Small-24B better than TF-IDF ($-1.5$ [$-2.7$,
+$-0.4$]), whereas the advantage of Qwen3-Embedding-8B is no longer significant ($-0.9$ [$-2.0$, 0.2]). In the
+\emph{re-weighted} rows, the MAE per NewsGuard level is weighted by the share of each level among the political outlets
 that could not be collected (43\% in the lowest level, against 15\% in the dataset) or among all the political outlets
-sent to the scraper: the error to expect on a population of unrated outlets is about 20 points for Mistral-Small-24B.
-\emph{Without the 16 outlets} whose brand name, as recorded by NewsGuard, is still in the anonymized text of at least one
-article. Finally, \emph{name only}: the frozen vector of the outlet's domain name alone (for instance
-\texttt{example.com}), computed as for the articles, with a ridge over the 226 outlets and the same folds and inner
-selection of the penalty. It measures how much of the score the frozen models represent from the name of an outlet
-without reading it: Mistral-Small-24B reaches $\rho = 0.39 [0.27, 0.49]$ and an MAE of
-20.4 [18.5, 22.4], Qwen3-Embedding-8B $\rho = 0.35 [0.23, 0.45]$ and
-21.7 [19.8, 23.7], about as much as the orientation alone ($\rho = 0.36$, MAE 18.5) and far below the
-same models reading the articles (0.735 and 0.711).
+sent to the scraper, so that it estimates the error to expect on a population of unrated outlets, about 20 points for
+Mistral-Small-24B. The last row leaves out the 16 outlets whose brand name, as recorded by NewsGuard, is still in the
+anonymized text of at least one of their articles.
+
+Finally, the \emph{name-only} probe uses the frozen vector of the domain name of an outlet alone (for instance
+\texttt{example.com}), computed as for the articles, with a ridge regression over the 226 outlets and the same folds and
+inner selection of the penalty. It measures how much of the score the frozen models represent from the name of an outlet
+without reading its articles. Mistral-Small-24B reaches $\rho = 0.39 [0.27, 0.49]$ and an MAE of 20.4 [18.5, 22.4], and
+Qwen3-Embedding-8B $\rho = 0.35 [0.23, 0.45]$ and 21.7 [19.8, 23.7]. This is about as much as the orientation alone
+($\rho = 0.36$, MAE 18.5) and far below what the same models reach by reading the articles (0.735 and 0.711).
 
 \begin{table}[h]
 \centering\small
@@ -151,16 +154,16 @@ without the 16 outlets with their brand name & 18.0 & 16.5 ($-$1.4) & 16.2 ($-$1
 \end{table}
 
 \section{An earlier, rule-based anonymization}\label{app:anon}
-Before the anonymization of Section~\ref{M-sec:anon}, we ran the whole pipeline, including the fine-tuned ModernBERT, with
-a simpler anonymization made of six rules: the outlet's signature in the titles, e-mail addresses, links, social media
-accounts, the outlet's own authors taken from the author field of the page, and the outlet's name. Unlike the
-recognizer, these rules mask only the publisher and its own staff. Table~\ref{tab:anon} compares the two anonymizations
-on the same outlets and articles. Masking every outlet and journalist changes the language models by at most 0.010 in
-$\rho$ and 0.24 points of error, never significantly with all articles; only TF-IDF loses a little ($\Delta\rho =
--0.017$ [$-0.036$, $-0.001$]), consistently with a model that uses names of outlets and people as features. With 1, 5
-and all articles per outlet and the four metrics of Table~\ref{M-tab:main}, 8 of the 12 comparisons of TF-IDF are worse
-with the stricter anonymization (95\% bootstrap interval of the difference excluding zero, no correction), against 3
-of 12 for Mistral-Small-24B and none for the other two models.
+Before the anonymization of Section~\ref{M-sec:anon}, we ran the whole pipeline, including the fine-tuned ModernBERT,
+with a simpler anonymization made of six rules, which masked the signature of the outlet in the titles, e-mail
+addresses, links, social media accounts, the authors of the outlet taken from the author field of the page, and the name
+of the outlet. Unlike the recognizer, these rules mask only the publisher and its own staff. Table~\ref{tab:anon}
+compares the two anonymizations on the same outlets and articles. Masking every outlet and journalist changes the
+language models by at most 0.010 in $\rho$ and 0.24 points of error, never significantly with all articles, and only
+TF-IDF loses a little ($\Delta\rho = -0.017$ [$-0.036$, $-0.001$]), as expected from a model that uses the names of
+outlets and people as features. With 1, 5 and all articles per outlet and the four metrics of Table~\ref{M-tab:main},
+8 of the 12 comparisons of TF-IDF are worse with the stricter anonymization (95\% bootstrap interval of the difference
+excluding zero, without correction), against 3 of 12 for Mistral-Small-24B and none for the other two models.
 
 \begin{table}[h]
 \centering
@@ -180,10 +183,51 @@ ModernBERT & 0.605 & 17.7 & 0.610 & 17.5 \\
 \end{tabular}
 \end{table}
 
+\section{Boilerplate}\label{app:reading}
+Many outlets open or close their articles with the same lines, such as invitations to subscribe to a newsletter,
+donation appeals, disclaimers and image captions. We call boilerplate a line that appears, with the digits ignored, in
+at least three articles and in at least 5\% of the articles of the same outlet. There are 1,040 such lines in 171 of the
+226 outlets, which make up 3.0\% of the words and appear in 49\% of the articles. TF-IDF retrained on the texts without
+boilerplate, with the same folds and the same inner choice of the penalty, has an MAE of 17.50 and $\rho = 0.677$,
+against 17.82 and 0.674 in Table~\ref{M-tab:main} (difference in MAE $-0.32$ [$-0.74$, 0.10]), and removing the dates
+as well, which can tell the model the week of a news story, gives 17.37 and 0.683 ($-0.45$ [$-0.87$, $-0.03$]).
+
+For the language models, we drew 1,000 articles at random among those with boilerplate (8.7\% of their words on
+average) and compared the predictions of the saved fold models, which did not see the outlet of the article, on the
+original text and on the text without boilerplate (Table~\ref{tab:reading}). Without these lines the predictions fall
+by 0.7--1.5 points on average and the error on these articles grows by 0.5--1.1 points, since the models were trained
+with them, but the two predictions remain highly correlated, most of all for Mistral-Small-24B.
+
+The ridge head of Mistral-Small-24B reads the standardized mean of the $T$ token states $\mathbf{h}_t$ of layer 27, so
+its prediction is $c + \frac{1}{T}\sum_{t=1}^{T}\mathbf{h}_t^\top\tilde{\mathbf{w}}$, where $\tilde{\mathbf{w}}$ holds
+the ridge weights divided by the standard deviations of the features and $c$ collects the intercept and the means. Each
+term of the sum is the contribution of one token, and the decomposition is exact, as computed again on the first 300
+articles of the sample, where it matches the saved predictions within 0.04 points. The boilerplate tokens are 8.2\% of
+the tokens of these articles, they contribute 1.9 points to a prediction on average, in absolute value, against a
+standard deviation of the predictions of 17.5 points, and they account for 12\% of the variance of the predictions (the
+covariance of their contribution with the prediction divided by the variance of the prediction). They weigh slightly
+more than their share of the tokens, but most of the prediction comes from the rest of the text.
+
+\begin{table}[h]
+\centering
+\caption{1,000 articles with boilerplate: article MAE of the saved fold models on the original text and on the text
+without boilerplate, mean absolute change of the prediction and Pearson correlation between the two predictions.}
+\label{tab:reading}
+\begin{tabular}{lcccc}
+\toprule
+model & MAE, original & MAE, without boilerplate & mean change & $r$ \\
+\midrule
+TF-IDF & 19.3 & 20.4 & 3.3 & 0.954 \\
+Qwen3-Embedding-8B & 18.7 & 19.5 & 4.8 & 0.936 \\
+Mistral-Small-24B & 17.0 & 17.5 & 2.0 & 0.982 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \section{Who is left out by the cleaning}\label{app:selection}
 Table~\ref{tab:selection} describes the 1,293 political outlets sent to the scraper by the step at which they left the
 dataset. The outlets that could not be collected and those removed with the duplicates are much less reliable than
-those in the dataset, and the second group is almost entirely made of the network of 164 copies of
+those in the dataset, and the second group consists almost entirely of the network of 164 copies of
 Section~\ref{M-sec:groups}.
 
 \begin{table}[h]
@@ -225,23 +269,24 @@ You are an expert media analyst. NewsGuard rates news and information websites w
 
 \section{What else was tried on these outlets}\label{app:tried}
 The rules of the dataset, the split and the models of the paper were fixed in earlier rounds of experiments on the same
-226 outlets, whose test results we saw. We list them so that the comparisons can be read accordingly; the ridge penalty
-and the Mistral layer are the only choices made inside the training folds.
+226 outlets, whose test results we saw. We list these experiments below so that the comparisons of the paper can be read
+accordingly. The ridge penalty and the Mistral layer are the only choices made inside the training folds.
 \begin{itemize}
-  \item Classification of the five NewsGuard levels instead of regression of the score, with TF-IDF, the frozen models
-        and ModernBERT.
-  \item Other models: Gemma-27B as a frozen encoder, dropped because its half-precision outputs overflowed on our GPU;
-        layer 40 of Mistral-Small-24B, now chosen on the inner folds; DeBERTa as a fine-tuned encoder, in an earlier round
-        on the exact score with three splits of the outlets. The hyper-parameters of ModernBERT (5 epochs, learning rate
-        $3 \cdot 10^{-5}$) come from an earlier round on these outlets.
-  \item Fourteen other regressors on the frozen vectors of Qwen3-Embedding-8B and Mistral-Small-24B: kernel ridge, a
-        small neural network, attention over the articles of an outlet, models at the outlet level, weights for outlets
-        and rare scores, mixup. In that analysis no method was much better than the ridge (the best, the small neural
-        network, lowered the error of Mistral-Small-24B by about one point), and the advantage over TF-IDF did not depend
-        on the regressor.
-  \item Predictions re-mapped to the quantiles of the training scores, which lower the MAE, and outlets represented by
-        groups of their articles.
-  \item The rule-based anonymization of Section~\ref{app:anon}.
+  \item We classified the five NewsGuard levels instead of regressing the score, with TF-IDF, the frozen models and
+        ModernBERT.
+  \item We tried other models. Gemma-27B was tested as a frozen encoder and dropped, because its half-precision outputs
+        overflowed on our GPU, and layer 40 of Mistral-Small-24B is now one of the two layers chosen on the inner folds.
+        DeBERTa was tested as a fine-tuned encoder in an earlier round on the exact score with three splits of the
+        outlets, and the hyper-parameters of ModernBERT (5 epochs, learning rate $3 \cdot 10^{-5}$) come from an earlier
+        round on these outlets.
+  \item We trained fourteen other regressors on the frozen vectors of Qwen3-Embedding-8B and Mistral-Small-24B, including
+        kernel ridge, a small neural network, attention over the articles of an outlet, models at the outlet level,
+        weights for outlets and rare scores, and mixup. In that analysis no method was much better than the ridge (the
+        best, the small neural network, lowered the error of Mistral-Small-24B by about one point), and the advantage
+        over TF-IDF did not depend on the regressor.
+  \item We re-mapped the predictions to the quantiles of the training scores, which lowers the MAE, and represented the
+        outlets by groups of their articles.
+  \item We used the rule-based anonymization of Section~\ref{app:anon}.
 \end{itemize}
 The stability of the results over five splits of the outlets (Section~\ref{app:splits}) limits how much these choices
 can have adapted to the folds.
@@ -270,28 +315,26 @@ tool & \emph{Publisher Evaluation}: scores new articles with the released models
 \end{tabular}
 \end{table}
 
-The released models derive from base models distributed under the Apache-2.0 licence: the fine-tuned encoder from
-ModernBERT-base, and the two frozen representations from Qwen3-Embedding-8B and Mistral-Small-24B-Base-2501, whose
-weights are not redistributed but downloaded from Hugging Face by the tool. The anonymization uses the large
-GLiNER model of Section~\ref{M-sec:anon} (Apache-2.0), also downloaded on first use.
+The released models derive from base models distributed under the Apache-2.0 licence, the fine-tuned encoder from
+ModernBERT-base and the two frozen representations from Qwen3-Embedding-8B and Mistral-Small-24B-Base-2501, whose
+weights are not redistributed but downloaded from Hugging Face by the tool. The anonymization uses the large GLiNER model
+of Section~\ref{M-sec:anon} (Apache-2.0), also downloaded on first use.
 
-\paragraph{The tool.}
-\emph{Publisher Evaluation} runs on the user's machine, with a web interface and a command line
-(Figure~\ref{fig:tool}). Given a URL or a pasted text with the domain of its outlet, it extracts the text as in
-Section~\ref{M-sec:cleaning} and refuses what is outside the training data rather than extrapolating: pages that are not
-a single article, texts that are not in English or not between 100 and 1,500 words. A pasted text gets an identifier
-that marks it as given by the user, so that it is never mistaken for a downloaded page. The tool then anonymizes the
-text with the procedure of Section~\ref{M-sec:anon} and shows it with the placeholders highlighted and the list of the
-names the recognizer replaced, so that the user sees exactly what the models read. The user chooses which of the
-available models to run; each predicts the score of the outlet from this one article, and the score of an outlet is
-the mean over its stored articles, with the standard deviation and a bootstrap interval of this mean, which describe
-the spread of the article predictions, not the error of the outlet score (about 16 points on average,
-Table~\ref{M-tab:main}). The released predictions are
-loaded from the start, so the 226 outlets of the paper can be browsed, compared across models and exported, and a
-page lists the models found on disk with their status (ready, missing a GPU, invalid with the reason). Every number is
-presented as a model prediction, not as a rating: one article is a weak signal (Section~\ref{M-sec:stage1}). The tool
-runs on the user's machine and is meant for researchers and raters, not for publishing predictions about named
-outlets.
+\emph{Publisher Evaluation} runs on the user's machine, with a web interface and a command line (Figure~\ref{fig:tool}).
+Given a URL, or a pasted text with the domain of its outlet, it extracts the text as in Section~\ref{M-sec:cleaning} and
+refuses what lies outside the training data instead of extrapolating, that is pages that are not a single article and
+texts that are not in English or not between 100 and 1,500 words. A pasted text gets an identifier that marks it as given
+by the user, so that it is never mistaken for a downloaded page. The tool then anonymizes the text with the procedure of
+Section~\ref{M-sec:anon} and shows it with the placeholders highlighted and the list of the names that the recognizer
+replaced, so that the user sees exactly what the models read. The user chooses which of the available models to run, and
+each of them predicts the score of the outlet from this one article. The score of an outlet is the mean over its stored
+articles, shown with the standard deviation and a bootstrap interval of this mean, which describe the spread of the
+article predictions and not the error of the outlet score (about 16 points on average, Table~\ref{M-tab:main}). The
+released predictions are loaded from the start, so that the 226 outlets of the paper can be browsed, compared across
+models and exported, and a page lists the models found on disk with their status (ready, missing a GPU, or invalid, with
+the reason). Every number is presented as a model prediction and never as a rating, since one article is a weak signal
+(Section~\ref{M-sec:stage1}). The tool is meant for researchers and raters, and not for publishing predictions about
+named outlets.
 
 \begin{figure}[t]
 \centering
@@ -303,30 +346,26 @@ the models read, with the placeholders of the anonymization highlighted and the 
 \label{fig:tool}
 \end{figure}
 
-\paragraph{Models and fidelity.}
-The models are shipped in formats that execute no code from the model files: TF-IDF and the ridge heads as plain
-arrays, rebuilt by the tool, and ModernBERT as an ONNX graph in half precision, as in our experiments. Against the
-paper's predictions, the TF-IDF scores are identical and the ridge heads differ by less than $10^{-4}$ points on all
-the articles, and ModernBERT by 0.05 points on average (at most 1 point) on 1,500 checked articles; the anonymization
-of the tool reproduces that of the paper exactly on a sample of 40 articles. Qwen3-Embedding-8B and Mistral-Small-24B
-are downloaded once from Hugging Face and need a GPU (about 18 GB); without one, TF-IDF and ModernBERT score new
-articles on a CPU (about 1 s per article and fold for ModernBERT) and the released predictions of all four models
-remain available.
+The models are shipped in formats that execute no code from the model files, that is TF-IDF and the ridge heads as plain
+arrays rebuilt by the tool, and ModernBERT as an ONNX graph in half precision, as in our experiments. Against the
+predictions of the paper, the TF-IDF scores are identical and the ridge heads differ by less than $10^{-4}$ points on all
+the articles, while ModernBERT differs by 0.05 points on average (at most 1 point) on 1,500 checked articles, and the
+anonymization of the tool reproduces that of the paper exactly on a sample of 40 articles. Qwen3-Embedding-8B and
+Mistral-Small-24B are downloaded once from Hugging Face and need a GPU with about 18 GB of memory. Without a GPU, TF-IDF
+and ModernBERT score new articles on a CPU (about 1 s per article and fold for ModernBERT), and the released predictions
+of all four models remain available.
 
-\paragraph{Leakage guard.}
 The model of fold $k$ was trained on the outlets of the other four folds. For an article of one of the 226 outlets, the
-tool uses only the model of the fold that held that outlet out, so that no outlet is scored by a model that saw it in
-training; for a new outlet, the score is the mean of the five fold models. An article of the paper that is evaluated
-again keeps its id and is never counted twice.
+tool therefore uses only the model of the fold that held that outlet out, so that no outlet is scored by a model that saw
+it in training, while for a new outlet the score is the mean of the five fold models. An article of the paper that is
+evaluated again keeps its identifier and is never counted twice.
 
-\paragraph{Custom models.}
-Users can add their own regressors of the 0--100 score as ONNX graphs, reading either the anonymized text or its
-tokens. A custom model is used only after strict checks: a valid graph with only the operators built into ONNX and
-onnxruntime, exactly the declared inputs and a single score output, and a probe run on 20 synthetic anonymized articles
-(finite scores within the scale, not all equal, the same when scored again and when scored in a batch). Its manifest
-declares which outlets it was trained on, and the same leakage guard applies (a model that declares nothing is never
-used on the 226 outlets); its predictions are stored with the hash of its files and never pooled with those of the
-paper's models.
-
+Users can also add their own regressors of the 0--100 score as ONNX graphs, reading either the anonymized text or its
+tokens. A custom model is used only after strict checks, which require a valid graph with only the operators built into
+ONNX and onnxruntime, exactly the declared inputs and a single score output, and a probe run on 20 synthetic anonymized
+articles, in which the scores must be finite, within the scale, not all equal, and the same when scored again and when
+scored in a batch. The manifest of a custom model declares which outlets it was trained on, and the same leakage guard
+applies, so that a model that declares nothing is never used on the 226 outlets. Its predictions are stored with the hash
+of its files and never pooled with those of the models of the paper.
 
 \end{document}
