@@ -1057,3 +1057,78 @@ pd.DataFrame(out).query("check == 'TF-IDF retrained'").round(3)"""),
 R.to_csv(C.OUT / "paper_boilerplate.csv", index=False)
 R.round(3)"""),
 ], "18_boilerplate.ipynb")
+
+# ------------------------------------------------------------------------------------------------ 19. held-out outlets
+notebook([
+    md("""# 19. Replication on held-out outlets (pre-registered)
+
+The plan is in `PREREGISTRATION_19.md`, committed before this notebook was run: read it first. Two sets of outlets on
+which no test result was ever computed: **A**, non-political NewsGuard outlets (main test), and **B**, political outlets
+with fewer than 10 articles (in-domain check). The saved fold models of step 7 are applied without any change; the
+prediction of an article is the mean of the five fold models, the score of an outlet the mean over its articles.
+
+Primary hypothesis (set A): MAE of Mistral-24B lower than that of TF-IDF (95% interval of the difference below zero).
+Details in `heldout.py`; the numbers in `paper_heldout.csv`."""),
+    code("""N_JOBS = 32
+GPU_GB = 19
+B = 10_000"""),
+    code(SETUP + """
+
+import cleaning as CL
+import heldout as HO
+import metrics as ME
+import models as MO
+import paper as PA
+
+paper_art, outlets = MO.load()                                   # anonymous text of the 226 outlets, with folds
+paper_raw = pd.read_csv(C.OUT / "articles.csv.gz")               # original text (for the duplicates)
+ng = CL.read_newsguard(C.NEWSGUARD)"""),
+    md("## The held-out outlets"),
+    code("""A, steps = HO.set_a(paper_raw, N_JOBS, LOG)
+display(steps)
+Bset = HO.set_b(paper_raw, N_JOBS, LOG)
+print(f"A: {A.domain.nunique()} outlets, {len(A):,} articles | B: {Bset.domain.nunique()} outlets, {len(Bset):,} articles")"""),
+    code("""anon = HO.anonymize(pd.concat([A, Bset], ignore_index=True), LOG)
+control = HO.control_articles(paper_art, outlets.fold)
+art = pd.concat([anon[["article_id", "domain", "title", "date", "text", "set"]], control], ignore_index=True)
+held = art[art.set != "control"].groupby("domain").agg(set=("set", "first"), articles=("article_id", "size"))
+held["score"] = held.index.map(ng.Score).astype(float)
+held["orientation"] = held.index.map(ng.Orientation).fillna("none")
+held["level"] = C.level_from_score(held.score.to_numpy())
+held.to_csv(HO.DIR / "outlets.csv")
+display(held.groupby("set").agg(outlets=("score", "size"), articles=("articles", "sum"), mean_score=("score", "mean")).round(1))
+pd.crosstab(held.set, held.level)"""),
+    md("## Predictions of the frozen models, and the check on the 226 outlets"),
+    code("""F = HO.fold_predictions(art, GPU_GB, LOG)
+paper_pred = {m: MO.predictions("regression", m).set_index("article_id").prediction for m in HO.MODELS}
+check = HO.check_control(F, paper_pred)
+print("largest difference from the saved predictions of step 7 (control articles):", check)
+assert max(check.values()) < 1.0, "the pipeline does not reproduce step 7: fix it before looking at any result\""""),
+    md("## Results (as pre-registered)"),
+    code("""S = HO.outlet_scores(F, held)
+S["no text (median)"] = outlets.score.median()
+S["no text (mean)"] = outlets.score.mean()
+S["orientation only"] = held.orientation.map(outlets.groupby("orientation").score.mean()).fillna(outlets.score.mean())
+rows = []
+for s in ["A", "B"]:
+    h = held[held.set == s]
+    y, idx = h.score.to_numpy(), PA.resamples(len(h), B)
+    V = {m: ME.resampled_measures(S.loc[h.index, m].to_numpy(), y, idx, ["MAE", "Spearman", "within 20"]) for m in S.columns}
+    for m, res in V.items():
+        for mes, x in res.items():
+            r = {"set": s, "outlets": len(h), "model": m, "measure": mes, "value": x[0],
+                 "low": np.nanpercentile(x[1:], 2.5), "high": np.nanpercentile(x[1:], 97.5)}
+            if m in ["Qwen3-8B", "Mistral-24B", "ModernBERT"] and mes in ("MAE", "Spearman"):
+                r.update(PA.compare(x, V["TF-IDF"][mes], mes))
+            rows.append(r)
+R = pd.DataFrame(rows)
+primary = (R.set == "A") & (R.model == "Mistral-24B") & (R.measure == "MAE")
+secondary = R.p.notna() & ~primary
+R.loc[secondary, "p Holm"] = PA.holm(R.loc[secondary, "p"].to_numpy())
+R.to_csv(C.OUT / "paper_heldout.csv", index=False)
+p = R[primary].iloc[0]
+print(f"PRIMARY (set A): MAE Mistral-24B - TF-IDF = {p['diff']:.2f} [{p.dlo:.2f}, {p.dhi:.2f}], p = {p.p:.4f} -> "
+      + ("replicated" if p.dhi < 0 else "NOT replicated"))
+R.pivot_table(index=["set", "model"], columns="measure", values="value").round(3)"""),
+    code("""R[R.p.notna()][["set", "model", "measure", "value", "diff", "dlo", "dhi", "p", "p Holm"]].round(4)"""),
+], "19_heldout.ipynb")
