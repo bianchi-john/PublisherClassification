@@ -15,18 +15,16 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,shapes.misc}
 \usepackage[numbers,sort&compress]{natbib}
-\usepackage{xr-hyper}
 \usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
 \def\UrlBreaks{\do\/\do-\do\_\do.}
 \usepackage{authblk}
 \usepackage{orcidlink}
 \renewcommand\Affilfont{\small}
 
-\externaldocument[S-]{supplementary}
 \newcommand{\todo}[1]{\textcolor{red}{[\textbf{TODO:} #1]}}
 \newcommand{\anon}{\operatorname{anon}}
 
-\title{Reading the Source: Predicting the Reliability of Unseen News Publishers from the Anonymized Text
+\title{Traces of Reliability: Predicting the Rating of Unseen News Publishers from the Anonymized Text
 of Their Articles}
 \author[1]{John Bianchi\,\orcidlink{0009-0006-2582-1480}\thanks{Corresponding author: John Bianchi
 (\texttt{john.bianchi@imtlucca.it}).}}
@@ -43,22 +41,21 @@ of Their Articles}
 \maketitle
 
 \begin{abstract}
-Expert organizations rate the reliability of news publishers, but they can review only a limited number of outlets.
-Computational methods could extend these ratings, yet they are usually evaluated in settings where a model can recognize
-the publisher from its name, its journalists, its links or the sister sites that share its articles. In this work, we
-investigate whether the NewsGuard score (0--100) of a publisher never seen in training can be inferred from the text of
-its articles once its explicit identifiers are masked. We build a dataset of 25,524 articles from 226 English-language
-political outlets, with duplicates removed across outlets and one outlet per owner, and we replace links, e-mail
-addresses, the outlet's own name and every outlet and journalist mentioned in the text with placeholders. Under an
-outlet-disjoint cross-validation, a ridge regression on the hidden states of the frozen Mistral-Small-24B predicts the
-score of unseen outlets with a mean absolute error of 15.8 points, against 17.8 for TF-IDF and 22.1 for the best
-constant prediction. With five articles per outlet, its error is already lower than that of TF-IDF with all of them. The
-gain is limited to the larger pretrained models: the small encoders we tested do not outperform TF-IDF, frozen or
-fine-tuned, and an instruction-tuned model asked directly for the score ranks the outlets about as well as their
-political orientation. Training on the same outlets, or on outlets of the same owner with their copies, lowers the error
-by 6--12 points, whereas masking the identifiers changes it by less than half a point. At equal NewsGuard score, the
-models place left-leaning outlets about 9 points above right-leaning ones. We release the code, the trained models, the
-out-of-fold predictions and a local tool that applies the method to new articles.
+Professional raters such as NewsGuard judge a news outlet by how it works: whether it publishes false content, corrects
+its errors, separates news from opinion and discloses who owns it. These practices are checked outside the articles,
+but they may leave a trace in everything an outlet writes. We ask whether this trace is enough to predict the rating of
+an outlet that a model has never seen, after removing from its articles everything that names it. We collect 25,524
+articles from 226 English-language political outlets rated by NewsGuard, remove the articles copied across outlets, keep
+one outlet per owner, and replace links, e-mail addresses and the names of outlets and journalists with placeholders. A
+model scores each article, and the score of an outlet is the mean over its articles. With a ridge regression on the
+hidden states of the frozen Mistral-Small-24B, the predicted NewsGuard score (0--100) of an unseen outlet is off by 15.8
+points on average, against 17.8 for TF-IDF and 22.1 for a constant prediction. Few articles are needed: with five
+articles per outlet, Mistral-Small-24B is already more accurate than TF-IDF reading all the articles of each outlet. Only
+large models capture the trace, since small encoders, frozen or fine-tuned, are no better than TF-IDF, and asking the
+model for the score directly works poorly. Masking the names changes the error by less than half a point, while letting
+the same outlet or its sister sites into training lowers it by 6--12 points, so weaker evaluation protocols overstate
+the results. Finally, the models predict about 9 points more for a left-leaning outlet than for a right-leaning outlet
+with the same NewsGuard score. We release the code, the models, the predictions and a local tool.
 \end{abstract}
 
 \noindent\textbf{Keywords:} news source reliability; publisher reliability inference; media profiling; anonymization;
@@ -68,236 +65,212 @@ large language models; text regression; NewsGuard.
 \section{Introduction}\label{sec:intro}
 
 In contemporary digital media ecosystems, assessing the reliability of news publishers has become an important means
-of limiting the spread of misleading or low-quality information~\cite{Bowman2003,Jemielniak2020}. Professional
-organizations such as NewsGuard, the Global Disinformation Index and Media Bias/Fact Check evaluate news outlets
-according to journalistic standards, including transparency, editorial accountability, factual accuracy and correction
-practices. Despite methodological differences, these systems largely agree and provide a stable foundation for
-reliability labeling~\cite{lin2023high,DBLP:conf/icwsm/PratelliP22}. Their assessments are made at the level of the
-publisher by trained journalists, so many outlets, especially new and small ones, remain unrated for a long time.
+of limiting the spread of misleading or low-quality information~\cite{Bowman2003,Jemielniak2020}. Organizations such as
+NewsGuard, the Global Disinformation Index and Media Bias/Fact Check rate news outlets on journalistic standards such as
+transparency, editorial accountability, factual accuracy and corrections, and their ratings largely
+agree~\cite{lin2023high,DBLP:conf/icwsm/PratelliP22}. Each rating is made by trained journalists, outlet by outlet, so
+many outlets, especially new and small ones, remain unrated for a long time.
 
-A large body of computational work formulates credibility assessment as an article-level classification
-task~\cite{pandolfi2020automatic,Przybyla2021plugin,10.1145/3770077,DBLP:journals/dbsk/AdjiLS26}, while media profiling
-predicts the factuality and the bias of a source from its articles and other signals~\cite{baly2018predicting,
-baly2020written,nakov2024survey}. When the labels come from publisher-level ratings, two shortcuts can inflate the
-results. First, the same publisher may appear in training and test data, and a model then learns the publisher instead
-of transferable indicators of reliability~\cite{zhou2021hidden,azizov-etal-2024-safari,verhoeven2025yesterday}. Second,
-even when publishers are kept apart, the text carries the identity of its source: the outlet's name in signatures and
-boilerplate, the names of its journalists, the links to its own pages and, as we show in Section~\ref{sec:groups},
-entire articles copied across networks of sites with the same owner. A model can then recognize an outlet, or one of its
-sisters, without reading its text. In previous work we classified articles into the reliability levels of their
-publishers~\cite{Bianchi2024SAC}. Here we remove both shortcuts and ask how much of a professional reliability rating
-can be recovered from the anonymized text of a publisher that the model has never seen.
+Automatic methods could help. Many predict credibility from articles~\cite{pandolfi2020automatic,Przybyla2021plugin,
+10.1145/3770077,DBLP:journals/dbsk/AdjiLS26} or profile media sources from their articles and other
+signals~\cite{baly2018predicting,baly2020written,nakov2024survey}. When the labels come from ratings of publishers,
+however, two problems can make the results look better than they are. First, if the same publisher is in the training
+and in the test data, a model can learn to recognize the publisher instead of learning what makes it
+reliable~\cite{zhou2021hidden,azizov-etal-2024-safari,verhoeven2025yesterday}. Second, even with different publishers
+in training and test, the text often reveals its source: the outlet's name, the names of its journalists, the links to
+its own pages and, as we show in Section~\ref{sec:groups}, whole articles copied across sites of the same owner. In both
+cases a model can recognize an outlet without judging its writing. In previous work we classified articles into the
+reliability levels of their publishers~\cite{Bianchi2024SAC}. Here we remove both problems.
 
-The text cannot show a rating directly. Journalists verify NewsGuard's criteria outside the articles, for instance by checking the claims of an outlet against
-other sources or reading its \emph{about} pages for the disclosure of ownership and financing. The articles can nonetheless carry traits that go with these practices, such as how claims are
-sourced and hedged, how news is separated from opinion, and which topics are covered and in what tone. We look for such traits without trying to identify the publisher.
+Our question is simple: can the NewsGuard score of an outlet that the model has never seen be predicted from its
+articles once every name has been removed? The answer is not obvious, because NewsGuard checks its criteria outside the
+articles, for instance by verifying claims against other sources or by reading the \emph{about} page of an outlet for
+its ownership and financing. Still, the way an outlet works may leave traces in how it writes: how it sources and hedges
+claims, whether it separates news from opinion, which topics it covers and in what tone. We look for these traces, and
+not for the identity of the outlet.
 
-We address this question as a publisher-level regression problem. Language models predict the score of individual
-articles, and the predictions for the articles of a publisher are averaged into its score. To approximate the use of
-such a system on unrated outlets, the test outlets are never seen in training, outlets of the same owner never fall on
-different sides of a split, duplicated articles are removed across outlets, and every article is anonymized before any
-model reads it. Our contributions are fivefold:
+We treat the problem as a regression at the level of the publisher. A model predicts a score for each article, and the
+score of a publisher is the mean of the predictions for its articles, so the judgment on an outlet always rests on
+several articles. The evaluation follows four rules: the test outlets never appear in training, outlets of the same
+owner are never split between training and test, articles copied across outlets are removed, and every article is
+anonymized before any model reads it. Our contributions are:
 \begin{enumerate}
-  \item We build a dataset of 25,524 articles from 226 English-language political outlets with NewsGuard scores, using
-        simple rules, and show that copied articles almost always link outlets of the same owner and that the largest
-        such network (164 sites) would otherwise dominate the least reliable level (Section~\ref{sec:data}).
-  \item We anonymize the articles by masking the outlet's own name and, with a zero-shot named-entity recognizer, every
-        outlet and journalist they mention (Section~\ref{sec:anon}).
-  \item We compare TF-IDF, frozen language models from 0.6 to 24 billion parameters with a linear head, a fine-tuned
-        encoder and a zero-shot language model, and find that the large frozen models lower the error of TF-IDF by up
-        to 2 points with any number of articles per outlet (Sections~\ref{sec:setup}--\ref{sec:k}).
-  \item We measure what each protection of the protocol is worth on the same test outlets: an article-level split, or
-        outlets of the same owner with their copies, lowers the error by 6--12 points, while masking the identifiers
-        changes it by less than half a point (Section~\ref{sec:ladder}).
-  \item We analyze the errors by reliability level and political orientation, and we release the code, the models, the
-        predictions and a local tool (Sections~\ref{sec:errors}--\ref{sec:tool}).
+  \item A dataset of 25,524 articles from 226 English-language political outlets with NewsGuard scores, built with a few
+        explicit filters (language, length, date, duplicates, one outlet per owner). We show that copied articles almost
+        always link outlets of the same owner, and that a single network of 164 sites would otherwise fill the least
+        reliable level (Section~\ref{sec:data}).
+  \item An anonymization that masks the outlet's own name and, with a zero-shot named-entity recognizer, every outlet and
+        journalist in the text (Section~\ref{sec:anon}).
+  \item A comparison of TF-IDF, frozen language models from 0.6 to 24 billion parameters, a fine-tuned encoder and a
+        zero-shot model. The large frozen models are the most accurate, with an error up to 2 points lower than TF-IDF
+        for any number of articles per outlet (Sections~\ref{sec:setup}--\ref{sec:k}).
+  \item A measure of how much each rule of the protocol matters: splitting articles instead of outlets, or training on
+        outlets of the same owner, lowers the error by 6--12 points, while masking the names changes it by less than
+        half a point (Section~\ref{sec:ladder}).
+  \item An analysis of the errors by reliability level and political orientation, and the release of the code, the
+        models, the predictions and a local tool (Sections~\ref{sec:errors}--\ref{sec:tool}).
 \end{enumerate}
 
 % =====================================================================================================================
 \section{Related Work}\label{sec:related}
 
-\paragraph{Publisher reliability.} Credibility assessment has long been studied at the level of individual
-articles~\cite{pandolfi2020automatic,10.1145/3770077}, but the reputation of the source strongly shapes the perceived
-quality of information~\cite{doi:10.1080/07421222.2019.1628921}. Rating systems such as NewsGuard, the Global
-Disinformation Index and Media Bias/Fact Check (MBFC) largely agree and are commonly used as ground truth for automated
-models~\cite{lin2023high,DBLP:conf/icwsm/PratelliP22}. The reliability of a publisher has been estimated from stylistic
-patterns~\cite{przybyla2020capturing}, although style separates hyperpartisan from mainstream outlets better than it
-detects fake news~\cite{potthast2018stylometric}; from user interactions, social networks, web graphs and
-metadata~\cite{bazmi2023multi,DBLP:conf/ecir/PratelliSP25,DBLP:conf/icwsm/WilliamsCC25,DBLP:journals/jdiq/LongoZCZC25};
-and, in media profiling, from articles combined with Wikipedia, social media and audience
-signals~\cite{baly2018predicting,baly2020written,nakov2024survey}. Large language models have also been asked to rate
-named sources~\cite{yang2023large} or to produce weak credibility labels~\cite{Leite2025}. Asking a model about a named
-outlet, however, measures what the model already knows about it, which is why we mask the outlet before any model reads
-its articles.
+\paragraph{Publisher reliability.} Credibility is often assessed article by article~\cite{pandolfi2020automatic,
+10.1145/3770077}, but the reputation of the source strongly shapes how information is
+perceived~\cite{doi:10.1080/07421222.2019.1628921}. The ratings of NewsGuard, the Global Disinformation Index and Media
+Bias/Fact Check (MBFC) largely agree and are widely used as ground truth~\cite{lin2023high,DBLP:conf/icwsm/PratelliP22}.
+The reliability of a publisher has been predicted from writing style~\cite{przybyla2020capturing,potthast2018stylometric},
+from user interactions, social networks, web graphs and
+metadata~\cite{bazmi2023multi,DBLP:conf/ecir/PratelliSP25,DBLP:conf/icwsm/WilliamsCC25,DBLP:journals/jdiq/LongoZCZC25},
+and from articles combined with Wikipedia, social media and audience
+data~\cite{baly2018predicting,baly2020written,nakov2024survey}. Large language models have also been asked to rate named
+sources~\cite{yang2023large} or to produce weak credibility labels~\cite{Leite2025}. Given the name of a source, however,
+a model may simply recall what it knows about it, which is why we mask the names.
 
-\paragraph{Datasets and generalization.} Datasets with source-level labels include NELA-GT~\cite{gruppi2021nela}, a
-Czech dataset with four reliability levels~\cite{bohavcek2022fine} and a standardized version of the BAT
-corpus~\cite{DBLP:journals/dbsk/AdjiLS26,batDataset}. Zhou et al.~\cite{zhou2021hidden} showed that models trained on
-labels inherited from the sources learn the sources themselves, that random article splits overestimate performance, and
-that the accuracy on a test site grows with its similarity to training sites with the same label. Later work confirmed
-that performance drops under shifts of domain, time and
-publisher~\cite{azizov-etal-2024-safari,burdisso-etal-2024-reliability,verhoeven2025yesterday}. Publisher-disjoint
-splits, used for instance in the hyperpartisan task of SemEval-2019~\cite{kiesel2019semeval}, solve part of the problem.
-They do not prevent sites of the same network from falling on both sides of a split, and they leave the identifiers in
-the text. We handle these two cases with ownership groups, deduplication across outlets and anonymization.
-
-\paragraph{Closest studies.} Table~\ref{tab:related} compares our setting with the studies closest to it, which predict
-reliability mainly from the text, with labels given to the sources. All those that test on unseen sources report a large
-drop in performance: from 0.91 to 0.65 F1 in Rashkin et al.~\cite{rashkin2017truth}, from 0.94 to 0.86 AUC in Horne et
-al.~\cite{horne2019robust}, from 0.998 to 0.796 accuracy for BERT in Przyby{\l}a~\cite{przybyla2020capturing} and from
-0.97 to 0.72 AUC in Bozarth and Budak~\cite{bozarth2020toward}. None of them keeps the outlets of the same owner apart,
-although outlets often share content~\cite{horne2019spirals} and this sharing is itself a signal of
-veracity~\cite{gruppi2021tell}, and only Bozarth and Budak remove the names of the outlets from the text. All of them
-predict classes. Continuous degrees of reliability have been estimated from the links between news
-sites~\cite{burdisso-etal-2024-reliability} and from the web graph, the text and time together~\cite{kondrup2026credibench},
-and the credibility of unnamed domains has been classified from their articles by a large language model with web search
-and link signals~\cite{eldifrawi2026temporal}. We predict the score on its full scale from the anonymized text alone,
-with all the protections above, and we measure what each of them changes.
+\paragraph{Evaluation on unseen sources.} Zhou et al.~\cite{zhou2021hidden} showed that models trained on labels
+inherited from the sources learn the sources themselves, and that random splits of the articles overestimate
+performance. Later work found that performance drops under shifts of domain, time and
+publisher~\cite{azizov-etal-2024-safari,burdisso-etal-2024-reliability,verhoeven2025yesterday}. Table~\ref{tab:related}
+compares the studies closest to ours, which predict reliability mainly from text with labels given to the sources. All
+those that compare seen with unseen sources report a drop: from 0.91 to 0.65 F1 in Rashkin et
+al.~\cite{rashkin2017truth}, from 0.94 to 0.86 AUC in Horne et al.~\cite{horne2019robust}, from 0.998 to 0.796 accuracy
+in Przyby{\l}a~\cite{przybyla2020capturing} and from 0.97 to 0.72 AUC in Bozarth and Budak~\cite{bozarth2020toward}.
+None of them keeps the outlets of the same owner apart, although outlets often share
+content~\cite{horne2019spirals,gruppi2021tell}, only Bozarth and Budak remove the names of the outlets, and all predict
+classes. Continuous reliability has been estimated from the links between news
+sites~\cite{burdisso-etal-2024-reliability} and from the web graph, the text and time~\cite{kondrup2026credibench}, and
+Eldifrawi et al.~\cite{eldifrawi2026temporal} classify the credibility of domains, without their names, from the
+judgments of a language model on their articles, with evidence from web search, aggregated by a decision tree. We
+predict the full 0--100 score from the anonymized text alone, under all the protections above. Datasets with
+source-level labels include NELA-GT~\cite{gruppi2021nela}, a Czech dataset~\cite{bohavcek2022fine} and the BAT
+corpus~\cite{DBLP:journals/dbsk/AdjiLS26,batDataset}, and splits by publisher were already used in the hyperpartisan
+task of SemEval-2019~\cite{kiesel2019semeval}.
 
 \begin{table}[t]
 \centering\small
-\caption{The closest studies. \emph{Input}: \emph{other} are Wikipedia, Twitter, URL and traffic; \emph{links}: a
-separate model on web links. \emph{Unseen sources}: test sources absent from the training data (\emph{in part}: in one
-experiment). \emph{Owners apart}: outlets of the same owner never on both sides of the split. \emph{Names masked}:
-source identifiers removed from the text (\emph{all}: outlets, journalists, links, e-mail addresses). --: not done or
-not reported. The targets are classes per article, except Baly et al.\ and Eldifrawi et al.\ (per source) and this work.}\label{tab:related}
+\caption{Comparison with the closest studies. Each row is a study and each column a property of its setting: what the model reads (\emph{other}: Wikipedia, Twitter, URL and traffic for Baly et al., backlinks and page design for
+Eldifrawi et al.; \emph{links}: a separate model on the links between domains, which predicts per domain), where the
+labels come from, whether the test sources are absent from training (\emph{in part}: in one experiment), whether outlets
+of the same owner are kept on the same side of the split, which names are removed from the text (\emph{all}: outlets,
+journalists, links and e-mail addresses), and what is predicted. --: not done or not reported.}\label{tab:related}
 \footnotesize\setlength{\tabcolsep}{3.5pt}
+\resizebox{\linewidth}{!}{%
 \begin{tabular}{lllllll}
 \toprule
 study & input & labels & unseen & owners & names & target \\
  & & & sources & apart & masked & \\
 \midrule
-Rashkin et al.~\cite{rashkin2017truth} & text & source type & yes & -- & -- & 4 classes \\
-Baly et al.~\cite{baly2018predicting} & text + other & MBFC & yes & -- & -- & 3 classes \\
-Fairbanks et al.~\cite{fairbanks2018credibility} & text; links & MBFC & -- & -- & -- & 2 classes \\
-Horne et al.~\cite{horne2019robust} & text & NewsGuard, OpenSources & in part & -- & -- & 2 classes \\
-Przyby{\l}a~\cite{przybyla2020capturing} & text & PolitiFact, Pew & in part & -- & -- & 2 classes \\
-Bozarth \& Budak~\cite{bozarth2020toward} & text or social & MBFC & in part & -- & outlets & 2 classes \\
-Eldifrawi et al.~\cite{eldifrawi2026temporal} & text + search, links & MBFC & in part & -- & -- & 3 classes \\
+Rashkin et al.~\cite{rashkin2017truth} & text & source type & yes & -- & -- & 4 classes per article \\
+Baly et al.~\cite{baly2018predicting} & text + other & MBFC & yes & -- & -- & 3 classes per source \\
+Fairbanks et al.~\cite{fairbanks2018credibility} & text; links & MBFC & -- & -- & -- & 2 classes per article \\
+Horne et al.~\cite{horne2019robust} & text + Wikipedia & NewsGuard, OpenSources & in part & -- & -- & 2 classes per article \\
+Przyby{\l}a~\cite{przybyla2020capturing} & text & PolitiFact, Pew & in part & -- & -- & 2 classes per article \\
+Bozarth \& Budak~\cite{bozarth2020toward} & text or social & MBFC & in part & -- & outlets & 2 classes per article \\
+Eldifrawi et al.~\cite{eldifrawi2026temporal} & text + search + other & MBFC & yes & -- & -- & 3 classes per source \\
 \midrule
-this work & text & NewsGuard & yes & yes & all & score 0--100 \\
+this work & text & NewsGuard & yes & yes & all & score 0--100 per source \\
 \bottomrule
-\end{tabular}
+\end{tabular}}
 \end{table}
 
-\paragraph{Models and anonymization.} Fine-tuned bidirectional encoders~\cite{devlin2019bert,warner2024modernbert} are
-the standard choice for text classification and regression. When the independent training units are few, an alternative
-is to use a large pretrained model as a frozen feature extractor and to train only a linear model on its
-representations, as with embedding models that follow a task instruction~\cite{zhang2025qwen3} or with the intermediate
-layers of decoder models, which often give better features than the last one~\cite{skean2025layer}. Standard
-anonymization tools target personal data, whereas we need to mask the identity of the publisher, which appears through
-the names of outlets and journalists. For this purpose we use GLiNER~\cite{zaratiana2024gliner}, a zero-shot
-named-entity recognizer that accepts entity types described in natural language.
+\paragraph{Models and anonymization.} Fine-tuned encoders such as BERT and
+ModernBERT~\cite{devlin2019bert,warner2024modernbert} are the usual choice for text classification and regression. When
+the independent training units are few, a common alternative is to keep a large pretrained model frozen and to train only
+a linear model on its representations, taken from embedding models that follow an instruction~\cite{zhang2025qwen3} or
+from the intermediate layers of decoder models~\cite{skean2025layer}. To mask outlets and journalists we use
+GLiNER~\cite{zaratiana2024gliner}, a zero-shot named-entity recognizer that accepts entity types described in natural
+language.
 
 % =====================================================================================================================
 \section{Problem Definition and Methodology}\label{sec:problem}
 
 \subsection{Problem definition}\label{sec:definition}
 Let $A$ be a corpus of news articles, each with a text $t_a$ and a publisher $p(a) \in P$, and let $A_p$ be the articles
-of publisher $p$. Each publisher has a reliability score $s(p) \in [0, 100]$ assigned by NewsGuard
-(Section~\ref{sec:labels}). Article-level annotations are not available, so every article inherits the score of its
-publisher and provides only partial and noisy evidence about it. Each publisher also has a political orientation
-$o(p) \in \{\text{left}, \text{right}, \text{none}\}$, taken from the \emph{Orientation} field of its NewsGuard rating and
-used only for the post-hoc analysis of Section~\ref{sec:orientation}. Before any model reads it, the text of an article
-is anonymized by a function $\anon$ that replaces the identifiers of outlets and journalists with placeholders
-(Section~\ref{sec:anon}).
+of publisher $p$. Each publisher has a NewsGuard score $s(p) \in [0, 100]$ (Section~\ref{sec:labels}). There are no
+labels for single articles, so every article inherits the score of its publisher. Each publisher also has a political
+orientation $o(p) \in \{\text{left}, \text{right}, \text{none}\}$ from its NewsGuard rating, used only to analyze the
+errors (Section~\ref{sec:orientation}). Before any model reads an article, a function $\anon$ replaces the names of
+outlets and journalists, the links and the e-mail addresses with placeholders (Section~\ref{sec:anon}).
 
-\paragraph{Stage 1: article-level estimation.} A regressor $f$ predicts the score of an article,
-$\hat{s}(a) = f(\anon(t_a))$.
+\paragraph{Stage 1: articles.} A regressor $f$ predicts the score of each article, $\hat{s}(a) = f(\anon(t_a))$.
 
-\paragraph{Stage 2: publisher-level inference.} The score of a publisher is the mean of the predictions for its
-articles, $\hat{s}(p) = \frac{1}{|A_p|} \sum_{a \in A_p} \hat{s}(a)$. Predicting it from a subset of $A_p$ shows how
-many articles are needed (Section~\ref{sec:k}).
+\paragraph{Stage 2: publishers.} The score of a publisher is the mean of the predictions for its articles,
+$\hat{s}(p) = \frac{1}{|A_p|} \sum_{a \in A_p} \hat{s}(a)$. All the results of the paper are computed on these
+publisher scores, except those of Section~\ref{sec:stage1}, and Section~\ref{sec:k} varies the number of articles used.
 
-\paragraph{Disjoint publishers and owners.} Since all the articles of a publisher share its score, a random split of the
-articles would let the model see the test labels during training. We therefore split the publishers, so that the
-publishers of the training and test data are disjoint,
+\paragraph{Separate publishers and owners.} Since all the articles of a publisher share its score, the split is made over
+publishers, so that the training and test publishers are disjoint,
 \begin{equation}\label{eq:disjoint}
 P_{\text{train}} \cap P_{\text{test}} = \emptyset .
 \end{equation}
-This condition is not sufficient when publishers of the same owner publish the same articles under different domains.
-We therefore also keep one publisher per ownership group $g(p)$ (Section~\ref{sec:groups}), so that $g(p) \neq g(q)$ for
-every $p \in P_{\text{train}}$ and $q \in P_{\text{test}}$, and we remove duplicated articles across all publishers.
+Publishers of the same owner may publish the same articles under different names. We therefore also keep one publisher
+per ownership group $g(p)$ (Section~\ref{sec:groups}), so that $g(p) \neq g(q)$ for every $p \in P_{\text{train}}$ and
+$q \in P_{\text{test}}$, and we remove duplicated articles across publishers.
 
 \subsection{Evaluation metrics and baselines}\label{sec:metrics}
-All the metrics compare $\hat{s}(p)$ with $s(p)$ on the publishers of the test folds. Section~\ref{sec:stage1} computes
-the same metrics on articles.
+Every metric compares the predicted score of each test publisher, that is the mean of the predictions for its
+articles, with its NewsGuard score. Only Section~\ref{sec:stage1} applies the same metrics to single articles.
 
-\paragraph{Error.} Our primary metric is the mean absolute error, $\mathrm{MAE} = \frac{1}{|P|} \sum_{p} |\hat{s}(p) -
-s(p)|$, in NewsGuard points, since a user of the prediction needs to know how far it is from the rating. We also report
-the share of publishers predicted within 20 points of their score, $\frac{1}{|P|} |\{p : |\hat{s}(p) - s(p)| \leq
-20\}|$, which tells whether a prediction is roughly right; 20 points is the width of the second NewsGuard level (40--59)
-and a fifth of the scale.
+\paragraph{Error.} The main metric is the mean absolute error, $\mathrm{MAE} = \frac{1}{|P|} \sum_{p} |\hat{s}(p) -
+s(p)|$, in NewsGuard points: how far, on average, a prediction is from the rating. We also report the share of
+publishers predicted within 20 points of their score, the width of the second NewsGuard level (40--59).
 
-\paragraph{Ranking.} A reliability score is also used to rank sources, for instance to decide which unrated outlets a
-human rater should review first. As secondary metrics we report Spearman's rank correlation $\rho$ between predicted and
-true scores and Kendall's $\tau_b$, which accounts for ties, since the NewsGuard scores of the 226 outlets take only 45
-distinct values. Both are insensitive to monotone transformations of the predictions, and therefore to a model that
-ranks the outlets correctly but compresses their scores. Supplementary Section~\ref{S-app:measures} adds $R^2$, the root
-mean squared error and the area under the ROC curve for telling reliable outlets (score $\geq 60$, the NewsGuard
-threshold) from the others.
+\paragraph{Ranking.} To rank outlets, for instance to decide which unrated outlets to review first, the order of the
+predictions matters more than their values. We report Spearman's $\rho$ and Kendall's $\tau_b$, which handles ties (the
+226 outlets have only 45 distinct scores). Appendix~\ref{app:measures} adds $R^2$, the root mean squared
+error and the AUC for separating reliable outlets (score $\geq 60$) from the others.
 
-\paragraph{Baselines.} Three baselines use no text:
+\paragraph{Baselines.} TF-IDF with a ridge regression (Section~\ref{sec:setup}) is the reference text model: every
+language model is compared with it. Three further baselines use no text:
 \begin{itemize}
-  \item \textbf{Training median:} the best constant prediction for the MAE, computed on the training publishers of each
-        fold.
-  \item \textbf{Training mean:} the best constant for the squared error. Neither constant has any ranking ability.
-  \item \textbf{Orientation only:} the mean training score of the publishers with the same political orientation. It
-        measures how much of the score could be guessed from the political side alone, which matters because orientation
-        and reliability are strongly associated in our data (Figure~\ref{fig:dataset}a).
+  \item \textbf{Training median:} the best constant prediction for the MAE, computed on the training publishers.
+  \item \textbf{Training mean:} the best constant prediction for the squared error.
+  \item \textbf{Orientation only:} the mean training score of the publishers with the same political orientation, to
+        show how much of the score the political side alone gives.
 \end{itemize}
 
-\paragraph{Statistical testing.} Intervals are 95\% percentile bootstrap intervals over
-publishers~\cite{efron1979bootstrap}, with 10,000 resamples for the results with all the articles and 2,000 for the
-curves by number of articles (Section~\ref{sec:k}). Two models are compared on the same resampled publishers (paired
-bootstrap), with a two-sided bootstrap $p$-value. The $p$-values are corrected with the Holm
-method~\cite{holm1979simple} within three families of tests: the comparisons of every model with TF-IDF on the four
-metrics (24 tests), the curves of each model against TF-IDF (16 tests per model), and the comparisons behind specific
-statements of the text (24 tests). A comparison that belongs to two families, such as a model against TF-IDF with all
-the articles, is reported from the first. Our primary comparison is the MAE of the large frozen models against TF-IDF. A difference is significant when it
-remains so after the correction, at the 5\% level; uncorrected intervals (Section~\ref{sec:ladder}, Supplementary
-Section~\ref{S-app:anon}) are stated as such. Systematic errors are studied through the signed error $\hat{s}(p) - s(p)$ per NewsGuard level and per orientation
-(Sections~\ref{sec:errors}--\ref{sec:orientation}).
+\paragraph{Statistical testing.} Intervals are 95\% bootstrap intervals over publishers~\cite{efron1979bootstrap}. Two
+models are compared on the same bootstrap resamples, and the $p$-values are corrected for multiple comparisons with the
+Holm method~\cite{holm1979simple} (Appendix~\ref{app:stats}). We call a difference significant when it
+remains so after the correction, at the 5\% level.
 
 % =====================================================================================================================
 \section{Dataset}\label{sec:data}
 
 \subsection{Ground truth: NewsGuard}\label{sec:labels}
-The publisher-level score $s: P \rightarrow [0, 100]$ comes from NewsGuard~\cite{newsguard}, a professional media rating
-service in which trained journalists evaluate online news outlets. Each outlet is assessed against nine journalistic
-criteria, which include whether it repeatedly publishes false content, gathers and presents information responsibly,
-regularly corrects errors, handles the difference between news and opinion responsibly, avoids deceptive headlines and
-discloses its ownership, financing and content creators. The score is the weighted sum of the criteria met. NewsGuard
-also derives five levels from the score, 0--39 ($l_1$), 40--59 ($l_2$), 60--74 ($l_3$), 75--99 ($l_4$) and 100 ($l_5$),
-which we use to describe the data and the errors. We use the ratings of 23 October 2026, 76\% of which were last updated
-in 2025 or 2026, and keep the outlets whose only NewsGuard topic is \emph{political news or commentary}. The ratings are
-licensed to the authors and cannot be redistributed.
-
-NewsGuard has been criticized, mostly by right-leaning outlets and politicians, for rating right-leaning outlets more
-severely~\cite{oremus2024newsguard}. Right-leaning sources do score much lower on average, but an analysis of
-NewsGuard's data finds no evidence of an inherent bias against them~\cite{luhring2025best}, and its ratings largely agree
-with those of other raters~\cite{lin2023high}. We take the ratings as the ground truth of the task without assuming that
-they are a neutral measure of quality, and Section~\ref{sec:orientation} examines how the errors of the models depend on
-orientation.
+In NewsGuard~\cite{newsguard}, trained journalists rate online news outlets on nine criteria, which include whether an
+outlet repeatedly publishes false content, corrects its errors, separates news from opinion, avoids deceptive headlines
+and discloses its ownership and financing. The score $s(p)$ is the weighted sum of the criteria met. NewsGuard also
+groups the score in five levels, 0--39 ($l_1$), 40--59 ($l_2$), 60--74 ($l_3$), 75--99 ($l_4$) and 100 ($l_5$), which we
+use to describe the data. We use the ratings of 23 October 2026 (76\% of them updated in 2025 or 2026) for the outlets
+whose only topic is \emph{political news or commentary}. The ratings are licensed and cannot be redistributed. NewsGuard
+has been accused, mostly by right-leaning outlets and politicians, of rating right-leaning outlets more
+severely~\cite{oremus2024newsguard}. An analysis of its data finds no evidence of such a bias~\cite{luhring2025best},
+and its ratings largely agree with those of other raters~\cite{lin2023high}. We use the ratings as the target of the
+task, and Section~\ref{sec:orientation} checks how the errors depend on orientation.
 
 \subsection{Collection and cleaning}\label{sec:cleaning}
-In October 2026 we collected about 200 recent articles per outlet from the websites of the outlets rated by NewsGuard,
-saving the raw HTML of every page. The collector follows feeds, sitemaps and homepage links from the newest articles,
-respects robots.txt and makes at most one request per second to each site. Of the 1,293 political outlets sent to the
-scraper, 674 returned at least one article; the others were unreachable, blocked automated access or exposed no article
-pages. We then built the dataset with the simple rules of Table~\ref{tab:cleaning}. The text is re-extracted from the
-saved HTML with trafilatura~\cite{barbaresi2021trafilatura} in precision mode, which keeps the main text and drops
-navigation, comments and tables. Articles must be in English (langdetect on the first 400 words, with a fixed seed),
-have between 100 and 1,500 words and be published from 2025; the length bounds remove short notices and very long pages
-such as transcripts and live blogs. Exact duplicates (the same normalized text) and near duplicates (Jaccard similarity
-of word 5-grams of at least 0.5, estimated with MinHash~\cite{broder1997resemblance}) are removed \emph{across all
-outlets}, keeping the oldest copy, because removing duplicates within each outlet only would leave the same article in
-the training and test folds under two different outlets. Finally, an outlet needs at least 10 articles, and outlets of
-the same owner are reduced to the one with the most articles (Section~\ref{sec:groups}).
+In October 2026 we collected about 200 recent articles from the website of each political outlet rated by NewsGuard,
+saving the raw HTML. The collector follows feeds, sitemaps and homepage links, respects robots.txt and makes at most one
+request per second to each site. Of the 1,293 outlets, 674 returned at least one article; the others were offline,
+blocked automated access or had no article pages. Table~\ref{tab:cleaning} lists the filters, applied in this order:
+\begin{itemize}
+  \item \textbf{Text extraction:} trafilatura~\cite{barbaresi2021trafilatura} in precision mode keeps the main text of
+        each page.
+  \item \textbf{English}, detected with langdetect on the first 400 words.
+  \item \textbf{100--1,500 words}, to drop short notices and very long pages such as transcripts and live blogs.
+  \item \textbf{Published from 2025.}
+  \item \textbf{No duplicates across outlets:} exact copies and near copies (Jaccard similarity of word 5-grams of at
+        least 0.5, estimated with MinHash~\cite{broder1997resemblance}) are removed across all outlets, keeping the
+        oldest. Removing them only within each outlet would leave the same article in training and test under two
+        different outlets.
+  \item \textbf{At least 10 articles} per outlet.
+  \item \textbf{One outlet per ownership group}, the one with the most articles (Section~\ref{sec:groups}).
+\end{itemize}
 
 \begin{table}[t]
 \centering
-\caption{From the collected pages to the dataset: articles and outlets left after each step.}\label{tab:cleaning}
+\caption{Dataset construction. Each row is a filter, applied in order from top to bottom; the columns give the articles
+and the outlets left after it. The last row is the final dataset.}\label{tab:cleaning}
 \begin{tabular}{lrr}
 \toprule
 step & articles & outlets \\
@@ -316,119 +289,77 @@ one outlet per ownership group & \textbf{25,524} & \textbf{226} \\
 \end{table}
 
 \subsection{Ownership groups and shared text}\label{sec:groups}
-Many outlets are not independent. Content sharing between news outlets is widespread~\cite{horne2019spirals}, and
-networks of sites with the same owner publish the same articles, often under different names. A model trained on one
-site of a network could then recognize its sisters in the test set without judging their text. We link two outlets if
-NewsGuard registers the same owner for them, after removing legal forms and generic words such as \emph{Inc} or
-\emph{Media}, or the same parent domain, directly or through other outlets, and we call the connected sets
-\emph{ownership groups}. Ownership is thus as recorded by NewsGuard, which may miss informal ties. The 1,293 political
-outlets sent to the scraper form 589 groups, in which 797 outlets have at least one sister. Keeping one outlet per group
-would remove 704 of them, which we call the \emph{sister outlets}. Figure~\ref{fig:groups} follows them through the
-cleaning. Most disappear with the duplicates (from 263 to 94 at the exact-duplicate step), because the sites of a network
-publish the same texts and only the oldest copy is kept. The requirement of 10 articles leaves 61, and keeping one outlet
-per group removes these.
+Outlets of the same owner often publish the same articles under different names~\cite{horne2019spirals}, and a model
+trained on one of them could recognize the others in the test set. We link two outlets if NewsGuard gives them the same
+owner (ignoring legal forms such as \emph{Inc}) or the same parent domain, and we call the connected sets
+\emph{ownership groups}. The 1,293 political outlets form 589 groups. In these groups 797 outlets have at least one
+\emph{sister}, and keeping one outlet per group removes 704 of them. Most sisters already disappear with deduplication,
+because the sites of a network publish the same texts and only the oldest copy is kept (Figure~\ref{fig:groups}); the
+last filter removes the remaining 61.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/groups.pdf}
-\caption{Outlets after each cleaning step (articles in parentheses): one outlet per ownership group (hatched
-\texttt{//}) and the other outlets of the same groups (hatched \texttt{\textbackslash\textbackslash}, the \emph{sister}
-outlets). Duplicate removal takes away most sisters; the
-last rule removes the remaining 61.}\label{fig:groups}
+\caption{Outlets through the cleaning. Each bar is a filter of Table~\ref{tab:cleaning}; the bar is split between the
+outlets kept for their ownership group (hatched \texttt{//}) and their sister outlets (hatched
+\texttt{\textbackslash\textbackslash}); the number of articles is in parentheses.}\label{fig:groups}
 \end{figure}
 
-Figure~\ref{fig:network}a shows why the duplicates are a problem. Before deduplication (531 outlets), 298 outlets share
-at least one article, as an exact copy or a near duplicate, with another outlet. Of the 3,280 links between them, 3,212
-(98\%) join outlets of the same ownership group, and so do 98\% of the 28,156 shared copies, counted per pair of outlets.
-The largest network has 164 sites of a single owner, all rated in the lowest NewsGuard level (0--39), which publish
-essentially the same articles. After deduplication none of them has 10 articles of its own, so the network is not in the
-dataset. Without these rules, sites of this network would have filled both sides of every fold of a split by outlet, and
-a model could have scored its test sites by recognizing the copies of its training sites.
-
-Ownership also counts beyond copied text. After deduplication, 59\% of the 81 outlets that still have a sister (the 61
-sister outlets and the 20 outlets kept for their groups) are closer to a sister than to any outlet of another group, by
-the TF-IDF similarity of their articles (Figure~\ref{fig:network}b; median similarity 0.73 to the nearest sister and
-0.65 to the nearest outlet of another group). Outlets of the same owner usually share the same rating (in 74\% of
-the cases in Section~\ref{sec:ladder}). Keeping one outlet per group removes this residual dependence between training
-and test outlets, and Section~\ref{sec:ladder} measures what keeping the sister outlets, with their copies, would cost.
+Before deduplication, 298 of the 531 outlets share at least one article with another outlet, and 98\% of these links
+join outlets of the same group (Figure~\ref{fig:network}a). The largest network has 164 sites of one owner, all in the
+lowest level, which publish essentially the same articles; after deduplication none of them keeps 10 articles. Without
+these filters, this network would sit on both sides of every split, and a model could score its test sites by
+recognizing copies of its training sites. Sisters are similar even without copies: after deduplication, 59\% of the 81
+outlets that still have a sister are closer, in TF-IDF similarity, to a sister than to any outlet of another group
+(Figure~\ref{fig:network}b), and sisters usually share their rating. Section~\ref{sec:ladder} measures what keeping them
+would change.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/network.pdf}
-\caption{Ownership groups and text. (a) Outlets linked by shared articles (exact copies or near duplicates, Jaccard
-similarity of word 5-grams $\geq 0.5$) at the step ``published from 2025'', before deduplication; each connected
-component is drawn separately and the 233 outlets that share no article are not shown. The three largest ownership
-groups on the map have their own marker shape (circle, square, triangle); hollow markers are outlets that are not in
-the final dataset. Almost every link joins
-outlets of the same group. (b) After deduplication, for the 81 outlets with at least 10 articles that have a sister:
-cosine similarity of the mean TF-IDF vector of their articles (links, e-mail addresses and the outlet's own name
-removed) to the nearest sister ($y$) and to the nearest outlet of another group ($x$); points above the diagonal are
-closer to a sister.}\label{fig:network}
+\caption{Shared articles and ownership. (a) Each node is an outlet and each edge joins two outlets that share at least
+one article (exact or near copy), before deduplication; the marker shape identifies the three largest ownership groups,
+hollow markers are outlets that are not in the final dataset, and outlets without shared articles are not shown. (b)
+Each point is an outlet with a sister after deduplication: TF-IDF similarity to the nearest sister ($y$) against the
+nearest outlet of another group ($x$); points above the diagonal are closer to a sister.}\label{fig:network}
 \end{figure}
 
 \subsection{Anonymization}\label{sec:anon}
-A model could predict the score by recognizing the outlet through its name, its journalists or its links. The function $\anon$ applies three passes to every title and text, each replacing spans with a placeholder without
-rewriting the text:
+A model could recognize an outlet from its name, its journalists or its links. The function $\anon$ replaces them with
+placeholders in three passes, without rewriting the text:
 \begin{enumerate}
-  \item links and e-mail addresses become \texttt{[URL]} and \texttt{[EMAIL]} (regular expressions);
-  \item the outlet's own name, derived from its domain and written joined or spaced, with or without ``the'', becomes
-        \texttt{[OUTLET]}; a name that is also a common English word (e.g.\ \emph{The Week}, \emph{Time}) is replaced only
-        when capitalized, unless the outlet itself writes it in lowercase;
-  \item GLiNER~\cite{zaratiana2024gliner} (\texttt{gliner\_large-v2.1}, threshold 0.5), with the labels \emph{news
-        outlet} and \emph{journalist}, replaces the spans it finds with \texttt{[OUTLET]} and \texttt{[AUTHOR]}. It runs
-        on windows of 200 words overlapping by 30, since the recognizer reads at most 384 tokens, and of two
-        overlapping spans the one with the higher score is kept. A span is replaced only if it contains a capitalized
-        word that is not a pronoun and does not touch a placeholder of passes 1--2, because the recognizer also tags
-        pronouns such as \emph{I}, common nouns such as \emph{reporters} and the placeholders themselves.
+  \item links and e-mail addresses become \texttt{[URL]} and \texttt{[EMAIL]};
+  \item the outlet's own name, derived from its domain, becomes \texttt{[OUTLET]};
+  \item GLiNER~\cite{zaratiana2024gliner} finds the news outlets and journalists and replaces them with
+        \texttt{[OUTLET]} and \texttt{[AUTHOR]}.
 \end{enumerate}
-The third pass masks every outlet and journalist, including those other than the publisher, because citing another
-outlet (``according to CNN'') can reveal the position of the publisher among the other outlets, and because the
-recognizer cannot tell the publisher's own staff from other journalists. Passes 1--2 are needed because the recognizer
-alone leaves the outlet's own name in about one article in four. They replace 17,780 mentions of the outlet's own name,
-8,559 links and 398 e-mail addresses; GLiNER replaces 41,278 mentions of news outlets and 33,816 of journalists, in
-71.8\% of the articles (of the spans it proposes, 73\% of the outlets and 92\% of the journalists pass the filter).
-
-The name of the publishing outlet appears in 37.8\% of the original articles, in 1.7\% after passes 1--2 and in 1.6\%
-after the full anonymization, and the leftovers are mostly names that are also ordinary words. This measure, however,
-uses the same name as the masking and cannot see what the masking misses. An independent check with the brand name that
-NewsGuard records for each outlet finds it in 2.1\% of the articles, concentrated in 17 outlets whose brand differs from
-their domain, for instance think tanks and advocacy organizations named in most of their own articles. Social-media
-handles, present in 9.5\% of the articles, and some aliases are not masked either. The models read only the body of the
-articles, so the titles, where signatures are most frequent, are not used.
-
-The recognizer touches most articles (other outlets in 54\% and journalists in 45\%), and the own-name rule 24\%
-(Supplementary Figure~\ref{S-fig:anonymization}). The density of replacements varies with the score. Links are frequent in the least reliable outlets (1.4 per 1,000 words in the 0--39 band, 0.3 in the 75--100 bands),
-while the outlets with a perfect score cite other outlets and name journalists most often (6.8 placeholders per 1,000
-words for 0--39 and 8.8 for 100). The placeholders therefore keep a trace of how an outlet writes, such as whether it cites sources and signs its
-articles, while hiding which outlet it is. We do not remove writing style, topics or
-political stance, since they are the signal we study.
+The third pass masks all outlets and journalists, including those other than the publisher, because citing other
+outlets can reveal the position of an outlet among them, and because the recognizer cannot tell the outlet's own staff
+from other journalists. The second pass is needed because the recognizer alone misses the outlet's own name in about one
+article in four. After anonymization, the name of the publishing outlet remains in 1.6\% of the articles (37.8\%
+before), mostly where the name is also a common word. The brand name recorded by NewsGuard remains in 2.1\% of the
+articles, concentrated in 17 outlets, and social-media handles in 9.5\%. Appendix~\ref{app:anonfig} gives
+the settings and the counts of each pass. The placeholders keep a trace of how an outlet writes, such as whether it
+cites sources and signs its articles, but not of which outlet it is. We do not remove style, topics or political stance,
+since they are the signal we study.
 
 \subsection{The final dataset}\label{sec:final}
-The final dataset has 25,524 articles from 226 outlets, with a median of 112 articles per outlet and a range from 10 to
-201 (Figure~\ref{fig:dataset}). Scores are skewed towards reliable outlets (median 75): 35 outlets are in the lowest
-NewsGuard level, 43 in 40--59, 30 in 60--74, 79 in 75--99 and 39 have the maximum score. The articles have a median of
-about 760 tokens and at most about 3,000 for every tokenizer we use, so no article is truncated.
-
-Political orientation is strongly associated with reliability in this population (Figure~\ref{fig:dataset}a). Of the 99
-right-leaning outlets, 58 are in the two lowest levels, while 51 of the 68 left-leaning outlets are in the two highest,
-and the outlets without an orientation are mostly reliable. This structure belongs to the rated outlets as well as to
-our sampling (Supplementary Section~\ref{S-app:selection}). A model could therefore partly predict reliability by
-recognizing the political side of an outlet, and Section~\ref{sec:orientation} measures how much of the performance
-this explains.
-
-The 226 outlets are not a random sample of the 1,293 rated political outlets (Supplementary
-Section~\ref{S-app:selection}; Mann--Whitney $p < 10^{-25}$ for the score and $\chi^2$ $p < 10^{-14}$ for the
-orientation). The 619 outlets from which no article could be collected have a mean score of 41, against 69 in the
-dataset, and 43\% of them are in the lowest level, since unreliable sites are more often offline, blocked or without
-article pages. The removal of exact duplicates takes away 170 outlets, 89\% of them in the lowest level and most of them
-sites of the network of 164 copies described above. The dataset therefore under-represents the least reliable outlets,
-which are also the hardest to predict (Section~\ref{sec:errors}).
+The dataset has 25,524 articles from 226 outlets, with a median of 112 articles per outlet (from 10 to 201;
+Figure~\ref{fig:dataset}). Scores lean towards reliable outlets (median 75): 35 outlets are in the lowest level, 43 in
+40--59, 30 in 60--74, 79 in 75--99 and 39 have a perfect score. No article exceeds the input length of any model (median
+about 760 tokens, at most about 3,000). Orientation and reliability are strongly associated: 58 of the 99 right-leaning
+outlets are in the two lowest levels, and 51 of the 68 left-leaning outlets in the two highest
+(Figure~\ref{fig:dataset}a). The dataset is not a random sample of the rated outlets (Appendix~\ref{app:selection}). The
+619 outlets we could not collect have a mean score of 41, against 69 in the dataset, and deduplication removes 170
+outlets, most of them from the network of 164 sites. The least reliable outlets, which are also the hardest to predict
+(Section~\ref{sec:errors}), are therefore under-represented.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/dataset.pdf}
-\caption{The 226 outlets: (a) outlets by political orientation and NewsGuard level (each level has its own hatch);
-(b) articles per outlet; (c) NewsGuard score of the outlets in the five folds of the outlet-disjoint split.}\label{fig:dataset}
+\caption{The final dataset. (a) Number of outlets by political orientation, split by NewsGuard level (one hatch per
+level); (b) distribution of the number of articles per outlet; (c) NewsGuard scores of the outlets in each of the five
+folds.}\label{fig:dataset}
 \end{figure}
 
 % =====================================================================================================================
@@ -447,67 +378,48 @@ which are also the hardest to predict (Section~\ref{sec:errors}).
 \node[box, right=of m] (o) {outlet score\\= mean};
 \foreach \x/\y in {s/c, c/a, a/f, f/m, m/o} \draw[->] (\x) -- (\y);
 \end{tikzpicture}}
-\caption{The pipeline, from the collected pages to the score of each outlet.}\label{fig:pipeline}
+\caption{The pipeline. Each box is a step, from the collected pages (left) to the score of each outlet
+(right).}\label{fig:pipeline}
 \end{figure}
 
 \subsection{Experimental setup}\label{sec:setup}
-Figure~\ref{fig:pipeline} summarizes the pipeline. Following condition~\eqref{eq:disjoint}, we use a 5-fold
-cross-validation over outlets, stratified on the exact score: the outlets are sorted by score and, in consecutive blocks
-of five, each goes to a different fold at random, so every fold has the same score distribution
-(Figure~\ref{fig:dataset}c). Every model is trained on four folds, about 180 outlets and 20,000 articles, and tested on
-the fifth, so every outlet is scored once by a model that never saw it. The hyper-parameters of the linear models, the
-ridge penalty and, for Mistral-Small-24B, the layer, are chosen by the Spearman correlation per outlet on three inner
-folds of the training outlets, built in the same way; those of ModernBERT are fixed. In training every article counts
-once, so outlets with more articles weigh more, while in the evaluation every outlet counts once. The models read the
-full body of every article, since no article reaches the limit of 4,096 tokens, and do not read the title. We select
-models that use the text in different ways, from word counts to large pretrained models used without any adaptation:
+We use a 5-fold cross-validation over outlets (Figure~\ref{fig:pipeline}). The outlets are sorted by score and, in
+blocks of five, assigned at random to different folds, so that every fold has the same score distribution
+(Figure~\ref{fig:dataset}c). Each model is trained on four folds (about 180 outlets and 20,000 articles) and tested on
+the fifth, so every outlet is scored once by a model that never saw it. The settings of the linear models (the ridge
+penalty and, for Mistral-Small-24B, the layer) are chosen on three inner folds of the training outlets. In training every
+article counts once, while in the evaluation every outlet counts once. The models read the body of each article, not the
+title. We compare:
 \begin{itemize}
-  \item \textbf{TF-IDF + ridge.} Word uni- and bi-grams (at most 100,000, with minimum document frequency 5 and sublinear
-        term frequency), fitted on the training articles, with a ridge regression~\cite{hoerl1970ridge}. This is the
-        standard strong baseline for vocabulary, topic and style.
-  \item \textbf{Frozen language models + ridge.} A pretrained model that is not adapted to the task gives one vector per
-        article, and a ridge regression on the standardized vectors is the only part learned from our labels.
-        \emph{Qwen3-Embedding-8B} and \emph{Qwen3-Embedding-0.6B}~\cite{zhang2025qwen3} are two embedding models of the
-        same family. They read the article after the instruction \emph{``Represent this news article to judge the
-        reliability and journalistic standards of the outlet that published it''}, and we take the L2-normalized vector
-        of the last token (4,096 and 1,024 dimensions). \emph{Mistral-Small-24B}~\cite{mistralsmall} is a base decoder
-        model loaded in 4-bit NF4 quantization~\cite{dettmers2023qlora}. We take the mean of the hidden states of an
-        intermediate layer~\cite{skean2025layer}, chosen on the inner folds between layer 27 and the last one (40); the
-        inner folds choose layer 27 in every fold. \emph{ModernBERT-base} (frozen) is the encoder of the next model
-        without any training, represented by the mean of its last hidden states.
-  \item \textbf{ModernBERT (fine-tuned).} ModernBERT~\cite{warner2024modernbert} is a bidirectional encoder with 150
-        million parameters. We train it end to end on the squared error of $s/100$ with AdamW, learning rate
-        $3 \cdot 10^{-5}$, weight decay 0.01, a linear schedule with 6\% warm-up, an effective batch of 32 articles,
-        5 epochs, mixed precision and one seed, and keep the model of the last epoch.
-  \item \textbf{Mistral-Small-24B-Instruct, zero-shot.} To test whether a language model can rate the articles without
-        training, we ask the instruction-tuned version of Mistral for the score of the website that published each
-        article, with a prompt that describes the nine NewsGuard criteria and the placeholders (Supplementary
-        Section~\ref{S-app:prompt}). Decoding is greedy, the first integer of the answer is the prediction, and the 24
-        answers without a number get the mean training score.
+  \item \textbf{TF-IDF + ridge:} word uni- and bi-grams with a ridge regression~\cite{hoerl1970ridge}, the standard
+        strong baseline for vocabulary, topic and style.
+  \item \textbf{Frozen language models + ridge:} a pretrained model, not trained on our data, turns each article into a
+        vector, and a ridge regression on these vectors is the only part trained on the scores. We use the embedding
+        models Qwen3-Embedding-8B and Qwen3-Embedding-0.6B~\cite{zhang2025qwen3}, given an instruction to represent the
+        article for judging the reliability of its outlet; the base decoder Mistral-Small-24B~\cite{mistralsmall} in
+        4-bit quantization~\cite{dettmers2023qlora}, through the mean hidden state of an intermediate
+        layer~\cite{skean2025layer} (layer 27, chosen on the inner folds); and ModernBERT-base without training.
+  \item \textbf{ModernBERT, fine-tuned:} the 150-million-parameter encoder~\cite{warner2024modernbert} trained end to end
+        on the scores.
+  \item \textbf{Mistral-Small-24B-Instruct, zero-shot:} the instruction-tuned Mistral is asked for the NewsGuard score of
+        the site that published each article, with a prompt that describes the nine criteria (Appendix~\ref{app:prompt}).
 \end{itemize}
-The two Qwen3 models differ in size and vector dimension, the two ModernBERT models only in their training, and the
-frozen and the instruction-tuned Mistral in their weights and in how they use the text.
-
-The ridge penalty is chosen from $\{10^{-3}, \ldots, 1\}$ for TF-IDF and from $\{10, \ldots, 10^6\}$ for the frozen
-vectors. The two small frozen models often choose the lowest value, but extending the grid to 0.01 changes their $\rho$
-by less than 0.001. All random choices are seeded, and the predictions and the model of every fold are saved, so every
-result can be recomputed. On one NVIDIA V100 (32 GB), the frozen vectors take about 2 hours for Qwen3-Embedding-8B and 5
-for Mistral-Small-24B, fine-tuning ModernBERT takes 1.5 hours per fold, and each ridge regression takes a few seconds.
+The two Qwen3 models differ in size, the two ModernBERT models only in their training, and the two Mistral models in how
+they use the text. Appendix~\ref{app:impl} gives all the settings. Every random choice is seeded, and the
+predictions and the models of every fold are saved.
 
 \subsection{Stage 1: article-level score estimation}\label{sec:stage1}
-We first evaluate the article-level regressors, the intermediate components of the framework, by comparing each test
-article with the score of its outlet (Table~\ref{tab:article}). All models rank the articles better than chance.
-Mistral-Small-24B is the best, with an error of 17.8 points and a Spearman correlation of 0.61 with the scores of the
-outlets. The errors are large: a single article is predicted within 20 points of the score of its outlet in 54--64\% of
-the cases with the trained models, against 50\% without text, and the zero-shot model does worse than no text on this
-measure (44\%). This is expected, because every article inherits the score of its outlet while individual articles
-deviate from the profile of the outlet, as when a reliable outlet publishes a short opinion piece or an unreliable one a
-factual report.
+Table~\ref{tab:article} compares each test article with the score of its outlet. All models do better than chance, and
+Mistral-Small-24B is the best (MAE 17.8, $\rho = 0.61$). A single article, however, is a weak signal: the trained models
+put it within 20 points of the score of its outlet in 54--64\% of the cases, against 50\% without text. This is
+expected, since every article inherits the score of its outlet, while a reliable outlet can publish a weak opinion piece
+and an unreliable one a plain factual report. For this reason we judge each outlet on several articles.
 
 \begin{table}[t]
 \centering
-\caption{Stage 1: articles. Each test article (25,524) is compared with the score of its outlet. The outlet-level
-results are in Table~\ref{tab:main}.}\label{tab:article}
+\caption{Stage 1, single articles. Each row is a model; each of the 25,524 test articles is compared with the NewsGuard
+score of its outlet. Lower MAE and higher $\rho$ and share within 20 points are better; the best value is in bold. The
+rows above the line are baselines.}\label{tab:article}
 \begin{tabular}{lccc}
 \toprule
 model & MAE (points) & Spearman $\rho$ & within 20 (\%) \\
@@ -526,18 +438,16 @@ Mistral-Small-24B (frozen) + ridge & \textbf{17.8} & \textbf{0.614} & \textbf{63
 \end{table}
 
 \subsection{Stage 2: publisher-level score inference}\label{sec:stage2}
-Publisher-level inference is the primary objective of this work. Table~\ref{tab:main} reports the results per outlet
-with all the articles, and Figure~\ref{fig:scatter} plots the predicted against the NewsGuard score of every outlet.
-Aggregation improves every model. From one article per outlet to all of them, the error of every
-trained model falls by 1.5--3.1 points, and the Spearman correlation per outlet rises from 0.62 to 0.735 for
-Mistral-Small-24B and from 0.39 to 0.674 for TF-IDF, all significantly. Reliability emerges more clearly from
-the articles of a publisher taken together than from any single article.
+Table~\ref{tab:main} gives the main results, with the score of each outlet computed from all its articles, and
+Figure~\ref{fig:scatter} shows the predictions. Averaging over the articles helps every model: from one article per
+outlet to all of them, the error falls by 1.5--3.1 points, and $\rho$ rises from 0.62 to 0.735 for Mistral-Small-24B
+and from 0.39 to 0.674 for TF-IDF.
 
 \begin{table}[t]
 \centering
-\caption{Stage 2: predicting the NewsGuard score of unseen outlets (226 outlets, all articles). 95\% bootstrap
-intervals in brackets (10,000 resamples of the outlets); $^\ast$: significantly better than TF-IDF (paired bootstrap,
-Holm correction over the 24 comparisons with TF-IDF). Best value in bold.}\label{tab:main}
+\caption{Stage 2, outlets: the main results. Each row is a model; the score of an outlet is the mean of the predictions
+for all its articles. Brackets give 95\% bootstrap intervals; $^\ast$ marks a model significantly better than TF-IDF
+after Holm correction; the best value is in bold. The rows above the line are baselines.}\label{tab:main}
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{lcccc}
 \toprule
@@ -561,93 +471,76 @@ Mistral-Small-24B (frozen) + ridge & \textbf{15.8}$^\ast$ [14.3, 17.4] & \textbf
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/scatter.pdf}
-\caption{Predicted against NewsGuard score, one point per outlet (mean of the predictions for its articles); the
-marker shape gives the NewsGuard level; the dashed line is the perfect prediction.}\label{fig:scatter}
+\caption{Predicted against true score. Each point is an outlet, placed at its NewsGuard score ($x$) and at the mean
+prediction over its articles ($y$); the marker shape gives the NewsGuard level, and points on the dashed line are
+predicted exactly.}\label{fig:scatter}
 \end{figure}
 
-\paragraph{Large frozen models.} Mistral-Small-24B predicts the score of unseen outlets with an error of 15.8 points,
-against 22.1 for the best constant, and ranks them with $\rho = 0.735$. Its error is significantly lower than that of
-TF-IDF, by 2.0 points [$-2.9$, $-1.2$]. Its ranking ($\Delta\rho = +0.060$ [0.020, 0.104]) and its share of outlets
-within 20 points ($+6.6$) are also higher, but these two differences are not significant after the correction for
-multiple comparisons (Holm $p = 0.07$ and $0.18$). Qwen3-Embedding-8B significantly lowers the error ($-1.5$ [$-2.3$,
-$-0.7$]) and raises the share within 20 points ($+8.4$), while its rank correlation is not significantly higher
-($+0.037$). The two large models are not significantly different from each other.
+\paragraph{Large frozen models are the best.} Mistral-Small-24B predicts the score of unseen outlets with an error of
+15.8 points, against 17.8 for TF-IDF and 22.1 for the best constant, and ranks them with $\rho = 0.735$. Its error is
+significantly lower than that of TF-IDF, by 2.0 points [$-2.9$, $-1.2$]; its higher $\rho$ ($+0.060$) and share within
+20 points ($+6.6$) are not significant after the correction. Qwen3-Embedding-8B also lowers the error significantly
+($-1.5$ [$-2.3$, $-0.7$]). The two large models do not differ significantly.
 
-\paragraph{Model size.} The gain comes with the larger models. The 8-billion-parameter Qwen3 model has an error 2.5
-points lower than the 0.6-billion one ([$-3.2$, $-1.7$]) and a higher ranking ($+0.085$ [0.039, 0.136]), both
-significantly, while the small one is no better than TF-IDF; the two models also differ in the dimension of their
-vectors (4,096 against 1,024). Mistral-Small-24B is not significantly better than Qwen3-Embedding-8B, and the frozen
-ModernBERT, with 150 million parameters, is not worse than Qwen3-Embedding-0.6B. The evidence concerns small against large models and does not show a steady gain with size. Fine-tuning the small encoder does not close the gap.
-The fine-tuned and the frozen ModernBERT cannot be distinguished ($\rho$ 0.610 and 0.619, MAE 17.5 and 18.3), and
-neither is better than TF-IDF. The fine-tuned model fits its training articles far better than the test articles (training loss $0.0019$ on $s/100$,
-about 4 points of error, against 20.4 on the test articles), yet the frozen version, which cannot memorize the training
-outlets, is not better. With fixed hyper-parameters and one seed, this result concerns this small encoder only.
+\paragraph{Small models are not better than TF-IDF.} Qwen3-Embedding-0.6B has an error 2.5 points higher than its
+8-billion-parameter version and is no better than TF-IDF. ModernBERT is no better than TF-IDF either, frozen or
+fine-tuned ($\rho$ 0.619 and 0.610, MAE 18.3 and 17.5). Fine-tuning fits the training articles well (an error of about 4
+points), but this does not carry over to unseen outlets. The evidence separates small from large models; it does not show
+a steady gain with size. Since we fine-tuned ModernBERT with fixed settings and one seed, this result concerns this small
+encoder only.
 
-\paragraph{Zero-shot.} Asked directly for the score, the instruction-tuned Mistral ranks the outlets with
-$\rho = 0.35$, about as well as the orientation alone, and the error of its raw answers (24.4 points) is larger than
-that of a constant. 85\% of its answers are either 65 or 45, so the answer says little more than whether an article
-looks reliable. The same model family read through a linear head trained on our labels is instead the best model of the
-study ($+0.39$ in $\rho$ and $-8.6$ points of error), in line with other estimation tasks in which a linear head on
-hidden states outperforms the text answers of language models~\cite{buckmann2025revealing}.
+\paragraph{Asking for the score does not work.} Asked directly for the score, the instruction-tuned Mistral ranks the
+outlets with $\rho = 0.35$ and has a larger error than a constant (24.4 points), since 85\% of its answers are either 65
+or 45. The same model family with a trained linear head is the best model of the study, in line with other tasks in
+which a linear head on hidden states beats the text answers of language models~\cite{buckmann2025revealing}.
 
-\paragraph{Orientation.} Predicting the mean training score of the orientation of the outlet gives $\rho = 0.36$ and an
-error of 18.5 points, and every trained model ranks the outlets far better. Section~\ref{sec:orientation} shows that the
-models also rank outlets within the same orientation.
+\paragraph{More than political orientation.} Predicting the mean score of the orientation of an outlet gives
+$\rho = 0.36$. Every trained model ranks the outlets far better, and it also ranks them within each orientation
+(Section~\ref{sec:orientation}).
 
-\paragraph{Compression and other splits.} Every model predicts scores in a narrower range than the true ones
-(Mistral-Small-24B between 37 and 96, Figure~\ref{fig:scatter}), so the extremes of the scale are rarely reached
-(Section~\ref{sec:errors}) and part of the MAE comes from this compression. Re-mapping the outlet scores with a straight
-line fitted inside the training folds lowers every error by 1--3 points, to 14.7 for Mistral-Small-24B, 16.2 for TF-IDF
-and 21.2 for the zero-shot model, which then falls below the constant. Mistral-Small-24B remains better than TF-IDF after
-this recalibration ($-1.5$ [$-2.7$, $-0.4$]), while the advantage of Qwen3-Embedding-8B is no longer significant
-(Supplementary Section~\ref{S-app:robust}). With four more splits made in the same way, the ranking of the models is the
-same in every split, and Mistral-Small-24B lowers the error of TF-IDF by 2.0--2.3 points in each of them (Supplementary
-Section~\ref{S-app:splits}).
+\paragraph{Robustness.} All models compress their predictions towards the centre of the scale (Mistral-Small-24B
+predicts between 37 and 96, Figure~\ref{fig:scatter}). A straight line fitted on the training folds re-maps the scores
+and lowers every error by 1--3 points. After this recalibration Mistral-Small-24B remains better than TF-IDF ($-1.5$
+[$-2.7$, $-0.4$]), while the advantage of Qwen3-Embedding-8B is no longer significant (Appendix~\ref{app:robust}). With
+four other random splits of the outlets, Mistral-Small-24B lowers the error of TF-IDF by 2.0--2.3 points in each split
+(Appendix~\ref{app:splits}).
 
 \subsection{How many articles are needed}\label{sec:k}
-A practical question for deployment is how many articles of an outlet must be collected. We predict the score of each
-outlet from $k = 1, 2, 3, 5, 10, 20, 50$ of its articles, drawn at random, with 20 draws per $k$ and outlet and the same
-draws for every model (outlets with fewer than $k$ articles use all of them). Mistral-Small-24B is significantly better
-than TF-IDF for every $k$ from 1 to 50, on both the error and the ranking (Figure~\ref{fig:curves}; Holm correction over
-the 16 comparisons of each model; for all the articles see Table~\ref{tab:main}). With a single article per outlet its
-error is 17.3 points, against 20.5 for TF-IDF, and $\rho = 0.62$, against 0.39. With five articles its error (16.1
-points) is already significantly lower than that of TF-IDF with all of them (17.8; $-1.7$ [$-2.6$, $-0.9$]), and its
-ranking with five articles (0.71) is also higher than that of TF-IDF with all of them (0.67), although not
-significantly. Qwen3-Embedding-8B is significantly better than TF-IDF on the error for every $k$ and on the ranking up to
-ten articles. ModernBERT and the two small frozen models are never significantly better than TF-IDF, and
-Qwen3-Embedding-0.6B has a significantly larger error from two articles on. All curves flatten after about ten
-articles. The advantage of Mistral-Small-24B on both metrics, and of Qwen3-Embedding-8B in ranking, is largest when few
-articles are available, as for a new or small outlet.
+To know how many articles must be collected for a new outlet, we predict each outlet from $k = 1, 2, 3, 5, 10, 20, 50$
+of its articles, drawn at random 20 times, with the same draws for every model. Figure~\ref{fig:curves} shows the
+results. Mistral-Small-24B is significantly better than TF-IDF for every $k$, on both the error and the ranking. With
+one article per outlet its error is 17.3 points, against 20.5 for TF-IDF; with five articles it is 16.1, already
+significantly lower than that of TF-IDF with all the articles (17.8). Qwen3-Embedding-8B is significantly better than
+TF-IDF on the error for every $k$, and the small models are never better than TF-IDF. All curves flatten after about ten
+articles, and the large models gain most when few articles are available, as for a new or small outlet.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/curves.pdf}
-\caption{Spearman correlation and MAE per outlet as a function of the number of articles read per outlet (mean of 20
-random draws per outlet; each model has its own marker and dash pattern); the dashed line is the no-text
-baseline.}\label{fig:curves}
+\caption{Results by number of articles. The $x$ axis is the number of articles read per outlet; the $y$ axis is the
+Spearman correlation (left) or the MAE (right) per outlet, averaged over 20 random draws. Each model has its own marker
+and line; the dashed line is the no-text baseline.}\label{fig:curves}
 \end{figure}
 
 \subsection{Effect of the evaluation protocol}\label{sec:ladder}
-Our protocol removes three ways in which a model could recognize an outlet instead of reading its text: the same outlet
-in the training data, outlets of the same owner in the training data, and identifiers in the text. To measure what each
-protection is worth, we retrain the three ridge models under weaker protocols and test them on the same 25,524
-articles of the 226 outlets, in the same folds (Table~\ref{tab:ladder}):
+Our protocol blocks three ways of recognizing an outlet: the same outlet in training, outlets of the same owner in
+training, and names in the text. To measure each of them, we retrain the three ridge models under weaker protocols and
+test them on the same articles and folds (Table~\ref{tab:ladder}):
 \begin{itemize}
-  \item \textbf{Article split:} the folds are drawn over articles, so every test outlet also has articles in the
-        training data.
-  \item \textbf{Sisters:} the training data of every fold also contains the 89 outlets of the same owners that
-        deduplication or the last cleaning rule removed (with at least 10 articles from 2025), with all their articles,
-        so the 31 outlets of their groups are tested with a sister in the training data.
+  \item \textbf{Article split:} the folds are drawn over articles, so every test outlet also has articles in training.
+  \item \textbf{Sisters:} the training data also contain the 89 sister outlets removed by the cleaning, with all their
+        articles, so 31 test outlets have a sister in training.
   \item \textbf{Original text:} no anonymization.
-  \item \textbf{Rules only:} only passes 1--2 of Section~\ref{sec:anon}.
+  \item \textbf{Rules only:} only the first two passes of the anonymization.
 \end{itemize}
-Each protocol is compared with the one that differs from it only in the protection removed, that is the sisters with the
-original text and the others with the full protocol.
 
 \begin{table}[t]
 \centering
-\caption{How much each protection matters. MAE and Spearman $\rho$ per outlet on the same test articles and folds; in
-parentheses the difference from the protocol that differs only in the protection removed (the original text for the sisters, the full protocol for the others); $^\dagger$: 95\% bootstrap interval of the difference excluding zero.}\label{tab:ladder}
+\caption{Effect of the evaluation protocol. Each row is a protocol, from the weakest (article split) to the protocol of
+the paper (full protocol), always tested on the same articles and folds. Each cell gives the MAE or $\rho$ per outlet
+and, in parentheses, the difference from the protocol that differs only in the protection removed (the original text
+for the sisters, the full protocol for the others); $^\dagger$ marks a difference whose 95\% bootstrap interval excludes
+zero. The lower blocks separate the outlets that have a sister from those that do not.}\label{tab:ladder}
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{llcccccc}
 \toprule
@@ -670,199 +563,578 @@ all 226 & article split & 10.4 ($-$7.4)$^\dagger$ & 0.904 (+0.230)$^\dagger$ & 1
 \end{tabular}}
 \end{table}
 
-\paragraph{Same outlet.} Separating the outlets has the largest effect. With an article-level split the error falls by
-5.6--7.4 points and $\rho$ rises to 0.88--0.92, because the models recognize outlets they have already seen. Under this
-split the advantage of Qwen3-Embedding-8B over TF-IDF, which can memorize the vocabulary of each outlet, disappears (MAE
-10.7 against 10.4).
+\paragraph{Same outlet.} Splitting articles instead of outlets lowers the error by 5.6--7.4 points and raises $\rho$ to
+about 0.9, because the models recognize outlets they have already seen. Under this split TF-IDF, which can memorize the
+vocabulary of each outlet, catches up with Qwen3-Embedding-8B (MAE 10.4 against 10.7).
 
-\paragraph{Same owner.} Sister outlets in training have almost the same effect on the outlets of their groups. Over the 226
-outlets, the sisters change the error by less than one point, because only 31 outlets have one. On those 31 outlets the
-error falls by 7--12 points, to 8.3, 11.6 and 9.7 for TF-IDF, Qwen3-Embedding-8B and Mistral-Small-24B, about as low as
-with the article-level split on the same outlets (11.7, 12.8 and 9.6). The other 195 outlets do not improve, so the gain
-does not come from the larger amount of training data. Since half of the test articles of these 31 outlets have a near
-copy among the articles of their sisters, this protocol measures copies and ownership together.
+\paragraph{Same owner.} Training on sister outlets has almost the same effect on the outlets that have one. For these 31
+outlets the error falls by 7--12 points, to 8.3--11.6, close to the article split, while the other 195 outlets do not
+improve. Half of the test articles of these 31 outlets have a near copy among the articles of their sisters, and sisters
+usually share their rating: 23 of the 31 outlets have exactly the score of all their sisters. The gain is largest where
+the articles of the sisters are most similar to the test articles, as Zhou et al.~\cite{zhou2021hidden} found for sites
+with the same label (Appendix~\ref{app:sisters}).
 
-The gain goes with the similarity between training and test texts, as Zhou et al.~\cite{zhou2021hidden} found for sites
-with the same label. For the outlets with a sister, adding the sisters raises the cosine similarity (TF-IDF) between a
-test article and its most similar training article from 0.19 to 0.60 on average, against 0.16 to 0.18 for the other
-outlets, and the larger this increase, the larger the fall of the error. Over the 31 outlets, the Spearman correlation
-between the two is 0.60 [0.30, 0.80] for TF-IDF, and 0.25 and 0.32 for the language models, which are not significant
-and whose notion of similarity is probably not lexical. Similar texts help because sisters share their ratings: 23 of
-the 31 outlets have the same NewsGuard score as all their sisters, and the mean absolute difference between an outlet
-and its sisters is 3.8 points, against 29.6 between two outlets of these groups taken at random.
+\paragraph{Names.} Masking the names, instead, changes the error by at most 0.4 points and no $\rho$ significantly.
+Leaving out the 16 outlets whose brand name of two or more words is still in the text barely changes the advantage of
+Mistral-Small-24B over TF-IDF (1.8 points instead of 2.0). The models therefore do not rely on the masked names, nor
+mainly on what they may know about an outlet from pretraining: from the domain name alone, the frozen models rank the
+outlets with $\rho = 0.35$--$0.39$, about as well as the orientation alone (Appendix~\ref{app:robust}). An
+earlier rule-based anonymization gives the same results (Appendix~\ref{app:anon}).
 
-\paragraph{Identifiers.} Anonymization changes the results little. Without any anonymization the error differs from that
-of the full protocol by at most 0.3 points, and with the rules alone by at most 0.4, with an uncorrected interval that
-excludes zero only for Qwen3-Embedding-8B. No $\rho$ changes significantly, and leaving out the 16 outlets whose brand
-name of two or more words is still in their text changes the advantage of Mistral-Small-24B over TF-IDF from 2.0 to 1.8
-points. The models therefore do not rely on the identifiers we mask, nor mainly on what they may know about an outlet
-from their pretraining. From the frozen vector of the domain name alone, with the same ridge and folds,
-Mistral-Small-24B and Qwen3-Embedding-8B rank the outlets with $\rho = 0.39$ and 0.35 (MAE 20.4 and 21.7), about as well
-as the orientation alone and far below what they reach from the text (Supplementary Section~\ref{S-app:robust}). An
-earlier rule-based anonymization, run through the whole pipeline, leads to the same conclusion (Supplementary
-Section~\ref{S-app:anon}).
-
-\paragraph{Boilerplate.} Anonymization leaves in the text the lines that an outlet repeats in many of its articles, such
-as invitations to subscribe to a newsletter, donation appeals and disclaimers, and these lines could also let a model
-recognize the outlet. We call boilerplate a line that appears in at least three articles and in at least 5\% of the
-articles of the same outlet. These lines are 3.0\% of the words and appear in about half of the articles. TF-IDF
-retrained without them has an MAE of 17.5, against 17.8 with them. For the language models we borrow the idea of the
-explanation methods, which attribute a prediction to the parts of the input~\cite{kozik2024explainability}.
-Mistral-Small-24B predicts with a linear function of the mean of its token states, so its prediction splits exactly
-into one contribution per token. On 300 articles with boilerplate, these lines contribute 1.9 points on average to a
-prediction whose standard deviation is 17.5 points. Removing them from 1,000 such articles, without retraining, moves
-the predictions of Mistral-Small-24B, TF-IDF and Qwen3-Embedding-8B by 2.0, 3.3 and 4.8 points on average
-(Supplementary Section~\ref{S-app:reading}). The models use the boilerplate a little, but their predictions come mostly
-from the body of the articles.
+\paragraph{Boilerplate.} Some outlets repeat the same lines in many articles, such as invitations to subscribe to a
+newsletter, donation appeals and disclaimers, and the anonymization does not remove them. These lines (repeated in at
+least three articles and in 5\% of the articles of an outlet) are 3.0\% of the words, and TF-IDF retrained without them
+has about the same error (17.5 against 17.8). Mistral-Small-24B predicts with a linear function of the mean of its token
+states, so we can measure exactly how much each token contributes to a prediction, as explanation methods
+do~\cite{kozik2024explainability}. These lines move a prediction by 1.9 points on average, while the predictions have a
+standard deviation of 17.5 points. The models use the boilerplate a little, but their predictions come mostly from the
+body of the articles (Appendix~\ref{app:reading}).
 
 \subsection{Errors by reliability level}\label{sec:errors}
-Figure~\ref{fig:errors}a reports the mean signed error per NewsGuard level. Two patterns are common to all models. The
-first is a regression towards the centre of the scale. The least reliable outlets are overestimated, with a mean signed
-error of $+31$ points for Mistral-Small-24B and $+36$ for TF-IDF in the 0--39 band, the outlets with a perfect score are
-underestimated ($-19$ and $-25$), and the outlets in the middle of the scale (60--74) are predicted almost without bias
-($-3$ and $-2$). For the trained models the signed error decreases with the true score with a slope between $-0.63$
-(Mistral-Small-24B) and $-0.81$ (Qwen3-Embedding-0.6B), so one point of NewsGuard score moves their prediction by only
-0.19--0.37 points on average, and that of the zero-shot model by 0.09.
-
-The second pattern is that the extremes are the hardest to predict. With Mistral-Small-24B the error is 31 points in
-the 0--39 band and 19 for score 100, against 9 in the 60--74 band. Part of this is a property of the target. The
-extremes are reached through criteria that are hardly visible in a single article, such as the repeated publication of
-false content or the disclosure of ownership and financing, and the ridge regression shrinks towards the mean when the
-text does not separate them. The compression also comes from training on single articles. The slope of the prediction on
-the true score is the same per article and per outlet (about 0.37 for Mistral-Small-24B), so the aggregation keeps it. Since the direction of the errors is the same for all models, we
-attribute it to our design, a regressor trained on single articles whose scores are then averaged, more than to a
-specific architecture; the larger models compress less.
+Figure~\ref{fig:errors}a shows the mean signed error per NewsGuard level. All models pull their predictions towards the
+centre of the scale. The least reliable outlets are overestimated ($+31$ points for Mistral-Small-24B in the 0--39
+band), the outlets with a perfect score are underestimated ($-19$), and the middle of the scale (60--74) is predicted
+almost without bias. For Mistral-Small-24B, one point of NewsGuard score moves the prediction by only 0.37 points on
+average. The extremes are hard to predict for two reasons. They depend on criteria that single articles hardly show,
+such as the repeated publication of false content or the disclosure of ownership, and the models are trained on single
+articles, whose scores are then averaged: the compression is the same per article and per outlet. The ranking metrics
+are not affected, and the larger models compress less (Appendix~\ref{app:errors} gives the values for every model).
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/errors.pdf}
-\caption{Where the models err (one bar per model, each with its own hatch). (a) Mean signed error (predicted minus
-true score) per NewsGuard level; positive values are overestimates. (b) Mean signed error per political orientation at equal NewsGuard
-score (residuals of a linear regression of the signed error on the true score). (c) Spearman correlation within the
-outlets of one orientation, with 95\% bootstrap intervals.}\label{fig:errors}
+\caption{Errors by level and orientation, one bar per model. (a) Mean signed error (predicted minus true score) per
+NewsGuard level: bars above zero are overestimates. (b) Mean signed error per political orientation after removing its
+linear dependence on the true score, that is, at equal NewsGuard score. (c) Spearman correlation within the outlets of
+each orientation, with 95\% bootstrap intervals.}\label{fig:errors}
 \end{figure}
 
 \subsection{Influence of political orientation}\label{sec:orientation}
 Orientation and reliability are associated in our data, with a mean score of 80 for the left-leaning outlets and for
-those without orientation and of 54 for the right-leaning ones (Figure~\ref{fig:dataset}a), so we examine whether the
-models treat the orientations equally.
+those without orientation and of 54 for the right-leaning ones. We therefore check whether the models treat the
+orientations equally.
 
-\paragraph{Ranking within an orientation.} A model that only recognized the political side of an outlet could not rank
-outlets of the same orientation, but all models do (Figure~\ref{fig:errors}c). Mistral-Small-24B reaches $\rho = 0.62$
-[0.44, 0.75] within the 99 right-leaning outlets, 0.63 [0.44, 0.78] within the 59 outlets without orientation and 0.38
-[0.15, 0.57] within the 68 left-leaning ones, whose scores are concentrated in the two highest levels. TF-IDF and
-ModernBERT are lower in every group.
+\paragraph{Ranking within an orientation.} All models rank the outlets within each orientation
+(Figure~\ref{fig:errors}c), so they do more than recognize the political side. Mistral-Small-24B reaches $\rho = 0.62$
+among the right-leaning outlets, 0.63 among those without orientation and 0.38 among the left-leaning ones, whose scores
+are concentrated in the two highest levels.
 
-\paragraph{Errors at equal score.} The raw signed errors differ by orientation (Kruskal--Wallis $p < 0.001$ for every
-model), mostly because the right-leaning outlets are more often in the low levels, which are overestimated. At equal
-NewsGuard score, measured by the residuals of the signed error after removing its linear dependence on the true score
-(Figure~\ref{fig:errors}b), a gap remains. With Mistral-Small-24B, left-leaning outlets are predicted $+5.2$ points and
-right-leaning ones $-4.3$, a gap of 9.6 points [6.7, 12.3], which becomes 8.8 with a spline of the score and 8.7 with the
-level as a fixed effect. The gap is present in the other trained models (4.5--8.4 points) but not in the zero-shot model
-(0.1).
+\paragraph{Errors at equal score.} To compare outlets with the same NewsGuard score, we remove from the signed error its
+linear dependence on the true score (Figure~\ref{fig:errors}b). Mistral-Small-24B then predicts the left-leaning outlets
+5.2 points too high and the right-leaning ones 4.3 points too low, a gap of 9.6 points [6.7, 12.3], and 8.7--8.8 with
+other ways of controlling for the score. The other trained models have gaps of 4.5--8.4 points, the zero-shot model none
+(0.1). The compression alone does not create a gap. A plausible cause is that a model, when uncertain, moves an outlet
+towards the outlets that write like it, which tend to share its orientation; a predictor that did this fully would have
+a gap of 12.6 points (Appendix~\ref{app:errors}).
 
-This gap is not a mechanical effect of the compression, since shrinking every outlet towards the overall mean produces
-no gap at all. It appears when the predictions carry information correlated with orientation beyond the true score, as
-when a model that is uncertain about an outlet moves it towards the outlets that write like it, which tend to share its
-orientation. A predictor that shrinks each outlet towards the mean of its own orientation, with the slope of
-Mistral-Small-24B, would have a gap of 12.6 points [9.9, 14.6]. The models lie between this value and zero: they partly fall back on signals correlated with orientation.
-
-\paragraph{Calibration.} At equal \emph{prediction}, the true scores of left- and right-leaning outlets differ by 0.8
-points [$-7.5$, 8.9] for Mistral-Small-24B, 4.8 for Qwen3-Embedding-8B and 7.1 for TF-IDF. None of these differences is
-significant, but the intervals are wide, so we can only say that we find no evidence of miscalibration. The difference
-is significant for the fine-tuned ModernBERT (12.8), the small frozen models and the zero-shot model (24.8). A predictor
-calibrated within groups cannot in general also have equal errors at equal score when the groups have different
-means~\cite{kleinberg2017inherent,chouldechova2017fair}. A deployed system would therefore give right-leaning outlets
-predictions about 9 points lower than left-leaning ones with the same score, and this must be taken into account when the
-predictions are used to prioritize human review.
+\paragraph{Calibration.} Comparing outlets with the same \emph{prediction} instead, the true scores of left- and
+right-leaning outlets differ by only 0.8 points for Mistral-Small-24B [$-7.5$, 8.9]. We find no evidence that its
+predictions mean different things for the two groups, while the difference is significant for the fine-tuned ModernBERT,
+the small frozen models and the zero-shot model. When the groups have different mean scores, the two views cannot in
+general be equal at the same time~\cite{kleinberg2017inherent,chouldechova2017fair}. In practice, a system built on these
+models gives a right-leaning outlet about 9 points less than a left-leaning outlet with the same NewsGuard score, and
+this must be considered when the predictions are used to choose which outlets to review.
 
 % =====================================================================================================================
 \section{Released Resources and Demonstration Tool}\label{sec:tool}
-We release in two repositories everything needed to reproduce and use the study (Supplementary
-Section~\ref{S-app:tool} and Supplementary Table~\ref{S-tab:release}). The first contains the pipeline of
-Sections~\ref{sec:data}--\ref{sec:experiments} and the code of every table and figure
-(\url{https://github.com/bianchi-john/PublisherClassification}). The second contains the four main models of
-Table~\ref{tab:main} (TF-IDF, Qwen3-Embedding-8B, Mistral-Small-24B and the fine-tuned ModernBERT) in their five fold
-versions, the out-of-fold predictions for every article and the split of the outlets
-(\url{https://github.com/bianchi-john/publisher-evaluation}\todo{publish the tool repository and check the link}). The
-NewsGuard scores and levels are licensed and are not included in any released file. The text of the articles is not
-redistributed either, only their URLs, from which the articles can be collected again and passed through the released
-pipeline.
-
-The second repository also contains \emph{Publisher Evaluation}, a tool that runs on the user's machine and applies the
-method to new articles. It extracts and checks the text as in Section~\ref{sec:cleaning}, anonymizes it as in
-Section~\ref{sec:anon}, shows exactly what the models read and scores it with the models chosen by the user. It never
-scores one of the 226 outlets with a model that saw it in training, and it presents every number as a model prediction
-and never as a rating. Supplementary Section~\ref{S-app:tool} describes the tool, the formats of the models and how
-custom models can be added.
+We release two repositories (Appendix~\ref{app:tool} and Table~\ref{tab:release}). The first,
+\url{https://github.com/bianchi-john/PublisherClassification}, contains the pipeline and the code of every table and
+figure. The second contains the four main models of
+Table~\ref{tab:main} in their five fold versions, the out-of-fold predictions for every article, the split of the
+outlets (\url{https://github.com/bianchi-john/publisher-evaluation}\todo{publish the tool repository and check the link})
+and \emph{Publisher Evaluation}, a tool that runs on the user's machine. The tool extracts, checks and anonymizes the
+text of new articles as in the paper, shows what the models read, and scores it with the models chosen by the user,
+never scoring one of the 226 outlets with a model that saw it in training. The NewsGuard ratings and the texts of the
+articles are not released; the articles can be collected again from their URLs.
 
 % =====================================================================================================================
 \section{Discussion and Conclusion}\label{sec:conclusion}
-In this study, we investigated whether the reliability score of a news publisher can be inferred from the anonymized
-text of its articles, for publishers never seen in training. The writing of a publisher still carries a substantial part
-of its professional reliability rating. A large language model used as a frozen encoder, with only a linear head trained
-on our labels, predicts the NewsGuard score with an error of 15.8 points, against 17.8 for TF-IDF and 22.1 for the best
-constant, and explains about half of its variance ($R^2 = 0.48$). A few articles per outlet are enough, and more than
-about ten add little.
+We asked whether the NewsGuard score of a news outlet never seen in training can be predicted from its anonymized
+articles. It can, in part. A large language model used as a frozen encoder, with a linear head trained on the scores,
+predicts the score with an error of 15.8 points, against 17.8 for TF-IDF and 22.1 for a constant, and explains about
+half of its variance ($R^2 = 0.48$). A few articles per outlet are enough, and more than about ten add little.
 
-The advantage is limited to the larger pretrained models. The small encoders we tested are no better than TF-IDF,
-frozen or fine-tuned, and asking the instruction-tuned model for the score does not work. A plausible reading, which our
-experiments cannot prove, is that large models represent properties of writing, such as how claims are sourced and
-hedged and how arguments are built, that word counts and small encoders capture only in part. With labels coming from
-about 180 sources per fold, a large frozen model with a linear head was the most accurate option we tested; whether
-fine-tuning a large model would improve on it remains open.
+Three findings stand out. First, only large pretrained models do better than TF-IDF; small encoders, frozen or
+fine-tuned, do not, and asking a model for the score does not work. A plausible explanation, which we cannot prove, is
+that large models represent how claims are sourced and how arguments are built better than word counts and small
+encoders do. Second, the evaluation protocol matters as much as the model. Training on the same outlet, or on outlets of
+the same owner, lowers the error by 6--12 points, while masking the names changes it little, so outlet-disjoint splits,
+deduplication across outlets and ownership groups are needed for realistic results. Third, the predictions are
+compressed towards the centre of the scale and depend on orientation: at equal score, right-leaning outlets get about 9
+points less than left-leaning ones.
 
-The evaluation protocol matters as much as the choice of the model. Letting the same outlet, or outlets of the same owner
-with their copies, into the training data lowers the error by 6--12 points and changes the comparison between models,
-while masking the identifiers changes the results little. Outlet-disjoint splits, deduplication across outlets and
-ownership groups are therefore needed for a realistic estimate.
+Since the score is predicted within 20 points for about two outlets in three, and some criteria of the rating are
+invisible in the text, these models should not replace the raters. Their natural use is to rank unrated outlets, so that
+human raters can review the least reliable ones first, while keeping the gap between orientations under control.
 
-The predictions are compressed towards the centre of the scale, the score is predicted within 20 points for about two
-outlets in three, and some criteria of the rating, such as the disclosure of ownership or the correction of errors, are
-hardly visible in the articles. The natural use of such a model is therefore to rank unrated outlets so that human
-raters can review the least reliable first, a use for which all the text models are far above the baselines. The models,
-however, give right-leaning outlets predictions about 9 points lower than left-leaning ones with the same score. For the
-best models we find no evidence of miscalibration between the two groups, but a prioritization system would propagate
-this gap, which should be monitored.
-
-\paragraph{Limitations.} First, the study relies on one proprietary rater at one point in time and on English-language
-political outlets only. Since the ratings cannot be redistributed, a public replication could use the open aggregate
-ratings of Lin et al.~\cite{lin2023high}, which include NewsGuard and largely agree with it. Second, with 226 outlets the
-intervals are wide: the two large frozen models are not significantly different, and most differences in ranking are
-not significant after the correction for multiple comparisons. Third, every article inherits the score of its outlet,
-which introduces label noise at the article level. Fourth, the anonymization masks the explicit identifiers and leaves
-the writing style, some brand names and social-media handles, and the ownership groups are those recorded by NewsGuard,
-which can miss some ties. Fifth, the dataset under-represents the least reliable outlets, which are the hardest to
-predict (Section~\ref{sec:final}). Re-weighted to the levels of the outlets we could not collect, the expected error is
-about 20 points for Mistral-Small-24B and 23 for TF-IDF (Supplementary Section~\ref{S-app:robust}), and the same outlets
-were used to develop the protocol (Supplementary Section~\ref{S-app:tried}). Sixth, we measure the similarity between
-texts on words only. Finally, the language models may know some outlets from their pretraining data, although 96\% of
-the articles were published after the release of every model we use and the domain name alone gives them a much weaker
-ranking than the text ($\rho = 0.39$ against 0.735).
-
-Future research should extend the framework to other languages, topics and raters, calibrate the predictions, test the
-fine-tuning of large models, and combine the text with signals that it does not carry, such as ownership transparency,
-correction policies or citation networks.
+\paragraph{Limitations.} The study uses one rater at one point in time and English-language political outlets only; the
+open aggregate ratings of Lin et al.~\cite{lin2023high}, which include NewsGuard, could support a public replication.
+With 226 outlets the intervals are wide, and most differences in ranking are not significant. The labels of the articles
+are inherited from their outlets. The anonymization leaves the style, some brand names and the social-media handles, and
+the ownership groups are those recorded by NewsGuard. The least reliable outlets are under-represented: re-weighted to
+the outlets we could not collect, the expected error is about 20 points for Mistral-Small-24B and 23 for TF-IDF
+(Appendix~\ref{app:robust}). The protocol was developed on the same outlets (Appendix~\ref{app:tried}). Finally, the
+language models may know some outlets from their pretraining, although 96\% of the articles were published after the
+release of every model we use and the domain name alone gives a much weaker ranking than the text. Future work should
+extend the study to other languages, topics and raters, test the fine-tuning of large models, and add signals that the
+text does not carry, such as ownership transparency or citation networks.
 
 \paragraph{Ethics and data availability.}
-The NewsGuard ratings were licensed to the authors for research and cannot be redistributed. They can be obtained from
-NewsGuard under its own terms, and the licence allows the release of the models and of the predictions derived from
-them. The articles were collected from public pages, without bypassing paywalls or logins, and their text is not
-redistributed. The released files (Supplementary Table~\ref{S-tab:release}) contain no rating and no article text, and the study can
-be reproduced by collecting the articles again and
-obtaining the ratings from NewsGuard. The study involves no human participants. The names of journalists are masked
-before the models of the main experiments read them, and the URLs can contain names, mostly of public figures. The
-predictions concern organizations, but they can harm an outlet if they are used as ratings. They are meant to support
-human raters and do not reflect the criteria that the text does not show, so they should never be used to sanction,
-demote or label an outlet without human review, and any deployment should monitor the errors across political
-orientations. Like other text classifiers, the models can be fooled by an outlet that changes the few words that move a
-prediction, and explanation methods make these words easy to find~\cite{kozik2024explainability}; this is one more
-reason to keep human raters in the loop. The code and the models are released under the Apache-2.0 licence, consistent
-with the licences of the base models, and the predictions and the split under CC BY 4.0.
+The NewsGuard ratings were licensed to the authors for research. They cannot be redistributed, but the licence allows
+the release of the models and of the predictions derived from them. The articles were collected from public pages,
+without bypassing paywalls or logins, and their text is not redistributed. The study involves no human participants,
+and the names of journalists are masked before the models read the articles. The predictions concern organizations, but
+they could harm an outlet if used as ratings: they are meant to support human raters, should never be used to sanction
+or label an outlet without human review, and should be monitored across political orientations. Like other text
+classifiers, the models could also be fooled by an outlet that changes the few words that move a prediction, words that
+explanation methods make easy to find~\cite{kozik2024explainability}. The code and the models are released under the
+Apache-2.0 licence, and the predictions and the split under CC BY 4.0.
 
 \section*{Acknowledgments}
 This work is partially supported by IIT-CNR internal project SIMULARE `SIMULAzione delle Reazioni alla
 disinformazionE con LLM'.
+
+% =====================================================================================================================
+\appendix
+
+\section{More metrics}\label{app:measures}
+Table~\ref{tab:more} adds three metrics to Table~\ref{tab:main}: the coefficient of determination $R^2$, the root mean
+squared error (RMSE), which weighs large errors more than the MAE, and the area under the ROC curve (AUC) for separating
+the reliable outlets (score $\geq 60$, 65\% of the outlets) from the others. With $R^2$ and the RMSE the models are in
+the same order as with the MAE. With the AUC the large frozen models are only slightly ahead of TF-IDF (0.876 and 0.880
+against 0.860): their advantage is in how close the predicted score is to the rating, more than in telling reliable from
+unreliable outlets.
+
+\begin{table}[h]
+\centering
+\caption{More metrics per outlet. Each row is a model, as in Table~\ref{tab:main}; brackets give 95\% bootstrap
+intervals. Higher $R^2$ and AUC and lower RMSE are better.}\label{tab:more}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lccc}
+\toprule
+model & $R^2$ & RMSE (points) & AUC, score $\geq 60$ \\
+\midrule
+no text (training mean) & 0.000 [$-$0.023, 0.000] & 27.0 [24.8, 29.3] & 0.501 [0.422, 0.577] \\
+no text (training median) & $-$0.058 [$-$0.130, $-$0.013] & 27.8 [25.1, 30.5] & 0.500 [0.500, 0.500] \\
+orientation only & 0.223 [0.101, 0.327] & 23.8 [21.3, 26.5] & 0.688 [0.611, 0.762] \\
+Mistral-Small-24B-Instruct, zero-shot & $-$0.085 [$-$0.261, 0.031] & 28.2 [26.3, 30.0] & 0.665 [0.589, 0.738] \\
+\midrule
+TF-IDF + ridge & 0.339 [0.273, 0.392] & 22.0 [20.1, 24.0] & 0.860 [0.807, 0.907] \\
+ModernBERT (fine-tuned) & 0.341 [0.253, 0.415] & 22.0 [19.9, 24.0] & 0.835 [0.781, 0.884] \\
+ModernBERT (frozen) + ridge & 0.308 [0.236, 0.365] & 22.5 [20.6, 24.5] & 0.824 [0.769, 0.875] \\
+Qwen3-Embedding-0.6B (frozen) + ridge & 0.268 [0.209, 0.316] & 23.1 [21.1, 25.1] & 0.838 [0.782, 0.891] \\
+Qwen3-Embedding-8B (frozen) + ridge & 0.437 [0.368, 0.496] & 20.3 [18.4, 22.2] & 0.880 [0.831, 0.923] \\
+Mistral-Small-24B (frozen) + ridge & 0.475 [0.406, 0.533] & 19.6 [17.7, 21.5] & 0.876 [0.827, 0.920] \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\section{Statistical tests}\label{app:stats}
+Intervals are 95\% percentile bootstrap intervals over outlets, with 10,000 resamples (2,000 for the curves by number of
+articles). Two models are compared on the same resamples, with a two-sided bootstrap $p$-value. The Holm correction is
+applied within three families of tests:
+\begin{itemize}
+  \item every model against TF-IDF on the four metrics of Table~\ref{tab:main} (24 tests);
+  \item the curve of each model against that of TF-IDF (16 tests per model);
+  \item the other comparisons cited in the text (24 tests).
+\end{itemize}
+A comparison that belongs to two families is reported from the first. The intervals of Table~\ref{tab:ladder} and
+Appendix~\ref{app:anon} are not corrected, and this is stated there. The main comparisons of
+Sections~\ref{sec:stage2}--\ref{sec:k} are:
+\begin{itemize}
+  \item \textbf{Mistral-Small-24B against TF-IDF, all articles:} MAE $-2.0$ [$-2.9$, $-1.2$], significant; $\rho$
+        $+0.060$ [0.020, 0.104] and share within 20 points $+6.6$, not significant after correction (Holm $p = 0.07$ and
+        $0.18$).
+  \item \textbf{Qwen3-Embedding-8B against TF-IDF, all articles:} MAE $-1.5$ [$-2.3$, $-0.7$] and share within 20 points
+        $+8.4$, significant; $\rho$ $+0.037$, not significant.
+  \item \textbf{Qwen3-Embedding-8B against Qwen3-Embedding-0.6B:} MAE $-2.5$ [$-3.2$, $-1.7$] and $\rho$ $+0.085$ [0.039,
+        0.136], significant. Mistral-Small-24B is not significantly better than Qwen3-Embedding-8B, and the frozen
+        ModernBERT is not worse than Qwen3-Embedding-0.6B.
+  \item \textbf{Frozen Mistral-Small-24B against its zero-shot version:} $+0.39$ in $\rho$ and $-8.6$ points of error.
+  \item \textbf{By number of articles:} Mistral-Small-24B with five articles against TF-IDF with all of them: MAE $-1.7$
+        [$-2.6$, $-0.9$], significant; $\rho$ 0.71 against 0.67, not significant. Qwen3-Embedding-8B is significantly
+        better than TF-IDF in ranking up to ten articles; Qwen3-Embedding-0.6B has a significantly larger error than
+        TF-IDF from two articles on.
+\end{itemize}
+
+\section{The anonymization in detail}\label{app:anonfig}
+The three passes of Section~\ref{sec:anon} work as follows:
+\begin{enumerate}
+  \item links and e-mail addresses are found with regular expressions;
+  \item the outlet's own name is derived from its domain and matched joined or spaced, with or without ``the''; a name
+        that is also a common English word (e.g.\ \emph{The Week}, \emph{Time}) is replaced only when capitalized, unless
+        the outlet itself writes it in lowercase;
+  \item GLiNER (\texttt{gliner\_large-v2.1}, threshold 0.5) looks for \emph{news outlet} and \emph{journalist} in windows
+        of 200 words overlapping by 30, since it reads at most 384 tokens; of two overlapping spans, the one with the
+        higher score is kept. A span is replaced only if it contains a capitalized word that is not a pronoun and does
+        not touch a placeholder of passes 1--2, because the recognizer also tags pronouns such as \emph{I}, common nouns
+        such as \emph{reporters} and the placeholders themselves.
+\end{enumerate}
+Passes 1--2 replace 17,780 mentions of the outlet's own name, 8,559 links and 398 e-mail addresses. GLiNER replaces
+41,278 mentions of news outlets and 33,816 of journalists, in 71.8\% of the articles (73\% of the outlet spans and 92\%
+of the journalist spans it proposes pass the filter). Figure~\ref{fig:anonymization} shows how often each pass acts and
+how this changes with the score. The least reliable outlets use more links (1.4 per 1,000 words in the 0--39 band, 0.3
+in the 75--100 bands), while the outlets with a perfect score cite other outlets and name journalists more often (8.8
+placeholders per 1,000 words, against 6.8 in the 0--39 band).
+
+The name of the publishing outlet appears in 37.8\% of the original articles, in 1.7\% after passes 1--2 and in 1.6\%
+after the full anonymization, mostly where it is also an ordinary word. Since this check uses the same names as the
+masking, we also searched for the brand name recorded by NewsGuard. It remains in 2.1\% of the articles, concentrated in
+17 outlets whose brand differs from their domain, such as think tanks and advocacy organizations. Social-media handles
+(in 9.5\% of the articles) and some aliases are not masked. The models do not read the titles, where signatures are most
+frequent.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/anonymization.pdf}
+\caption{What the anonymization replaces. (a) Share of articles with at least one replacement of each kind (passes 1--2:
+links, e-mail addresses, the outlet's own name; pass 3: other outlets and journalists). (b) Share of articles whose
+title or text still contains the name of their own outlet, after each pass. (c) Replacements per 1,000 words, by
+NewsGuard score band of the outlet.}\label{fig:anonymization}
+\end{figure}
+
+\section{Who is left out by the cleaning}\label{app:selection}
+Table~\ref{tab:selection} describes the 1,293 political outlets sent to the scraper by the step at which they left the
+dataset. The 226 outlets of the dataset differ from the others in score (Mann--Whitney $p < 10^{-25}$) and orientation
+($\chi^2$ $p < 10^{-14}$). The outlets that could not be collected and those removed with the duplicates are much less
+reliable, and the second group is almost entirely the network of 164 sites of Section~\ref{sec:groups}.
+
+\begin{table}[h]
+\centering
+\caption{Who is left out by the cleaning. Each row is the step at which outlets left the dataset (the last row is the
+dataset); the columns give their number, their mean NewsGuard score and their shares (\%) by level, by orientation and
+based in the United States.}\label{tab:selection}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrrrrrrrr}
+\toprule
+removed at & outlets & score & $l_1$ & $l_2$ & $l_3$ & $l_4$ & $l_5$ & left & right & none & US \\
+\midrule
+no article collected & 619 & 41.4 & 43 & 35 & 5 & 13 & 3 & 7 & 50 & 43 & 68 \\
+text extraction & 6 & 78.2 & 0 & 33 & 0 & 50 & 17 & 0 & 67 & 33 & 50 \\
+English & 91 & 73.6 & 11 & 14 & 9 & 45 & 21 & 20 & 22 & 58 & 15 \\
+100--1,500 words & 12 & 55.0 & 25 & 17 & 25 & 25 & 8 & 8 & 67 & 25 & 67 \\
+published from 2025 & 34 & 56.4 & 21 & 41 & 6 & 24 & 9 & 29 & 26 & 44 & 76 \\
+exact duplicates & 170 & 37.0 & 89 & 2 & 2 & 6 & 1 & 7 & 5 & 88 & 98 \\
+near duplicates & 14 & 27.9 & 93 & 0 & 7 & 0 & 0 & 0 & 29 & 71 & 100 \\
+at least 10 articles & 60 & 57.5 & 22 & 35 & 10 & 25 & 8 & 27 & 35 & 38 & 77 \\
+one outlet per group & 61 & 47.8 & 13 & 69 & 7 & 10 & 2 & 36 & 59 & 5 & 97 \\
+\textbf{in the dataset} & 226 & 68.5 & 15 & 19 & 13 & 35 & 17 & 30 & 44 & 26 & 79 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\section{Implementation details}\label{app:impl}
+\begin{itemize}
+  \item \textbf{Split and settings.} The inner folds are built like the outer ones, on the training outlets, and the
+        settings are chosen by the Spearman correlation per outlet. In training every article counts once, so outlets
+        with more articles weigh more. The language is detected with langdetect, with a fixed seed.
+  \item \textbf{TF-IDF.} Word uni- and bi-grams, at most 100,000, minimum document frequency 5, sublinear term frequency,
+        fitted on the training articles; ridge penalty from $\{10^{-3}, \ldots, 1\}$.
+  \item \textbf{Frozen models.} Ridge regression on the standardized vectors, penalty from $\{10, \ldots, 10^6\}$. The
+        two small frozen models often choose the lowest value, but extending the grid to 0.01 changes their $\rho$ by
+        less than 0.001. The Qwen3 models read the article after the instruction \emph{``Represent this news article to
+        judge the reliability and journalistic standards of the outlet that published it''} and give the L2-normalized
+        state of the last token (4,096 and 1,024 dimensions). Mistral-Small-24B (base) is loaded in 4-bit NF4
+        quantization and gives the mean of the hidden states of a layer chosen between layer 27 and the last one (40);
+        the inner folds choose layer 27 in every fold. The frozen ModernBERT-base gives the mean of its last hidden
+        states.
+  \item \textbf{Fine-tuned ModernBERT.} Squared error of $s/100$, AdamW, learning rate $3 \cdot 10^{-5}$, weight decay
+        0.01, linear schedule with 6\% warm-up, effective batch of 32 articles, 5 epochs, mixed precision, one seed, model
+        of the last epoch. Its training loss is $0.0019$ on $s/100$, an error of about 4 points, against 20.4 on the
+        test articles.
+  \item \textbf{Zero-shot model.} Greedy decoding; the first integer of the answer is the prediction, and the 24 answers
+        without a number get the mean training score.
+  \item \textbf{Length and compute.} The models read up to 4,096 tokens, more than the longest article (median about 760
+        tokens). On one NVIDIA V100 (32 GB), the frozen vectors take about 2 hours for Qwen3-Embedding-8B and 5 for
+        Mistral-Small-24B, fine-tuning ModernBERT takes 1.5 hours per fold, and each ridge regression a few seconds.
+\end{itemize}
+
+\section{The zero-shot prompt}\label{app:prompt}
+The system message and the user message given to Mistral-Small-24B-Instruct, through its chat template:
+
+\begin{quote}\small
+You are an expert media analyst. NewsGuard rates news and information websites with a score from 0 to 100, the weighted
+sum of nine journalistic criteria: the site does not repeatedly publish false content (22 points), gathers and presents
+information responsibly (18), regularly corrects or clarifies errors (12.5), handles the difference between news and
+opinion responsibly (12.5), avoids deceptive headlines (10), discloses ownership and financing (7.5), clearly labels
+advertising (7.5), reveals who is in charge, including possible conflicts of interest (5), and provides the names of
+content creators with contact or biographical information (5). Scores below 60 mean that the site generally fails to
+meet basic standards of credibility and transparency.
+
+\smallskip\noindent Below is one article published by a news website. The names of news outlets have been replaced by \texttt{[OUTLET]}, the names of journalists by \texttt{[AUTHOR]}, links by \texttt{[URL]} and e-mail addresses by \texttt{[EMAIL]}.
+
+\smallskip\noindent Estimate the NewsGuard score (0-100) of the website that published this article. Answer with a single integer and nothing else.
+
+\smallskip\noindent Article:
+\emph{<the anonymized article>}
+\end{quote}
+
+
+\section{Robustness checks}\label{app:robust}
+Table~\ref{tab:robust} repeats the MAE of Table~\ref{tab:main} under three checks:
+\begin{itemize}
+  \item \textbf{Recalibrated:} the outlet scores are re-mapped by a straight line fitted on the training outlets of each
+        fold, with predictions from three inner folds (for the zero-shot model, on its answers for the training
+        outlets). This removes most of the compression and lowers every error. Mistral-Small-24B stays better than
+        TF-IDF ($-1.5$ [$-2.7$, $-0.4$]); the advantage of Qwen3-Embedding-8B is no longer significant ($-0.9$ [$-2.0$,
+        0.2]).
+  \item \textbf{Re-weighted:} the MAE of each NewsGuard level is weighted by the share of that level among the
+        political outlets that could not be collected (43\% in the lowest level, against 15\% in the dataset), or among
+        all the political outlets. This estimates the error on unrated outlets: about 20 points for Mistral-Small-24B.
+  \item \textbf{Without brand names:} the 16 outlets whose brand name of two or more words, as recorded by NewsGuard, is
+        still in the anonymized text of at least one article are left out.
+\end{itemize}
+
+\paragraph{Name only.} To measure what the frozen models know about an outlet without reading its articles, we give them
+only its domain name (for instance \texttt{example.com}) and train the same ridge regression with the same folds.
+Mistral-Small-24B reaches $\rho = 0.39$ [0.27, 0.49] and an MAE of 20.4 [18.5, 22.4], Qwen3-Embedding-8B $\rho = 0.35$
+[0.23, 0.45] and 21.7 [19.8, 23.7]: about as much as the orientation alone ($\rho = 0.36$, MAE 18.5), and far below what
+they reach from the articles (0.735 and 0.711).
+
+\begin{table}[h]
+\centering\small
+\caption{Robustness checks. Each row is a check and each column a model; the cells give the MAE per outlet and, in
+parentheses, the difference from TF-IDF in the same row (negative: better than TF-IDF).}\label{tab:robust}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lccccc}
+\toprule
+& TF-IDF & Qwen3-Embedding-8B & Mistral-Small-24B & zero-shot & no text (median) \\
+\midrule
+as in Table~\ref{tab:main} & 17.8 & 16.3 ($-$1.5) & 15.8 ($-$2.0) & 24.4 (+6.6) & 22.1 \\
+recalibrated inside the training folds & 16.2 & 15.3 ($-$0.9) & 14.7 ($-$1.5) & 21.2 (+5.0) & -- \\
+re-weighted: outlets not collected & 22.9 & 20.9 ($-$2.0) & 20.2 ($-$2.7) & 22.8 ($-$0.1) & 34.9 (+12.0) \\
+re-weighted: all political outlets & 22.4 & 20.4 ($-$2.0) & 19.7 ($-$2.7) & 24.0 (+1.6) & 32.6 (+10.1) \\
+without the 16 outlets with their brand name & 18.0 & 16.5 ($-$1.4) & 16.2 ($-$1.8) & 24.4 (+6.5) & -- \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\section{Other splits of the outlets}\label{app:splits}
+We repeated the three ridge models with four more splits of the outlets, made in the same way with different random
+seeds (Table~\ref{tab:splits}). The models are in the same order in every split. Mistral-Small-24B lowers the error of
+TF-IDF by 2.0--2.3 points in every split (2.2 on average) and raises $\rho$ by 0.03--0.07; Qwen3-Embedding-8B lowers the
+error by 1.5--1.9 points and raises $\rho$ by 0.01--0.04. The error of each model varies by less than half a point
+across splits, and the split of the paper is the one in which Mistral-Small-24B gains least over TF-IDF.
+
+\begin{table}[h]
+\centering
+\caption{Other splits of the outlets. Each row is a split (the first is the split of the paper, the last the mean and
+standard deviation over the five); the cells give the MAE and $\rho$ per outlet of each model, with all
+articles.}\label{tab:splits}
+\small\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{2}{c}{TF-IDF} & \multicolumn{2}{c}{Qwen3-Embedding-8B} & \multicolumn{2}{c}{Mistral-Small-24B} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+split seed & MAE & $\rho$ & MAE & $\rho$ & MAE & $\rho$ \\
+\midrule
+1 (paper) & 17.8 & 0.674 & 16.3 & 0.711 & 15.8 & 0.735 \\
+2 & 17.9 & 0.690 & 16.3 & 0.696 & 15.7 & 0.720 \\
+3 & 18.2 & 0.660 & 16.5 & 0.688 & 16.0 & 0.716 \\
+4 & 18.0 & 0.673 & 16.1 & 0.713 & 15.8 & 0.742 \\
+5 & 18.2 & 0.673 & 16.5 & 0.692 & 16.1 & 0.722 \\
+\midrule
+mean (SD) & 18.0 (0.17) & 0.674 (0.010) & 16.3 (0.15) & 0.700 (0.011) & 15.8 (0.17) & 0.727 (0.011) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Sister outlets}\label{app:sisters}
+\paragraph{Shared articles.} Before deduplication, 298 of the 531 outlets share at least one article with another
+outlet. Of the 3,280 links between them, 3,212 (98\%) join outlets of the same ownership group, and so do 98\% of the
+28,156 shared copies. The sister outlets fall from 263 to 94 at the exact-duplicate step. After deduplication, 59\% of
+the 81 outlets that still have a sister (61 sister outlets and 20 outlets kept for their groups) are closer to a sister
+than to any outlet of another group (median TF-IDF similarity 0.73 to the nearest sister, 0.65 to the nearest outlet of
+another group).
+
+\paragraph{Shared ratings.} The sisters protocol of Table~\ref{tab:ladder} adds to the training data the 89 outlets of the
+same owners removed by the cleaning that have at least 10 articles from 2025. On the 31 outlets with a sister, the
+article-level split gives errors of 11.7, 12.8 and 9.6 for TF-IDF, Qwen3-Embedding-8B and Mistral-Small-24B, about as low
+as with the sisters. Sisters share their ratings: 23 of the 31 outlets have the same score as all their sisters,
+outlets of the same owner have the same rating in 74\% of the cases, and an outlet differs from its sisters by 3.8
+points on average, against 29.6 for two random outlets of these groups.
+
+\paragraph{Similarity and gain.} For the outlets with a sister, adding the sisters raises the TF-IDF cosine similarity
+between a test article and its most similar training article from 0.19 to 0.60 on average (from 0.16 to 0.18 for the
+other outlets). The larger this increase, the larger the fall of the error: over the 31 outlets their Spearman
+correlation is 0.60 [0.30, 0.80] for TF-IDF, and 0.25 and 0.32 (not significant) for Qwen3-Embedding-8B and
+Mistral-Small-24B.
+
+\section{An earlier, rule-based anonymization}\label{app:anon}
+Before the anonymization of Section~\ref{sec:anon}, we ran the whole pipeline with six rules that masked only the
+publisher and its own staff: its signature in the titles, its e-mail addresses, links and social media accounts, its
+authors taken from the author field of the page, and its name. Table~\ref{tab:anon} compares the two anonymizations.
+Masking every outlet and journalist changes the language models by at most 0.010 in $\rho$ and 0.24 points of error,
+never significantly. Only TF-IDF loses a little ($\Delta\rho = -0.017$ [$-0.036$, $-0.001$]), as expected from a model
+that uses names as features: with 1, 5 and all articles per outlet and the four metrics, 8 of its 12 comparisons are
+worse with the stricter anonymization (uncorrected 95\% intervals), against 3 of 12 for Mistral-Small-24B and none for
+the other two models.
+
+\begin{table}[h]
+\centering
+\caption{Two anonymizations. Each row is a model; the column groups give $\rho$ and MAE per outlet with the six rules of
+the first run and with the anonymization of the paper (all articles).}\label{tab:anon}
+\begin{tabular}{lcccc}
+\toprule
+& \multicolumn{2}{c}{six rules} & \multicolumn{2}{c}{rules + GLiNER} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+model & $\rho$ & MAE & $\rho$ & MAE \\
+\midrule
+TF-IDF & 0.691 & 17.7 & 0.674 & 17.8 \\
+Qwen3-Embedding-8B & 0.722 & 16.1 & 0.711 & 16.3 \\
+Mistral-Small-24B & 0.735 & 15.7 & 0.735 & 15.8 \\
+ModernBERT & 0.605 & 17.7 & 0.610 & 17.5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Boilerplate}\label{app:reading}
+Boilerplate lines are invitations to subscribe to a newsletter, donation appeals, disclaimers, image captions and other
+lines that an outlet repeats: we count a line, with the digits ignored, when it appears in at least three articles and
+in at least 5\% of the articles of the same outlet. There are 1,040 such lines in 171 of the 226 outlets; they make up
+3.0\% of the words and appear in 49\% of the articles.
+
+\paragraph{TF-IDF retrained.} Without boilerplate, with the same folds and choice of the penalty, TF-IDF has an MAE of
+17.50 and $\rho = 0.677$, against 17.82 and 0.674 (difference in MAE $-0.32$ [$-0.74$, 0.10]). Without boilerplate and
+dates, which can tell the model the week of a news story, it has 17.37 and 0.683 ($-0.45$ [$-0.87$, $-0.03$]).
+
+\paragraph{Saved models.} On 1,000 random articles with boilerplate (8.7\% of their words on average), we compared the
+predictions of the saved fold models on the original text and on the text without boilerplate (Table~\ref{tab:reading}).
+Without these lines the predictions fall by 0.7--1.5 points on average and the error grows by 0.5--1.1 points, since
+the models were trained with them, but the two predictions remain highly correlated.
+
+\paragraph{Mistral-Small-24B token by token.} The ridge head reads the standardized mean of the $T$ token states
+$\mathbf{h}_t$ of layer 27, so the prediction is $c + \frac{1}{T}\sum_{t=1}^{T}\mathbf{h}_t^\top\tilde{\mathbf{w}}$,
+where $\tilde{\mathbf{w}}$ holds the ridge weights divided by the standard deviations of the features and $c$ collects
+the intercept and the means. Each term of the sum is the contribution of one token; on the first 300 articles of the
+sample this decomposition matches the saved predictions within 0.04 points. The boilerplate tokens are 8.2\% of the
+tokens, move a prediction by 1.9 points on average (the predictions have a standard deviation of 17.5 points) and
+account for 12\% of the variance of the predictions (covariance of their contribution with the prediction, divided by
+the variance of the prediction): slightly more than their share of the tokens, but a small part of the prediction.
+
+\begin{table}[h]
+\centering
+\caption{Boilerplate. Each row is a model, on 1,000 articles that contain boilerplate; the columns give the article MAE
+of the saved fold models with and without the boilerplate, the mean absolute change of the prediction, and the Pearson
+correlation between the two predictions.}\label{tab:reading}
+\begin{tabular}{lcccc}
+\toprule
+model & MAE, original & MAE, without boilerplate & mean change & $r$ \\
+\midrule
+TF-IDF & 19.3 & 20.4 & 3.3 & 0.954 \\
+Qwen3-Embedding-8B & 18.7 & 19.5 & 4.8 & 0.936 \\
+Mistral-Small-24B & 17.0 & 17.5 & 2.0 & 0.982 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Errors by level and orientation in detail}\label{app:errors}
+\paragraph{By level.} The mean signed error is $+31$ points for Mistral-Small-24B and $+36$ for TF-IDF in the 0--39
+band, $-19$ and $-25$ for score 100, and $-3$ and $-2$ in the 60--74 band. With Mistral-Small-24B the absolute error is
+31 points in the 0--39 band, 19 for score 100 and 9 in the 60--74 band. For the trained models the signed error
+decreases with the true score with a slope between $-0.63$ (Mistral-Small-24B) and $-0.81$ (Qwen3-Embedding-0.6B), so
+one point of NewsGuard score moves the prediction by 0.19--0.37 points (0.09 for the zero-shot model). This slope is the
+same per article and per outlet (about 0.37 for Mistral-Small-24B), so averaging over the articles keeps the
+compression.
+
+\paragraph{By orientation.} Within each orientation, Mistral-Small-24B reaches $\rho = 0.62$ [0.44, 0.75] among the 99
+right-leaning outlets, 0.63 [0.44, 0.78] among the 59 without orientation and 0.38 [0.15, 0.57] among the 68
+left-leaning ones; TF-IDF and ModernBERT are lower in every group. The raw signed errors differ by orientation
+(Kruskal--Wallis $p < 0.001$ for every model), mostly because right-leaning outlets are more often in the low levels. At
+equal score, the gap between left- and right-leaning outlets for Mistral-Small-24B is 9.6 points [6.7, 12.3] with a
+linear control, 8.8 with a spline of the score and 8.7 with the level as a fixed effect. Shrinking every outlet towards
+the overall mean gives no gap, while shrinking it towards the mean of its own orientation, with the slope of
+Mistral-Small-24B, gives 12.6 points [9.9, 14.6]. At equal prediction, the true scores of left- and right-leaning
+outlets differ by 0.8 points [$-7.5$, 8.9] for Mistral-Small-24B, 4.8 for Qwen3-Embedding-8B and 7.1 for TF-IDF (not
+significant), and by 12.8 for the fine-tuned ModernBERT and 24.8 for the zero-shot model (significant).
+
+\section{Released resources and the demonstration tool}\label{app:tool}
+Table~\ref{tab:release} lists what we release. The released models derive from base models under the Apache-2.0 licence
+(ModernBERT-base, Qwen3-Embedding-8B and Mistral-Small-24B-Base-2501); the weights of the two frozen models and of the
+GLiNER recognizer are not redistributed but downloaded from Hugging Face by the tool.
+
+\begin{table}[t]
+\centering\small
+\caption{Released resources. Each row is a resource, with its content, the repository that holds it and its licence.
+\emph{Study}: \url{https://github.com/bianchi-john/PublisherClassification}; \emph{tool}:
+\url{https://github.com/bianchi-john/publisher-evaluation}\todo{publish the tool repository and check the
+link}. No released file contains NewsGuard scores, NewsGuard levels or article text.}\label{tab:release}
+\begin{tabular}{p{0.15\linewidth}p{0.50\linewidth}p{0.11\linewidth}p{0.12\linewidth}}
+\toprule
+resource & content & repository & licence \\
+\midrule
+pipeline code & every step of Sections~\ref{sec:data}--\ref{sec:experiments}: scraping, cleaning, anonymization,
+  split, models, evaluation, tables and figures & study & Apache-2.0 \\
+models & the four main models of Table~\ref{tab:main} (TF-IDF, Qwen3-Embedding-8B, Mistral-Small-24B,
+  fine-tuned ModernBERT), each in its five fold versions (one per held-out fold of outlets):
+  TF-IDF and the ridge heads as arrays, ModernBERT as ONNX & tool & Apache-2.0 \\
+predictions & for each of the 25,524 articles: id, URL, outlet domain, fold and the out-of-fold score of the four
+  models & tool & CC BY 4.0 \\
+split & the 226 outlet domains and their fold & tool & CC BY 4.0 \\
+tool & \emph{Publisher Evaluation}: scores new articles with the released models & tool & Apache-2.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{The tool.} \emph{Publisher Evaluation} runs on the user's machine, with a web interface and a command line
+(Figure~\ref{fig:tool}). Given a URL, or a pasted text with the domain of its outlet, it extracts the text as in
+Section~\ref{sec:cleaning} and refuses what lies outside the training data: pages that are not a single article and
+texts that are not in English or not between 100 and 1,500 words. It anonymizes the text as in Section~\ref{sec:anon}
+and shows it with the placeholders highlighted, so the user sees exactly what the models read. Each model chosen by the
+user then predicts the score of the outlet from this article, and the score of an outlet is the mean over its stored
+articles. The released predictions of the 226 outlets can be browsed, compared and exported. Every number is presented
+as a model prediction, never as a rating, and the tool is meant for researchers and raters, not for publishing
+predictions about named outlets.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.92\linewidth]{figures/tool.pdf}
+\caption{The Evaluate page of \emph{Publisher Evaluation}, on an invented test article and with the two models that run
+on a CPU. Top: the score predicted for the outlet by each model (for a new outlet, the mean of the five fold models).
+Bottom: the text the models read, with the placeholders highlighted and the names replaced by the
+recognizer.}\label{fig:tool}
+\end{figure}
+
+\paragraph{Models and checks.} The models are shipped in formats that execute no code from the model files: TF-IDF and the
+ridge heads as plain arrays, ModernBERT as an ONNX graph in half precision. Against the predictions of the paper, the
+TF-IDF scores are identical, the ridge heads differ by less than $10^{-4}$ points, and ModernBERT by 0.05 points on
+average (at most 1 point, on 1,500 articles); the anonymization of the tool reproduces that of the paper on a sample of
+40 articles. The two frozen language models need a GPU with about 18 GB of memory, while TF-IDF and ModernBERT also run
+on a CPU (about 1 s per article and fold for ModernBERT).
+
+\paragraph{Leakage guard.} The model of fold $k$ was trained on the outlets of the other four folds. For an article of
+one of the 226 outlets, the tool uses only the model of the fold that held that outlet out; for a new outlet the score
+is the mean of the five fold models. An article of the paper evaluated again keeps its identifier and is never counted
+twice.
+
+\paragraph{Custom models.} Users can add their own regressors of the 0--100 score as ONNX graphs, reading the anonymized
+text or its tokens. A custom model is used only if it passes strict checks: a valid graph with standard operators, the
+declared inputs and a single score output, and a test run on 20 synthetic articles in which the scores must be finite,
+within the scale, not all equal, and stable when scored again or in a batch. Its manifest declares the outlets it was
+trained on, so the same leakage guard applies, and its predictions are never pooled with those of the models of the
+paper.
+
+\section{What else was tried on these outlets}\label{app:tried}
+The rules of the dataset, the split and the models were fixed after earlier rounds of experiments on the same 226
+outlets, whose test results we saw. Only the ridge penalty and the Mistral layer were chosen inside the training folds.
+The earlier rounds:
+\begin{itemize}
+  \item classified the five NewsGuard levels instead of regressing the score, with TF-IDF, the frozen models and
+        ModernBERT;
+  \item tested Gemma-27B as a frozen encoder (dropped because its half-precision outputs overflowed on our GPU), layer 40
+        of Mistral-Small-24B (now one of the two layers chosen on the inner folds) and DeBERTa as a fine-tuned encoder,
+        and set the hyper-parameters of ModernBERT (5 epochs, learning rate $3 \cdot 10^{-5}$);
+  \item trained fourteen other regressors on the frozen vectors of the two large models (Qwen3-Embedding-8B and
+        Mistral-Small-24B), including
+        kernel ridge, a small neural network, attention over the articles of an outlet, models at the outlet level,
+        weights for outlets and rare scores, and mixup; none was much better than the ridge (the best lowered the error
+        of Mistral-Small-24B by about one point), and the advantage over TF-IDF did not depend on the regressor;
+  \item re-mapped the predictions to the quantiles of the training scores, which lowers the MAE, and represented the
+        outlets by groups of their articles;
+  \item used the rule-based anonymization of Appendix~\ref{app:anon}.
+\end{itemize}
+The stability of the results over five splits of the outlets (Appendix~\ref{app:splits}) limits how much these choices
+can have adapted to the folds.
 
 \bibliographystyle{plainnat}
 \bibliography{references}
