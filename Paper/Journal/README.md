@@ -11,8 +11,8 @@ be moved to any journal class (elsarticle, svjour3, acmart, IEEEtran, ...) by re
 - `references.bib`: every entry checked against its source (ACL Anthology, Crossref, arXiv, PMLR, publishers) on
   17/11/2026.
 - `figures/`: `paper_figures.ipynb` draws every figure of the paper (`dataset`, `groups`, `network`, `anonymization`,
-  `results`, `curves`, `scatter`, `errors`.pdf) with the style of `paper_style.py`, from the tables of step 15 of the
-  pipeline (`paper_*.csv`); `dataset_construction.py` runs on the server and writes the aggregates of the dataset
+  `results`, `curves`, `scatter`, `errors`, `group_maps`.pdf) with the style of `paper_style.py`, from the tables of step 15 of the
+  pipeline (`paper_*.csv`); `dataset_construction.py` and `group_maps.py` (ownership-group maps through the cleaning, Figure 2; `overlap_steps.py` is the earlier bar-chart version) run on the server and writes the aggregates of the dataset
   figures into `Dataset/tentativi/20_FromScratch/paper_figures/` (outside git).
 - `_da_cancellare/`: previous versions (the draft before the full rewrite, the old figure scripts), for John to decide.
 

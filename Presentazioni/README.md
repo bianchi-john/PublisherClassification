@@ -5,6 +5,7 @@ generano (`figure/`); gli script della pipeline leggono `Code/Pipeline` e `Datas
 
 | cartella | che cosa | quando |
 |---|---|---|
+| `Paper rivista/` | `PaperRivista.odp`: il paper per la rivista (come lo vendiamo, titolo, contributi, schermate di tabelle e figure, appendici critica per critica). `figure/schermate.py` fotografa le tabelle e le figure dal paper compilato, poi `build_riunione.py` | novembre 2026 |
 | `Stato finale/` | `FinalState.odp`: lo stato finale del lavoro (dataset, split, anonimizzazione, regressori, curve, MBFC, passi 10–11). Modificata a mano da John; gli script `aggiorna_*.py` aggiungono solo slide nuove | novembre 2026 |
 | `Tentativo 20 from scratch/` | `Attempt20.odp`: la pipeline rifatta da zero (oggi `Code/Pipeline`) | inizio novembre 2026 |
 | `Tentativo 18 punteggio esatto/` | il punteggio esatto 0–100 al posto dei livelli (Beamer) | fine ottobre 2026 |
