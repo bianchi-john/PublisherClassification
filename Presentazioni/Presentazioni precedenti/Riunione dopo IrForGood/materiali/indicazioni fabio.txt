@@ -1,9 +1,0 @@
-Certo. 
-Prova a mettere in fila le cose emerse dalle review dei revisori del journal e i commenti di Marinella da chatgpt. 
-
-Le altre cose su training con LLM (embedding+mlp) che ti avevo condiviso.
-
-Mettili in fila, raggruppa quelli che identificano un problema simile (baseline, leaning vs reliability level, etc) 
-
-Per la riunione: 
-Da giovedì in poi...
