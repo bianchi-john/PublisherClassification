@@ -9,10 +9,10 @@ from pathlib import Path
 from PIL import Image
 
 QUI = Path(__file__).resolve().parent
-sys.path.insert(0, str(QUI.parent / "Stato finale"))
+sys.path.insert(0, str(QUI.parent / "Presentazioni precedenti" / "Stato finale"))
 import stile_slide as S  # noqa: E402
 
-MODELLO = QUI.parent / "Stato finale" / "FinalState.odp"
+MODELLO = QUI.parent / "Presentazioni precedenti" / "Stato finale" / "FinalState.odp"
 OUT = QUI / "PaperRivista.odp"
 SCH = QUI / "figure" / "schermate"
 S.PREFISSO[0] = "pr"
