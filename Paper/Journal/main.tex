@@ -362,12 +362,13 @@ Figure~\ref{fig:dataset}). Scores lean towards reliable outlets (median 75, Figu
 40--59, 30 in 60--74, 79 in 75--99 and 39 have a perfect score. No article exceeds the input length of any model (median
 about 760 tokens, at most about 3,000).
 
-\paragraph{Representativeness.} The dataset is not a random sample of the rated outlets (Appendix~\ref{app:selection}).
-The 619 outlets that returned no article (offline sites, blocked collection) have a mean score of 41, against 69 in
-the dataset, and deduplication removes another 170 outlets, most of them from the network of 164 sites. An outlet
-without readable articles cannot be scored from its text by any method, so these outlets are outside the scope of the
-task. Among the outlets in scope, the least reliable ones are under-represented, and they are also those with the
-largest errors; Section~\ref{sec:errors} reports the errors by level, so that they can be read for any mix of levels.
+\paragraph{Representativeness.} The dataset is not a random sample of the rated outlets. We set filters on the
+text and on the ownership, never on the score, but they remove many low scores: 15\% of the dataset is in the lowest
+level, against 33\% of all the outlets rated by NewsGuard, mostly because 619 outlets returned no article (mean score
+41), and cannot be scored from their text by any method, and 170 published only copies (mean 37). These are also the
+outlets on which the models err most (Section~\ref{sec:errors}): the test has fewer of the hardest cases, and the
+training fewer examples of them. Appendix~\ref{app:selection} compares the dataset with NewsGuard and discusses both
+effects.
 
 \begin{figure}[t]
 \centering
@@ -727,7 +728,8 @@ examine first: all the trained text models separate reliable from unreliable out
 large frozen models do so with a few articles, and the final rating, like any decision about an outlet, remains with the
 raters.
 
-\paragraph{Limitations.} The study uses one rater at one point in time and English-language political outlets only; the
+\paragraph{Limitations.} The study uses one rater at one point in time and English-language political outlets only, 79\% of
+them based in the United States; the
 open aggregate ratings of Lin et al.~\cite{lin2023high}, which include NewsGuard, could support a public replication.
 With 226 outlets the intervals are wide, and most differences in ranking are not significant. The labels of the articles
 are inherited from their outlets. The anonymization leaves the style, some brand names and the social-media handles, and
@@ -836,10 +838,53 @@ of each kind: the rules replace links, e-mail addresses and the outlet's own nam
 journalists. (b) Replacements per 1,000 words, by NewsGuard level of the outlet.}\label{fig:anonymization}
 \end{figure}
 
-\section{Who is left out by the cleaning}\label{app:selection}
-Table~\ref{tab:selection} describes the 1,293 political outlets sent to the scraper by the step at which they left the
-dataset. The 226 outlets of the dataset differ from the others in score (Mann--Whitney $p < 10^{-25}$). The outlets that could not be collected and those removed with the duplicates are much less
-reliable, and the second group is almost entirely the network of 164 sites of Section~\ref{sec:groups}.
+\section{How the dataset compares with NewsGuard}\label{app:selection}
+A reader may object that the 226 outlets are a sample built by us and not the reality of the rated outlets: that the
+cleaning removed the least reliable outlets, which are the hardest to predict, and that the outlets are almost all from
+the United States. We considered this objection, and part of it is right.
+
+\paragraph{The data.} Table~\ref{tab:population} compares the dataset with all the outlets rated by NewsGuard and with
+the political outlets sent to the scraper. Every level is present (35 outlets with a score under 40, 39 with a perfect
+score, 45 distinct scores), and the two highest levels have about the same shares as in NewsGuard as a whole. To
+measure the difference we use the total variation distance between the level distributions, the share of outlets that
+would have to change level for one distribution to become the other. Between the dataset and all the rated outlets it
+is 17\%: the dataset lacks 17 percentage points in the lowest level and has them in excess in the others. Between the
+political outlets as a whole and all the rated outlets it is 23\%, and between the dataset and the political outlets
+32\%.
+
+\paragraph{No selection on the score.} We set filters on the text and on the ownership, never on the score, and they
+removed what they removed. The least reliable outlets leave at two steps (Table~\ref{tab:selection}): 619 outlets
+returned no article (offline sites, blocked collection; mean score 41), and 170 published only copies of articles of
+other outlets (mean score 37), almost all from the network of 164 sites of Section~\ref{sec:groups}. The first cannot be
+scored from their text by any method; keeping the second would test the same articles many times.
+
+\paragraph{What this costs.} The cleaning removes many low scores: 15\% of the dataset is in the lowest level, against
+33\% of all the rated outlets and 39\% of the political ones. This is also where the models err most, by 31 points for
+Mistral-Small-24B in the 0--39 band (Section~\ref{sec:errors}). Two effects go in opposite directions. The test has
+fewer of the hardest outlets, so the overall error is lower than it would be on all the rated outlets. The training has
+fewer examples of the low end of the scale, which is probably one reason why the errors there are large. With these
+data we cannot separate the two effects, and for this reason we report the errors by level.
+
+\paragraph{Language and country.} The dataset contains English-language outlets only: 79\% of them are based in the
+United States, 10\% in the United Kingdom and 5\% in Canada. The results concern this population.
+
+\begin{table}[h]
+\centering
+\caption{The dataset and NewsGuard. Each row is a set of outlets; the columns give their number, their mean and median
+NewsGuard score, and their shares (\%) by level and by country (other: other countries or international).}\label{tab:population}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrrrrrrrrr}
+\toprule
+& & & & \multicolumn{5}{c}{level} & \multicolumn{4}{c}{country} \\
+\cmidrule(lr){5-9}\cmidrule(lr){10-13}
+outlets & number & mean & median & $l_1$ & $l_2$ & $l_3$ & $l_4$ & $l_5$ & US & UK & Canada & other \\
+\midrule
+all the outlets rated by NewsGuard & 11,564 & 59.7 & 72.5 & 33 & 12 & 6 & 35 & 14 & 74 & 5 & 4 & 17 \\
+political outlets sent to the scraper & 1,293 & 49.4 & 52.0 & 39 & 28 & 7 & 19 & 7 & 73 & 4 & 2 & 21 \\
+\textbf{the dataset} & 226 & 68.5 & 75.0 & 15 & 19 & 13 & 35 & 17 & 79 & 10 & 5 & 5 \\
+\bottomrule
+\end{tabular}}
+\end{table}
 
 \begin{table}[h]
 \centering
@@ -866,6 +911,9 @@ one outlet per group & 61 & 47.8 & 13 & 69 & 7 & 10 & 2 & 97 \\
 \end{table}
 
 \section{Implementation details}\label{app:impl}
+No setting was chosen on the test outlets: the ridge penalty and the layer of Mistral-Small-24B are chosen on inner
+folds of the training outlets of each fold, and the other settings are fixed in advance (for ModernBERT, after the
+earlier rounds of experiments on the same outlets described in Appendix~\ref{app:tried}).
 \begin{itemize}
   \item \textbf{Split and settings.} The inner folds are built like the outer ones, on the training outlets, and the
         settings are chosen by the Spearman correlation per outlet. In training every article counts once, so outlets
@@ -892,6 +940,21 @@ one outlet per group & 61 & 47.8 & 13 & 69 & 7 & 10 & 2 & 97 \\
 \end{itemize}
 
 \section{The zero-shot prompt}\label{app:prompt}
+The prompt is used by one model only, Mistral-Small-24B-Instruct, the instruction-tuned version of the Mistral-Small-24B
+whose frozen vectors we use, and only for the zero-shot predictions (step 13 of the pipeline). No other model receives
+it: the other models learn the score from the training outlets, and the Qwen3 models only read a one-line instruction
+that tells them what the vector should represent (Appendix~\ref{app:impl}). The model reads the prompt once for each of
+the 25,524 anonymized articles, without any training, and generates a single integer from 0 to 100 (greedy decoding, at
+most six tokens); the score of an outlet is the mean of the answers for its articles, as for every other model.
+
+A reader may object that the zero-shot model does badly because of the prompt. The prompt can probably be
+improved: we tried only this one, and another prompt may do better. The zero-shot model, however, is not one of our
+models but the reference for asking a language model directly, and the conclusions of the paper do not depend on it.
+Every model trained on the scores does better (MAE 15.8--18.8 against 24.4), and a model of the same family reading the
+same articles, with a linear head trained on the scores instead of a question, has the lowest error of all. The model
+knows something about the outlets; without training it does not know which number to give, and 85\% of its answers are
+either 65 or 45.
+
 The system message and the user message given to Mistral-Small-24B-Instruct, through its chat template:
 
 \begin{quote}\small
