@@ -54,8 +54,7 @@ outlets with a Spearman correlation of 0.74 and separates reliable from unreliab
 is lower than that of TF-IDF in every condition we tested, most of all with few articles: with one article per outlet
 it is 17.3 points against 20.5. Small encoders do not beat TF-IDF. Weaker protocols inflate the results: splitting
 articles instead of outlets, or training on sister sites of the same owner, lowers the error by 6--12 points, while
-masking the names changes it by less than half a point. We also examined the role of political orientation: at equal
-NewsGuard score, the trained models predict about 9 points more for left-leaning than for right-leaning outlets. These
+masking the names changes it by less than half a point. These
 models can help raters to decide which unrated outlets to examine first. We release the code, the models, the
 predictions and a local tool.
 \end{abstract}
@@ -105,8 +104,7 @@ contributions are:
   \item \textbf{A comparison of models.} Large frozen language models with a linear head beat TF-IDF in every condition
         we tested, most of all with few articles per outlet; small encoders and zero-shot prompting do not
         (Sections~\ref{sec:stage1}, \ref{sec:stage2} and~\ref{sec:k}).
-  \item \textbf{An analysis of the errors} by reliability level and political orientation
-        (Sections~\ref{sec:errors}--\ref{sec:orientation}).
+  \item \textbf{An analysis of the errors} by reliability level (Section~\ref{sec:errors}).
   \item \textbf{Open resources:} the code, the models, the predictions and a local tool (Section~\ref{sec:tool}).
 \end{enumerate}
 
@@ -202,9 +200,7 @@ language.
 \subsection{Problem definition}\label{sec:definition}
 Let $A$ be a corpus of news articles, each with a text $t_a$ and a publisher $p(a) \in P$, and let $A_p$ be the articles
 of publisher $p$. Each publisher has a NewsGuard score $s(p) \in [0, 100]$ (Section~\ref{sec:labels}). There are no
-labels for single articles, so every article inherits the score of its publisher. Each publisher also has a political
-orientation $o(p) \in \{\text{left}, \text{right}, \text{none}\}$ from its NewsGuard rating, used only to analyze the
-errors (Section~\ref{sec:orientation}). Before any model reads an article, a function $\anon$ replaces the names of
+labels for single articles, so every article inherits the score of its publisher. Before any model reads an article, a function $\anon$ replaces the names of
 outlets and journalists, the links and the e-mail addresses with placeholders (Section~\ref{sec:anon}).
 
 \paragraph{Stage 1: articles.} A regressor $f$ predicts the score of each article, $\hat{s}(a) = f(\anon(t_a))$.
@@ -236,12 +232,10 @@ predictions matters more than their values. We report Spearman's $\rho$ and Kend
 error and the AUC for separating reliable outlets (score $\geq 60$) from the others.
 
 \paragraph{Baselines.} TF-IDF with a ridge regression (Section~\ref{sec:setup}) is the reference text model: every
-language model is compared with it. Three further baselines use no text:
+language model is compared with it. Two further baselines use no text:
 \begin{itemize}
   \item \textbf{Training median:} the best constant prediction for the MAE, computed on the training publishers.
   \item \textbf{Training mean:} the best constant prediction for the squared error.
-  \item \textbf{Orientation only:} the mean training score of the publishers with the same political orientation, to
-        show how much of the score the political side alone gives.
 \end{itemize}
 
 \paragraph{Statistical testing.} Intervals are 95\% bootstrap intervals over publishers~\cite{efron1979bootstrap}. Two
@@ -258,11 +252,9 @@ outlet repeatedly publishes false content, corrects its errors, separates news f
 and discloses its ownership and financing. The score $s(p)$ is the weighted sum of the criteria met. NewsGuard also
 groups the score in five levels, 0--39 ($l_1$), 40--59 ($l_2$), 60--74 ($l_3$), 75--99 ($l_4$) and 100 ($l_5$), which we
 use to describe the data. We use the ratings of 23 October 2026 (76\% of them updated in 2025 or 2026) for the outlets
-whose only topic is \emph{political news or commentary}. The ratings are licensed and cannot be redistributed. NewsGuard
-has been accused, mostly by right-leaning outlets and politicians, of rating right-leaning outlets more
-severely~\cite{oremus2024newsguard}. An analysis of its data finds no evidence of such a bias~\cite{luhring2025best},
-and its ratings largely agree with those of other raters~\cite{lin2023high}. We use the ratings as the target of the
-task, and Section~\ref{sec:orientation} checks how the errors depend on orientation.
+whose only topic is \emph{political news or commentary}. The ratings are licensed and cannot be redistributed. They
+largely agree with those of other raters~\cite{lin2023high}. We use the ratings as the target of the
+task.
 
 \subsection{Collection and cleaning}\label{sec:cleaning}
 In October 2026 we collected about 200 recent articles from the website of each political outlet rated by NewsGuard,
@@ -366,12 +358,9 @@ since they are the signal we study.
 
 \subsection{The final dataset}\label{sec:final}
 The dataset has 25,524 articles from 226 outlets, with a median of 112 articles per outlet (from 10 to 201;
-Figure~\ref{fig:dataset}). Scores lean towards reliable outlets (median 75): 35 outlets are in the lowest level, 43 in
+Figure~\ref{fig:dataset}). Scores lean towards reliable outlets (median 75, Figure~\ref{fig:dataset}a): 35 outlets are in the lowest level, 43 in
 40--59, 30 in 60--74, 79 in 75--99 and 39 have a perfect score. No article exceeds the input length of any model (median
-about 760 tokens, at most about 3,000). NewsGuard records the orientation of an outlet only as left or right, and leaves it empty for the others (none
-here). Orientation and reliability are strongly associated: 58 of the 99 right-leaning
-outlets are in the two lowest levels, and 51 of the 68 left-leaning outlets in the two highest
-(Figure~\ref{fig:dataset}a).
+about 760 tokens, at most about 3,000).
 
 \paragraph{Representativeness.} The dataset is not a random sample of the rated outlets (Appendix~\ref{app:selection}).
 The 619 outlets that returned no article (offline sites, blocked collection) have a mean score of 41, against 69 in
@@ -383,8 +372,7 @@ largest errors; Section~\ref{sec:errors} reports the errors by level, so that th
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/dataset.pdf}
-\caption{The final dataset. (a) Number of outlets by political orientation, as recorded by NewsGuard (left, right, or none when the
-field is empty), split by NewsGuard level (one hatch per level); (b) number of articles of each outlet, with the outlets
+\caption{The final dataset. (a) Number of outlets in each NewsGuard level; (b) number of articles of each outlet, with the outlets
 sorted from the fewest to the most articles (at least 10); (c) NewsGuard scores of the outlets in each of the five
 folds.}\label{fig:dataset}
 \end{figure}
@@ -495,7 +483,6 @@ model & MAE (points) & Spearman $\rho$ & Kendall $\tau_b$ & within 20 (\%) \\
 \midrule
 no text (training mean) & 22.6 [20.7, 24.5] & $-$0.015 [$-$0.15, 0.11] & $-$0.012 [$-$0.11, 0.09] & 50.9 [44.2, 57.5] \\
 no text (training median) & 22.1 [19.9, 24.4] & -- & -- & 54.0 [47.3, 60.6] \\
-orientation only (training mean per orientation) & 18.5 [16.7, 20.5] & 0.362 [0.24, 0.48] & 0.260 [0.17, 0.35] & 64.2 [58.0, 70.4] \\
 Mistral-Small-24B-Instruct, zero-shot & 24.4 [22.5, 26.2] & 0.348 [0.22, 0.46] & 0.246 [0.16, 0.33] & 41.6 [35.4, 48.2] \\
 \midrule
 TF-IDF + ridge & 17.8 [16.2, 19.6] & 0.674 [0.60, 0.73] & 0.480 [0.42, 0.54] & 61.5 [54.9, 67.7] \\
@@ -566,10 +553,6 @@ directly for the score, the instruction-tuned Mistral ranks the outlets with $\r
 constant (24.4 points), since 85\% of its answers are either 65 or 45. The same model family with a trained linear head
 has the lowest error, as in other tasks in which a linear head on hidden states beats the text answers of language
 models~\cite{buckmann2025revealing}.
-
-\paragraph{Political orientation as a baseline.} Predicting the mean score of the orientation of an outlet gives
-$\rho = 0.36$. Every trained model ranks the outlets far better, and it also ranks them within each orientation
-(Section~\ref{sec:orientation}).
 
 \paragraph{Compression.} All models compress their predictions towards the centre of the scale (Mistral-Small-24B
 predicts between 37 and 96, Figure~\ref{fig:distributions}); a straight line fitted on the training folds re-maps the scores
@@ -655,7 +638,7 @@ with the same label (Appendix~\ref{app:sisters}).
 Leaving out the 16 outlets whose brand name of two or more words is still in the text barely changes the advantage of
 Mistral-Small-24B over TF-IDF (1.8 points instead of 2.0). The models therefore do not rely on the masked names, nor
 mainly on what they may know about an outlet from pretraining: from the domain name alone, the frozen models rank the
-outlets with $\rho = 0.35$--$0.39$, about as well as the orientation alone (Appendix~\ref{app:robust}). An
+outlets with $\rho = 0.35$--$0.39$, against 0.71--0.74 from the articles (Appendix~\ref{app:robust}). An
 earlier rule-based anonymization gives the same results (Appendix~\ref{app:anon}).
 
 \paragraph{Boilerplate.} Some outlets repeat the same lines in many articles, such as invitations to subscribe to a
@@ -690,7 +673,7 @@ and line; the dashed line is the no-text baseline.}\label{fig:curves}
 \end{figure}
 
 \subsection{Errors by reliability level}\label{sec:errors}
-Figure~\ref{fig:errors}a shows the mean signed error per NewsGuard level. All models pull their predictions towards the
+Figure~\ref{fig:errors} shows the mean signed error per NewsGuard level. All models pull their predictions towards the
 centre of the scale. The least reliable outlets are overestimated ($+31$ points for Mistral-Small-24B in the 0--39
 band), the outlets with a perfect score are underestimated ($-19$), and the middle of the scale (60--74) is predicted
 almost without bias. For Mistral-Small-24B, one point of NewsGuard score moves the prediction by only 0.37 points on
@@ -701,49 +684,10 @@ are not affected, and the larger models compress less (Appendix~\ref{app:errors}
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{figures/errors.pdf}
-\caption{Errors by level and orientation, one bar per model. (a) Mean signed error (predicted minus true score) per
-NewsGuard level: bars above zero are overestimates. (b) Mean signed error per political orientation after removing its
-linear dependence on the true score, that is, at equal NewsGuard score. (c) Spearman correlation within the outlets of
-each orientation, with 95\% bootstrap intervals.}\label{fig:errors}
+\includegraphics[width=0.8\linewidth]{figures/errors.pdf}
+\caption{Errors by level, one bar per model: mean signed error (predicted minus true score) per NewsGuard level. Bars
+above zero are overestimates.}\label{fig:errors}
 \end{figure}
-
-\subsection{Influence of political orientation}\label{sec:orientation}
-We examined whether the political orientation of an outlet affects the errors, and we report the result as a
-caution for any use of the models. Orientation, taken from the \emph{Orientation} field of NewsGuard, is
-strongly associated with reliability in our data: the 68 left-leaning outlets and the 59 without orientation have a mean
-score of 80, the 99 right-leaning ones of 54. Any model that pulls its predictions towards the centre therefore has
-different raw errors on the two sides, and a fair comparison must hold the score fixed.
-
-\paragraph{Ranking within an orientation.} All models rank the outlets within each orientation
-(Figure~\ref{fig:errors}c), so they do more than recognize the political side. Mistral-Small-24B reaches $\rho = 0.62$
-among the right-leaning outlets, 0.63 among those without orientation and 0.38 among the left-leaning ones, whose scores
-are concentrated in the two highest levels.
-
-\paragraph{Errors at equal score.} We compare outlets with the same NewsGuard score in three ways: by removing from the
-signed error its linear dependence on the true score (Figure~\ref{fig:errors}b), with a spline of the score, and with the
-NewsGuard level as a fixed effect. With Mistral-Small-24B, left-leaning outlets are predicted 5.2 points too high and
-right-leaning ones 4.3 points too low, a gap of 9.6 points [6.7, 12.3] with the linear control, 8.8 with the spline and
-8.7 with the levels. The gap is positive in every trained model, from 4.5 to 9.6 points, with intervals that exclude
-zero, and absent in the zero-shot model (0.1), which was not trained on these scores. The compression alone does not
-create it: shrinking every outlet towards the overall mean gives no gap. A plausible cause is that a model, when
-uncertain, moves an outlet towards the outlets that write like it, which tend to share its orientation; a predictor that
-did this fully would have a gap of 12.6 points (Appendix~\ref{app:errors}).
-
-\paragraph{Calibration.} Comparing outlets with the same \emph{prediction} instead, the true scores of left- and
-right-leaning outlets differ by only 0.8 points for Mistral-Small-24B [$-7.5$, 8.9]. We find no evidence that its
-predictions mean different things for the two groups, while the difference is significant for the fine-tuned ModernBERT,
-the small frozen models and the zero-shot model. When the groups have different mean scores, the two views cannot in
-general be equal at the same time~\cite{kleinberg2017inherent,chouldechova2017fair}.
-
-\paragraph{What the gap means.} The gap is a difference in average error between groups of outlets with the same
-NewsGuard score, measured on 167 outlets with an orientation. It does not show that the models judge political content:
-it can come from any feature of the text that goes with orientation, such as topics or style, in a population where
-orientation and score go together. Its size also depends on the outlets and on the ratings, which have been criticized as
-unfavourable to right-leaning outlets~\cite{oremus2024newsguard}, a criticism that an analysis of NewsGuard's data does
-not support~\cite{luhring2025best}. Whatever its cause, a system built on these models gives a right-leaning outlet
-about 9 points less than a left-leaning outlet with the same NewsGuard score. Any use of such predictions should
-therefore report the errors by orientation and leave every decision about an outlet to human review.
 
 % =====================================================================================================================
 \section{Released Resources and Demonstration Tool}\label{sec:tool}
@@ -776,22 +720,21 @@ little. Outlet-disjoint splits, deduplication across outlets and ownership group
 estimate.
 
 All models compress their predictions towards the centre of the scale, so the least reliable outlets are
-overestimated. At equal score,
-right-leaning outlets get about 9 points less than left-leaning ones, a gap that holds with three ways of controlling for
-the score.
+overestimated.
 
 Taken together, these results support the use of text-based scores to help raters decide which unrated outlets to
 examine first: all the trained text models separate reliable from unreliable outlets with an AUC of 0.82--0.88, the
 large frozen models do so with a few articles, and the final rating, like any decision about an outlet, remains with the
-raters, who should see the errors reported by orientation.
+raters.
 
 \paragraph{Limitations.} The study uses one rater at one point in time and English-language political outlets only; the
 open aggregate ratings of Lin et al.~\cite{lin2023high}, which include NewsGuard, could support a public replication.
 With 226 outlets the intervals are wide, and most differences in ranking are not significant. The labels of the articles
 are inherited from their outlets. The anonymization leaves the style, some brand names and the social-media handles, and
 the ownership groups are those recorded by NewsGuard. The least reliable outlets are under-represented, and the errors are largest on them
-(Sections~\ref{sec:final} and~\ref{sec:errors}). The orientation labels are those of NewsGuard, and with 167 oriented
-outlets the gap between orientations has an interval of about $\pm 3$ points. The design was developed on the outlets on which we report the results (Section~\ref{sec:setup}): the small differences
+(Sections~\ref{sec:final} and~\ref{sec:errors}). We do not analyze the errors by political orientation: in these data
+orientation and score go together, and too few outlets of the two sides share a score to compare them
+(Appendix~\ref{app:orientation}). The design was developed on the outlets on which we report the results (Section~\ref{sec:setup}): the small differences
 between models, unlike the large effects of the protocol, need a replication on new outlets. Finally, the
 language models may know some outlets from their pretraining, although 96\% of the articles were published after the
 release of every model we use and the domain name alone gives a much weaker ranking than the text. Future work should
@@ -804,7 +747,7 @@ the release of the models and of the predictions derived from them. The articles
 without bypassing paywalls or logins, and their text is not redistributed. The study involves no human participants,
 and the names of journalists are masked before the models read the articles. The predictions concern organizations, but
 they could harm an outlet if used as ratings: they are meant to support human raters, should never be used to sanction
-or label an outlet without human review, and should be monitored across political orientations. Like other text
+or label an outlet without human review. Like other text
 classifiers, the models could also be fooled by an outlet that changes the few words that move a prediction, words that
 explanation methods make easy to find~\cite{kozik2024explainability}. The code and the models are released under the
 Apache-2.0 licence, and the predictions and the split under CC BY 4.0.
@@ -835,7 +778,6 @@ model & $R^2$ & RMSE (points) & AUC, score $\geq 60$ \\
 \midrule
 no text (training mean) & 0.000 [$-$0.023, 0.000] & 27.0 [24.8, 29.3] & 0.501 [0.422, 0.577] \\
 no text (training median) & $-$0.058 [$-$0.130, $-$0.013] & 27.8 [25.1, 30.5] & 0.500 [0.500, 0.500] \\
-orientation only & 0.223 [0.101, 0.327] & 23.8 [21.3, 26.5] & 0.688 [0.611, 0.762] \\
 Mistral-Small-24B-Instruct, zero-shot & $-$0.085 [$-$0.261, 0.031] & 28.2 [26.3, 30.0] & 0.665 [0.589, 0.738] \\
 \midrule
 TF-IDF + ridge & 0.339 [0.273, 0.392] & 22.0 [20.1, 24.0] & 0.860 [0.807, 0.907] \\
@@ -850,31 +792,14 @@ Mistral-Small-24B (frozen) + ridge & 0.475 [0.406, 0.533] & 19.6 [17.7, 21.5] & 
 
 \section{Statistical tests}\label{app:stats}
 Intervals are 95\% percentile bootstrap intervals over outlets, with 10,000 resamples (2,000 for the curves by number of
-articles). Two models are compared on the same resamples, with a two-sided bootstrap $p$-value. The Holm correction is
-applied within three families of tests:
-\begin{itemize}
-  \item every model against TF-IDF on the four metrics of Table~\ref{tab:main} (24 tests);
-  \item the curve of each model against that of TF-IDF (16 tests per model);
-  \item the other comparisons cited in the text (24 tests).
-\end{itemize}
-A comparison that belongs to two families is reported from the first. The intervals of Table~\ref{tab:ladder} and
-Appendix~\ref{app:anon} are not corrected, and this is stated there. The main comparisons of
-Sections~\ref{sec:stage2}--\ref{sec:k} are:
-\begin{itemize}
-  \item \textbf{Mistral-Small-24B against TF-IDF, all articles:} MAE $-2.0$ [$-2.9$, $-1.2$], significant; $\rho$
-        $+0.060$ [0.020, 0.104] and share within 20 points $+6.6$, not significant after correction (Holm $p = 0.07$ and
-        $0.18$).
-  \item \textbf{Qwen3-Embedding-8B against TF-IDF, all articles:} MAE $-1.5$ [$-2.3$, $-0.7$] and share within 20 points
-        $+8.4$, significant; $\rho$ $+0.037$, not significant.
-  \item \textbf{Qwen3-Embedding-8B against Qwen3-Embedding-0.6B:} MAE $-2.5$ [$-3.2$, $-1.7$] and $\rho$ $+0.085$ [0.039,
-        0.136], significant. Mistral-Small-24B is not significantly better than Qwen3-Embedding-8B, and the frozen
-        ModernBERT is not worse than Qwen3-Embedding-0.6B.
-  \item \textbf{Frozen Mistral-Small-24B against its zero-shot version:} $+0.39$ in $\rho$ and $-8.6$ points of error.
-  \item \textbf{By number of articles:} Mistral-Small-24B with five articles against TF-IDF with all of them: MAE $-1.7$
-        [$-2.6$, $-0.9$], significant; $\rho$ 0.71 against 0.67, not significant. Qwen3-Embedding-8B is significantly
-        better than TF-IDF in ranking up to ten articles; Qwen3-Embedding-0.6B has a significantly larger error than
-        TF-IDF from two articles on.
-\end{itemize}
+articles). Two models are compared on the same resamples, with a two-sided bootstrap $p$-value, and the $p$-values are
+corrected with the Holm method within three families: every model against TF-IDF on the four metrics of
+Table~\ref{tab:main} (24 tests), the curve of each model against that of TF-IDF (16 tests per model), and the other
+comparisons cited in the text (24 tests); the intervals of Table~\ref{tab:ladder} and Appendix~\ref{app:anon} are not
+corrected. After the correction, the lower error of the two large frozen models remains significant
+(Mistral-Small-24B $-2.0$ points [$-2.9$, $-1.2$], Qwen3-Embedding-8B $-1.5$ [$-2.3$, $-0.7$]), and so does their better
+ranking with one or five articles per outlet. With all the articles, the higher $\rho$ of Mistral-Small-24B ($+0.060$
+[0.020, 0.104]) is not significant (Holm $p = 0.065$).
 
 \section{The anonymization in detail}\label{app:anonfig}
 In detail, the anonymization of Section~\ref{sec:anon} works in three passes: the rules are passes 1--2 and GLiNER is
@@ -913,30 +838,29 @@ journalists. (b) Replacements per 1,000 words, by NewsGuard level of the outlet.
 
 \section{Who is left out by the cleaning}\label{app:selection}
 Table~\ref{tab:selection} describes the 1,293 political outlets sent to the scraper by the step at which they left the
-dataset. The 226 outlets of the dataset differ from the others in score (Mann--Whitney $p < 10^{-25}$) and orientation
-($\chi^2$ $p < 10^{-14}$). The outlets that could not be collected and those removed with the duplicates are much less
+dataset. The 226 outlets of the dataset differ from the others in score (Mann--Whitney $p < 10^{-25}$). The outlets that could not be collected and those removed with the duplicates are much less
 reliable, and the second group is almost entirely the network of 164 sites of Section~\ref{sec:groups}.
 
 \begin{table}[h]
 \centering
 \caption{Who is left out by the cleaning. Each row is the step at which outlets left the dataset (the last row is the
-dataset); the columns give their number, their mean NewsGuard score and their shares (\%) by level, by orientation and
+dataset); the columns give their number, their mean NewsGuard score and their shares (\%) by level and
 based in the United States.}\label{tab:selection}
 \resizebox{\linewidth}{!}{%
-\begin{tabular}{lrrrrrrrrrrr}
+\begin{tabular}{lrrrrrrrr}
 \toprule
-removed at & outlets & score & $l_1$ & $l_2$ & $l_3$ & $l_4$ & $l_5$ & left & right & none & US \\
+removed at & outlets & score & $l_1$ & $l_2$ & $l_3$ & $l_4$ & $l_5$ & US \\
 \midrule
-no article collected & 619 & 41.4 & 43 & 35 & 5 & 13 & 3 & 7 & 50 & 43 & 68 \\
-text extraction & 6 & 78.2 & 0 & 33 & 0 & 50 & 17 & 0 & 67 & 33 & 50 \\
-English & 91 & 73.6 & 11 & 14 & 9 & 45 & 21 & 20 & 22 & 58 & 15 \\
-100--1,500 words & 12 & 55.0 & 25 & 17 & 25 & 25 & 8 & 8 & 67 & 25 & 67 \\
-published from 2025 & 34 & 56.4 & 21 & 41 & 6 & 24 & 9 & 29 & 26 & 44 & 76 \\
-exact duplicates & 170 & 37.0 & 89 & 2 & 2 & 6 & 1 & 7 & 5 & 88 & 98 \\
-near duplicates & 14 & 27.9 & 93 & 0 & 7 & 0 & 0 & 0 & 29 & 71 & 100 \\
-at least 10 articles & 60 & 57.5 & 22 & 35 & 10 & 25 & 8 & 27 & 35 & 38 & 77 \\
-one outlet per group & 61 & 47.8 & 13 & 69 & 7 & 10 & 2 & 36 & 59 & 5 & 97 \\
-\textbf{in the dataset} & 226 & 68.5 & 15 & 19 & 13 & 35 & 17 & 30 & 44 & 26 & 79 \\
+no article collected & 619 & 41.4 & 43 & 35 & 5 & 13 & 3 & 68 \\
+text extraction & 6 & 78.2 & 0 & 33 & 0 & 50 & 17 & 50 \\
+English & 91 & 73.6 & 11 & 14 & 9 & 45 & 21 & 15 \\
+100--1,500 words & 12 & 55.0 & 25 & 17 & 25 & 25 & 8 & 67 \\
+published from 2025 & 34 & 56.4 & 21 & 41 & 6 & 24 & 9 & 76 \\
+exact duplicates & 170 & 37.0 & 89 & 2 & 2 & 6 & 1 & 98 \\
+near duplicates & 14 & 27.9 & 93 & 0 & 7 & 0 & 0 & 100 \\
+at least 10 articles & 60 & 57.5 & 22 & 35 & 10 & 25 & 8 & 77 \\
+one outlet per group & 61 & 47.8 & 13 & 69 & 7 & 10 & 2 & 97 \\
+\textbf{in the dataset} & 226 & 68.5 & 15 & 19 & 13 & 35 & 17 & 79 \\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -1003,8 +927,7 @@ Table~\ref{tab:robust} repeats the MAE of Table~\ref{tab:main} under two checks:
 \paragraph{Name only.} To measure what the frozen models know about an outlet without reading its articles, we give them
 only its domain name (for instance \texttt{example.com}) and train the same ridge regression with the same folds.
 Mistral-Small-24B reaches $\rho = 0.39$ [0.27, 0.49] and an MAE of 20.4 [18.5, 22.4], Qwen3-Embedding-8B $\rho = 0.35$
-[0.23, 0.45] and 21.7 [19.8, 23.7]: about as much as the orientation alone ($\rho = 0.36$, MAE 18.5), and far below what
-they reach from the articles (0.735 and 0.711).
+[0.23, 0.45] and 21.7 [19.8, 23.7], far below what they reach from the articles (0.735 and 0.711).
 
 
 \section{Other splits of the outlets}\label{app:splits}
@@ -1126,7 +1049,7 @@ Mistral-Small-24B & 17.0 & 17.5 & 2.0 & 0.982 \\
 \end{tabular}
 \end{table}
 
-\section{Errors by level and orientation in detail}\label{app:errors}
+\section{Errors by level in detail}\label{app:errors}
 \paragraph{By level.} The mean signed error is $+31$ points for Mistral-Small-24B and $+36$ for TF-IDF in the 0--39
 band, $-19$ and $-25$ for score 100, and $-3$ and $-2$ in the 60--74 band. With Mistral-Small-24B the absolute error is
 31 points in the 0--39 band, 19 for score 100 and 9 in the 60--74 band. For the trained models the signed error
@@ -1134,17 +1057,6 @@ decreases with the true score with a slope between $-0.63$ (Mistral-Small-24B) a
 one point of NewsGuard score moves the prediction by 0.19--0.37 points (0.09 for the zero-shot model). This slope is the
 same per article and per outlet (about 0.37 for Mistral-Small-24B), so averaging over the articles keeps the
 compression.
-
-\paragraph{By orientation.} Within each orientation, Mistral-Small-24B reaches $\rho = 0.62$ [0.44, 0.75] among the 99
-right-leaning outlets, 0.63 [0.44, 0.78] among the 59 without orientation and 0.38 [0.15, 0.57] among the 68
-left-leaning ones; TF-IDF and ModernBERT are lower in every group. The raw signed errors differ by orientation
-(Kruskal--Wallis $p < 0.001$ for every model), mostly because right-leaning outlets are more often in the low levels. At
-equal score, the gap between left- and right-leaning outlets for Mistral-Small-24B is 9.6 points [6.7, 12.3] with a
-linear control, 8.8 with a spline of the score and 8.7 with the level as a fixed effect. Shrinking every outlet towards
-the overall mean gives no gap, while shrinking it towards the mean of its own orientation, with the slope of
-Mistral-Small-24B, gives 12.6 points [9.9, 14.6]. At equal prediction, the true scores of left- and right-leaning
-outlets differ by 0.8 points [$-7.5$, 8.9] for Mistral-Small-24B, 4.8 for Qwen3-Embedding-8B and 7.1 for TF-IDF (not
-significant), and by 12.8 for the fine-tuned ModernBERT and 24.8 for the zero-shot model (significant).
 
 \section{Released resources and the demonstration tool}\label{app:tool}
 Table~\ref{tab:release} lists what we release. The released models derive from base models under the Apache-2.0 licence
@@ -1233,6 +1145,45 @@ The earlier rounds:
 \end{itemize}
 The stability of the results over five splits of the outlets (Appendix~\ref{app:splits}) shows that they do not depend
 on one split, but it is not a test on new outlets (Section~\ref{sec:setup}).
+
+\section{Political orientation}\label{app:orientation}
+We wanted to check whether the models treat left- and right-leaning outlets differently, also because NewsGuard has
+been accused, mostly by right-leaning outlets and politicians, of rating right-leaning outlets more
+severely~\cite{oremus2024newsguard}, although an analysis of its data finds no evidence of such a
+bias~\cite{luhring2025best}. NewsGuard records the orientation of an outlet only as left or right, and leaves it empty
+for the others. In our data orientation and score go together (Table~\ref{tab:orientation}): the 68 left-leaning
+outlets have a mean score of 80 and the 99 right-leaning ones of 54. Only 3 of the 35 outlets of the lowest level are
+left-leaning, and only 4 of the 39 with a perfect score are right-leaning; of the 44 distinct scores of these outlets,
+only 14 are taken by outlets of both sides. Predicting for each outlet the mean training score of its orientation
+already gives $\rho = 0.36$ and an MAE of 18.5 (22.1 for the constant), only because of this association; every text
+model ranks the outlets far better.
+
+The errors of the two sides therefore cannot be compared directly: they are errors at different scores, and every model
+overestimates the low scores and underestimates the high ones (Section~\ref{sec:errors}). Comparing them at equal
+score needs either outlets of both sides with the same score, which are few, or a model of how the error depends on the
+score, whose result depends on the form chosen. With these data such a comparison would describe the composition of the
+dataset more than the behaviour of the models, so we draw no conclusion from it. It would need outlets balanced by
+orientation at every level of reliability.
+
+\begin{table}[h]
+\centering
+\caption{Political orientation and NewsGuard level of the 226 outlets. Each row is a level; the columns give the number
+of left-leaning, right-leaning and other outlets (no orientation recorded); the last row gives the mean score.}\label{tab:orientation}
+\begin{tabular}{lrrr}
+\toprule
+level & left & right & none \\
+\midrule
+$l_1$ (0--39) & 3 & 28 & 4 \\
+$l_2$ (40--59) & 8 & 30 & 5 \\
+$l_3$ (60--74) & 6 & 17 & 7 \\
+$l_4$ (75--99) & 37 & 20 & 22 \\
+$l_5$ (100) & 14 & 4 & 21 \\
+\midrule
+outlets & 68 & 99 & 59 \\
+mean score & 79.9 & 53.5 & 80.4 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \bibliographystyle{plainnat}
 \bibliography{references}

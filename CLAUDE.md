@@ -19,7 +19,7 @@ Code/IrForGood/, Code/RejectedTCSS/ versioni precedenti del paper (con i loro da
 Paper/Journal/                      bozza LaTeX del paper per rivista (template generico; risultati da riempire)
 Dataset/                            tutti i dati: fuori da git, vedi Dataset/LEGGIMI.md
 Modelli/                            i modelli addestrati: fuori da git
-Presentazioni/                      slide: la attuale è Paper rivista/PaperRivista.odp; le altre in Presentazioni precedenti/
+Presentazioni/                      slide: solo Paper rivista/PaperRivista.odp (le precedenti sono nella storia di git)
 TODO.md, UTILI.md                   appunti di John (fuori da git)
 ```
 

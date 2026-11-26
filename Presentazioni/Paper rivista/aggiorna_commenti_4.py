@@ -11,7 +11,7 @@ from pathlib import Path
 from PIL import Image
 
 QUI = Path(__file__).resolve().parent
-sys.path.insert(0, str(QUI.parent / "Presentazioni precedenti" / "Stato finale"))
+sys.path.insert(0, str(QUI))
 import stile_slide as S  # noqa: E402
 
 S.PREFISSO[0] = "zf"
