@@ -708,7 +708,8 @@ $\rho = 0.74$ and explains about half of the variance of the scores. Its error i
 condition we tested, and the difference is largest with few articles per outlet, which is the situation of new and
 small outlets. Small encoders and zero-shot prompting do not beat TF-IDF. A plausible explanation, which we cannot
 prove, is that large models represent how claims are sourced and how arguments are built better than word counts and
-small encoders do. A few articles per outlet are enough, and more than about ten add little.
+small encoders do. A few articles per outlet are enough, and more than about ten add little. The gain has a cost: the frozen
+vectors of Mistral-Small-24B take about five hours on one GPU for the 25,524 articles, while TF-IDF runs on a CPU.
 
 Weaker protocols inflate the results. Training on the same outlet, or on outlets of the same owner with their copies,
 lowers the error by 6--12 points, several times the difference between the models, while masking the names changes it
@@ -727,8 +728,9 @@ raters.
 them based in the United States; the
 open aggregate ratings of Lin et al.~\cite{lin2023high}, which include NewsGuard, could support a public replication.
 With 226 outlets the intervals are wide, and most differences in ranking are not significant. The labels of the articles
-are inherited from their outlets. The anonymization leaves the style, some brand names and the social-media handles, and
-the ownership groups are those recorded by NewsGuard. The least reliable outlets are under-represented, and the errors are largest on them
+are inherited from their outlets. The anonymization leaves the style, some brand names, the social-media handles and the
+phrases that an outlet repeats in many of its articles, such as invitations to subscribe, and the ownership groups are
+those recorded by NewsGuard. The least reliable outlets are under-represented, and the errors are largest on them
 (Sections~\ref{sec:final} and~\ref{sec:errors}). We do not analyze the errors by political orientation: in these data
 orientation and score go together, and too few outlets of the two sides share a score to compare them
 (Appendix~\ref{app:orientation}). The design was developed on the outlets on which we report the results (Section~\ref{sec:setup}): the small differences
