@@ -1253,58 +1253,32 @@ models that read the articles & 0.61--0.74 & 15.8--18.8 \\
 \end{table}
 
 \section{What else was tried}\label{app:tried}
-The pipeline of the paper is the twentieth of a series of attempts, summarized in Table~\ref{tab:attempts}. The first
-fifteen used other datasets, built from earlier scrapings and labels, and classified the five NewsGuard levels; from
-attempt 16 on, the attempts used the 226 outlets of the paper, whose test results we saw. On these outlets, within the
-pipeline, we also:
-\begin{itemize}
-  \item classified the five NewsGuard levels instead of regressing the score, with TF-IDF, the frozen models and
-        ModernBERT;
-  \item tested Gemma-27B as a frozen encoder (dropped because its half-precision outputs overflowed on our GPU), layer 40
-        of Mistral-Small-24B (now one of the two layers chosen on the inner folds) and DeBERTa as a fine-tuned encoder,
-        and set the hyper-parameters of ModernBERT (5 epochs, learning rate $3 \cdot 10^{-5}$);
-  \item trained fourteen other regressors on the frozen vectors of the two large models (Qwen3-Embedding-8B and
-        Mistral-Small-24B), including kernel ridge, a small neural network, attention over the articles of an outlet,
-        models at the outlet level, weights for outlets and rare scores, and mixup; none was much better than the ridge
-        (the best lowered the error of Mistral-Small-24B by about one point), and the advantage over TF-IDF did not
-        depend on the regressor;
-  \item re-mapped the predictions to the quantiles of the training scores, which lowers the MAE, and represented the
-        outlets by groups of their articles;
-  \item used the rule-based anonymization of Appendix~\ref{app:anon}.
-\end{itemize}
-Only the ridge penalty and the Mistral layer were chosen inside the training folds. The stability of the results over
-five splits of the outlets (Appendix~\ref{app:splits}) shows that they do not depend on one split, but it is not a test
-on new outlets (Section~\ref{sec:setup}).
+We developed the design on the outlets on which we report the results, and we saw their test results while doing so. A
+reader may therefore ask whether the results depend on choices fitted to these outlets. Table~\ref{tab:tried} lists the
+alternatives that we tried on the 226 outlets and what became of them; only the ridge penalty and the Mistral layer were
+chosen inside the training folds. The main comparison of the paper, the lower error of the large frozen models against
+TF-IDF, holds in every alternative of the table. Earlier attempts, on other datasets, fixed the protocol: evaluation by
+groups of outlets of the same owner (networks of sites had inflated the results), political outlets only and the
+ratings of 2026. None of this is a test on new outlets (Section~\ref{sec:setup}).
 
-\begin{table}[p]
+\begin{table}[h]
 \centering
-\caption{The attempts before the pipeline of the paper. Each row is an attempt, in order of time (October--November
-2026); the columns give the data, what was tried, the main result and what it led to. F1: macro F1 on the five
-NewsGuard levels per outlet; accuracy: per outlet; MAE: per outlet, in score points.}\label{tab:attempts}
-\footnotesize\setlength{\tabcolsep}{3pt}
-\begin{tabular}{r>{\raggedright\arraybackslash}p{0.17\linewidth}>{\raggedright\arraybackslash}p{0.26\linewidth}>{\raggedright\arraybackslash}p{0.29\linewidth}>{\raggedright\arraybackslash}p{0.19\linewidth}}
+\caption{What was tried on the 226 outlets. Each row is an alternative; the columns give what came of it and what the
+paper uses instead.}\label{tab:tried}
+\small
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.33\linewidth}>{\raggedright\arraybackslash}p{0.36\linewidth}>{\raggedright\arraybackslash}p{0.23\linewidth}}
 \toprule
-& data & what was tried & main result & what it led to \\
+tried & outcome & in the paper \\
 \midrule
-1 & 439 outlets of an earlier paper & TF-IDF and BERT; folds by outlet and by network of sites & networks inflate the results: TF-IDF accuracy 0.68 with folds by outlet, 0.39 by network (BERT 0.40) & folds by group of outlets \\
-2 & 272 outlets, new scraping with site pages & articles plus the pages of the site (about, ownership) & pages too noisy; groups found from copies miss ownership networks & groups also by owner; no site pages \\
-3 & 193 outlets, articles only & moderate cleaning, networks from five signals & every model barely above the majority class (TF-IDF F1 0.27) & more outlets needed \\
-4 & 269 outlets, two scrapings & the earlier scraping merged with the new one & rejected: the source of the scraping goes with the label & a single scraping \\
-5 & 304 outlets (3,128 sites tried) & first full pipeline, five levels & TF-IDF F1 0.38 and ModernBERT 0.37, no significant difference & -- \\
-6 & 304 outlets, 863 more in training & more cleaning, more training outlets, TF-IDF combined with ModernBERT & no gain; the signal follows the genre of the outlet (orientation, type, country) & -- \\
-7 & the same & reliable or not within each political orientation & a modest signal beyond the genre (balanced accuracy 0.55--0.62); TF-IDF ahead & -- \\
-8 & the same & ModernBERT reads title and article and learns the NewsGuard criteria & the title helps TF-IDF and ModernBERT alike & -- \\
-9 & 301 outlets & signals beyond the text (cited links, site pages), stacking & the same ceiling; nothing beats TF-IDF (F1 0.34) & text only \\
-10 & MBFC ratings of the outlets & are the 2022 NewsGuard ratings out of date? & 88--94\% agreement with MBFC on reliable or not (interrupted) & -- \\
-11 & 296 outlets & NewsGuard ratings of 2026 instead of 2022 & the same ceiling; no significant difference between the two ratings & ratings of 2026 \\
-12 & 495 political outlets, third scraping & political outlets only & TF-IDF ahead of ModernBERT (F1 0.38 against 0.31) & political outlets only \\
-13 & 323 political outlets & explanations of TF-IDF and ModernBERT & no evidence that the transformer decides for better reasons & -- \\
-14 & 323 political outlets & simpler rules; ModernBERT on chunks of 512 tokens & TF-IDF ahead (F1 0.40 against 0.27--0.30); chunks help little & -- \\
-15 & the outlets of attempt 14 & analysis of criteria and writing style & practices of the site are invisible in the text; style separates the extremes & -- \\
-16 & \textbf{the 226 outlets, 25,524 articles} & precise text extraction, deduplication across outlets, one outlet per owner & first model above TF-IDF: frozen Qwen3-Embedding-8B (F1 0.40 against 0.33--0.35); ModernBERT overfits & the dataset of the paper \\
-17 & 170 of the 226 outlets & the model as a third rater, against NewsGuard and MBFC & large frozen models agree with NewsGuard as much as MBFC does (Spearman about 0.70) & -- \\
-18 & the 226 outlets & the exact score instead of the levels; splits stratified by score & Mistral-Small-24B MAE 14.7--15.5 against 22.6 for the mean; regression close to classification & regression of the score \\
-19 & the 226 outlets & anonymization with six rules & stopped and rebuilt as the pipeline of the paper & the pipeline (attempt 20) \\
+classifying the five levels instead of regressing the score & similar errors; the large frozen models still ahead of TF-IDF & regression of the score \\
+Gemma-27B as a frozen encoder & its half-precision outputs overflowed on our GPU & dropped \\
+layer 40 of Mistral-Small-24B & never chosen by the inner folds & layer chosen in the folds (27) \\
+DeBERTa, fine-tuned & errors close to ModernBERT, but it reads at most 512 tokens & ModernBERT \\
+fourteen other regressors on the frozen vectors & the best about one point better for Mistral-Small-24B; the advantage over TF-IDF unchanged & ridge regression \\
+the articles of an outlet grouped into longer texts & a lower ranking for every model & single articles \\
+predictions re-mapped to the quantiles of the training scores & a lower MAE, but on another scale & a linear recalibration only (Table~\ref{tab:robust}) \\
+the rule-based anonymization of Appendix~\ref{app:anon} & the language models change by less than half a point & rules and GLiNER \\
+five splits of the outlets (Appendix~\ref{app:splits}) & Mistral-Small-24B ahead of TF-IDF by 2.0--2.3 points in every split & the first split \\
 \bottomrule
 \end{tabular}
 \end{table}
